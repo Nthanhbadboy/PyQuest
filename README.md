@@ -242,10 +242,30 @@ này `if: always()` và không phụ thuộc bước nào khác — kể cả kh
 chết trước lúc script chạy (run 38794903944 dừng sau 73 giây), báo cáo vẫn được
 tạo ra và nói rõ "không có output nào của script".
 
+**Kết luận không chỉ dựa vào `status.txt`:** `ci/step_outcomes.py` là nơi duy
+nhất định nghĩa chính sách, dùng chung cho `ci/report.py` (check run) và
+`ci/job_summary.py` (step summary). Kết luận lấy từ **cả** các status key của
+script **và** outcome thật của từng bước workflow do `ci.yml` truyền vào
+(`--step "Tên bước=${{ steps.<id>.outcome }}"`). Vì vậy run 38794903944 — nơi
+`status.txt` chỉ có `build_apk_debug=0`, mọi bước khác không chạy — không còn
+được báo là thành công. Bước `skipped` của các bước optional (`Analyse emulator
+logs`, `Shrink screenshots`) không bị coi là lỗi; `skipped` ở bước bắt buộc,
+outcome thiếu, hay outcome lạ đều bị coi là chưa thành công. Mục **Root cause**
+nêu tên bước lỗi sớm nhất; chỉ khi chính bước *Emulator journey* thất bại **và**
+thiếu cả `emulator-progress.txt` lẫn `emulator-trap.txt` thì báo cáo mới quy cho
+phần chuẩn bị emulator của action, kèm câu nói rõ là không suy đoán lệnh cụ thể
+nào; khi không đủ bằng chứng, mục này ghi đúng một câu: *Root cause not determined
+from available evidence.*
+
 Script tự đặt `trap` cho mọi lối thoát: `emulator-trap.txt` ghi giai đoạn hiện
 tại (`==> PHASE:` trong `emulator-progress.txt`), mã thoát, các mốc thời gian và
-phần cuối của log — trap chỉ ghi tệp (không gọi adb, không chờ), và luôn thoát
-với đúng mã lỗi ban đầu nên không che mất lỗi thật.
+phần cuối của log. Thoát bình thường thì trap **chỉ ghi tệp**; thoát bất thường
+(mã thoát khác 0) thì trap còn chụp chẩn đoán — nhưng mọi lệnh `adb`/`dmesg`/
+`journalctl` trên đường đó đều bị giới hạn thời gian (`timeout`), không có lệnh
+nào chờ thiết bị, và không có lệnh nào khởi động lại adb/emulator (đã kiểm bằng
+cách chạy chính các đường trap này trong harness cục bộ). Trap luôn thoát với
+đúng mã lỗi ban đầu: `SIGTERM` → 143, `SIGINT` → 130, còn lỗi thường giữ nguyên
+mã thoát.
 
 Trạng thái máy chạy được chụp **hai lần** bằng `ci/runner_state.sh`:
 `runner-state-before.txt` (trước bước emulator) và `runner-state.txt` (sau khi

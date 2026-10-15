@@ -27,7 +27,18 @@ import re
 import sys
 import time
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from step_outcomes import (SKIPPED, UNKNOWN, classify, conclusion,   # noqa: E402
+                          parse_steps)
+
 REPO = os.environ.get("GITHUB_REPOSITORY", "Nthanhbadboy/PyQuest")
+EMULATOR_STEP = "Emulator journey"   # the step that runs android-emulator-runner@v2
+# The status keys ci/emulator_journey.sh writes, i.e. evidence that it ran.
+JOURNEY_KEYS = frozenset({
+    "device_ready_journey", "journey", "device_ready_relaunch",
+    "install_regular_apk", "relaunch_screencap", "app_alive_after_relaunch",
+    "device_ready_returning", "returning",
+})
 TAIL_LINES = 100            # the user-visible "last 100 relevant lines"
 MAX_REPORT_BYTES = 60000    # stays well below the check-run text limit
 PHASE_MARKER = "==> PHASE: "
@@ -37,7 +48,6 @@ ERROR_HINTS = re.compile(
     r"timed out|TIMED OUT|disappeared|no longer")
 SKIP_ERROR_LINES = re.compile(r"^\s*(phase markers|last \d+ lines|exit_code:|"
                               r"phase:|utc:|error hints|\[)")
-STATUS_OK = ("success", "skipped", "neutral")
 
 
 def read_lines(path, limit=None):
@@ -147,23 +157,85 @@ def diagnostics_state(root):
     return ["(no device state was collected - see the step log on the job page)"]
 
 
-def step_table(entries):
-    rows = []
-    for entry in entries or []:
-        name, _, outcome = entry.rpartition("=")
-        if not name:
-            name, outcome = entry, "unknown"
-        rows.append((name.strip(), outcome.strip() or "unknown"))
-    return rows
+def root_cause(failed_steps, not_run, bad_keys, keys, trap, script_ran,
+               emulator_step_present=True):
+    """(markdown lines, blamed step) for the failure, from explicit outcomes only.
+
+    The rule the report must follow: attribute a pre-script emulator setup
+    failure only when the Emulator journey step itself failed *and* the journey
+    script produced neither progress output nor its EXIT-trap file. An earlier
+    failing step (APK build, runner state, ...) is named instead, and when the
+    evidence does not establish a cause the report says exactly that.
+    """
+    if failed_steps:
+        name, outcome = failed_steps[0]
+        if name == EMULATOR_STEP and not script_ran:
+            return [
+                "**The `%s` step failed (outcome `%s`) before the journey script "
+                "produced any output**: neither `emulator-progress.txt` nor "
+                "`emulator-trap.txt` exists, and the script writes the trap file on "
+                "every exit path." % (name, outcome),
+                "So the failure happened inside "
+                "`reactivecircus/android-emulator-runner@v2` before our script's first "
+                "line, and the app tests never ran. Which command inside the action "
+                "failed is not in the data this report can read - the action's own "
+                "stdout is only in the job log. No specific SDK, AVD or emulator "
+                "command is assumed here.",
+            ], name
+        if name == EMULATOR_STEP:
+            return [
+                "**The `%s` step failed (outcome `%s`) while the journey script was "
+                "running**; the script's own record below says which phase it was in."
+                % (name, outcome),
+            ], name
+        detail = ""
+        if not script_ran and emulator_step_present:
+            # only said when the job actually has an emulator step to talk about
+            detail = (" The emulator step produced no output at all, which follows from "
+                      "this earlier failure rather than from the emulator itself.")
+        return [
+            "**The earliest failed step is `%s` (outcome `%s`)**; every later step in "
+            "this job depends on it.%s" % (name, outcome, detail),
+        ], name
+    if bad_keys or (trap.get("exit_code") and trap.get("exit_code") != "0"):
+        phase = trap.get("phase") or "(phase not recorded)"
+        code = trap.get("exit_code") or "(exit code not recorded)"
+        keys_text = ", ".join("`%s=%s`" % (k, v) for k, v in bad_keys) \
+            if bad_keys else "no phase key was recorded"
+        return [
+            "**The workflow steps all succeeded; the journey script itself failed "
+            "during `%s` with exit code `%s`** (%s)." % (phase, code, keys_text),
+        ], None
+    if not_run:
+        return [
+            "**No step reported a failure, but `%s` did not run.**"
+            % ", ".join("`%s`" % name for name, _outcome in not_run),
+        ], None
+    return ["**Root cause not determined from available evidence.**"], None
 
 
 def report(args, root):
-    steps = step_table(args.step)
-    failed_steps = [(n, o) for n, o in steps if o not in STATUS_OK]
+    steps = parse_steps(args.step)      # same parser the verdict uses
+    classification = classify(args.step, args.optional_step)
+    all_steps = classification["failed"] + classification["not_run"] + \
+        classification["ok"] + classification["unknown"] + \
+        classification["optional_skipped"]
+    emulator_outcome = dict(all_steps).get(EMULATOR_STEP, UNKNOWN)
+    # a step list without the emulator step (the temporary selftest workflow)
+    # must not be told anything about "the emulator step"
+    emulator_step_present = any(name == EMULATOR_STEP for name, _o in all_steps)
+    failed_steps = classification["failed"]
+    not_run = classification["not_run"]
+    unknown_steps = classification["unknown"]
+    optional_skipped = classification["optional_skipped"]
     keys = status_keys(root)
     bad_keys = [(n, v) for n, v in keys if v != "0"]
     trap = trap_fields(root)
     progress = progress_facts(root)
+    # `build_apk_debug` is written by the workflow's build step, not by the
+    # journey script, so only the script's own keys count as "it ran".
+    script_ran = bool(progress or trap) or any(
+        name in JOURNEY_KEYS for name, _value in keys)
     diag_count, diag_files, has_summary = diagnostics(root)
     step_log = os.path.join(root, args.step_log)
     error_line, error_source = first_error([
@@ -171,10 +243,15 @@ def report(args, root):
         os.path.join(root, "emulator-progress.txt"),
         os.path.join(root, "emulator-stop-reason.txt"),
     ])
-
     out = []
-    state = "failed" if failed_steps or bad_keys or trap.get("exit_code", "0") != "0" \
-        else "passed"
+    verdict, _reasons = conclusion(keys, args.step, args.optional_step)
+    if verdict == "failure" or (trap.get("exit_code") and trap.get("exit_code") != "0"):
+        causes, blamed = root_cause(failed_steps, not_run, bad_keys, keys, trap,
+                                    script_ran, emulator_step_present)
+    else:
+        causes, blamed = ["**No failure to explain: every workflow step and every "
+                          "phase key reports success.**"], None
+    state = "failed" if verdict == "failure" else "passed"
     out.append("## PyQuest emulator run %s (attempt %s) - %s"
                % (args.run_id, args.run_attempt, state))
     out.append("")
@@ -210,12 +287,24 @@ def report(args, root):
                           else "none"))
         out.append("- first output: `%s`" % trim(progress["first"], 150))
         out.append("- last output: `%s`" % trim(progress["last"], 150))
-    if not progress and not trap:
+    if not script_ran:
         out.append("- **no emulator script output at all**: `emulator-progress.txt` and "
-                   "`emulator-trap.txt` are missing")
-        out.append("- that means the emulator step failed *before* the journey script "
-                   "started its first phase, i.e. inside the emulator action itself "
-                   "(SDK install / AVD creation / emulator start), not in the app tests")
+                   "`emulator-trap.txt` are missing, so the journey script never reached "
+                   "its first log line")
+        if blamed == EMULATOR_STEP:
+            out.append("- the `%s` step is the earliest failure, so this happened before "
+                       "the journey script started - inside the emulator action, not in "
+                       "the app tests" % EMULATOR_STEP)
+        elif blamed:
+            out.append("- the earliest failure is `%s`, so the missing emulator output "
+                       "follows from that step; nothing here says the emulator itself "
+                       "failed" % blamed)
+    out.append("")
+
+    # --- root cause ---------------------------------------------------------
+    out.append("### Root cause")
+    out.append("")
+    out.extend(causes)
     out.append("")
 
     # --- steps, exit codes --------------------------------------------------
@@ -229,6 +318,17 @@ def report(args, root):
     if failed_steps:
         out.append("**Failed step(s)**: %s"
                    % ", ".join("`%s` (%s)" % (n, o) for n, o in failed_steps))
+    if not_run:
+        out.append("**Steps that did not run**: %s (skipped although the step is "
+                   "not declared optional)"
+                   % ", ".join("`%s`" % n for n, _o in not_run))
+    if unknown_steps:
+        out.append("**Steps with no reported outcome**: %s (the workflow wiring may be "
+                   "wrong - the outcome expression resolved to nothing)"
+                   % ", ".join("`%s`" % n for n, _o in unknown_steps))
+    if optional_skipped:
+        out.append("**Optional steps skipped (expected)**: %s"
+                   % ", ".join("`%s`" % n for n, _o in optional_skipped))
     if keys:
         out.append("**Phase status keys**: %s"
                    % ", ".join("`%s=%s`" % (n, v) for n, v in keys))
@@ -236,15 +336,17 @@ def report(args, root):
         out.append("")
         out.append("**Non-zero phases**: %s"
                    % ", ".join("`%s=%s`" % (n, v) for n, v in bad_keys))
-    elif keys and not failed_steps:
+    elif keys and not failed_steps and not not_run and not unknown_steps:
         out.append("")
         out.append("Every phase key is 0, so the app tests themselves passed.")
-    if failed_steps and not keys and not progress:
+    if not [k for k in keys if k[0] in JOURNEY_KEYS]:
         out.append("")
-        out.append("The emulator step failed before the journey script wrote any status "
-                   "key, so there is no phase exit code: the failing command is inside "
-                   "`reactivecircus/android-emulator-runner@v2`, whose own output is only "
-                   "in the job log linked above (step `%s`)." % failed_steps[0][0])
+        if emulator_outcome == SKIPPED:
+            out.append("The `%s` step was **skipped**, so it wrote no phase key and "
+                       "there is no phase exit code." % EMULATOR_STEP)
+        else:
+            out.append("The journey script recorded no phase status key at all, so "
+                       "there is no phase exit code - see `Root cause` above.")
     reason = read_lines(os.path.join(root, "emulator-stop-reason.txt"))
     if reason:
         out.append("")
@@ -326,7 +428,9 @@ def main():
     parser.add_argument("--ref", default=os.environ.get("GITHUB_REF_NAME", "?"))
     parser.add_argument("--event", default=os.environ.get("GITHUB_EVENT_NAME", "push"))
     parser.add_argument("--step", action="append", default=[],
-                        help="name=outcome, repeatable")
+                        help="name=outcome, repeatable, in workflow order")
+    parser.add_argument("--optional-step", action="append", default=[],
+                        help="a step whose skipped outcome is expected")
     parser.add_argument("--upload-outcome", default="unknown")
     parser.add_argument("--artifact-name", default="emulator-logs-attempt-?")
     parser.add_argument("--check-name", default="PyQuest emulator")

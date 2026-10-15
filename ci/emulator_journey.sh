@@ -134,9 +134,16 @@ run_adb() {
 # Every exit writes ../emulator-trap.txt: the phase, the exit code, the phase
 # markers of this run and the tail of the progress file. That file is what the
 # job summary reads, so an unexpected end (a killed adb call, a signal from the
-# action, an unhandled command) still says where the script was. It is bounded
-# on purpose: file writes and tails only, no adb and no network, and it exits
-# with the status it was given so the original failure is never masked.
+# action, an unhandled command) still says where the script was. It exits with
+# the status it was given, so the original failure is never masked.
+#
+# Duration: trap_state only writes files and tails existing ones. On an
+# unexpected non-zero exit it also collects the diagnostics, and every command
+# on that path is bounded - the adb calls go through adb_devices()/adb_state()/
+# run_adb() or an explicit `timeout -k`, the kernel logs through
+# `timeout 15 dmesg` and `timeout 20 journalctl`. Nothing here waits for a
+# device and nothing restarts adb or the emulator (checked in
+# work/report_fixtures, which runs the trap paths).
 # shellcheck disable=SC2329  # called from the trap strings below
 trap_state() {
   local rc=$1

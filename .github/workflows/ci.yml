@@ -139,6 +139,7 @@ jobs:
     timeout-minutes: 80
     steps:
       - name: Free disk space
+        id: free_disk
         run: |
           df -h / | tail -1
           sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/share/swift \
@@ -159,6 +160,7 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
       - name: Enable KVM
+        id: enable_kvm
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
@@ -270,7 +272,12 @@ jobs:
         # writes the report to the job page. It never assumes an earlier step ran.
         if: always()
         run: |
+          # The step outcomes come from the workflow itself, so a failure that
+          # never reached ci/emulator_journey.sh (and therefore never wrote a
+          # phase key into status.txt) cannot be reported as a success.
           python3 ci/job_summary.py \
+            --step "Free disk space=${{ steps.free_disk.outcome }}" \
+            --step "Enable KVM=${{ steps.enable_kvm.outcome }}" \
             --step "Snapshot runner state (before)=${{ steps.runner_state_before.outcome }}" \
             --step "Build debug APK=${{ steps.build_apk.outcome }}" \
             --step "Emulator journey=${{ steps.emulator_journey.outcome }}" \
@@ -278,6 +285,8 @@ jobs:
             --step "Analyse emulator logs=${{ steps.analyse_logs.outcome }}" \
             --step "Shrink screenshots=${{ steps.shrink_screenshots.outcome }}" \
             --step "Upload emulator logs and diagnostics=${{ steps.upload_logs.outcome }}" \
+            --optional-step "Analyse emulator logs" \
+            --optional-step "Shrink screenshots" \
             --upload-outcome "${{ steps.upload_logs.outcome }}" \
             --artifact-name "emulator-logs-attempt-${{ github.run_attempt }}" \
             --out emulator-report.md
@@ -296,7 +305,18 @@ jobs:
           python3 ci/report.py "PyQuest emulator" status.txt \
             $report $reason $diag emulator-progress.txt emulator-trap.txt \
             runner-state-before.txt runner-state.txt emulator-sampler.txt \
-            emulator-step.log journey.txt relaunch.txt emulator-log-analysis.txt
+            emulator-step.log journey.txt relaunch.txt emulator-log-analysis.txt \
+            --step "Free disk space=${{ steps.free_disk.outcome }}" \
+            --step "Enable KVM=${{ steps.enable_kvm.outcome }}" \
+            --step "Snapshot runner state (before)=${{ steps.runner_state_before.outcome }}" \
+            --step "Build debug APK=${{ steps.build_apk.outcome }}" \
+            --step "Emulator journey=${{ steps.emulator_journey.outcome }}" \
+            --step "Record runner state=${{ steps.runner_state.outcome }}" \
+            --step "Analyse emulator logs=${{ steps.analyse_logs.outcome }}" \
+            --step "Shrink screenshots=${{ steps.shrink_screenshots.outcome }}" \
+            --step "Upload emulator logs and diagnostics=${{ steps.upload_logs.outcome }}" \
+            --optional-step "Analyse emulator logs" \
+            --optional-step "Shrink screenshots"
       - name: Commit emulator screenshots
         if: always()
         shell: bash

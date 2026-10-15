@@ -4,18 +4,28 @@
 Why: workflow logs live on blob storage that is not reachable from every
 development sandbox, while check runs are readable through api.github.com.
 
-Usage: report.py <check-name> <status-file> [<log-file> ...]
+Usage: report.py <check-name> <status-file> [<log-file> ...] \
+           [--step Name=outcome ...] [--optional-step Name ...]
 The status file contains lines "<step>=<exit-code>".
+
+The conclusion comes from the phase status keys AND from the workflow's own step
+outcomes (see ci/step_outcomes.py): run 38794903944 failed in the emulator step
+with a status file that only said `build_apk_debug=0`, and a conclusion derived
+from that file alone called the failed job a success.
 
 The first log file is the emulator job's own report (emulator-report.md). It is
 what somebody sees first on the check page, so it gets most of the text budget;
 the remaining files share what is left. Markdown files are embedded as
 markdown (no code fence), everything else as plain text.
 """
+import argparse
 import json
 import os
 import subprocess
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import step_outcomes                        # noqa: E402  (same directory)
 
 MAX_TEXT = 64000
 
@@ -36,18 +46,48 @@ def trim(text, budget):
     return text[:head] + "\n\n... [trimmed] ...\n\n" + text[-tail:]
 
 
-def main():
-    name, status_file, *logs = sys.argv[1:]
+def status_rows(status_file):
+    """[(key, value), ...] from status.txt; empty when the file is missing."""
     statuses = []
     for line in read(status_file).splitlines():
         if "=" in line:
             step, code = line.split("=", 1)
             statuses.append((step.strip(), code.strip()))
-    failed = [s for s, c in statuses if c != "0"]
-    conclusion = "failure" if failed or not statuses else "success"
-    summary_lines = ["| step | exit |", "|---|---|"]
+    return statuses
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("check_name")
+    parser.add_argument("status_file")
+    parser.add_argument("logs", nargs="*")
+    parser.add_argument("--step", action="append", default=[],
+                        help="Name=outcome of a workflow step, in workflow order")
+    parser.add_argument("--optional-step", action="append", default=[],
+                        help="a step whose skipped outcome is expected")
+    args = parser.parse_args()
+    name, status_file, logs = args.check_name, args.status_file, args.logs
+
+    status_file_missing = not os.path.exists(status_file)
+    statuses = status_rows(status_file)
+    verdict, reasons = step_outcomes.conclusion(
+        statuses, args.step, args.optional_step,
+        status_note=" (%s is missing)" % os.path.basename(status_file))
+    conclusion = verdict
+    labels = step_outcomes.failure_labels(statuses, args.step, args.optional_step)
+    title = ("FAILED: " + ", ".join(labels)) if labels else "All steps passed"
+
+    summary_lines = ["| phase key | exit |", "|---|---|"]
     summary_lines += ["| %s | %s |" % (s, c) for s, c in statuses]
-    title = ("FAILED: " + ", ".join(failed)) if failed else "All steps passed"
+    if status_file_missing:
+        summary_lines.append("| _(status file missing)_ | %s |"
+                             % os.path.basename(status_file))
+    if args.step:
+        summary_lines += ["", "| workflow step | outcome |", "|---|---|"]
+        summary_lines += ["| %s | %s |" % (step, outcome)
+                          for step, outcome in step_outcomes.parse_steps(args.step)]
+    if reasons:
+        summary_lines += ["", "**Why not success**: " + "; ".join(reasons)]
 
     # Careful: the loop variable must not be called `name`, that would shadow
     # the check-run name below (it did once; the check run came out named after
@@ -67,7 +107,7 @@ def main():
     text = trim("\n\n---\n\n".join(sections), MAX_TEXT)
 
     payload = {
-        "name": name,
+        "name": name,           # the workflow passes exactly "PyQuest emulator"
         "head_sha": os.environ["GITHUB_SHA"],
         "status": "completed",
         "conclusion": conclusion,
