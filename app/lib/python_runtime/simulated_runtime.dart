@@ -95,11 +95,11 @@ class SimulatedPythonRuntime implements PythonRuntime {
         return ExecutionErrorKind.limit;
       case PyErrorKind.halted:
         return ExecutionErrorKind.cancelled;
-      case PyErrorKind.name:
-      case PyErrorKind.type:
-      case PyErrorKind.value:
+      case PyErrorKind.nameError:
+      case PyErrorKind.typeError:
+      case PyErrorKind.valueError:
       case PyErrorKind.zeroDivision:
-      case PyErrorKind.index:
+      case PyErrorKind.indexError:
       case PyErrorKind.runtime:
         return ExecutionErrorKind.runtime;
     }

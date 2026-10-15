@@ -218,7 +218,7 @@ class Lexer {
     } else {
       value = int.tryParse(clean);
       if (value == null) {
-        throw PyError(PyErrorKind.value, 'Số $text quá lớn với PyQuest Python.', line: _line);
+        throw PyError(PyErrorKind.valueError, 'Số $text quá lớn với PyQuest Python.', line: _line);
       }
     }
     _tokens.add(Token(TokType.number, text, _line, value: value));

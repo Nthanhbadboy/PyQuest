@@ -261,7 +261,7 @@ class Interpreter {
     } else {
       buf.write(' Nếu đó là biến, hãy tạo nó trước (ví dụ: $name = 0). Nếu muốn viết chữ, hãy đặt trong dấu ngoặc kép: "$name".');
     }
-    return PyError(PyErrorKind.name, buf.toString(),
+    return PyError(PyErrorKind.nameError, buf.toString(),
         line: line, pythonName: 'NameError', pythonMessage: "name '$name' is not defined");
   }
 
@@ -476,7 +476,7 @@ class Interpreter {
   }
 
   PyError _overflow(int line) => PyError(
-        PyErrorKind.value,
+        PyErrorKind.valueError,
         'Con số quá lớn với PyQuest Python (giới hạn khoảng 9 tỉ tỉ). Python thật tính được số lớn hơn, '
         'nhưng phiên bản mô phỏng này thì chưa.',
         line: line,
@@ -592,7 +592,7 @@ class Interpreter {
     final i = n < 0 ? n + length : n;
     if (i < 0 || i >= length) {
       final range = length == 0 ? '$what đang trống' : 'vị trí hợp lệ từ 0 đến ${length - 1}';
-      throw PyError(PyErrorKind.index, 'Vị trí $n không có trong $what ($range).',
+      throw PyError(PyErrorKind.indexError, 'Vị trí $n không có trong $what ($range).',
           line: line, pythonName: 'IndexError', pythonMessage: what == 'chuỗi' ? 'string index out of range' : 'list index out of range');
     }
     return i;
@@ -647,7 +647,7 @@ class Interpreter {
     if (target is PyList) impl = _listMethod(target, name);
     if (target is String) impl = _stringMethod(target, name);
     if (impl == null) {
-      throw PyError(PyErrorKind.type, '${_typeNameVi(target)} không có phương thức "$name".',
+      throw PyError(PyErrorKind.typeError, '${_typeNameVi(target)} không có phương thức "$name".',
           line: line, pythonName: 'AttributeError', pythonMessage: "'${_typeName(target)}' object has no attribute '$name'");
     }
     return PyBoundMethod(target, name, impl);
@@ -674,7 +674,7 @@ class Interpreter {
         return (args, kw, line) {
           _arity('pop', args, 0, 1, line);
           if (list.items.isEmpty) {
-            throw PyError(PyErrorKind.index, 'Danh sách đang trống nên không lấy ra được phần tử nào.',
+            throw PyError(PyErrorKind.indexError, 'Danh sách đang trống nên không lấy ra được phần tử nào.',
                 line: line, pythonName: 'IndexError', pythonMessage: 'pop from empty list');
           }
           final i = args.isEmpty ? list.items.length - 1 : _normalizeIndex(args[0], list.items.length, line, 'danh sách');

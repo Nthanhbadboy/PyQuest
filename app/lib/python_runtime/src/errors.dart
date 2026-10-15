@@ -5,7 +5,7 @@
 /// vocabulary without being scared by raw tracebacks.
 library;
 
-enum PyErrorKind { syntax, indentation, name, type, value, zeroDivision, index, unsupported, limit, halted, runtime }
+enum PyErrorKind { syntax, indentation, nameError, typeError, valueError, zeroDivision, indexError, unsupported, limit, halted, runtime }
 
 class PyError implements Exception {
   PyError(
@@ -55,10 +55,10 @@ PyError unsupported(String feature, int line) => PyError(
     );
 
 PyError typeError(String friendly, String pythonMessage, [int? line]) =>
-    PyError(PyErrorKind.type, friendly, line: line, pythonName: 'TypeError', pythonMessage: pythonMessage);
+    PyError(PyErrorKind.typeError, friendly, line: line, pythonName: 'TypeError', pythonMessage: pythonMessage);
 
 PyError valueError(String friendly, String pythonMessage, [int? line]) =>
-    PyError(PyErrorKind.value, friendly, line: line, pythonName: 'ValueError', pythonMessage: pythonMessage);
+    PyError(PyErrorKind.valueError, friendly, line: line, pythonName: 'ValueError', pythonMessage: pythonMessage);
 
 /// Thrown by host functions (e.g. robot commands) to stop the program on
 /// purpose, for example when the robot bumps into a wall.
