@@ -15,7 +15,11 @@ __pycache__/
 /emulator-sampler.txt
 /emulator-step.log
 /runner-state.txt
+/runner-state-before.txt
+/emulator-trap.txt
+/emulator-report.md
 /emulator-stop-reason.txt
+/step-summary.md
 /emulator-log-analysis.txt
 /emulator-diagnostics/
 /pyquest-debug.apk

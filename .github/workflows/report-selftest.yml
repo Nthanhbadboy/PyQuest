@@ -1,0 +1,115 @@
+name: Report selftest (temporary)
+
+# TEMPORARY. Proves on a real runner that
+#   * ci/job_summary.py writes the report to $GITHUB_STEP_SUMMARY (the job page),
+#   * ci/report.py publishes the same report as the check-run text,
+#   * both still work when the emulator script produced nothing at all
+#     (the run 38794903944 "73 seconds" shape), and when it died mid-phase.
+# It builds the two fixtures from the real logs of runs 38794903944 and
+# 38797124392, fails one step on purpose (continue-on-error, so the job stays
+# green) and posts two check runs. Runs only when this file changes; delete the
+# file once the mechanism is confirmed.
+
+on:
+  push:
+    branches:
+      - 'arena/**'
+      - 'docs/deep-culi-split'
+    paths:
+      - '.github/workflows/report-selftest.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the "died mid-phase" fixture (harmless failure on purpose)
+        id: mid_phase
+        continue-on-error: true
+        run: |
+          set -u
+          root=selftest/mid-phase
+          mkdir -p "$root/emulator-diagnostics"
+          printf 'build_apk_debug=0\ndevice_ready_journey=0\njourney=1\ndevice_ready_relaunch=1\n' \
+            > "$root/status.txt"
+          cat > "$root/emulator-progress.txt" <<'EOF'
+          [20:03:32 +0000s] PyQuest emulator journey on emulator-5554.
+          [20:03:32 +0000s] ==> PHASE: fresh-install integration journey
+          [20:08:55 +0323s]    flutter drive finished: exit 1 after 323s
+          [20:08:55 +0323s] ==> PHASE: regular APK install and relaunch
+          [20:10:25 +0413s] FATAL: adb did not report emulator-5554 as 'device' within 90s
+          EOF
+          cat > "$root/emulator-trap.txt" <<'EOF'
+          phase: regular APK install and relaunch
+          exit_code: 1
+          utc: 2026-10-15 20:11:55   script elapsed: 503s   serial: emulator-5554
+          EOF
+          cat > "$root/emulator-step.log" <<'EOF'
+          [20:03:32 +0000s] ==> START: Fresh-install integration journey
+              | I/flutter ( 5836): 01:32 +3: 04 dragon jump run
+              | Unhandled exception:
+              | DriverError: Failed to fulfill RequestData due to remote error
+          [20:10:25 +0413s] FATAL: adb did not report emulator-5554 as 'device' within 90s
+          EOF
+          printf '$ adb devices -l\nList of devices attached\n\n' > "$root/emulator-diagnostics/adb_devices.txt"
+          printf "$ adb get-state\nerror: device 'emulator-5554' not found\n(exit 1)\n" \
+            > "$root/emulator-diagnostics/adb_get_state.txt"
+          printf 'FAILURE: adb did not report emulator-5554 as device\n' \
+            > "$root/emulator-diagnostics/summary.txt"
+          printf 'the app restarted in the middle of the integration test\n' \
+            > "$root/emulator-stop-reason.txt"
+          echo "== deliberate harmless failure: this selftest step is expected to fail =="
+          exit 1
+
+      - name: Build the "no script output at all" fixture (run 38794903944 shape)
+        run: |
+          set -u
+          root=selftest/no-output
+          mkdir -p "$root"
+          printf 'build_apk_debug=0\n' > "$root/status.txt"
+          : > "$root/journey.txt"
+          : > "$root/relaunch.txt"
+
+      - name: Report the mid-phase fixture (step summary + check run)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          root=selftest/mid-phase
+          python3 ci/job_summary.py --repo-root "$root" --out emulator-report.md \
+            --step "Harmless failure=${{ steps.mid_phase.outcome }}" \
+            --step "Capture run 38797124392 journey=failure" \
+            --upload-outcome success --artifact-name emulator-logs-attempt-1
+          python3 ci/report.py "PyQuest report selftest (mid-phase)" \
+            "$root/status.txt" "$root/emulator-report.md" "$root/emulator-trap.txt" \
+            "$root/emulator-step.log"
+
+      - name: Report the no-output fixture (step summary + check run)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          root=selftest/no-output
+          python3 ci/job_summary.py --repo-root "$root" --out emulator-report.md \
+            --step "Capture run 38794903944 journey=failure" \
+            --upload-outcome success --artifact-name emulator-logs-attempt-N
+          python3 ci/report.py "PyQuest report selftest (no output)" \
+            "$root/status.txt" "$root/emulator-report.md"
+
+      - name: Prove the step summary was written by the previous steps
+        if: always()
+        run: |
+          set -e
+          test -s selftest/mid-phase/emulator-report.md
+          test -s selftest/no-output/emulator-report.md
+          test -s "$GITHUB_STEP_SUMMARY"
+          grep -q '## PyQuest emulator run' "$GITHUB_STEP_SUMMARY"
+          grep -q 'no emulator script output at all' "$GITHUB_STEP_SUMMARY"
+          echo "job step summary: $(wc -c < "$GITHUB_STEP_SUMMARY") bytes"
+          echo "the job page carries both reports (no download needed)"

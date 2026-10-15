@@ -164,7 +164,12 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
           ls -la /dev/kvm || true
+      - name: Snapshot runner state (before)
+        id: runner_state_before
+        shell: bash
+        run: bash ci/runner_state.sh runner-state-before.txt "before the emulator step"
       - name: Build debug APK
+        id: build_apk
         working-directory: app
         shell: bash
         run: |
@@ -178,6 +183,7 @@ jobs:
           free -m >> ../apk_build.txt
           tail -20 ../apk_build.txt
       - name: Emulator journey
+        id: emulator_journey
         uses: reactivecircus/android-emulator-runner@v2
         # Backstop only: every wait inside ci/emulator_journey.sh is bounded
         # and fails with diagnostics well before this.
@@ -203,6 +209,7 @@ jobs:
           working-directory: app
           script: bash -c 'set -o pipefail; bash ../ci/emulator_journey.sh 2>&1 | tee ../emulator-step.log'
       - name: Record runner state
+        id: runner_state
         if: always()
         shell: bash
         run: |
@@ -210,26 +217,9 @@ jobs:
           # (for example when the emulator itself does not start). Its own output
           # is only in the job log, so record what the runner can see here: this
           # file is published in the check report and the artifact.
-          {
-            echo "utc: $(date -u '+%F %T')"
-            echo "runner: ${RUNNER_OS:-?} ${RUNNER_ARCH:-?}   cpus: $(nproc)   kernel: $(uname -r)"
-            echo "kvm: $(if [ -w /dev/kvm ]; then echo writable; else echo 'not writable / missing'; fi)"
-            echo
-            echo "\$ df -h /"; df -h /
-            echo; echo "\$ free -m"; free -m
-            echo; echo "\$ adb devices -l"; timeout -k 2 20 adb devices -l 2>&1
-            echo; echo "\$ ps (emulator, qemu, adb)"; ps -eo pid,ppid,stat,etime,pcpu,rss,args --sort=-rss \
-              | grep -E "^ *PID|emulator|qemu|adb" | grep -vE 'grep' | cut -c1-200 | head -n 20
-            echo; echo "\$ ls -la ~/.android/avd"; ls -la "$HOME/.android/avd" 2>&1 | head -n 20
-            for ini in "$HOME"/.android/avd/*.avd/config.ini; do
-              [ -f "$ini" ] || continue
-              echo; echo "\$ $ini"; cat "$ini"
-            done
-            echo; echo "\$ ls -la /tmp/android-$(id -un) (emulator crash reports)"; ls -laR "/tmp/android-$(id -un)" 2>&1 | head -n 60
-            echo; echo "\$ tail of emulator logs in /tmp"; find /tmp -maxdepth 3 -name '*emulator*log*' -o -maxdepth 3 -name 'qemu*.log' 2>/dev/null | head -n 10
-          } > runner-state.txt 2>&1 || true
-          echo "runner-state.txt: $(wc -c < runner-state.txt) bytes"
+          bash ci/runner_state.sh runner-state.txt "after the emulator step"
       - name: Analyse emulator logs
+        id: analyse_logs
         if: always()
         run: |
           # Activity relaunch, configuration-change and ANR evidence lives in the
@@ -244,14 +234,56 @@ jobs:
           fi
           head -n 60 emulator-log-analysis.txt
       - name: Shrink screenshots
+        id: shrink_screenshots
         if: always()
         run: |
           df -h / | tail -1
           pip install --quiet pillow || true
           python3 ci/shrink_screenshots.py > shrink.txt 2>&1 || true
           cat shrink.txt
+      - name: Upload emulator logs and diagnostics
+        if: always()
+        id: upload_logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulator-logs-attempt-${{ github.run_attempt }}
+          path: |
+            emulator-progress.txt
+            emulator-trap.txt
+            emulator-sampler.txt
+            emulator-step.log
+            runner-state.txt
+            runner-state-before.txt
+            emulator-stop-reason.txt
+            emulator-log-analysis.txt
+            emulator-diagnostics/
+            status.txt
+            shrink.txt
+            journey.txt
+            relaunch.txt
+            apk_build.txt
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Report to step summary
+        # Independent of everything else on purpose: if the emulator action fails
+        # before our journey script runs (or the script is killed), this step still
+        # writes the report to the job page. It never assumes an earlier step ran.
+        if: always()
+        run: |
+          python3 ci/job_summary.py \
+            --step "Snapshot runner state (before)=${{ steps.runner_state_before.outcome }}" \
+            --step "Build debug APK=${{ steps.build_apk.outcome }}" \
+            --step "Emulator journey=${{ steps.emulator_journey.outcome }}" \
+            --step "Record runner state=${{ steps.runner_state.outcome }}" \
+            --step "Analyse emulator logs=${{ steps.analyse_logs.outcome }}" \
+            --step "Shrink screenshots=${{ steps.shrink_screenshots.outcome }}" \
+            --step "Upload emulator logs and diagnostics=${{ steps.upload_logs.outcome }}" \
+            --upload-outcome "${{ steps.upload_logs.outcome }}" \
+            --artifact-name "emulator-logs-attempt-${{ github.run_attempt }}" \
+            --out emulator-report.md
       - name: Publish report
         if: always()
+        id: publish_report
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -259,28 +291,12 @@ jobs:
           if [ -f emulator-diagnostics/summary.txt ]; then diag=emulator-diagnostics/summary.txt; fi
           reason=""
           if [ -f emulator-stop-reason.txt ]; then reason=emulator-stop-reason.txt; fi
-          python3 ci/report.py "PyQuest emulator" status.txt emulator-progress.txt \
-            $reason $diag emulator-log-analysis.txt runner-state.txt \
-            emulator-sampler.txt emulator-step.log journey.txt relaunch.txt
-      - name: Upload emulator logs and diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: emulator-logs-attempt-${{ github.run_attempt }}
-          path: |
-            emulator-progress.txt
-            emulator-sampler.txt
-            emulator-step.log
-            runner-state.txt
-            emulator-stop-reason.txt
-            emulator-log-analysis.txt
-            emulator-diagnostics/
-            status.txt
-            journey.txt
-            relaunch.txt
-            apk_build.txt
-          if-no-files-found: warn
-          retention-days: 14
+          report=""
+          if [ -f emulator-report.md ]; then report=emulator-report.md; else report=emulator-progress.txt; fi
+          python3 ci/report.py "PyQuest emulator" status.txt \
+            $report $reason $diag emulator-progress.txt emulator-trap.txt \
+            runner-state-before.txt runner-state.txt emulator-sampler.txt \
+            emulator-step.log journey.txt relaunch.txt emulator-log-analysis.txt
       - name: Commit emulator screenshots
         if: always()
         shell: bash

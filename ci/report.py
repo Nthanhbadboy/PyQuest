@@ -4,8 +4,13 @@
 Why: workflow logs live on blob storage that is not reachable from every
 development sandbox, while check runs are readable through api.github.com.
 
-Usage: report.py <check-name> <status-file> <log-file> [<log-file> ...]
+Usage: report.py <check-name> <status-file> [<log-file> ...]
 The status file contains lines "<step>=<exit-code>".
+
+The first log file is the emulator job's own report (emulator-report.md). It is
+what somebody sees first on the check page, so it gets most of the text budget;
+the remaining files share what is left. Markdown files are embedded as
+markdown (no code fence), everything else as plain text.
 """
 import json
 import os
@@ -44,12 +49,19 @@ def main():
     summary_lines += ["| %s | %s |" % (s, c) for s, c in statuses]
     title = ("FAILED: " + ", ".join(failed)) if failed else "All steps passed"
 
-    budget = MAX_TEXT // max(1, len(logs))
+    marked = [(path, os.path.basename(path)) for path in logs]
+    primary = max(20000, int(MAX_TEXT * 0.6))
+    rest = max(1, len(marked) - 1)
+    budgets = ([primary] if marked else []) + [
+        max(2000, (MAX_TEXT - primary) // rest) for _ in marked[1:]]
     sections = []
-    for path in logs:
+    for (path, name), budget in zip(marked, budgets):
         body = trim(read(path), budget - 200)
-        sections.append("### %s\n```\n%s\n```" % (os.path.basename(path), body))
-    text = trim("\n\n".join(sections), MAX_TEXT)
+        if name.endswith(".md"):
+            sections.append(body.rstrip())
+        else:
+            sections.append("### %s\n```\n%s\n```" % (name, body))
+    text = trim("\n\n---\n\n".join(sections), MAX_TEXT)
 
     payload = {
         "name": name,

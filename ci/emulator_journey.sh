@@ -63,6 +63,9 @@ PROGRESS=$OUT/emulator-progress.txt
 DIAG=$OUT/emulator-diagnostics
 STOP_REASON=$OUT/emulator-stop-reason.txt
 SAMPLER=$OUT/emulator-sampler.txt          # host resources during the drive
+TRAP_STATE=$OUT/emulator-trap.txt          # phase + exit code on any exit
+PHASE="startup (before the first phase marker)"
+DIAG_COLLECTED=""
 OFFLINE_FLAG=${TMPDIR:-/tmp}/pyquest-emulator-offline.$$
 EMU_PROC_RE='emulator/emulator|qemu-system|crashpad_handler|netsimd'   # the emulator's own binaries
 LAST_STATE=""
@@ -126,6 +129,49 @@ run_adb() {
   log "   adb $* -> exit $rc ($((SECONDS - t0))s)"
   return "$rc"
 }
+
+# ------------------------------------------------------------------- traps
+# Every exit writes ../emulator-trap.txt: the phase, the exit code, the phase
+# markers of this run and the tail of the progress file. That file is what the
+# job summary reads, so an unexpected end (a killed adb call, a signal from the
+# action, an unhandled command) still says where the script was. It is bounded
+# on purpose: file writes and tails only, no adb and no network, and it exits
+# with the status it was given so the original failure is never masked.
+# shellcheck disable=SC2329  # called from the trap strings below
+trap_state() {
+  local rc=$1
+  {
+    echo "phase: $PHASE"
+    echo "exit_code: $rc"
+    echo "utc: $(date -u '+%F %T')   script elapsed: ${SECONDS}s   serial: $SERIAL"
+    echo
+    echo "phases and failures of this run (sub-step START/END markers stay in the log):"
+    grep -E '^\[[0-9:]+ \+[0-9]+s\] (==> PHASE|FATAL)' "$PROGRESS" 2>/dev/null | tail -n 12
+    echo
+    echo "last 40 lines of emulator-progress.txt:"
+    tail -n 40 "$PROGRESS" 2>/dev/null
+    echo
+    echo "last 20 resource samples (${SAMPLER##*/}):"
+    tail -n 20 "$SAMPLER" 2>/dev/null
+  } > "$TRAP_STATE" 2>&1
+  log "EXIT trap: phase '$PHASE', exit code $rc -> $(basename "$TRAP_STATE")"
+}
+
+# shellcheck disable=SC2329  # called from the EXIT trap string below
+on_exit() {
+  local rc=$1
+  trap - EXIT INT TERM       # never re-enter, whatever happens below
+  trap_state "$rc"
+  if [ "$rc" != 0 ] && [ -z "$DIAG_COLLECTED" ]; then
+    log "   unexpected exit ($rc): collecting diagnostics from the EXIT trap"
+    collect_diagnostics "the journey script exited with status $rc during: $PHASE"
+  fi
+  exit "$rc"                 # the trap must not change the original status
+}
+
+trap 'on_exit $?' EXIT
+trap 'log "received SIGTERM (a timeout or the runner is stopping the script)"; exit 143' TERM
+trap 'log "received SIGINT"; exit 130' INT
 
 # ------------------------------------------------------------- resources
 # A sample every SAMPLE_INTERVAL seconds while the drives run. Covers the one
@@ -217,6 +263,7 @@ require_device() {
 # --------------------------------------------------------- diagnostics
 collect_diagnostics() {
   local reason=$1 d=$DIAG avd
+  DIAG_COLLECTED=1        # the EXIT trap must not collect twice
   mkdir -p "$d"
   log "   collecting diagnostics into emulator-diagnostics/ (adb and the emulator are NOT restarted)"
   {
@@ -421,6 +468,8 @@ sample_resources &
 SAMPLER_PID=$!
 log "PyQuest emulator journey on $SERIAL. Limits: adb online ${ADB_ONLINE_TIMEOUT}s, boot ${BOOT_TIMEOUT}s, journey ${JOURNEY_TIMEOUT}s, returning ${RETURNING_TIMEOUT}s, install ${INSTALL_TIMEOUT}s, adb command ${ADB_CMD_TIMEOUT}s."
 
+PHASE="initial ADB status"
+log "==> PHASE: initial ADB status"    # the job summary reads these markers
 log "==> START: Initial ADB status (observe only; nothing is restarted)"
 log "   $(timeout -k 2 "$ADB_QUERY_TIMEOUT" adb version 2>&1 | head -n 1)"
 log "   adb devices -l:"
@@ -429,6 +478,8 @@ log "   adb -s $SERIAL get-state: $(adb_state)"
 log "<== END: Initial ADB status"
 
 # --- 1. Fresh install + integration journey --------------------------------
+PHASE="fresh-install integration journey"
+log "==> PHASE: fresh-install integration journey"    # the job summary reads these markers
 log "==> START: Fresh-install integration journey"
 require_device device_ready_journey "fresh-install integration journey"
 : > "$OUT/journey.txt"
@@ -440,6 +491,8 @@ run_drive "fresh-install integration journey" journey "$JOURNEY_TIMEOUT" "$OUT/j
 log "<== END: Fresh-install integration journey"
 
 # --- 2. Restart with the regular app build (same debug signature keeps data)
+PHASE="regular APK install and relaunch"
+log "==> PHASE: regular APK install and relaunch"    # the job summary reads these markers
 log "==> START: Regular APK installation and relaunch"
 echo "=== restart with the regular app build (same debug signature keeps data) ===" > "$OUT/relaunch.txt"
 require_device device_ready_relaunch "regular APK installation and relaunch"
@@ -461,6 +514,8 @@ run_adb - "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" shell am fo
 log "<== END: Regular APK installation and relaunch"
 
 # --- 3. Returning player ----------------------------------------------------
+PHASE="returning-player integration journey"
+log "==> PHASE: returning-player integration journey"    # the job summary reads these markers
 log "==> START: Returning-player integration journey"
 echo "=== returning player checks ===" >> "$OUT/relaunch.txt"
 require_device device_ready_returning "returning-player integration journey"

@@ -232,14 +232,36 @@ bước emulator (đĩa, RAM, KVM, tiến trình qemu, cấu hình AVD, log củ
 Hai tệp này đủ để trả lời câu hỏi "emulator biến mất vì hết RAM?" mà không cần
 đọc log của runner.
 
+**Báo cáo đọc ngay trên trang job:** bước *Report to step summary* chạy
+`ci/job_summary.py` và ghi `emulator-report.md` vào GitHub Step Summary của job
+(đồng thời là nội dung của check run *PyQuest emulator*), nên có thể hiểu vì sao
+lần chạy thất bại mà **không cần tải artifact**: run id + tên job, giai đoạn đang
+chạy và thời điểm, lệnh/mã thoát, dòng lỗi đầu tiên, 100 dòng log cuối, trạng
+thái adb/emulator, và chẩn đoán + upload artifact đã thành công hay chưa. Bước
+này `if: always()` và không phụ thuộc bước nào khác — kể cả khi bước emulator
+chết trước lúc script chạy (run 38794903944 dừng sau 73 giây), báo cáo vẫn được
+tạo ra và nói rõ "không có output nào của script".
+
+Script tự đặt `trap` cho mọi lối thoát: `emulator-trap.txt` ghi giai đoạn hiện
+tại (`==> PHASE:` trong `emulator-progress.txt`), mã thoát, các mốc thời gian và
+phần cuối của log — trap chỉ ghi tệp (không gọi adb, không chờ), và luôn thoát
+với đúng mã lỗi ban đầu nên không che mất lỗi thật.
+
+Trạng thái máy chạy được chụp **hai lần** bằng `ci/runner_state.sh`:
+`runner-state-before.txt` (trước bước emulator) và `runner-state.txt` (sau khi
+emulator đã bị dừng), gồm đĩa/RAM/KVM, tiến trình qemu, cấu hình AVD và log của
+netsimd.
+
 **Về ảnh chụp:** `integration_test` chỉ chuyển ảnh từ app về máy chạy sau khi
 **toàn bộ** kịch bản kết thúc, nên nếu app hoặc emulator chết giữa chừng thì mọi
 ảnh của lượt đó đều mất (đúng như run 38797124392). Khi đó phải đọc
 `emulator-progress.txt` và `journey.txt` để biết test đang ở bước nào.
 
-Log tiến trình, chẩn đoán emulator và bản trích xuất log hệ thống
-(`emulator-log-analysis.txt`: khởi động lại activity, đổi cấu hình, ANR) nằm ở
-artifact `emulator-logs-attempt-N`. Muốn trích xuất lại trên máy:
+Log đầy đủ vẫn nằm ở artifact `emulator-logs-attempt-N` (tiến trình, chẩn đoán
+emulator, `emulator-trap.txt`, bản trích xuất log hệ thống
+`emulator-log-analysis.txt`: khởi động lại activity, đổi cấu hình, ANR) — chỉ cần
+khi muốn xem chi tiết, vì báo cáo ở trên đã đủ để hiểu lỗi chính. Muốn trích xuất
+lại trên máy:
 
 ```bash
 gh run download <run-id> -n emulator-logs-attempt-1 -D /tmp/e
