@@ -110,6 +110,39 @@ Ví dụ tên danh hiệu (tên có thể được bản địa hóa): Maze Mast
 
 Không nhất thiết mọi danh hiệu dùng cùng điều kiện. Có thể trao danh hiệu vì tốc độ, sáng tạo, chiến thuật, hoàn thành bộ sưu tập hoặc thành tích theo mùa. Cần tránh để một loại điểm duy nhất khiến các bộ môn khác mất ý nghĩa.
 
+
+### 4.1. Danh hiệu độc quyền, quan hệ với Tutor và nhiều bảng xếp hạng
+
+PyQuest cần có hệ thống vinh danh nhiều tầng. Không ép mọi thành tích vào một bảng duy nhất, nhưng các thành tích đủ điều kiện vẫn có thể đóng góp vào điểm tổng sắp chung.
+
+#### Danh hiệu độc quyền của Side Maps
+- Một Side Map/Secret Isle có thể sở hữu bộ danh hiệu độc quyền gắn với thế giới, cốt truyện, kỹ năng và thử thách riêng của nơi đó.
+- Mở khóa hoặc mua quyền truy cập map chỉ mở cơ hội tham gia; không tự động trao danh hiệu vốn đại diện cho thành tích. Người chơi phải đạt mốc, hoàn thành thử thách hoặc thỏa điều kiện được công bố.
+- Danh hiệu độc quyền phải giữ được ý nghĩa riêng của map và được lưu trong hồ sơ/bộ sưu tập danh hiệu. Có thể ghi nhận rõ danh hiệu đến từ thế giới nào.
+- Không được biến việc mua ngọc hoặc mua map thành cách mua thẳng thứ hạng thi đấu, điểm thành tích hay danh hiệu vốn phải kiếm bằng kỹ năng. Nếu có vật phẩm trả phí, phải phân biệt rõ vật phẩm sở hữu với thành tích đạt được.
+
+#### Danh hiệu riêng do Tutor trao tặng
+- Các Tutor là nhân vật trong thế giới, có thể xây dựng quan hệ với người chơi thông qua học tập, trò chuyện, giúp đỡ nhân vật, hoàn thành nhiệm vụ hoặc tiến bộ ở lĩnh vực họ hướng dẫn.
+- Tutor có thể trao danh hiệu riêng khi người chơi đạt mốc quan hệ hoặc hoàn thành một nhiệm vụ/cột mốc đặc biệt. Danh hiệu có thể mang tên và câu chuyện riêng của Tutor, làm cho phần thưởng có cảm xúc và có tính sưu tầm.
+- Không nhất thiết mọi Tutor đều dùng chung điều kiện. Điều kiện nên gắn với tính cách, lĩnh vực và câu chuyện của nhân vật; người chơi cần hiểu cách nhận danh hiệu.
+- Quan hệ tốt với Tutor phải được xây dựng bằng tương tác và thành tích trong game, không phải mua hàng hoặc trả tiền để được nhân vật yêu quý.
+
+#### Nhiều bảng xếp hạng, một hồ sơ thành tích
+- **Bảng tuần:** thành tích trong tuần hiện tại, làm mới theo lịch được công bố.
+- **Bảng tháng:** thành tích trong tháng, có phần thưởng/danh hiệu tháng nếu áp dụng.
+- **Bảng thi đấu:** kết quả theo trận, bộ môn, giải hoặc mùa thi đấu.
+- **Bảng hoạt động:** các nhóm hoạt động như khám phá, hoàn thành nhiệm vụ, sáng tạo, sưu tầm hoặc đóng góp đồng đội.
+- **Bảng chuyên môn:** xếp hạng riêng theo từng bộ môn để người giỏi sáng tạo không bị đánh giá chỉ bằng thành tích đua tốc độ, và ngược lại.
+- **Bảng đội:** thành tích tập thể, đóng góp đội và danh hiệu đội theo giải/mùa.
+- **Tổng sắp chung:** quy đổi điểm đóng góp từ các nhánh theo quy tắc đã công bố, tạo một góc nhìn tổng thể nhưng không thay thế các bảng chuyên biệt.
+
+#### Quy tắc quy đổi điểm
+- Mỗi loại hoạt động có thể có điểm gốc, hệ số hoặc giới hạn đóng góp riêng; công thức cần được công bố đủ rõ và tránh để một hoạt động lặp vô hạn thống trị mọi bảng.
+- Danh hiệu có thể đóng góp điểm tổng sắp khi có quy tắc rõ ràng, nhưng sở hữu danh hiệu không tự động đồng nghĩa với điểm vô hạn hoặc vị trí cố định.
+- Điểm tuần/tháng phải tách kỳ và quy tắc reset khỏi điểm thành tích lâu dài trong hồ sơ. Danh hiệu vĩnh viễn đã kiếm được không bị xóa chỉ vì kỳ xếp hạng kết thúc.
+- Bảng xếp hạng người thật chỉ hiển thị dữ liệu thi đấu thật. Bảng luyện tập với nhân vật hư cấu phải được trình bày đúng bản chất, không giả làm bảng xếp hạng người thật.
+- Vì PyQuest hướng tới trẻ em, cần tránh thiết kế bảng xếp hạng gây áp lực quá mức; có thể cung cấp bảng bạn bè/đội hoặc mục tiêu cá nhân bên cạnh bảng cạnh tranh rộng hơn.
+
 ## 5. Ngôn ngữ sản phẩm — quy tắc bắt buộc
 
 **Cấm dùng từ “bot” trong toàn bộ nội dung sản phẩm và giao diện người chơi.** Tránh từ này trong nhãn, tên chế độ, lời thoại, thông báo, tutorial, tooltip, tên đối thủ, bảng xếp hạng và nội dung bản địa hóa.
