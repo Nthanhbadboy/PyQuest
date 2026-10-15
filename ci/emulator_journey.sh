@@ -55,12 +55,14 @@ LOGCAT_DUMP_TIMEOUT=${LOGCAT_DUMP_TIMEOUT:-90}
 POLL_INTERVAL=${POLL_INTERVAL:-3}
 WATCH_INTERVAL=${WATCH_INTERVAL:-10}
 RELAUNCH_WAIT=${RELAUNCH_WAIT:-20}
+SAMPLE_INTERVAL=${SAMPLE_INTERVAL:-20}   # seconds between resource samples
 
 OUT=..                                   # repository root (cwd is app/)
 STATUS=$OUT/status.txt
 PROGRESS=$OUT/emulator-progress.txt
 DIAG=$OUT/emulator-diagnostics
 STOP_REASON=$OUT/emulator-stop-reason.txt
+SAMPLER=$OUT/emulator-sampler.txt          # host resources during the drive
 OFFLINE_FLAG=${TMPDIR:-/tmp}/pyquest-emulator-offline.$$
 EMU_PROC_RE='emulator/emulator|qemu-system|crashpad_handler|netsimd'   # the emulator's own binaries
 LAST_STATE=""
@@ -123,6 +125,33 @@ run_adb() {
   fi
   log "   adb $* -> exit $rc ($((SECONDS - t0))s)"
   return "$rc"
+}
+
+# ------------------------------------------------------------- resources
+# A sample every SAMPLE_INTERVAL seconds while the drives run. Covers the one
+# failure the diagnostics can only see after the fact: the emulator process
+# disappearing mid-test (run 38797124392 - the host then shows no qemu process
+# and no OOM line in what is left of dmesg). The trace is published with the
+# report, so "did the host run out of memory?" is answerable.
+sum_rss() {   # total resident memory of the processes matching $1, in MB
+  # pgrep cannot sum RSS, so the ps listing is grep-ed on purpose.
+  # shellcheck disable=SC2009
+  ps -eo rss=,args= 2>/dev/null | grep -E "$1" | grep -v grep \
+    | awk '{ s += $1 } END { printf "%d", s / 1024 }'
+}
+
+sample_resources() {
+  while :; do
+    local used free_mb qemu app
+    used=$(awk '/^MemTotal:/{t=$2} /^MemAvailable:/{a=$2} END{printf "%d", (t-a)/1024}' /proc/meminfo)
+    free_mb=$(awk '/^MemAvailable:/{printf "%d", $2/1024}' /proc/meminfo)
+    qemu=$(sum_rss "$EMU_PROC_RE")
+    app=$(sum_rss "com\.pyquest\.pyquest")
+    printf '%s +%04ds mem_used=%sMB mem_avail=%sMB load=%s qemu=%sMB app=%sMB\n' \
+      "$(date -u +%H:%M:%S)" "$SECONDS" "$used" "$free_mb" \
+      "$(cut -d' ' -f1-3 /proc/loadavg)" "$qemu" "$app" >> "$SAMPLER"
+    sleep "$SAMPLE_INTERVAL"
+  done
 }
 
 # ------------------------------------------------------- bounded waits
@@ -215,9 +244,17 @@ collect_diagnostics() {
     echo; echo "\$ df -h /"; df -h /
     echo; echo "\$ top processes by RSS"; ps -eo pid,stat,etime,pcpu,rss,comm --sort=-rss | head -n 15
   } > "$d/host_resources.txt" 2>&1
-  { echo "\$ dmesg -T | tail (host kernel; OOM-killer evidence)"
+  {
+    echo "\$ dmesg -T | tail -n 300 (host kernel; OOM-killer evidence)"
     if sudo -n true 2>/dev/null; then timeout 15 sudo -n dmesg -T; else timeout 15 dmesg -T; fi 2>&1 | tail -n 300
+    echo
+    echo "\$ journalctl -k -n 200 (fallback when dmesg is restricted)"
+    timeout 20 journalctl -k -n 200 --no-pager 2>&1 | tail -n 200
   } > "$d/host_dmesg_tail.txt" 2>&1
+  if grep -qiE 'operation not permitted|read kernel buffer failed' "$d/host_dmesg_tail.txt"; then
+    echo "dmesg was NOT readable - an OOM kill cannot be ruled out from it" \
+      >> "$d/host_dmesg_tail.txt"
+  fi
 
   for avd in "${ANDROID_AVD_HOME:-$HOME/.android/avd}"/*.avd; do
     [ -d "$avd" ] || continue
@@ -227,7 +264,15 @@ collect_diagnostics() {
   done
   # shellcheck disable=SC2012  # human-readable listing for the artifact
   { echo "\$ ls -laR /tmp/android-$(id -un) (emulator crash reports / temp files)"
-    ls -laR "/tmp/android-$(id -un)" 2>&1 | head -n 120; } > "$d/emulator_crash_reports.txt" 2>&1
+    ls -laR "/tmp/android-$(id -un)" 2>&1 | head -n 120
+    # The emulator's network simulator keeps its own logs; it is part of the
+    # emulator process group and dies with it.
+    for log in "/tmp/android-$(id -un)"/netsimd/netsim_stderr.log \
+               "/tmp/android-$(id -un)"/netsimd/netsim_stdout.log; do
+      [ -f "$log" ] || continue
+      echo; echo "\$ tail -n 40 $log"; tail -n 40 "$log"
+    done
+  } > "$d/emulator_crash_reports.txt" 2>&1
 
   # Bounded: on an offline emulator `adb logcat` would wait forever.
   timeout -k 5 "$LOGCAT_DUMP_TIMEOUT" adb -s "$SERIAL" logcat -b all -d > "$d/logcat_all.txt" 2>&1
@@ -255,7 +300,15 @@ write_summary() {
     echo "${emu:-NONE: no emulator/qemu process is running - the emulator exited or was killed}"
     echo "--- host memory / load";             sed -n '2,4p' "$DIAG/host_resources.txt"
     grep '^loadavg' "$DIAG/host_resources.txt"
-    echo "--- host OOM-killer lines";          echo "${oom:-(none in the dmesg tail)}"
+    echo "--- host OOM-killer lines"
+    if grep -qiE 'operation not permitted|read kernel buffer failed|NOT readable' "$DIAG/host_dmesg_tail.txt" 2>/dev/null \
+       && [ -z "${oom:-}" ]; then
+      echo "(dmesg was not readable on this runner - an OOM kill cannot be ruled out)"
+    else
+      echo "${oom:-(none in the dmesg tail)}"
+    fi
+    echo "--- host resources while the drive ran (last 8 samples of $SAMPLER)"
+    tail -n 8 "$SAMPLER" 2>/dev/null || echo "(no samples)"
     if [ "${logcat_rc:-1}" = 124 ] || [ "${logcat_rc:-1}" = 137 ]; then
       echo "--- logcat -b all -d: no answer within ${LOGCAT_DUMP_TIMEOUT}s (adb was waiting for the device)"
     else
@@ -275,6 +328,7 @@ fail() {
   log "FATAL: $*"
   collect_diagnostics "$*"
   echo "::error title=Android emulator journey stopped::$* Logs: emulator-logs artifact (emulator-diagnostics/)."
+  if [ -n "${SAMPLER_PID:-}" ]; then kill "$SAMPLER_PID" 2>/dev/null || true; fi
   log "Exiting with status 1."
   rm -f "$OFFLINE_FLAG"
   exit 1
@@ -362,6 +416,9 @@ run_drive() {
 mkdir -p "$OUT/docs/screenshots"
 rm -f "$STOP_REASON"
 : > "$PROGRESS"
+: > "$SAMPLER"
+sample_resources &
+SAMPLER_PID=$!
 log "PyQuest emulator journey on $SERIAL. Limits: adb online ${ADB_ONLINE_TIMEOUT}s, boot ${BOOT_TIMEOUT}s, journey ${JOURNEY_TIMEOUT}s, returning ${RETURNING_TIMEOUT}s, install ${INSTALL_TIMEOUT}s, adb command ${ADB_CMD_TIMEOUT}s."
 
 log "==> START: Initial ADB status (observe only; nothing is restarted)"
@@ -410,6 +467,7 @@ require_device device_ready_returning "returning-player integration journey"
 run_drive "returning-player integration journey" returning "$RETURNING_TIMEOUT" "$OUT/relaunch.txt" integration_test/returning_test.dart
 log "<== END: Returning-player integration journey"
 
+if [ -n "${SAMPLER_PID:-}" ]; then kill "$SAMPLER_PID" 2>/dev/null || true; fi
 log "All phases finished (no emulator or adb timeouts). Step results:"
 log_block < "$STATUS"
 exit 0

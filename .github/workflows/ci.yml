@@ -261,7 +261,7 @@ jobs:
           if [ -f emulator-stop-reason.txt ]; then reason=emulator-stop-reason.txt; fi
           python3 ci/report.py "PyQuest emulator" status.txt emulator-progress.txt \
             $reason $diag emulator-log-analysis.txt runner-state.txt \
-            emulator-step.log journey.txt relaunch.txt shrink.txt
+            emulator-sampler.txt emulator-step.log journey.txt relaunch.txt
       - name: Upload emulator logs and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -269,6 +269,7 @@ jobs:
           name: emulator-logs-attempt-${{ github.run_attempt }}
           path: |
             emulator-progress.txt
+            emulator-sampler.txt
             emulator-step.log
             runner-state.txt
             emulator-stop-reason.txt

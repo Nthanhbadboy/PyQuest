@@ -226,6 +226,17 @@ còn build/install), `PROGRESS_TIMEOUT=300` (lúc test đang chạy) và
 `WATCHDOG_KILL_AFTER=20` (SIGKILL nếu drive bỏ qua SIGTERM). Watchdog không bao
 giờ khởi động lại adb/emulator; nó ghi lý do rồi dừng drive.
 
+`emulator-sampler.txt` ghi RAM/load/CPU của máy chạy mỗi 20 giây trong lúc
+`flutter drive` hoạt động, còn `runner-state.txt` ghi trạng thái còn lại sau
+bước emulator (đĩa, RAM, KVM, tiến trình qemu, cấu hình AVD, log của netsimd).
+Hai tệp này đủ để trả lời câu hỏi "emulator biến mất vì hết RAM?" mà không cần
+đọc log của runner.
+
+**Về ảnh chụp:** `integration_test` chỉ chuyển ảnh từ app về máy chạy sau khi
+**toàn bộ** kịch bản kết thúc, nên nếu app hoặc emulator chết giữa chừng thì mọi
+ảnh của lượt đó đều mất (đúng như run 38797124392). Khi đó phải đọc
+`emulator-progress.txt` và `journey.txt` để biết test đang ở bước nào.
+
 Log tiến trình, chẩn đoán emulator và bản trích xuất log hệ thống
 (`emulator-log-analysis.txt`: khởi động lại activity, đổi cấu hình, ANR) nằm ở
 artifact `emulator-logs-attempt-N`. Muốn trích xuất lại trên máy:
