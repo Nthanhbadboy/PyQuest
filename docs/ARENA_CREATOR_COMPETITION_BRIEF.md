@@ -198,6 +198,34 @@ Cách thể hiện phù hợp:
 - Không dùng quảng cáo để bán điểm, danh hiệu, thứ hạng hoặc thay thế kỹ năng. Điểm từ mini-game phải có mức trần/hạn mức phù hợp để không thể cày lặp rồi thống trị bảng tổng sắp.
 - Với sản phẩm hướng tới trẻ em, cách triển khai quảng cáo, nội dung quảng cáo, sự đồng ý của phụ huynh và giới hạn tần suất phải được rà soát theo chính sách nền tảng và quy định áp dụng trước khi phát hành. Không giả định mọi định dạng quảng cáo thưởng đều được phép ở mọi thị trường.
 
+### 6.3. Năng lượng, quảng cáo theo từng hạng mục và quyền lợi nhỏ khi mua Side Map
+
+#### Năng lượng là cơ chế giữ nhịp chơi và nhắc trẻ nghỉ
+- PyQuest dùng hệ thống năng lượng để điều tiết thời lượng chơi; mục tiêu là giúp trẻ có nhịp học, chơi và nghỉ hợp lý, không khuyến khích chơi liên tục không giới hạn.
+- Các hoạt động tiêu hao năng lượng theo mức được thiết kế phù hợp với độ dài và cường độ của hoạt động. Không mặc định mọi hành động đều tốn cùng một lượng.
+- Năng lượng hồi lại theo thời gian. Khi năng lượng thấp hoặc hết, giao diện giải thích rõ và gợi ý nghỉ/ngừng chơi, quay lại sau; không dùng thông báo gây áp lực hoặc khiến trẻ sợ mất thành tích.
+- Không để năng lượng làm mất tiến độ đang diễn ra: trẻ phải có thể kết thúc/lưu trạng thái ở điểm dừng hợp lý. Không cắt ngang một màn Main Quest hoặc làm mất tác phẩm chỉ vì hết năng lượng giữa chừng.
+- Quảng cáo không được dùng để vô hiệu hóa hoàn toàn mục tiêu nghỉ ngơi. Nếu có lượt chơi thêm qua quảng cáo thì vẫn phải tuân thủ giới hạn và thiết kế nhịp nghỉ chung.
+
+#### Quảng cáo có quy tắc và hạn mức riêng ở từng hạng mục
+- Các hạng mục của PyQuest có thể tích hợp quảng cáo theo chính sách sản phẩm, nhưng mỗi hạng mục phải có hạn mức riêng, dễ hiểu: lượt miễn phí, số lượt có thể nhận thêm qua quảng cáo, khoảng thời gian áp dụng và thời điểm làm mới hạn mức.
+- Quy tắc này áp dụng theo từng hạng mục, chẳng hạn Main Quest, Arena/thi đấu, sáng tạo, sưu tập, Side Maps và mini-game. Không mặc định tất cả phải có cùng số lượt hoặc cùng cách hiển thị quảng cáo; phải xác định hạn mức phù hợp với vai trò của từng hạng mục.
+- Muốn chơi thêm sau khi dùng hết lượt miễn phí, người chơi có thể tự nguyện xem quảng cáo nếu hạng mục đó còn lượt thưởng quảng cáo; nếu hết hạn mức thì dừng và chờ lượt/năng lượng hồi lại hoặc quay sang hoạt động phù hợp khác.
+- Quảng cáo phải xuất hiện ở điểm dừng tự nhiên, không ép xem giữa màn chơi, không chặn việc học kiến thức cốt lõi của Main Quest và không bắt trẻ xem quảng cáo để bảo vệ tiến độ đã đạt được.
+- Năng lượng và lượt quảng cáo là hai giới hạn có liên quan nhưng không đồng nhất: xem quảng cáo không mặc nhiên xóa bỏ mọi giới hạn năng lượng hoặc cấp quyền chơi vô hạn. Luật kết hợp giữa chúng phải được công bố rõ.
+- Không biến quảng cáo thành cách mua điểm, danh hiệu, thứ hạng hoặc bỏ qua điều kiện kiến thức. Điểm kiếm từ hoạt động có giới hạn phải được tính vào bảng xếp hạng theo quy tắc chống cày lặp đã nêu ở mục 6.2.
+
+#### Mua Side Map chỉ cộng thêm một ít quyền chơi
+- Khi người chơi mua/mở khóa một Side Map bằng tiền, có thể tặng kèm một lượng nhỏ năng lượng bổ sung hoặc một ít lượt chơi thêm như quyền lợi phụ.
+- Phần cộng thêm phải có giới hạn rõ ràng, nhỏ và cân bằng; không được tạo năng lượng vô hạn, cho phép xem quảng cáo không giới hạn, hoặc biến người mua thành người có lợi thế xếp hạng không tương xứng.
+- Quyền lợi phụ này không thay thế điều kiện kiến thức của hoạt động, không tự động trao danh hiệu thành tích và không mua trực tiếp điểm/thứ hạng.
+- Mua map mở ra thế giới/nội dung mới là giá trị chính. Năng lượng hoặc lượt chơi cộng thêm chỉ là phần thưởng phụ, không được biến thành lý do duy nhất để mua.
+- Cần tách bạch quyền lợi đi kèm giao dịch với năng lượng hồi tự nhiên, lượt miễn phí theo kỳ và lượt thưởng quảng cáo; hiển thị trước giao dịch để phụ huynh/trẻ hiểu rõ điều gì được nhận và giới hạn của nó.
+
+#### Nguyên tắc an toàn với trẻ em
+- Không dùng thông báo khẩn cấp giả, chuỗi ép xem quảng cáo, đồng hồ đếm ngược gây áp lực hoặc cơ chế khiến trẻ cảm thấy phải tiếp tục chơi để không mất thứ đã đạt được.
+- Trước khi phát hành, phải rà soát cách triển khai quảng cáo, nội dung quảng cáo, sự đồng ý của phụ huynh, tần suất, mua hàng trong ứng dụng và quy định theo thị trường/nền tảng. Không giả định mọi định dạng quảng cáo thưởng đều phù hợp với mọi nhóm tuổi hoặc được phép ở mọi nơi.
+
 ## 7. Hướng triển khai theo giai đoạn (không phải lý do loại bỏ tầm nhìn)
 
 - **Giai đoạn đầu:** module lắp ghép có sẵn, tùy chỉnh ngoại hình, khối lệnh giới hạn, mô phỏng đơn giản, điểm và kết quả xác định được.
