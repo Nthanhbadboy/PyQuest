@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -73,7 +75,8 @@ class AppServices {
     final settings = SettingsService(SettingsRepository(db));
     await settings.load();
     final audio = AudioService(settings, enabled: audioEnabled);
-    await audio.init();
+    // Audio loads in the background so the island opens without waiting.
+    unawaited(audio.init());
     final energy = EnergyService(repo: EnergyRepository(db), progress: progress, config: config, clock: clock);
     await energy.init();
     final customLevels = CustomLevelRepository(db);

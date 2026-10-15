@@ -49,8 +49,22 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
   _Phase _phase = _Phase.editing;
   int _fails = 0;
   int _attempts = 0;
-  String? _message;
+  String? _messageText;
   Mood _messageMood = Mood.neutral;
+  Timer? _messageTimer;
+
+  String? get _message => _messageText;
+
+  /// Shows Robo's message; it steps aside after a while so the board can grow.
+  set _message(String? value) {
+    _messageText = value;
+    _messageTimer?.cancel();
+    if (value != null) {
+      _messageTimer = Timer(const Duration(seconds: 9), () {
+        if (mounted) setState(() => _messageText = null);
+      });
+    }
+  }
   bool _showPython = false;
 
   // Code mode (Creator Mode only)
@@ -81,6 +95,7 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
 
   @override
   void dispose() {
+    _messageTimer?.cancel();
     _run.dispose();
     _time.dispose();
     _pb.dispose();

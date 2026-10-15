@@ -36,16 +36,23 @@ class AudioService with WidgetsBindingObserver {
       await AudioPlayer.global.setAudioContext(
         AudioContextConfig(focus: AudioContextConfigFocus.mixWithOthers).build(),
       );
-      for (final s in Sfx.values) {
-        final channel = _SfxChannel(_sfxAsset(s), _voices[s] ?? 1);
-        await channel.init();
-        _channels[s] = channel;
-      }
       _music = AudioPlayer();
       await _music!.setReleaseMode(ReleaseMode.loop);
       _ready = true;
       WidgetsBinding.instance.addObserver(this);
       _settings.addListener(_onSettingsChanged);
+      // A screen may already have asked for music while we were loading.
+      unawaited(_syncMusic());
+      // Load effects one by one; a single broken asset must not mute the game.
+      for (final s in Sfx.values) {
+        try {
+          final channel = _SfxChannel(_sfxAsset(s), _voices[s] ?? 1);
+          await channel.init();
+          _channels[s] = channel;
+        } catch (e) {
+          debugPrint('sfx ${s.name} unavailable: $e');
+        }
+      }
     } catch (e) {
       debugPrint('Audio unavailable: $e');
       _ready = false;

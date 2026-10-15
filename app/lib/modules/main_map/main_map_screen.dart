@@ -41,6 +41,7 @@ class _MainMapScreenState extends State<MainMapScreen> with TickerProviderStateM
   bool _bubbleHidden = false;
   AppServices? _services;
   bool _introShown = false;
+  Timer? _bubbleTimer;
 
   @override
   void didChangeDependencies() {
@@ -62,7 +63,17 @@ class _MainMapScreenState extends State<MainMapScreen> with TickerProviderStateM
   }
 
   @override
+  void initState() {
+    super.initState();
+    // The guide speaks for a while, then steps aside so the whole island is visible.
+    _bubbleTimer = Timer(const Duration(seconds: 12), () {
+      if (mounted) setState(() => _bubbleHidden = true);
+    });
+  }
+
+  @override
   void dispose() {
+    _bubbleTimer?.cancel();
     _services?.events.revision.removeListener(_refresh);
     _services?.session.removeListener(_onSession);
     _ambient.dispose();
@@ -183,7 +194,7 @@ class _MainMapScreenState extends State<MainMapScreen> with TickerProviderStateM
                 children: [
                   const Expanded(child: Align(alignment: Alignment.centerLeft, child: _IslandTitle())),
                   const SizedBox(width: 8),
-                  const EnergyPill(),
+                  EnergyPill(compact: MediaQuery.sizeOf(context).width < 380),
                   const SizedBox(width: 8),
                   ListenableBuilder(
                     listenable: s.quests,
@@ -410,7 +421,8 @@ class _GuideBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = AppScope.of(context);
     final (character, text) = _pickMessage(status, s);
-    return SpeechBubble(character: character, text: text, portraitSize: 76);
+    final short = MediaQuery.sizeOf(context).height < 700;
+    return SpeechBubble(character: character, text: text, portraitSize: short ? 58 : 76);
   }
 
   (CharacterId, String) _pickMessage(Map<String, ActivityStatus> st, AppServices s) {
