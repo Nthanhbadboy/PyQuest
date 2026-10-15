@@ -99,10 +99,13 @@ jobs:
           printf 'build_apk_debug=0\ndevice_ready_journey=0\njourney=0\n' > "$root/status.txt"
           printf '00:12 +3: 04 dragon jump run\n' > "$root/journey.txt"
 
+      # A condition that is genuinely false on this event, so GitHub really
+      # reports outcome=skipped while every other step in the job succeeds -
+      # which is the combination the optional-step rule has to allow.
       - name: Best-effort step (GitHub reports it as skipped)
         id: optional_step
-        if: success()
-        run: echo "this best-effort step never runs in this selftest"
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "this best-effort step only runs when the workflow is dispatched"
 
       - name: Report to step summary
         if: always()
