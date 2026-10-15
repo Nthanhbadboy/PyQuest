@@ -111,10 +111,14 @@ jobs:
       - name: Build release APK
         working-directory: app
         shell: bash
+        env:
+          # Add GEMINI_API_KEY under repository Settings > Secrets and variables > Actions.
+          # If unset, the APK still builds, but Gemini Live voice will not authenticate.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set +e
           flutter pub get > ../apk_release.txt 2>&1
-          flutter build apk --release >> ../apk_release.txt 2>&1; echo "build_apk_release=$?" >> ../status.txt
+          flutter build apk --release --dart-define="GEMINI_API_KEY=${GEMINI_API_KEY}" >> ../apk_release.txt 2>&1; echo "build_apk_release=$?" >> ../status.txt
           cp build/app/outputs/flutter-apk/app-release.apk ../pyquest-release.apk
           ls -la ../pyquest-release.apk >> ../apk_release.txt 2>&1
           tail -25 ../apk_release.txt
