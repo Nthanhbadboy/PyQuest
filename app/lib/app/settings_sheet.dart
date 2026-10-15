@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../python_runtime/simulated_runtime.dart';
+import '../shared/l10n/pq_l10n.dart';
 import '../shared/theme/app_theme.dart';
 import '../shared/theme/palette.dart';
 import '../shared/widgets/chunky_button.dart';
@@ -53,6 +54,40 @@ class _SettingsSheet extends StatelessWidget {
                     label: 'Chế độ êm dịu (ít chuyển động)',
                     value: settings.calmMode,
                     onChanged: settings.setCalmMode,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            PQPanel(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Ngôn ngữ trợ giảng & hội thoại', style: PQText.bodyStrong),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final lang in PqLang.values)
+                        ChoiceChip(
+                          key: ValueKey('language_${lang.code}'),
+                          label: Text(lang.label),
+                          selected: settings.lang == lang,
+                          onSelected: (_) => settings.setLang(lang),
+                          selectedColor: PQColors.sea,
+                          labelStyle: PQText.bodyStrong.copyWith(
+                            color: settings.lang == lang ? Colors.white : PQColors.ink,
+                          ),
+                          side: BorderSide(color: PQColors.ink, width: 1.8),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Ngôn ngữ này áp dụng cho lời thoại nhân vật và trợ giảng. Phần còn lại của hòn đảo hiện vẫn bằng tiếng Việt.',
+                    style: PQText.small,
                   ),
                 ],
               ),
