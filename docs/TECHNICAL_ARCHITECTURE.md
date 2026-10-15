@@ -229,6 +229,7 @@ abstract class AchievementService {
 | Module | Bảng | Dữ liệu sở hữu |
 |---|---|---|
 | Progress | `progress`, `skills` | Bài học đã hoàn thành, kỹ năng đã nắm |
+| Reward claims | `reward_claims` | Khóa chống cộng trùng cho bài tập, game tự tạo, thử thách chặng, lỗi, và XP ôn tập |
 | XP & Level | `player_state` | Tổng XP, cấp hiện tại |
 | Games | `game_results`, `unlocked_levels` | Điểm cao, màn đã mở, sao |
 | Energy | `energy_state` | Năng lượng hiện tại, năng lượng tối đa, thời điểm hồi tiếp theo |
@@ -295,15 +296,25 @@ CREATE TABLE daily_quests (
   PRIMARY KEY (local_day, quest_id)
 );
 
+-- Phần thưởng "một lần" dùng chung: mỗi phần thưởng chỉ có một khóa duy nhất.
+-- Ví dụ: 'exercise:05a', 'custom_game:12', 'chapter:01', 'bug:robot_maze:07'.
+-- XP ôn tập dùng khóa riêng CÓ kèm ngày địa phương:
+--   'review:<lesson_id>:<local_day>'
+-- Không dùng chung bảng/khóa này với daily_quests.
+CREATE TABLE reward_claims (
+  reward_key TEXT PRIMARY KEY,
+  awarded_at INTEGER NOT NULL
+);
+
 CREATE TABLE achievements (
   achievement_id TEXT PRIMARY KEY,
   unlocked_at INTEGER NOT NULL
 );
 ```
 
-> Ghi chú: `UNIQUE(lesson_id)`, `UNIQUE(game_id, level_id)`, khóa chính của
-> `rewarded_ad_claims`, `daily_quests`, `achievements` là cơ chế **chống cộng
-> trùng** — xem mục 4.6.
+> Ghi chú: `UNIQUE(lesson_id)`, `UNIQUE(game_id, level_id)`, `reward_key`,
+> khóa chính của `rewarded_ad_claims`, `daily_quests`, `achievements` là cơ chế
+> **chống cộng trùng** — xem mục 4.6.
 
 ### 4.4. Quy tắc sở hữu dữ liệu
 
@@ -328,13 +339,21 @@ Mục tiêu: các sự kiện hoàn thành lặp lại hoặc việc **thoát/m�
 
 - **Ghi "lần đầu" bằng INSERT có ràng buộc duy nhất.** Ví dụ: hoàn thành bài học
   → `INSERT INTO progress(lesson_id, ...)`. Nếu `lesson_id` đã tồn tại, lệnh
-  thất bại và **không** cộng XP. Tương tự với `game_results`.
+  thất bại và **không** cộng XP. Tương tự với màn mini-game qua `game_results`.
+- **Các phần thưởng một lần khác (bài tập, game tự tạo, thử thách chặng, lỗi)
+  dùng chung bảng `reward_claims`** với `reward_key` duy nhất (`exercise:…`,
+  `custom_game:…`, `chapter:…`, `bug:…`). Chỉ cộng XP khi insert khóa mới thành
+  công; khóa đã tồn tại thì bỏ qua.
 - **XP/level cập nhật trong cùng transaction** với bản ghi "lần đầu". Nếu bản ghi
   đã tồn tại, bỏ qua cả XP.
 - **Quảng cáo thưởng:** tăng `claims_used` trong `rewarded_ad_claims` **chỉ sau**
   callback xác nhận hợp lệ. Đọc lại số lượt trước khi cho phép xem.
-- **Nhiệm vụ ngày & ôn tập:** kiểm tra khóa `(local_day, quest_id)` trước khi
-  cộng; dùng ngày **địa phương** để reset.
+- **Nhiệm vụ ngày:** kiểm tra khóa `(local_day, quest_id)` trong `daily_quests`
+  trước khi cộng; dùng ngày **địa phương** để reset.
+- **XP ôn tập:** kiểm tra khóa `review:<lesson_id>:<local_day>` trong
+  `reward_claims` trước khi cộng. Đây là khóa **riêng**, **không** dùng chung với
+  `daily_quests`. Số lần tối đa mỗi bài mỗi ngày **chưa chốt** — xem
+  `GAME_DESIGN.md` mục 4.4.
 - **Tính idempotent:** xử lý cùng một sự kiện nhiều lần (do retry, resume,
   hoặc mở lại app) cho kết quả như xử lý một lần.
 

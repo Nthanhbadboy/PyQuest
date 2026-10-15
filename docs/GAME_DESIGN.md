@@ -136,26 +136,39 @@ Chi tiết chống cộng trùng ở mục 4.4.
 | Thưởng mini-game không lỗi | **+30** | Một lần / màn | Chỉ cộng cùng lúc với lần hoàn thành đầu tiên, nếu đạt điều kiện |
 | Thử thách cuối chặng | **+100** | Một lần / chặng | Chỉ lần đầu hoàn thành thử thách chặng |
 | Nhiệm vụ ngày | **+25** | Lặp lại, giới hạn | Tối đa 1 lần / nhiệm vụ / ngày |
-| Xem lại bài cũ | **+2** | Lặp lại, giới hạn | Mỗi bài tối đa 1 lần XP ôn tập / ngày (**TBD** — xem 4.4) |
+| Xem lại bài cũ | **+2** | Lặp lại (giới hạn **TBD**) | Giới hạn **chưa chốt** — xem 4.4; khóa dự kiến `review:<lesson_id>:<local_day>` |
 | Game tự tạo chạy được (lần đầu) | **+50** | Một lần / game tự tạo | Thưởng sáng tạo, không cộng lại mỗi lần chạy |
 | Phát hiện lỗi trong Bug Hunter | **+15** | Một lần / lỗi | Mỗi lỗi (định danh duy nhất) chỉ cộng một lần |
 
 ### 4.2. Công thức cấp độ
 
-XP cần để lên cấp `n` (tính từ cấp 1):
+XP cần để đi **từ cấp `n` lên cấp `n + 1`**:
 
 ```
-XP_cần(n) = 100 × n + 50 × (n − 1)
+XP_lên_cấp_tiếp(n) = 100 × n + 50 × (n − 1) = 150 × n − 50
 ```
 
-| Cấp | XP cần để lên cấp tiếp theo | Tổng XP tích lũy |
+Tổng XP tích lũy cần để **đạt tới cấp `L`** (bắt đầu ở cấp 1 với 0 XP) là tổng
+các mốc trên:
+
+```
+XP_tổng(L) = Σ (n = 1 … L − 1) XP_lên_cấp_tiếp(n)
+           = (L − 1) × (75 × L − 50)
+```
+
+| Mốc | XP cần để lên cấp tiếp theo | Tổng XP tích lũy để đạt cấp |
 |---|---|---|
-| 1 → 2 | 100 | 100 |
-| 2 → 3 | 250 | 350 |
-| 3 → 4 | 400 | 750 |
-| 4 → 5 | 550 | 1.300 |
-| 5 → 6 | 700 | 2.000 |
-| 10 → 11 | 1.450 | 7.750 |
+| 1 → 2 | 100 | Đạt cấp 2 = 100 |
+| 2 → 3 | 250 | Đạt cấp 3 = 350 |
+| 3 → 4 | 400 | Đạt cấp 4 = 750 |
+| 4 → 5 | 550 | Đạt cấp 5 = 1.300 |
+| 5 → 6 | 700 | Đạt cấp 6 = 2.000 |
+| 9 → 10 | 1.300 | Đạt cấp 10 = 6.300 |
+| 10 → 11 | 1.450 | Đạt cấp 11 = 7.750 |
+| 17 → 18 | 2.500 | Đạt cấp 18 = 22.100 |
+
+> **Tránh nhầm mốc:** **7.750 XP** là để **đạt cấp 11**, không phải cấp 10.
+> Đạt cấp 10 cần **6.300 XP**; đạt cấp 18 cần **22.100 XP**.
 
 **Cấp tối đa giai đoạn đầu:** 20.
 
@@ -178,28 +191,48 @@ XP_cần(n) = 100 × n + 50 × (n − 1)
 ### 4.4. Quy tắc một lần / lặp lại & chống cộng trùng
 
 **Nguyên tắc chung:** mọi phần thưởng "Một lần" phải được cộng **đúng một lần
-cho mỗi đối tượng** (bài học, bài tập, màn, lỗi, game tự tạo), **bất kể** trẻ
-hoàn thành lại bao nhiêu lần, thoát app giữa chừng, hay mở lại app.
+cho mỗi đối tượng** (bài học, bài tập, màn, lỗi, game tự tạo, thử thách chặng),
+**bất kể** trẻ hoàn thành lại bao nhiêu lần, thoát app giữa chừng, hay mở lại app.
+
+Mỗi phần thưởng "một lần" có một **khóa định danh duy nhất** được lưu bền vững
+(xem `TECHNICAL_ARCHITECTURE.md` mục 4.3 và 4.6):
+
+| Phần thưởng | Khóa chống cộng trùng (ví dụ) |
+|---|---|
+| Hoàn thành bài học (+10) | `lesson:<lesson_id>` |
+| Hoàn thành bài tập (+15) | `exercise:<exercise_id>` |
+| Hoàn thành màn mini-game (+20) | `game:<game_id>:<level_id>` |
+| Thưởng không lỗi (+30) | cùng khóa màn `game:<game_id>:<level_id>` |
+| Thử thách cuối chặng (+100) | `chapter:<chapter_id>` |
+| Game tự tạo chạy được (+50) | `custom_game:<custom_game_id>` |
+| Phát hiện lỗi (+15) | `bug:<game_id>:<bug_id>` |
 
 | Nhóm | Quy tắc |
 |---|---|
-| **Một lần** | Cộng khi **lần đầu** đối tượng được xác nhận hoàn thành. Xác nhận này được ghi vào database; lần hoàn thành sau **không** cộng lại. |
+| **Một lần** | Cộng khi **lần đầu** đối tượng được xác nhận hoàn thành. Khóa được ghi vào database; lần hoàn thành sau **không** cộng lại. |
 | **Thưởng không lỗi (+30)** | Gắn với lần hoàn thành đầu tiên của màn. Không cộng lại khi chơi lại. |
 | **Nhiệm vụ ngày (+25)** | Lặp lại nhưng tối đa **1 lần / nhiệm vụ / ngày**; đếm theo ngày địa phương. |
-| **Ôn tập (+2)** | Lặp lại nhưng phải **giới hạn** để không farm XP vô hạn. |
+| **Ôn tập (+2)** | Lặp lại; **giới hạn chưa chốt (TBD)** — xem ghi chú dưới. Khóa dự kiến `review:<lesson_id>:<local_day>`, **tách biệt** với nhiệm vụ ngày. |
 | **Thử thách cuối chặng (+100)** | Một lần / chặng. Thử lại không cộng thêm. |
 | **Phát hiện lỗi (+15)** | Mỗi lỗi định danh duy nhất một lần. |
 
-**Chống cộng trùng khi mở lại app:** trạng thái "đã nhận thưởng một lần" và các
+**Chống cộng trùng khi retry / mở lại app:** khóa "đã nhận thưởng một lần" và các
 lượt trong ngày (nhiệm vụ ngày, quảng cáo thưởng) phải được lưu bền vững trong
-SQLite và kiểm tra **trước** khi cộng. Xem chi tiết ở
-`TECHNICAL_ARCHITECTURE.md` mục 4.
+SQLite và kiểm tra **trước** khi cộng. Cơ chế bảng cụ thể ở
+`TECHNICAL_ARCHITECTURE.md` mục 4.3 và 4.6.
 
-> **TBD — cần quyết định sản phẩm.** Hai rào chắn cấp độ để mở chặng đang **không
-> nhất quán** với lượng XP thực tế:
+**XP ôn tập dùng khóa riêng, không dùng chung với nhiệm vụ ngày.** Việc ôn lại một
+bài và "nhiệm vụ ngày" là hai nguồn thưởng khác nhau, có khóa khác nhau
+(`review:<lesson_id>:<local_day>` so với `daily_quests(local_day, quest_id)`).
+Trộn hai khóa này sẽ khiến việc ôn bài bị tính như hoàn thành nhiệm vụ ngày, hoặc
+bị chặn oan.
+
+> **TBD — cần quyết định sản phẩm.**
 >
-> - Chặng 2 cần **cấp 10**, tức **7.750 XP** tích lũy (theo bảng 4.2).
-> - Chặng 3 cần **cấp 18**, tức hơn **20.000 XP** tích lũy.
+> **1. Rào chắn cấp độ mở chặng (chưa chốt).** Hai ngưỡng hiện tại đang quá cao so
+> với lượng XP mà nội dung cung cấp:
+> - Chặng 2 cần **cấp 10**, tức **6.300 XP** tích lũy (theo bảng 4.2).
+> - Chặng 3 cần **cấp 18**, tức **22.100 XP** tích lũy (theo bảng 4.2).
 > - Trong khi chặng 1 (12 bài) chỉ cung cấp khoảng vài trăm XP, và toàn bộ Main
 >   Quest (~50 bài + mini-game) khó đạt tới các mốc trên.
 >
@@ -208,9 +241,11 @@ SQLite và kiểm tra **trước** khi cộng. Xem chi tiết ở
 > rào cấp độ và mở chặng thuần theo tiến trình bài học. Không tự đặt con số mới
 > trước khi quyết định.
 >
-> Tương tự, **giới hạn XP ôn tập (+2)** cần chốt: hiện chưa có trần, nên về lý
-> thuyết có thể farm vô hạn. Đề xuất mặc định "mỗi bài 1 lần/ngày" nhưng **cần
-> xác nhận**.
+> **2. Giới hạn XP ôn tập (+2) (chưa chốt).** Hiện **chưa** có cơ chế giới hạn hoàn
+> chỉnh: chưa chốt số lần tối đa cho một bài, và bảng ở
+> `TECHNICAL_ARCHITECTURE.md` mới chỉ **dự kiến** khóa
+> `review:<lesson_id>:<local_day>`. Đề xuất mặc định "mỗi bài 1 lần XP ôn tập/ngày"
+> nhưng **cần xác nhận** trước khi coi là đã chốt.
 
 ---
 
@@ -302,14 +337,20 @@ Màn tổng kết bài (30 giây)
 1. **Đổi luật qua điều khiển có cấu trúc sẵn có** (màn 1–8): trẻ chỉnh tham số,
    ghép khối, hoặc dùng mô hình lệnh do game cung cấp. Cách này **không** đòi hỏi
    interpreter và **không** chạy code tự do.
-2. **Chạy code Python-like qua interpreter giới hạn** (màn 9–10 và màn có xem code
-   sinh ra): chỉ áp dụng với **tập con cú pháp đã công bố**, không phải Python đầy đủ.
+2. **Chạy code Python-like qua interpreter giới hạn** (màn 9–10, khi trẻ tự viết
+   dòng lệnh/hàm): chỉ áp dụng với **tập con cú pháp đã công bố**, không phải
+   Python đầy đủ. Việc **xem code sinh ra** ở màn 7–8 chỉ là hiển thị phần dịch ra
+   từ khối, **không** chạy code tự do.
 
 **Quan trọng:**
 - Khi ở Creator Mode, hiển thị rõ đoạn code Python đang chạy.
 - Nếu là mô phỏng, ghi chú rõ giới hạn (ví dụ: "phiên bản đơn giản hóa của Python").
-- Không phải màn Creator Mode nào cũng cần interpreter; chỉ những màn có chạy code
-  mới phụ thuộc vào interpreter giới hạn.
+- Không phải màn Creator Mode nào cũng cần interpreter; chỉ những màn có trẻ tự
+  viết/chạy code mới phụ thuộc vào interpreter giới hạn.
+
+> **Theo lộ trình:** mini-game mẫu ở giai đoạn 3 chỉ xây phần **có cấu trúc**
+> (màn 1–3: ghép khối/chỉnh tham số, chạy thử bằng luật có cấu trúc). Các màn cần
+> interpreter (màn 7–10) chỉ được làm sau giai đoạn 5 — xem `ROADMAP.md` mục 5.2.
 
 ---
 

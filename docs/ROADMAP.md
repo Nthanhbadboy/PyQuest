@@ -147,10 +147,12 @@ tư duy thuật toán và dễ chuyển sang code Python.
 - Điểm số, sao (1–3), hiệu ứng âm thanh.
 - Lưu điểm cao, màn đã mở.
 
-**Creator Mode:**
+**Creator Mode (chỉ phần có cấu trúc — chưa cần interpreter giai đoạn 5):**
 - Ghép khối lệnh bằng kéo thả (màn 1–3).
-- Xem code Python sinh ra (màn 7–8).
-- Viết dòng lệnh đơn giản (màn 9–10).
+- Chỉnh tham số luật chơi qua điều khiển có cấu trúc và chạy thử màn bằng luật
+  đó để chứng minh luồng.
+- Các màn xem code sinh ra / viết code (màn 7–10) **hoãn** tới giai đoạn 5, khi
+  interpreter mô phỏng đã có.
 
 **Tích hợp nền tảng:**
 - Phát sự kiện `level_completed` và `game_completed`.
@@ -162,6 +164,8 @@ tư duy thuật toán và dễ chuyển sang code Python.
 
 - Không làm 5 mini-game cùng lúc.
 - Không làm Creator Mode đầy đủ — chỉ đủ để chứng minh luồng.
+- Không làm các màn Creator Mode cần chạy code (xem code sinh ra / viết code,
+  màn 7–10) — những màn này thuộc giai đoạn 5.
 - Không làm Side Maps.
 - **Chưa** áp dụng tiêu hao năng lượng ở lát cắt này; năng lượng được triển khai
   ở giai đoạn 4.
@@ -175,7 +179,8 @@ tư duy thuật toán và dễ chuyển sang code Python.
 - [ ] Điểm cao được lưu vào SQLite.
 - [ ] Thoát app → mở lại → màn đã mở vẫn còn, điểm cao vẫn còn.
 - [ ] Huy hiệu **First Line** xuất hiện sau khi hoàn thành màn 1.
-- [ ] Creator Mode cho phép ghép khối và chạy thử ít nhất 1 màn.
+- [ ] Creator Mode cho phép ghép khối/chỉnh luật có cấu trúc và chạy thử ít nhất
+      1 màn (**không cần interpreter Python-like** ở giai đoạn này).
 - [ ] Không crash khi chơi liên tục 15 phút.
 - [ ] Phát sự kiện `level_completed` và `game_completed` đúng chuẩn.
 
