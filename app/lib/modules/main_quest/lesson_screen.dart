@@ -7,6 +7,7 @@ import '../../app/app_scope.dart';
 import '../../core/audio_service.dart';
 import '../../core/events.dart';
 import '../../python_runtime/python_runtime.dart';
+import '../../shared/characters/cast.dart';
 import '../../shared/characters/characters.dart';
 import '../../shared/theme/app_theme.dart';
 import '../../shared/theme/palette.dart';
@@ -15,6 +16,8 @@ import '../../shared/widgets/code_widgets.dart';
 import '../../shared/widgets/common.dart';
 import '../robot_maze/maze_board.dart';
 import '../robot_maze/maze_models.dart';
+import '../tutor/tutor_models.dart';
+import '../tutor/tutor_panel.dart';
 import 'answer_check.dart';
 import 'lesson_complete_screen.dart';
 import 'quest_models.dart';
@@ -50,6 +53,63 @@ class _LessonScreenState extends State<LessonScreen> {
   List<String> _orderPool = [];
   PythonCodeController? _code;
   ExecutionResult? _run;
+
+  /// Everything the tutor may know about the current step. No learner name,
+  /// age or id: the panel sends only this block plus the child's question.
+  TutorContext _tutorContext() {
+    final lesson = widget.lesson;
+    final step = _step;
+    final prompt = switch (step) {
+      StoryStep s => s.text,
+      ExampleStep s => s.text,
+      ChoiceStep s => s.question,
+      FillStep s => s.prompt,
+      OrderStep s => s.prompt,
+      WriteStep s => s.prompt,
+      RobotStep s => s.prompt,
+    };
+    final expected = switch (step) {
+      FillStep s => s.expectedOutput,
+      OrderStep s => s.expectedOutput,
+      WriteStep s => s.expectedOutput,
+      _ => null,
+    };
+    final lessonHint = switch (step) {
+      WriteStep s => s.hint,
+      RobotStep s => s.hint,
+      ChoiceStep s => s.explain,
+      FillStep s => s.explain,
+      _ => null,
+    };
+    final run = _run;
+    return TutorContext(
+      lessonId: lesson.id,
+      lessonTitle: lesson.title,
+      skill: lesson.skill,
+      summary: lesson.summary,
+      stepIndex: _index + 1,
+      stepCount: lesson.steps.length,
+      stepType: '${step.raw['type'] ?? ''}',
+      stepPrompt: prompt,
+      expectedOutput: expected,
+      lessonHint: lessonHint,
+      learnerCode: _code?.text,
+      lastError: run == null || run.success ? null : (run.pythonError ?? run.errorMessage),
+      fails: _stepFails,
+    );
+  }
+
+  /// Opens the tutor for the current step. The character is chosen from the
+  /// lesson's own skill, so the child gets the tutor who teaches that topic.
+  Future<void> _openTutor({bool withHint = false}) async {
+    final ctx = _tutorContext();
+    await showTutorPanel(
+      context,
+      tutorContext: ctx,
+      character: CastRegistry.tutorForSkill(ctx.skill).id,
+      startWithHint: withHint,
+    );
+  }
   bool _running = false;
   final GlobalKey<_RobotRunnerState> _robotKey = GlobalKey();
 
@@ -369,6 +429,14 @@ class _LessonScreenState extends State<LessonScreen> {
                       ),
                       const SizedBox(width: 10),
                       Text('${_index + 1}/${lesson.steps.length}', style: PQText.number.copyWith(fontSize: 18)),
+                      const SizedBox(width: 6),
+                      RoundIconButton(
+                        key: const ValueKey('lesson_tutor'),
+                        icon: Icons.support_agent_rounded,
+                        size: 44,
+                        tooltip: 'Hỏi trợ giảng',
+                        onPressed: _openTutor,
+                      ),
                     ],
                   ),
                 ),
@@ -684,6 +752,20 @@ class _LessonScreenState extends State<LessonScreen> {
               ],
             ),
             if (hint != null && hint.isNotEmpty) ...[const SizedBox(height: 6), Text('Gợi ý: $hint', style: PQText.body.copyWith(fontSize: 15))],
+            if (_feedback == _Feedback.wrong) ...[
+              const SizedBox(height: 8),
+              ChunkyButton(
+                key: const ValueKey('lesson_ask_tutor'),
+                label: _stepFails >= 3 ? 'Hỏi trợ giảng cùng gỡ' : 'Hỏi trợ giảng',
+                icon: Icons.support_agent_rounded,
+                tone: PQTone.grass,
+                size: ChunkySize.small,
+                expand: true,
+                sfx: null,
+                // From the third failure the tutor opens with a hint ladder rung.
+                onPressed: () => _openTutor(withHint: _stepFails >= 3),
+              ),
+            ],
             const SizedBox(height: 10),
           ],
           if (_canContinue || !isExercise)

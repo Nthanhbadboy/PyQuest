@@ -3,11 +3,18 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../theme/palette.dart';
+import 'cast_painters.dart';
 
-/// The island's original cast. All drawn in code so they can animate.
-enum CharacterId { robo, pip, bitsy, py }
+/// The island's cast: the four original islanders (Robo, Pip, Bitsy, Thầy Py)
+/// plus the companions who lead the learning journey (Nova, Professor Ada,
+/// Kai, Byte, Pixel, Loop, Bit, Lumi). Every one of them is drawn in code, so
+/// they can idle, blink and change expression without shipping bitmaps.
+enum CharacterId { robo, pip, bitsy, py, nova, ada, kai, byte, pixel, loop, bit, lumi }
 
-enum Mood { happy, neutral, sad, surprised, thinking }
+/// Expressions shared by the whole cast. [celebrating] and [confused] were
+/// added for tutor and reward moments, so a character can react to a learner's
+/// progress instead of only looking happy or sad.
+enum Mood { happy, neutral, sad, surprised, thinking, celebrating, confused }
 
 extension CharacterInfo on CharacterId {
   String get displayName => switch (this) {
@@ -15,6 +22,14 @@ extension CharacterInfo on CharacterId {
         CharacterId.pip => 'Pip',
         CharacterId.bitsy => 'Bitsy',
         CharacterId.py => 'Thầy Py',
+        CharacterId.nova => 'Nova',
+        CharacterId.ada => 'Giáo sư Ada',
+        CharacterId.kai => 'Kai',
+        CharacterId.byte => 'Byte',
+        CharacterId.pixel => 'Pixel',
+        CharacterId.loop => 'Loop',
+        CharacterId.bit => 'Bit',
+        CharacterId.lumi => 'Lumi',
       };
 
   String get role => switch (this) {
@@ -22,6 +37,14 @@ extension CharacterInfo on CharacterId {
         CharacterId.pip => 'Chú rồng con mê sưu tầm xu',
         CharacterId.bitsy => 'Cô mèo thám tử săn lỗi',
         CharacterId.py => 'Người thầy ở Tháp Python',
+        CharacterId.nova => 'Bạn đồng hành tò mò, thích sáng chế',
+        CharacterId.ada => 'Giáo sư dạy điều kiện, hàm và giải thích sâu',
+        CharacterId.kai => 'Cậu bạn mê thử thách và gỡ rối',
+        CharacterId.byte => 'Cáo cam truy tìm nguyên nhân lỗi',
+        CharacterId.pixel => 'Cú xanh nhỏ giảng điều kiện và quy luật',
+        CharacterId.loop => 'Rùa xanh kiên nhẫn dạy vòng lặp',
+        CharacterId.bit => 'Robot nhỏ minh hoạ biến và hàm',
+        CharacterId.lumi => 'Sinh vật rừng phép thuật trao nhiệm vụ',
       };
 
   Color get color => switch (this) {
@@ -29,6 +52,14 @@ extension CharacterInfo on CharacterId {
         CharacterId.pip => PQColors.coral,
         CharacterId.bitsy => PQColors.grape,
         CharacterId.py => PQColors.pyBlue,
+        CharacterId.nova => PQColors.sea,
+        CharacterId.ada => PQColors.grapeDeep,
+        CharacterId.kai => PQColors.grassDeep,
+        CharacterId.byte => PQColors.wood,
+        CharacterId.pixel => PQColors.skyDeep,
+        CharacterId.loop => PQColors.grassDeep,
+        CharacterId.bit => PQColors.pyYellow,
+        CharacterId.lumi => const Color(0xFF3FBFA8),
       };
 }
 
@@ -105,6 +136,14 @@ CustomPainter characterPainter(CharacterId id,
     CharacterId.pip => PipPainter(t: t, blink: blink, bob: bob, mood: mood, hat: hat),
     CharacterId.bitsy => BitsyPainter(t: t, blink: blink, bob: bob, mood: mood),
     CharacterId.py => PyPainter(t: t, blink: blink, bob: bob, mood: mood),
+    CharacterId.nova => NovaPainter(t: t, blink: blink, bob: bob, mood: mood),
+    CharacterId.ada => AdaPainter(t: t, blink: blink, bob: bob, mood: mood),
+    CharacterId.kai => KaiPainter(t: t, blink: blink, bob: bob, mood: mood),
+    CharacterId.byte => BytePainter(t: t, blink: blink, bob: bob, mood: mood),
+    CharacterId.pixel => PixelPainter(t: t, blink: blink, bob: bob, mood: mood),
+    CharacterId.loop => LoopPainter(t: t, blink: blink, bob: bob, mood: mood),
+    CharacterId.bit => BitPainter(t: t, blink: blink, bob: bob, mood: mood),
+    CharacterId.lumi => LumiPainter(t: t, blink: blink, bob: bob, mood: mood),
   };
 }
 
@@ -302,6 +341,32 @@ class RoboPainter extends CastPainter {
         final m = Path()
           ..moveTo(45, 45)
           ..quadraticBezierTo(50, 48, 55, 45);
+        canvas.drawPath(m, led);
+      case Mood.celebrating:
+        for (final x in [40.0, 60.0]) {
+          final p = Path()
+            ..moveTo(x - 5, 40)
+            ..quadraticBezierTo(x, 30, x + 5, 40);
+          canvas.drawPath(p, led);
+        }
+        final m = Path()
+          ..moveTo(43, 44)
+          ..quadraticBezierTo(50, 51, 57, 44);
+        canvas.drawPath(m, led);
+        final sparkle = 0.5 + 0.5 * math.sin(t * 2 * math.pi * 4).abs();
+        for (final c in const [Offset(30, 26), Offset(70, 27), Offset(50, 22)]) {
+          canvas.drawCircle(c, 1.6 + 1.8 * sparkle, ledFill);
+        }
+      case Mood.confused:
+        canvas.drawRRect(
+            RRect.fromRectAndRadius(Rect.fromCenter(center: const Offset(40, 37), width: 6, height: 4),
+                const Radius.circular(2)),
+            ledFill);
+        canvas.drawCircle(const Offset(60, 37), 3.2 * open + 0.6, ledFill);
+        final m = Path()
+          ..moveTo(43, 47)
+          ..quadraticBezierTo(48, 43, 51, 47)
+          ..quadraticBezierTo(54, 51, 57, 47);
         canvas.drawPath(m, led);
     }
   }

@@ -19,6 +19,9 @@ import '../modules/energy/energy_service.dart';
 import '../modules/main_quest/quest_models.dart';
 import '../modules/progress/progress_tracker.dart';
 import '../modules/robot_maze/maze_models.dart';
+import '../modules/tutor/tutor_config.dart';
+import '../modules/tutor/tutor_provider.dart';
+import '../modules/tutor/tutor_session.dart';
 import '../python_runtime/simulated_runtime.dart';
 
 /// Composition root: creates every service once and wires the event bus.
@@ -41,6 +44,7 @@ class AppServices {
     required this.robotMaze,
     required this.mainQuest,
     required this.bugHunter,
+    required this.tutor,
   });
 
   final GameConfig config;
@@ -61,6 +65,10 @@ class AppServices {
   final MainQuestContent mainQuest;
   final BugHunterContent bugHunter;
 
+  /// The AI/offline tutor. One session per app run; lessons share it so the
+  /// daily question count and the transcript stay consistent.
+  final TutorSession tutor;
+
   static Future<AppServices> create({
     required AssetBundle bundle,
     DatabaseFactory? databaseFactory,
@@ -68,6 +76,8 @@ class AppServices {
     Clock clock = const Clock(),
     bool audioEnabled = true,
     bool startSessionTimer = true,
+    TutorConfig? tutorConfig,
+    TutorProvider? tutorProvider,
   }) async {
     final config = await GameConfig.load(bundle);
     final db = await AppDatabase.open(factory: databaseFactory, path: databasePath);
@@ -88,6 +98,15 @@ class AppServices {
       clock: clock,
     );
     await achievements.init();
+    // Tests and previews inject a config/provider; a real build reads the
+    // asset and only reaches an AI provider when an endpoint is configured.
+    final tutor = TutorSession(
+      settings: settings,
+      config: tutorConfig ?? await TutorConfig.load(bundle),
+      clock: clock,
+      provider: tutorProvider,
+    );
+    await tutor.load();
     final mainQuest = await MainQuestContent.load(bundle);
     final bugHunter = await BugHunterContent.load(bundle);
     final quests = DailyQuestService(
@@ -121,6 +140,7 @@ class AppServices {
       robotMaze: await RobotMazeContent.load(bundle),
       mainQuest: mainQuest,
       bugHunter: bugHunter,
+      tutor: tutor,
     );
   }
 
@@ -155,5 +175,6 @@ class AppServices {
   void dispose() {
     energy.dispose();
     session.dispose();
+    tutor.dispose();
   }
 }

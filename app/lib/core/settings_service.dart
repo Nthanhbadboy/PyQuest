@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../data/repositories/state_repositories.dart';
+import '../shared/l10n/pq_l10n.dart';
 
 /// Player preferences, persisted in the `settings` table.
 class SettingsService extends ChangeNotifier {
@@ -35,6 +36,12 @@ class SettingsService extends ChangeNotifier {
   Future<void> setMusicOn(bool v) => _set('music_on', v ? '1' : '0');
   Future<void> setCalmMode(bool v) => _set('calm_mode', v ? '1' : '0');
   Future<void> setIntroSeen() => _set('intro_seen', '1');
+
+  /// Language used by the cast dialogue and the AI tutor. The rest of the
+  /// island is Vietnamese-only for now, and says so in Settings.
+  PqLang get lang => PqLang.fromCode(_values['ui_lang']);
+  PqStrings get strings => PqStrings.of(lang);
+  Future<void> setLang(PqLang v) => _set('ui_lang', v.code);
 
   String? raw(String key) => _values[key];
   Future<void> setRaw(String key, String value) => _set(key, value);

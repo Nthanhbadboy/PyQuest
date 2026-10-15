@@ -35,6 +35,10 @@ abstract final class PQColors {
   static const wood = Color(0xFFB9783F);
   static const woodDeep = Color(0xFF8A5426);
 
+  // Skin tones shared by the human members of the cast (Nova, Ada, Kai).
+  static const skin = Color(0xFFF2C79A);
+  static const skinLight = Color(0xFFFFE0BE);
+
   static const energy = Color(0xFFFFB627);
   static const success = Color(0xFF35B36F);
   static const successDeep = Color(0xFF23864F);

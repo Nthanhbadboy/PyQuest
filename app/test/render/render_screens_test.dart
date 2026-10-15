@@ -13,6 +13,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/app/app_services.dart';
 import 'package:pyquest/app/pyquest_app.dart';
 import 'package:pyquest/core/events.dart';
+import 'package:pyquest/modules/tutor/tutor_config.dart';
+import 'package:pyquest/modules/tutor/tutor_provider.dart';
+import 'package:pyquest/shared/characters/cast.dart';
+import 'package:pyquest/shared/characters/characters.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../test_helpers.dart';
@@ -40,7 +44,14 @@ Future<void> capture(WidgetTester tester, String name) async {
   });
 }
 
-Future<AppServices> seeded(WidgetTester tester, {bool rich = false}) async {
+/// A fixed answer used only inside previews, so the AI-labelled state of the
+/// tutor panel can be screenshotted without a provider or a credential.
+const String _previewAnswer = 'Bạn đang dùng biến đúng cách rồi!\n'
+    'Thử đổi giá trị này xem máy in ra gì nhé:\n'
+    '```python\ndiem = 7\nprint(diem)\n```\n'
+    'Đoán trước kết quả rồi chạy thử để kiểm chứng.';
+
+Future<AppServices> seeded(WidgetTester tester, {bool rich = false, bool tutorAi = false}) async {
   final clock = FakeClock(DateTime(2026, 10, 15, 16));
   final s = (await tester.runAsync(() => AppServices.create(
         bundle: rootBundle,
@@ -49,6 +60,8 @@ Future<AppServices> seeded(WidgetTester tester, {bool rich = false}) async {
         clock: clock,
         audioEnabled: false,
         startSessionTimer: false,
+        tutorConfig: tutorAi ? const TutorConfig(endpoint: 'https://preview.invalid') : null,
+        tutorProvider: tutorAi ? const StaticTutorProvider(_previewAnswer) : null,
       )))!;
   await tester.runAsync(() async {
     await s.settings.setIntroSeen();
@@ -104,12 +117,12 @@ Future<void> home(WidgetTester tester) async {
   await pumpFor(tester, const Duration(seconds: 2));
 }
 
-Future<AppServices> start(WidgetTester tester, {bool rich = true, bool intro = false, bool small = false}) async {
+Future<AppServices> start(WidgetTester tester, {bool rich = true, bool intro = false, bool small = false, bool tutorAi = false}) async {
   // Default: 390 x 844 @3x. Small: 360 x 640 @2x (older/compact Android phones).
   tester.view.physicalSize = small ? const Size(720, 1280) : const Size(1170, 2532);
   tester.view.devicePixelRatio = small ? 2.0 : 3.0;
   addTearDown(tester.view.reset);
-  final s = await seeded(tester, rich: rich);
+  final s = await seeded(tester, rich: rich, tutorAi: tutorAi);
   if (intro) await tester.runAsync(() => s.settings.setRaw('intro_seen', '0'));
   await tester.pumpWidget(RepaintBoundary(key: _captureKey, child: PyQuestApp(servicesFactory: (_) async => s, minSplash: Duration.zero)));
   await pumpFor(tester, const Duration(seconds: 2));
@@ -313,6 +326,89 @@ void main() {
     await tap(tester, 'map_label_dragon_jump', ms: 900);
     await tap(tester, 'sheet_open', ms: 1500);
     await capture(tester, 'f03_small_dragon_home');
+    await finish(tester, s);
+  });
+
+  testWidgets('render G: cast gallery', (tester) async {
+    tester.view.physicalSize = const Size(1170, 3100);
+    tester.view.devicePixelRatio = 3.0;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(RepaintBoundary(
+      key: _captureKey,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: ColoredBox(
+          color: const Color(0xFFFFF5DE),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(14),
+              child: Wrap(
+                spacing: 10,
+                runSpacing: 12,
+                children: [
+                  for (final member in CastRegistry.members)
+                    SizedBox(
+                      width: 116,
+                      child: Column(
+                        children: [
+                          CharacterView(id: member.id, size: 104, animate: false),
+                          Text(member.name,
+                              style: const TextStyle(
+                                  fontFamily: 'Baloo2',
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 16,
+                                  height: 1.1,
+                                  color: Color(0xFF2E1D12))),
+                          Text(
+                            member.topics.take(2).map((t) => t.vi).join(', '),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontFamily: 'Nunito',
+                                fontSize: 11.5,
+                                height: 1.2,
+                                color: Color(0xFF5A4334)),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ));
+    await pumpFor(tester, const Duration(milliseconds: 400));
+    await capture(tester, 'g00_cast_gallery');
+  });
+
+  testWidgets('render H: tutor panel, offline build', (tester) async {
+    final s = await start(tester);
+    await tap(tester, 'map_label_main_quest', ms: 900);
+    await tap(tester, 'sheet_open', ms: 1500);
+    await tap(tester, 'lesson_card_mq1_04', ms: 1500);
+    await tap(tester, 'lesson_tutor', ms: 1200);
+    await capture(tester, 'h00_tutor_offline_open');
+    await tester.enterText(find.byKey(const ValueKey('tutor_input')), 'Vì sao code của mình không chạy?');
+    await pumpFor(tester, const Duration(milliseconds: 200));
+    await tap(tester, 'tutor_send', ms: 1500);
+    await capture(tester, 'h01_tutor_offline_answer');
+    await tap(tester, 'tutor_hint_ladder', ms: 1200);
+    await capture(tester, 'h02_tutor_hint_ladder');
+    await finish(tester, s);
+  });
+
+  testWidgets('render I: tutor panel with an AI answer (static preview provider)', (tester) async {
+    final s = await start(tester, tutorAi: true);
+    await tap(tester, 'map_label_main_quest', ms: 900);
+    await tap(tester, 'sheet_open', ms: 1500);
+    await tap(tester, 'lesson_card_mq1_04', ms: 1500);
+    await tap(tester, 'lesson_tutor', ms: 1200);
+    await tap(tester, 'tutor_quick_explain', ms: 1500);
+    await capture(tester, 'i00_tutor_ai_answer');
+    await tap(tester, 'tutor_quick_challenge', ms: 1500);
+    await tap(tester, 'tutor_close', ms: 900);
+    await capture(tester, 'i01_lesson_with_tutor_button');
     await finish(tester, s);
   });
 }
