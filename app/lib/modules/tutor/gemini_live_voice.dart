@@ -79,7 +79,7 @@ class GeminiLiveVoice {
             'speechConfig': <String, Object>{
               'languageCode': language == 'vi' ? 'vi-VN' : 'en-US',
               'voiceConfig': <String, Object>{
-                'prebuiltVoiceConfig': <String, Object>{'voiceName': 'Aoede'},
+                'prebuiltVoiceConfig': <String, Object>{'voiceName': characterName == 'Kai' ? 'Puck' : 'Aoede'},
               },
             },
           },
