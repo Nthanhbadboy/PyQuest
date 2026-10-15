@@ -1,6 +1,3 @@
-# docs/TECHNICAL_ARCHITECTURE.md
-
-```markdown
 # PyQuest — Technical Architecture
 
 > Tài liệu này xác định **xây PyQuest bằng cách nào**:
@@ -8,6 +5,10 @@
 > quảng cáo, thanh toán và các quyết định kỹ thuật quan trọng.
 > Tài liệu **không** định nghĩa lại luật chơi (xem `GAME_DESIGN.md`)
 > và **không** định nghĩa lại triết lý sản phẩm (xem `PRODUCT_VISION.md`).
+>
+> Thuật ngữ (**Home Map**, **Main Map**, **Main Quest**, **Mini-game Play Mode**,
+> **Mini-game Creator Mode**, **Side Maps**, **Nhà Thành Tích**, **Adventure Recap**)
+> dùng theo định nghĩa tại `PRODUCT_VISION.md`.
 
 ---
 
@@ -44,35 +45,80 @@ Có ba lựa chọn, mỗi lựa chọn có đánh đổi rõ ràng.
 
 ### 2.2. Quyết định: Chọn phương án C
 
-**Giai đoạn 1–3 (Foundation → Main Quest):**
-- Dùng **interpreter mô phỏng** viết bằng Dart.
-- Hỗ trợ tập lệnh Python cơ bản: `print()`, biến, số, chuỗi,
-  `if/else`, `for`, `while`, danh sách, hàm đơn giản.
-- Không hỗ trợ: import module, file I/O, mạng, `eval`, `exec`,
-  class phức tạp, decorator, generator.
+**Trước hết — dùng interpreter mô phỏng viết bằng Dart (tập con giới hạn).**
+Interpreter này là **một phần của lõi sản phẩm**, không phải bước phụ:
 
-**Giai đoạn 4 (Python runtime đầy đủ):**
+- Nó cần có **trước hoặc cùng lúc** với các bài Main Quest chạy code và các màn
+  Creator Mode có xem/chạy code.
+- Hỗ trợ **tập con** Python-like: `print()`, biến, số, chuỗi, `if/else`, `for`,
+  `while`, danh sách, hàm đơn giản.
+- **Không** hỗ trợ: import module, file I/O, mạng, `eval`, `exec`, class phức tạp,
+  decorator, generator.
+
+**Lát cắt dọc đầu tiên KHÔNG cần interpreter.** Luồng
+"mở app → chơi một mini-game → lưu kết quả → mở lại vẫn còn kết quả"
+chỉ cần Play Mode + lưu dữ liệu, có thể hoàn thành trước khi interpreter tồn tại.
+
+**Main Quest không phụ thuộc interpreter ở mọi màn.** Chỉ những màn có chạy code
+(bài tập code, màn Creator Mode mở code) mới phụ thuộc. Các màn lý thuyết, ghép
+khối, và điều khiển có cấu trúc **không** cần interpreter.
+
+**Sau này — chỉ đánh giá Python thật nếu có lý do rõ ràng:**
 - Đánh giá nhúng Python thật qua một trong các phương án:
   - `chaquopy` (Android native).
   - `python-for-android` với bridge.
   - RustPython biên dịch sang WASM.
-- Chỉ chuyển khi mô phỏng đã chứng minh được giá trị sư phạm.
+- **Chỉ chuyển** khi mô phỏng đã chứng minh được giá trị sư phạm và Python thật
+  mang lại lợi ích rõ ràng. Không cam kết trước.
 
-### 2.3. Giới hạn tài nguyên bắt buộc
+> **Không** tuyên bố trẻ đang chạy "Python thật" khi implementation chỉ mô phỏng
+> một tập con. Giao diện và tài liệu phải nói rõ giới hạn này.
 
-Bất kể dùng mô phỏng hay Python thật, **phải** áp dụng:
+### 2.3. Tập con được hỗ trợ & kiểm soát thực thi
 
-| Giới hạn | Giá trị | Lý do |
+Đây là **interpreter mô phỏng một tập con có giới hạn**, **không** phải một
+sandbox Python đa dụng. Thiết kế an toàn phải dựa trên các biện pháp
+**thực sự thi hành được** trong interpreter, không dựa vào một giá trị cấu hình
+đơn lẻ.
+
+#### 2.3.1. Cú pháp và phép toán được phép (tập con khởi điểm)
+
+- **Cho phép:** literal số/chuỗi/bool; gán biến; biểu thức số học và so sánh;
+  `print()`; `if/elif/else`; `for ... in range(...)`; `while`; list cơ bản và
+  truy cập theo chỉ số; `def` với tham số và `return`; gọi hàm.
+- **Không cho phép:** import; truy cập file; mạng; `eval`/`exec`; `class`;
+  decorator; generator; `async`; và mọi truy cập tài nguyên hệ thống.
+
+#### 2.3.2. Kiểm soát có thể thi hành
+
+| Kiểm soát | Cách thi hành | Giá trị |
 |---|---|---|
-| Thời gian chạy tối đa | **3 giây** | Tránh vòng lặp vô hạn |
-| Số bước thực thi tối đa | **100.000** | Tránh treo máy |
-| Bộ nhớ tối đa | **32 MB** | Tránh tràn bộ nhớ |
-| Độ sâu đệ quy | **50** | Tránh tràn stack |
-| Kích thước output | **10 KB** | Tránh spam log |
-| Số lần in mỗi giây | **100** | Tránh spam console |
+| **Ngân sách bước (step budget)** | Đếm số "bước" ngay trong vòng lặp interpreter; dừng khi vượt ngưỡng. Đây là **ràng buộc cứng chính**. | 100.000 bước (**TBD** — cần hiệu chỉnh theo trải nghiệm thực tế) |
+| **Độ sâu gọi/đệ quy** | Bộ đếm call-depth tường minh, tăng khi gọi hàm, giảm khi `return`. | 50 (**TBD**) |
+| **Kích thước output** | Cộng dồn độ dài output; dừng/khóa khi vượt ngưỡng. | 10 KB (**TBD**) |
+| **Kích thước collection** | Chặn khi list vượt độ dài tối đa. | **TBD** (chưa có giá trị hợp lý) |
+| **Số lần in mỗi giây** | Đếm và gộp output trong cửa sổ thời gian. | 100/giây (**TBD**) |
 
-Khi vượt giới hạn: dừng thực thi an toàn, hiển thị thông báo thân thiện
-cho trẻ (không hiển thị lỗi kỹ thuật thô).
+#### 2.3.3. Ngắt/hủy thực thi — thiết kế đúng
+
+- **Timeout wall-clock một mình KHÔNG dừng được code CPU-bound** chạy đồng bộ
+  trong cùng isolate: một `while True` sẽ chặn luồng và không nhường quyền cho
+  bộ hẹn giờ. Vì vậy **không** được mô tả "đặt 3 giây là tự dừng".
+- Cách làm đúng (chọn một, thiết kế để có thể thay):
+  - **Ưu tiên:** chặn bằng **ngân sách bước** (2.3.2) — kiểm tra mỗi bước, luôn
+    dừng an toàn bất kể code làm gì.
+  - Nếu cần hủy giữa chừng theo yêu cầu người dùng: chạy interpreter trong một
+    **isolate riêng** và **hủy isolate** khi người dùng bấm dừng.
+- **Giới hạn bộ nhớ:** không thể thi hành "trần cứng" chỉ bằng một giá trị cấu
+  hình trong tiến trình Dart. Cách khả thi: giới hạn collection + ngân sách bước
+  + isolate riêng. Giá trị "32 MB" cũ chỉ là **mục tiêu tham khảo**, không phải
+  ràng buộc được bảo đảm → đánh dấu **TBD** cho tới khi có cơ chế đo đáng tin.
+
+#### 2.3.4. Thông báo khi vượt giới hạn
+
+Khi vượt giới hạn: dừng thực thi an toàn và hiển thị thông báo **thân thiện với
+trẻ** (ví dụ: "Chương trình chạy hơi lâu rồi! Mình thử làm ngắn lại nhé?"),
+**không** hiển thị lỗi kỹ thuật thô.
 
 ### 2.4. Giao diện abstraction
 
@@ -168,23 +214,29 @@ abstract class AchievementService {
 
 ## 4. Lưu dữ liệu
 
-### 4.1. Quyết định: SQLite cục bộ
+### 4.1. Quyết định: một database SQLite cục bộ
 
-- **Giai đoạn đầu:** một file SQLite, bảng tách theo module logic.
-- **Giai đoạn sau:** nếu cần, tách thành database vật lý riêng theo module.
+- **Một file SQLite duy nhất**, các bảng tách theo module logic.
+- **Không** tạo database vật lý riêng cho từng module. Chỉ tách khi có lý do cụ
+  thể được ghi rõ trong tài liệu (ví dụ: yêu cầu hiệu năng đo được); mặc định là
+  **một database**.
 - **Không** dùng file JSON rời rạc cho dữ liệu gameplay quan trọng
-  (dễ hỏng, khó migrate, khó query).
+  (dễ hỏng, khó migrate, khó query). `game_config.json` chỉ chứa **cấu hình
+  tĩnh**, không phải trạng thái gameplay.
 
 ### 4.2. Bảng theo module
 
 | Module | Bảng | Dữ liệu sở hữu |
 |---|---|---|
-| Progress | `progress`, `skills` | Bài học đã hoàn thành, XP, kỹ năng đã nắm |
+| Progress | `progress`, `skills` | Bài học đã hoàn thành, kỹ năng đã nắm |
+| XP & Level | `player_state` | Tổng XP, cấp hiện tại |
 | Games | `game_results`, `unlocked_levels` | Điểm cao, màn đã mở, sao |
-| Energy | `energy_state` | Năng lượng hiện tại, thời điểm hồi tiếp theo |
-| Purchases | `purchases` | Quyền sở hữu bản đồ, trạng thái Pro |
-| Settings | `settings` | Ngôn ngữ, âm thanh, nhạc nền |
+| Energy | `energy_state` | Năng lượng hiện tại, năng lượng tối đa, thời điểm hồi tiếp theo |
+| Rewarded ads | `rewarded_ad_claims` | Số lượt quảng cáo hợp lệ trong ngày, theo ngày địa phương |
+| Daily quests | `daily_quests` | Nhiệm vụ ngày, trạng thái hoàn thành, ngày áp dụng |
 | Achievements | `achievements` | Huy hiệu đã mở, thời điểm mở |
+| Purchases | `purchases` | Bản ghi mua hàng + trạng thái **xác minh** (không phải bằng chứng quyền sở hữu cuối cùng) |
+| Settings | `settings` | Ngôn ngữ, âm thanh, nhạc nền, `schema_version` |
 
 ### 4.3. Schema mẫu
 
@@ -220,7 +272,38 @@ CREATE TABLE purchases (
   verified BOOLEAN NOT NULL DEFAULT 0,
   purchased_at INTEGER NOT NULL
 );
+
+CREATE TABLE player_state (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  total_xp INTEGER NOT NULL DEFAULT 0,
+  level INTEGER NOT NULL DEFAULT 1
+);
+
+-- Chống cộng trùng phần thưởng quảng cáo theo ngày địa phương.
+CREATE TABLE rewarded_ad_claims (
+  local_day TEXT NOT NULL,          -- ví dụ '2026-10-15'
+  claims_used INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (local_day)
+);
+
+-- Nhiệm vụ ngày: khóa theo (ngày, nhiệm vụ) để không cộng lại.
+CREATE TABLE daily_quests (
+  local_day TEXT NOT NULL,
+  quest_id TEXT NOT NULL,
+  completed INTEGER NOT NULL DEFAULT 0,
+  rewarded INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (local_day, quest_id)
+);
+
+CREATE TABLE achievements (
+  achievement_id TEXT PRIMARY KEY,
+  unlocked_at INTEGER NOT NULL
+);
 ```
+
+> Ghi chú: `UNIQUE(lesson_id)`, `UNIQUE(game_id, level_id)`, khóa chính của
+> `rewarded_ad_claims`, `daily_quests`, `achievements` là cơ chế **chống cộng
+> trùng** — xem mục 4.6.
 
 ### 4.4. Quy tắc sở hữu dữ liệu
 
@@ -235,6 +318,36 @@ CREATE TABLE purchases (
 - Migration chạy khi app khởi động, trước khi load UI.
 - Mỗi migration là một hàm Dart thuần, không phụ thuộc UI.
 - Luôn có đường lùi: sao lưu database trước khi migrate.
+
+### 4.6. Chống cộng trùng & khôi phục sau khi mở lại app
+
+Mục tiêu: các sự kiện hoàn thành lặp lại hoặc việc **thoát/mở lại app** không
+được cộng phần thưởng "một lần" hai lần (xem quy tắc ở `GAME_DESIGN.md` mục 4.4).
+
+**Cơ chế:**
+
+- **Ghi "lần đầu" bằng INSERT có ràng buộc duy nhất.** Ví dụ: hoàn thành bài học
+  → `INSERT INTO progress(lesson_id, ...)`. Nếu `lesson_id` đã tồn tại, lệnh
+  thất bại và **không** cộng XP. Tương tự với `game_results`.
+- **XP/level cập nhật trong cùng transaction** với bản ghi "lần đầu". Nếu bản ghi
+  đã tồn tại, bỏ qua cả XP.
+- **Quảng cáo thưởng:** tăng `claims_used` trong `rewarded_ad_claims` **chỉ sau**
+  callback xác nhận hợp lệ. Đọc lại số lượt trước khi cho phép xem.
+- **Nhiệm vụ ngày & ôn tập:** kiểm tra khóa `(local_day, quest_id)` trước khi
+  cộng; dùng ngày **địa phương** để reset.
+- **Tính idempotent:** xử lý cùng một sự kiện nhiều lần (do retry, resume,
+  hoặc mở lại app) cho kết quả như xử lý một lần.
+
+### 4.7. Bản ghi cục bộ vs quyền sở hữu đã xác minh
+
+- Bảng `purchases` là **bản ghi cục bộ + dấu xác minh**, **không** phải bằng
+  chứng cuối cùng về quyền sở hữu.
+- Một boolean cục bộ hoặc file cục bộ có thể chỉnh sửa **không** đủ để xác nhận
+  đã mua. Quyền sở hữu phải được **truy vấn/xác minh lại** qua hệ thống thanh
+  toán nền tảng (xem mục 7).
+- **Không cần backend ở giai đoạn Foundation.** Có thể dùng truy vấn Google Play
+  Billing ngay trên thiết bị; chỉ cân nhắc server khi yêu cầu thực tế đòi hỏi
+  xác minh tập trung (xem mục 12).
 
 ---
 
@@ -288,6 +401,9 @@ chỉ cần phát sự kiện đúng chuẩn.
 
 - Chỉ dùng **rewarded ads** ở giai đoạn đầu.
 - Không dùng interstitial, banner, native ads cho trẻ nhỏ.
+- **Chưa xác nhận** cấu hình ad network này đáp ứng chính sách hướng tới trẻ em.
+  Phải kiểm tra **Google Play Families** và chính sách của mạng quảng cáo **trước
+  khi bật quảng cáo thật**; không mặc định là đã tuân thủ.
 - Đánh giá lại khi Google Play Families có chính sách mới.
 
 ### 6.2. Luồng quảng cáo thưởng
@@ -321,11 +437,26 @@ Callback:
 - **Chỉ** cộng thưởng sau khi SDK xác nhận hợp lệ.
 - Ghi log lượt xem để giới hạn 3 lần/ngày.
 
-### 6.4. Trạng thái Pro
+### 6.4. Trạng thái Pro & nguồn năng lượng qua quảng cáo
 
-- Người dùng Pro: ẩn toàn bộ nút quảng cáo.
-- Không hiển thị quảng cáo dù ở bất kỳ màn nào.
-- Trạng thái Pro lưu trong `purchases`, xác minh qua billing.
+**Nguyên tắc giữ nguyên:**
+- Quảng cáo thưởng là **tùy chọn**; Main Quest và nội dung học cốt lõi luôn truy
+  cập được **không cần** xem quảng cáo.
+- Chỉ cộng thưởng sau **xác nhận hợp lệ** từ SDK.
+- Quảng cáo **thất bại** không trừ năng lượng và không tiêu mất lượt.
+- Pro **không** khóa Main Quest.
+- Trạng thái Pro lưu trong `purchases`, **xác minh qua billing** (không tin cờ cục bộ).
+
+> **TBD — cần quyết định sản phẩm.** "Pro bỏ quảng cáo" và "quảng cáo thưởng là
+> cách tùy chọn để thêm năng lượng" đang **xung đột** nếu Pro ẩn hết nút quảng
+> cáo: người dùng Pro sẽ mất nguồn năng lượng đó. Cần chốt một trong hai:
+> (a) Pro vẫn được **tự nguyện** xem quảng cáo thưởng, hoặc (b) Pro có **cách
+> công bố rõ khác** để nhận phần năng lượng tương đương.
+> Không tự đặt chính sách monetization mới trước khi quyết định. Xem
+> `PRODUCT_VISION.md` mục 3.3.
+
+**Phạm vi (đã chốt):** nếu Pro bỏ quảng cáo, chỉ bỏ **quảng cáo** — không đụng
+tới quyền học, không khóa nội dung cốt lõi.
 
 ---
 
@@ -516,11 +647,13 @@ dựng ngay framework test nặng nề.
 - Toàn bộ tiến trình lưu cục bộ ở giai đoạn đầu.
 - Nếu thêm cloud sync sau: mã hóa khi truyền, xin consent rõ ràng.
 
-### 11.3. Python runtime
+### 11.3. Interpreter
 
-- Chạy trong sandbox, không truy cập file hệ thống.
+- Interpreter mô phỏng **không** có quyền truy cập file hệ thống hay mạng.
 - Không cho phép import module hệ thống.
-- Giới hạn tài nguyên như mục 2.3.
+- Kiểm soát thực thi như mục 2.3.
+- Nếu sau này nhúng Python thật: chạy trong sandbox, áp dụng lại các kiểm soát và
+  đánh giá rủi ro bảo mật trước khi phát hành.
 
 ---
 
@@ -530,11 +663,14 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 
 | Quyết định | Khi nào chốt |
 |---|---|
-| Python thật hay mô phỏng ở giai đoạn 4 | Sau khi mô phỏng chứng minh giá trị sư phạm |
+| Python thật hay mô phỏng sau này | Sau khi mô phỏng chứng minh giá trị sư phạm |
 | Có cần server backend không | Khi cần cloud sync hoặc xác minh purchase tập trung |
 | Có dùng Firebase không | Khi cần analytics, crash reporting, remote config |
 | Có hỗ trợ iOS ngay không | Sau khi Android ổn định |
 | Localization sang ngôn ngữ nào | Trước giai đoạn hoàn thiện |
+| Người dùng Pro có được xem quảng cáo thưởng không | Quyết định sản phẩm (xem 6.4) |
+| Giá trị cụ thể của ngân sách bước, trần collection, mục tiêu bộ nhớ | Sau khi đo thực tế interpreter (xem 2.3) |
+| Ngưỡng cấp mở chặng 2/3 và giới hạn XP ôn tập | Quyết định sản phẩm (xem `GAME_DESIGN.md` 4.4) |
 
 ---
 
@@ -559,10 +695,4 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 - [`PRODUCT_VISION.md`](PRODUCT_VISION.md) — triết lý sản phẩm, thế giới, mô hình kinh doanh.
 - [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, XP, cân bằng độ khó.
 - [`ROADMAP.md`](ROADMAP.md) — giai đoạn triển khai và tiêu chí nghiệm thu.
-```
-
----
-
-Xong tài liệu **4/5: `docs/TECHNICAL_ARCHITECTURE.md`**.
-
-Nhắn **"5"** để mình viết tài liệu cuối cùng — dự kiến là `docs/ROADMAP.md` (giai đoạn triển khai, tiêu chí nghiệm thu, thứ tự làm, kiểm thử theo giai đoạn).
+- [`../README.md`](../README.md) — điểm vào dự án.

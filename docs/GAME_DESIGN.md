@@ -1,12 +1,13 @@
-# docs/GAME_DESIGN.md
-
-```markdown
 # PyQuest — Game Design
 
 > Tài liệu này xác định **luật chơi và thông số định lượng** của PyQuest:
 > năng lượng, XP, tiến trình, phần thưởng, điều kiện mở khóa, cân bằng độ khó.
 > Tài liệu **không** định nghĩa lại triết lý sản phẩm (xem `PRODUCT_VISION.md`)
 > và **không** đi vào quyết định kỹ thuật (xem `TECHNICAL_ARCHITECTURE.md`).
+>
+> Thuật ngữ (**Home Map**, **Main Map**, **Main Quest**, **Mini-game Play Mode**,
+> **Mini-game Creator Mode**, **Side Maps**, **Nhà Thành Tích**, **Adventure Recap**)
+> dùng theo định nghĩa tại `PRODUCT_VISION.md`.
 
 **Nguyên tắc quan trọng:** mọi con số trong tài liệu này là **giá trị khởi điểm**,
 được đặt trong file cấu hình (không rải rác trong code) để có thể tinh chỉnh
@@ -57,22 +58,33 @@ Chọn nhiệm vụ → Học/Chơi → Nhận thưởng → Năng lượng gi�
 
 | Thông số | Giá trị | Ghi chú |
 |---|---|---|
-| Năng lượng tối đa (ban đầu) | **20** | Có thể tăng qua tiến trình |
-| Năng lượng tối đa (trần) | **40** | Đạt được ở Game Master |
-| Thời gian hồi 1 đơn vị | **10 phút** | Hồi đầy 20 đơn vị trong ~3h20 |
-| Năng lượng nhận khi xem quảng cáo thưởng | **+5** | Tối đa 3 lần/ngày |
-| Năng lượng khởi đầu khi tạo tài khoản | **20** | Đầy bình |
+| Năng lượng tối đa — ban đầu | **20** | Mức mặc định khi tạo tài khoản (đầy bình) |
+| Năng lượng tối đa — trần | **40** | Chỉ đạt được theo tiến trình bên dưới |
+| Thời gian hồi 1 đơn vị | **10 phút** | Hồi đầy 20 đơn vị đầu tiên trong ~3h20 |
+| Năng lượng nhận khi xem quảng cáo thưởng | **+5** | Tối đa 3 lần hợp lệ mỗi ngày |
+
+**Tiến trình tăng năng lượng tối đa** (khớp với bảng quyền lợi cấp độ, mục 4.3):
+
+| Mức tối đa | Mở khóa khi | Ghi chú |
+|---|---|---|
+| **20** | Mặc định khi bắt đầu | |
+| **25** | Đạt cấp 8 | +5 |
+| **30** | Đạt cấp 15 | +5 |
+| **40** | Hoàn thành chặng 4 (Game Master), tương ứng cấp 20 | +10 |
+
+> **Quy tắc:** năng lượng tối đa chỉ tăng theo bảng trên. Trần **40** gắn với
+> hoàn thành chặng cuối, **không** tự mở chỉ vì đạt một cấp trung gian.
 
 ### 3.2. Mức tiêu hao theo hoạt động
 
 | Hoạt động | Tiêu hao | Ghi chú |
 |---|---|---|
-| Chơi mini-game (Play Mode) | **2** | Một màn |
-| Chơi mini-game (Creator Mode) | **0** | Không tiêu hao — đây là học, không phải chơi |
-| Bài học Main Quest | **1** | Một bài học lý thuyết |
-| Bài tập Main Quest | **1** | Một bài tập code |
-| Thử thách cuối chặng | **3** | Chỉ khi bắt đầu, không tính khi thử lại |
-| Nhiệm vụ ngày | **2** | Mỗi nhiệm vụ |
+| Chơi mini-game (**Mini-game Play Mode**) | **2** | Một màn, chỉ khi bắt đầu màn mới |
+| Chơi mini-game (**Mini-game Creator Mode**) | **0** | Không tiêu hao — đây là học, không phải chơi |
+| Bài học **Main Quest** | **1** | Một bài học lý thuyết |
+| Bài tập **Main Quest** | **1** | Một bài tập code |
+| Thử thách cuối chặng | **3** | Chỉ khi **bắt đầu lần đầu**, **không** tính khi thử lại |
+| Nhiệm vụ ngày | **0** | **Không** tiêu hao năng lượng riêng — hoạt động gốc đã tiêu hao theo dòng tương ứng (xem mục 8) |
 | Xem lại bài cũ | **0** | Luôn miễn phí |
 | Đọc truyện Python | **0** | Luôn miễn phí |
 | Xem bộ sưu tập | **0** | Luôn miễn phí |
@@ -88,9 +100,17 @@ Chọn nhiệm vụ → Học/Chơi → Nhận thưởng → Năng lượng gi�
 ### 3.4. Quy tắc quảng cáo thưởng
 
 - Chỉ hiển thị nút "Nhận thêm năng lượng" khi năng lượng < tối đa.
-- Tối đa **3 lần/ngày**, reset vào 00:00 giờ địa phương.
+- Tối đa **3 lần hợp lệ/ngày**, reset vào 00:00 giờ địa phương.
 - Chỉ cộng **+5** năng lượng sau khi SDK xác nhận hợp lệ.
-- Nếu quảng cáo thất bại: không trừ lượt, không trừ năng lượng, hiển thị thông báo nhẹ.
+- Nếu quảng cáo thất bại hoặc bị hủy trước khi hoàn thành: **không** trừ lượt,
+  **không** trừ năng lượng, hiển thị thông báo nhẹ.
+- Lượt xem hợp lệ phải được **lưu lại (persist)** để lần mở app sau không thể
+  nhận thêm quá 3 lần/ngày (xem `TECHNICAL_ARCHITECTURE.md`).
+
+> **TBD — cần quyết định sản phẩm.** Quảng cáo thưởng là cách **tùy chọn** để thêm
+> năng lượng. Nếu gói Pro ẩn toàn bộ nút quảng cáo, cần chốt người dùng Pro có
+> được tự nguyện xem quảng cáo thưởng hay có cách công bố rõ khác để nhận phần
+> năng lượng tương đương. Xem `PRODUCT_VISION.md` mục 3.3.
 
 ### 3.5. Điều **không** xảy ra khi hết năng lượng
 
@@ -105,17 +125,20 @@ Chọn nhiệm vụ → Học/Chơi → Nhận thưởng → Năng lượng gi�
 
 ### 4.1. Nguồn XP
 
-| Hành động | XP nhận được | Ghi chú |
-|---|---|---|
-| Hoàn thành bài học Main Quest | **+10** | Lần đầu |
-| Hoàn thành bài tập Main Quest | **+15** | Lần đầu |
-| Hoàn thành một màn mini-game | **+20** | Lần đầu |
-| Hoàn thành mini-game không lỗi | **+30** | Thưởng thêm |
-| Thử thách cuối chặng | **+100** | Cột mốc lớn |
-| Nhiệm vụ ngày | **+25** | Mỗi nhiệm vụ |
-| Xem lại bài cũ | **+2** | Khuyến khích ôn tập |
-| Tự tạo game chạy được | **+50** | Thưởng sáng tạo |
-| Phát hiện lỗi trong Bug Hunter | **+15** | Mỗi lỗi tìm được |
+Cột **Loại** quyết định phần thưởng có được cộng lặp lại hay không.
+Chi tiết chống cộng trùng ở mục 4.4.
+
+| Hành động | XP | Loại | Ghi chú |
+|---|---|---|---|
+| Hoàn thành bài học Main Quest | **+10** | Một lần / bài | Chỉ lần đầu hoàn thành bài đó |
+| Hoàn thành bài tập Main Quest | **+15** | Một lần / bài tập | Chỉ lần đầu hoàn thành bài tập đó |
+| Hoàn thành một màn mini-game | **+20** | Một lần / màn | Theo `game_id` + `level_id` |
+| Thưởng mini-game không lỗi | **+30** | Một lần / màn | Chỉ cộng cùng lúc với lần hoàn thành đầu tiên, nếu đạt điều kiện |
+| Thử thách cuối chặng | **+100** | Một lần / chặng | Chỉ lần đầu hoàn thành thử thách chặng |
+| Nhiệm vụ ngày | **+25** | Lặp lại, giới hạn | Tối đa 1 lần / nhiệm vụ / ngày |
+| Xem lại bài cũ | **+2** | Lặp lại, giới hạn | Mỗi bài tối đa 1 lần XP ôn tập / ngày (**TBD** — xem 4.4) |
+| Game tự tạo chạy được (lần đầu) | **+50** | Một lần / game tự tạo | Thưởng sáng tạo, không cộng lại mỗi lần chạy |
+| Phát hiện lỗi trong Bug Hunter | **+15** | Một lần / lỗi | Mỗi lỗi (định danh duy nhất) chỉ cộng một lần |
 
 ### 4.2. Công thức cấp độ
 
@@ -144,13 +167,50 @@ XP_cần(n) = 100 × n + 50 × (n − 1)
 | 3 | Thú cưng đầu tiên |
 | 5 | Trang phục cho nhân vật đồng hành |
 | 8 | Năng lượng tối đa +5 (lên 25) |
-| 10 | Mở chặng 2 — Game Builder |
+| 10 | Mở chặng 2 — Game Builder (**cần xem lại — xem 4.4**) |
 | 12 | Khu vực sáng tạo trong Nhà Thành Tích |
-| 15 | Năng lượng tối đa +10 (lên 30) |
-| 18 | Mở chặng 3 — Game Creator |
-| 20 | Danh hiệu **Game Master** tạm thời |
+| 15 | Năng lượng tối đa +5 (lên 30) |
+| 18 | Mở chặng 3 — Game Creator (**cần xem lại — xem 4.4**) |
+| 20 | Danh hiệu **Game Master**; hoàn thành chặng 4 mở năng lượng tối đa 40 |
 
 > Cấp độ **không** khóa bài học đã mở. Chỉ mở thêm nội dung mới.
+
+### 4.4. Quy tắc một lần / lặp lại & chống cộng trùng
+
+**Nguyên tắc chung:** mọi phần thưởng "Một lần" phải được cộng **đúng một lần
+cho mỗi đối tượng** (bài học, bài tập, màn, lỗi, game tự tạo), **bất kể** trẻ
+hoàn thành lại bao nhiêu lần, thoát app giữa chừng, hay mở lại app.
+
+| Nhóm | Quy tắc |
+|---|---|
+| **Một lần** | Cộng khi **lần đầu** đối tượng được xác nhận hoàn thành. Xác nhận này được ghi vào database; lần hoàn thành sau **không** cộng lại. |
+| **Thưởng không lỗi (+30)** | Gắn với lần hoàn thành đầu tiên của màn. Không cộng lại khi chơi lại. |
+| **Nhiệm vụ ngày (+25)** | Lặp lại nhưng tối đa **1 lần / nhiệm vụ / ngày**; đếm theo ngày địa phương. |
+| **Ôn tập (+2)** | Lặp lại nhưng phải **giới hạn** để không farm XP vô hạn. |
+| **Thử thách cuối chặng (+100)** | Một lần / chặng. Thử lại không cộng thêm. |
+| **Phát hiện lỗi (+15)** | Mỗi lỗi định danh duy nhất một lần. |
+
+**Chống cộng trùng khi mở lại app:** trạng thái "đã nhận thưởng một lần" và các
+lượt trong ngày (nhiệm vụ ngày, quảng cáo thưởng) phải được lưu bền vững trong
+SQLite và kiểm tra **trước** khi cộng. Xem chi tiết ở
+`TECHNICAL_ARCHITECTURE.md` mục 4.
+
+> **TBD — cần quyết định sản phẩm.** Hai rào chắn cấp độ để mở chặng đang **không
+> nhất quán** với lượng XP thực tế:
+>
+> - Chặng 2 cần **cấp 10**, tức **7.750 XP** tích lũy (theo bảng 4.2).
+> - Chặng 3 cần **cấp 18**, tức hơn **20.000 XP** tích lũy.
+> - Trong khi chặng 1 (12 bài) chỉ cung cấp khoảng vài trăm XP, và toàn bộ Main
+>   Quest (~50 bài + mini-game) khó đạt tới các mốc trên.
+>
+> Cần chốt **một** hướng: (a) giữ công thức cấp độ và **hạ** ngưỡng cấp mở chặng,
+> hoặc (b) giữ ngưỡng cấp và **tăng mạnh** XP/khối lượng nội dung, hoặc (c) bỏ
+> rào cấp độ và mở chặng thuần theo tiến trình bài học. Không tự đặt con số mới
+> trước khi quyết định.
+>
+> Tương tự, **giới hạn XP ôn tập (+2)** cần chốt: hiện chưa có trần, nên về lý
+> thuyết có thể farm vô hạn. Đề xuất mặc định "mỗi bài 1 lần/ngày" nhưng **cần
+> xác nhận**.
 
 ---
 
@@ -183,15 +243,17 @@ Màn tổng kết bài (30 giây)
 
 ### 5.3. Điều kiện mở khóa chặng tiếp theo
 
-| Chặng | Điều kiện |
-|---|---|
-| Chặng 2 | Hoàn thành chặng 1 + đạt cấp 10 |
-| Chặng 3 | Hoàn thành chặng 2 + đạt cấp 18 |
-| Chặng 4 | Hoàn thành chặng 3 + có ít nhất 1 game tự tạo chạy được |
+| Chặng | Điều kiện | Trạng thái |
+|---|---|---|
+| Chặng 2 | Hoàn thành chặng 1 + đạt cấp 10 | Ngưỡng cấp **TBD** (xem 4.4) |
+| Chặng 3 | Hoàn thành chặng 2 + đạt cấp 18 | Ngưỡng cấp **TBD** (xem 4.4) |
+| Chặng 4 | Hoàn thành chặng 3 + có ít nhất 1 game tự tạo chạy được | Chốt |
 
 > Cấp độ chỉ là **rào chắn mềm** để đảm bảo trẻ không nhảy quá nhanh.
 > Nếu trẻ hoàn thành hết bài của chặng nhưng chưa đủ cấp,
 > hiển thị gợi ý ôn tập hoặc chơi mini-game liên quan.
+> **Lưu ý:** điều kiện "hoàn thành chặng trước" luôn đúng; chỉ các **ngưỡng cấp
+> độ** đang chờ quyết định ở mục 4.4.
 
 ---
 
@@ -235,8 +297,19 @@ Màn tổng kết bài (30 giây)
 | 9 | Viết dòng lệnh đơn giản | `print()`, gán biến |
 | 10 | Viết hàm đơn giản | `def`, tham số |
 
-**Quan trọng:** khi ở Creator Mode, hiển thị rõ code Python đang chạy.
-Nếu là mô phỏng, ghi chú rõ giới hạn (ví dụ: "phiên bản đơn giản hóa của Python").
+**Hai cách đổi trò chơi — tách biệt rõ ràng:**
+
+1. **Đổi luật qua điều khiển có cấu trúc sẵn có** (màn 1–8): trẻ chỉnh tham số,
+   ghép khối, hoặc dùng mô hình lệnh do game cung cấp. Cách này **không** đòi hỏi
+   interpreter và **không** chạy code tự do.
+2. **Chạy code Python-like qua interpreter giới hạn** (màn 9–10 và màn có xem code
+   sinh ra): chỉ áp dụng với **tập con cú pháp đã công bố**, không phải Python đầy đủ.
+
+**Quan trọng:**
+- Khi ở Creator Mode, hiển thị rõ đoạn code Python đang chạy.
+- Nếu là mô phỏng, ghi chú rõ giới hạn (ví dụ: "phiên bản đơn giản hóa của Python").
+- Không phải màn Creator Mode nào cũng cần interpreter; chỉ những màn có chạy code
+  mới phụ thuộc vào interpreter giới hạn.
 
 ---
 
@@ -460,12 +533,6 @@ Kết quả thử nghiệm sẽ quyết định điều chỉnh cụ thể.
 ## Tài liệu liên quan
 
 - [`PRODUCT_VISION.md`](PRODUCT_VISION.md) — triết lý sản phẩm, thế giới, mô hình kinh doanh.
-- [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — Python runtime, module, lưu dữ liệu.
+- [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — interpreter, module, lưu dữ liệu.
 - [`ROADMAP.md`](ROADMAP.md) — giai đoạn triển khai và tiêu chí nghiệm thu.
-```
-
----
-
-Xong tài liệu **3/5: `docs/GAME_DESIGN.md`**.
-
-Nhắn **"4"** để mình viết tiếp tài liệu thứ tư — dự kiến là `docs/TECHNICAL_ARCHITECTURE.md` (Flutter, Python runtime, lưu dữ liệu, module, quảng cáo, thanh toán).
+- [`../README.md`](../README.md) — điểm vào dự án.

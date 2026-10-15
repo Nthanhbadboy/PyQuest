@@ -1,12 +1,13 @@
-# docs/ROADMAP.md
-
-```markdown
 # PyQuest — Roadmap
 
 > Tài liệu này xác định **làm gì trước, làm gì sau, và kiểm tra bằng gì**.
 > Mỗi giai đoạn có mục tiêu rõ ràng, phạm vi cụ thể và tiêu chí nghiệm thu.
 > Tài liệu **không** định nghĩa lại luật chơi (xem `GAME_DESIGN.md`)
 > và **không** định nghĩa lại quyết định kỹ thuật (xem `TECHNICAL_ARCHITECTURE.md`).
+>
+> **Thứ tự phụ thuộc:** interpreter mô phỏng (giai đoạn 5) đứng **trước** Main Quest
+> (giai đoạn 6) vì các màn Main Quest chạy code cần nó. Lát cắt dọc đầu tiên
+> (giai đoạn 3) **không** cần interpreter.
 
 ---
 
@@ -51,10 +52,10 @@ Khi lát cắt đó chạy ổn, phần còn lại chủ yếu là **mở rộng
 |---|---|---|---|
 | 1 | **Foundation** | Khung Flutter, điều hướng, lưu dữ liệu, giao diện cơ bản | Ngắn |
 | 2 | **Home Map** | Thế giới chính, nhân vật, âm thanh | Trung bình |
-| 3 | **Một mini-game hoàn chỉnh** | Gameplay, điểm số, lưu kỷ lục, Creator Mode | Trung bình |
-| 4 | **Main Quest** | Bài học Python, bài tập, lưu tiến trình | Dài |
-| 5 | **Python runtime** | Thực thi mã an toàn, giới hạn tài nguyên, xử lý lỗi | Trung bình |
-| 6 | **Energy & Ads** | Hồi năng lượng và quảng cáo thưởng | Ngắn |
+| 3 | **Một mini-game hoàn chỉnh** | Gameplay, điểm số, lưu kỷ lục, Creator Mode — **lát cắt dọc đầu tiên** | Trung bình |
+| 4 | **Energy & Rewarded Ads** | Năng lượng, hồi theo thời gian, quảng cáo thưởng | Ngắn |
+| 5 | **Interpreter mô phỏng** | Thực thi tập con Python-like an toàn, giới hạn tài nguyên, xử lý lỗi | Trung bình |
+| 6 | **Main Quest** | Bài học Python, bài tập, lưu tiến trình | Dài |
 | 7 | **Side Maps & Pro** | Nội dung mở rộng và mua hàng | Trung bình |
 | 8 | **Hoàn thiện** | Localization, accessibility, kiểm thử, build, phát hành | Dài |
 
@@ -74,7 +75,7 @@ và giao diện đủ để bắt đầu gắn module.
 - Khởi tạo project Flutter, cấu trúc thư mục theo `TECHNICAL_ARCHITECTURE.md`.
 - Cấu hình build Android, chạy được trên thiết bị thật.
 - Điều hướng cơ bản giữa các màn hình rỗng.
-- Database SQLite với schema ban đầu (`settings`, `progress`).
+- Database SQLite với schema ban đầu (`settings`, `progress`, `player_state`, `energy_state`).
 - Repository pattern cho việc đọc/ghi dữ liệu.
 - File cấu hình `game_config.json` với các thông số từ `GAME_DESIGN.md`.
 - Màn hình khởi động + màn hình home tạm.
@@ -162,6 +163,8 @@ tư duy thuật toán và dễ chuyển sang code Python.
 - Không làm 5 mini-game cùng lúc.
 - Không làm Creator Mode đầy đủ — chỉ đủ để chứng minh luồng.
 - Không làm Side Maps.
+- **Chưa** áp dụng tiêu hao năng lượng ở lát cắt này; năng lượng được triển khai
+  ở giai đoạn 4.
 
 ### 5.4. Tiêu chí nghiệm thu
 
@@ -180,13 +183,93 @@ tư duy thuật toán và dễ chuyển sang code Python.
 
 ---
 
-## 6. Giai đoạn 4 — Main Quest
+## 6. Giai đoạn 4 — Energy & Rewarded Ads
 
 ### 6.1. Mục tiêu
 
-Tuyến học Python miễn phí, đủ để trẻ thực sự biết lập trình cơ bản.
+Năng lượng hoạt động đúng luật (`GAME_DESIGN.md` mục 3), quảng cáo thưởng tự
+nguyện, an toàn cho trẻ.
 
 ### 6.2. Phạm vi
+
+- Năng lượng: tối đa ban đầu **20**, tiến trình lên **40** theo `GAME_DESIGN.md` 3.1.
+- Tiêu hao theo `GAME_DESIGN.md` 3.2: Play Mode 2, Creator Mode 0, bài/bài tập
+  Main Quest 1, thử thách chặng 3 (lần đầu), ôn tập/đọc truyện/xem bộ sưu tập 0.
+- Năng lượng hồi theo thời gian thực, kể cả khi tắt app; hiển thị thời gian hồi
+  đơn vị tiếp theo.
+- Quảng cáo thưởng AdMob rewarded.
+- Giới hạn **3 lượt hợp lệ/ngày**, reset 00:00 giờ địa phương, **lưu trong database**.
+- Chỉ cộng thưởng sau khi SDK xác nhận hợp lệ.
+- Xử lý quảng cáo thất bại: không trừ lượt, không trừ năng lượng.
+
+### 6.3. Không làm trong giai đoạn này
+
+- Không dùng interstitial, banner, native ads.
+- Không tự động phát quảng cáo.
+- Không hiển thị quảng cáo khi trẻ đang trong bài học.
+
+### 6.4. Tiêu chí nghiệm thu
+
+- [ ] Năng lượng hồi đúng tốc độ (10 phút/đơn vị).
+- [ ] Tắt app 30 phút → mở lại → năng lượng đã hồi đúng.
+- [ ] Tiêu hao đúng luật cho từng hoạt động (`GAME_DESIGN.md` 3.2).
+- [ ] Hết năng lượng vẫn truy cập được nội dung miễn phí (ôn tập, đọc truyện,
+      xem bộ sưu tập, Creator Mode).
+- [ ] Xem quảng cáo thưởng → cộng +5 năng lượng sau khi SDK xác nhận.
+- [ ] Quảng cáo thất bại → không trừ lượt, không trừ năng lượng.
+- [ ] Vượt 3 lượt/ngày → nút ẩn hoặc vô hiệu hóa; thoát/mở lại app **không** reset lượt trong ngày.
+- [ ] Không có quảng cáo nào chen ngang bài học.
+- [ ] Đã kiểm tra chính sách Google Play Families **trước khi bật quảng cáo thật**.
+
+---
+
+## 7. Giai đoạn 5 — Interpreter mô phỏng (tập con giới hạn)
+
+### 7.1. Mục tiêu
+
+Có một interpreter Dart chạy **an toàn** tập con Python-like, phục vụ các màn
+Main Quest chạy code và Creator Mode mở code (xem `TECHNICAL_ARCHITECTURE.md` mục 2).
+
+### 7.2. Phạm vi
+
+- Interpreter mô phỏng tập con: `print()`, biến, số, chuỗi, `if/else`, `for`,
+  `while`, danh sách, hàm đơn giản.
+- Không hỗ trợ: import, file I/O, mạng, `eval`, `exec`, class phức tạp.
+- Kiểm soát thực thi: ngân sách bước, độ sâu gọi, kích thước output, ngắt an toàn
+  (xem `TECHNICAL_ARCHITECTURE.md` mục 2.3). Không dựa vào timeout wall-clock đơn lẻ.
+- Cổng `PythonRuntime` để có thể thay runtime sau này.
+
+### 7.3. Không làm trong giai đoạn này
+
+- Không nhúng Python thật.
+- Không hứa một sandbox Python đa dụng.
+
+### 7.4. Tiêu chí nghiệm thu
+
+- [ ] Chạy được tập con Python-like (in, biến, điều kiện, vòng lặp, hàm đơn giản).
+- [ ] Vòng lặp vô hạn dừng an toàn do **vượt ngân sách bước**, không crash.
+- [ ] Đệ quy sâu dừng an toàn ở ngưỡng độ sâu đã đặt.
+- [ ] Lỗi cú pháp hiển thị thông báo thân thiện với trẻ.
+- [ ] Output bị chặn khi vượt giới hạn.
+- [ ] Không truy cập được file hệ thống, mạng, module hệ thống.
+- [ ] Creator Mode của mini-game mẫu chạy được trên interpreter này.
+
+### 7.5. Đánh giá Python thật (sau này — chưa cam kết)
+
+- Thử nghiệm `chaquopy`, `python-for-android`, hoặc RustPython/WASM.
+- So sánh với mô phỏng về: hiệu năng, độ ổn định, trải nghiệm trẻ.
+- **Chỉ chuyển** nếu mô phỏng đã chứng minh giá trị sư phạm và Python thật mang
+  lại lợi ích rõ ràng. Không đưa vào tiêu chí nghiệm thu giai đoạn này.
+
+---
+
+## 8. Giai đoạn 6 — Main Quest
+
+### 8.1. Mục tiêu
+
+Tuyến học Python miễn phí, đủ để trẻ thực sự biết lập trình cơ bản.
+
+### 8.2. Phạm vi
 
 **Chặng 1 — Code Apprentice (12 bài):**
 - In chữ, biến, số, chuỗi, phép toán, điều kiện.
@@ -212,95 +295,26 @@ Tuyến học Python miễn phí, đủ để trẻ thực sự biết lập tr�
 - Adventure Recap sau mỗi chặng.
 - Nhà Thành Tích đầy đủ.
 
-### 6.3. Không làm trong giai đoạn này
+**Phụ thuộc:** chỉ bài/bài tập có chạy code mới dùng interpreter giai đoạn 5.
+Bài lý thuyết, ghép khối và điều khiển có cấu trúc **không** cần interpreter.
+Tiêu hao năng lượng dùng luật đã có từ giai đoạn 4.
+
+### 8.3. Không làm trong giai đoạn này
 
 - Không làm Side Maps.
-- Không làm Python runtime đầy đủ (dùng mô phỏng từ giai đoạn 5).
 
-### 6.4. Tiêu chí nghiệm thu
+### 8.4. Tiêu chí nghiệm thu
 
 - [ ] Chặng 1 hoàn chỉnh, trẻ (hoặc người test) hoàn thành được 12 bài.
 - [ ] XP, cấp độ, mở khóa chặng hoạt động đúng `GAME_DESIGN.md`.
+      (Ngưỡng cấp mở chặng 2/3 còn **TBD** — xem `GAME_DESIGN.md` mục 4.4.)
 - [ ] Màn tổng kết hiển thị số liệu lấy từ tiến trình đã lưu.
 - [ ] Adventure Recap hiển thị đúng số liệu sau chặng 1.
 - [ ] Nhà Thành Tích hiển thị huy hiệu, tường chiến tích, bộ sưu tập.
 - [ ] Nhiệm vụ ngày reset đúng 00:00 giờ địa phương.
 - [ ] Huy hiệu bí mật không lộ điều kiện.
 - [ ] Chặng 2 mở được khi đủ điều kiện.
-
----
-
-## 7. Giai đoạn 5 — Python runtime
-
-### 7.1. Mục tiêu
-
-Thực thi mã Python an toàn, giới hạn tài nguyên, xử lý lỗi thân thiện.
-
-### 7.2. Phạm vi
-
-**Giai đoạn 5a — Mô phỏng:**
-- Interpreter mô phỏng bằng Dart theo `TECHNICAL_ARCHITECTURE.md`.
-- Hỗ trợ: `print()`, biến, số, chuỗi, `if/else`, `for`, `while`,
-  danh sách, hàm đơn giản.
-- Không hỗ trợ: import, file I/O, mạng, `eval`, `exec`, class phức tạp.
-- Giới hạn tài nguyên: 3 giây, 100.000 bước, 32 MB, độ sâu đệ quy 50.
-
-**Giai đoạn 5b — Đánh giá Python thật:**
-- Thử nghiệm `chaquopy`, `python-for-android`, hoặc RustPython/WASM.
-- So sánh với mô phỏng về: hiệu năng, độ ổn định, trải nghiệm trẻ.
-- **Chỉ chuyển** nếu mô phỏng đã chứng minh giá trị sư phạm
-  và Python thật mang lại lợi ích rõ ràng.
-
-### 7.3. Xử lý lỗi
-
-- Lỗi cú pháp: hiển thị thân thiện, gợi ý sửa.
-- Lỗi runtime: dừng an toàn, không crash app.
-- Vượt giới hạn: thông báo rõ, không hiển thị lỗi kỹ thuật thô.
-
-### 7.4. Tiêu chí nghiệm thu
-
-- [ ] Chạy được code Python cơ bản (in, biến, điều kiện, vòng lặp, hàm).
-- [ ] Vòng lặp vô hạn dừng an toàn sau 3 giây, không crash.
-- [ ] Đệ quy sâu dừng an toàn ở độ sâu 50.
-- [ ] Lỗi cú pháp hiển thị thông báo thân thiện với trẻ.
-- [ ] Output giới hạn ở 10 KB.
-- [ ] Không truy cập được file hệ thống, mạng, module hệ thống.
-- [ ] Creator Mode của ít nhất 1 mini-game dùng runtime này.
-
----
-
-## 8. Giai đoạn 6 — Energy & Ads
-
-### 8.1. Mục tiêu
-
-Năng lượng hoạt động đúng luật, quảng cáo thưởng tự nguyện, an toàn cho trẻ.
-
-### 8.2. Phạm vi
-
-- Năng lượng hồi theo thời gian thực, kể cả khi tắt app.
-- Hiển thị thời gian hồi đơn vị tiếp theo.
-- Tiêu hao theo `GAME_DESIGN.md`.
-- Quảng cáo thưởng AdMob rewarded.
-- Giới hạn 3 lần/ngày, reset 00:00 giờ địa phương.
-- Chỉ cộng thưởng sau khi SDK xác nhận hợp lệ.
-- Xử lý quảng cáo thất bại: không trừ lượt, không trừ năng lượng.
-
-### 8.3. Không làm trong giai đoạn này
-
-- Không dùng interstitial, banner, native ads.
-- Không tự động phát quảng cáo.
-- Không hiển thị quảng cáo khi trẻ đang trong bài học.
-
-### 8.4. Tiêu chí nghiệm thu
-
-- [ ] Năng lượng hồi đúng tốc độ (10 phút/đơn vị).
-- [ ] Tắt app 30 phút → mở lại → năng lượng đã hồi đúng.
-- [ ] Hết năng lượng vẫn truy cập được nội dung miễn phí.
-- [ ] Xem quảng cáo thưởng → cộng +5 năng lượng sau khi SDK xác nhận.
-- [ ] Quảng cáo thất bại → không trừ lượt, không trừ năng lượng.
-- [ ] Vượt 3 lần/ngày → nút ẩn hoặc vô hiệu hóa.
-- [ ] Không có quảng cáo nào chen ngang bài học.
-- [ ] Đã kiểm tra chính sách Google Play Families.
+- [ ] Không cộng trùng phần thưởng "một lần" sau khi thoát/mở lại app.
 
 ---
 
@@ -385,7 +399,7 @@ dựng framework test nặng nề. Thực hiện ở giai đoạn 8, nhưng có 
 | 1 | **Người chơi mới** — mở app → khám phá bản đồ → chơi mini-game → học Python → nhận thành tích | Luồng onboarding hoàn chỉnh |
 | 2 | **Người chơi quay lại** — hoàn thành một phần → đóng app → mở lại → tiếp tục đúng tiến trình | Lưu dữ liệu bền vững |
 | 3 | **Người chơi hết năng lượng** — chuyển sang nội dung miễn phí → chờ hồi hoặc nhận thưởng quảng cáo hợp lệ | Năng lượng không chặn việc học |
-| 4 | **Người chơi sáng tạo** — sửa quy tắc mini-game → chạy thử → gặp lỗi → sửa lỗi → hoàn thành trò chơi | Creator Mode + Python runtime |
+| 4 | **Người chơi sáng tạo** — sửa quy tắc mini-game → chạy thử → gặp lỗi → sửa lỗi → hoàn thành trò chơi | Creator Mode + interpreter giới hạn |
 | 5 | **Người chơi Pro** — mua hoặc khôi phục Pro → kiểm tra quyền lợi; mô phỏng lỗi giao dịch và trạng thái chưa xác minh | Thanh toán an toàn |
 | 6 | **Người chơi gặp sự cố** — mất mạng, dữ liệu chưa lưu, runtime lỗi → app xử lý an toàn | Xử lý lỗi, không mất tiến trình |
 
@@ -451,6 +465,17 @@ Bắt đầu **giai đoạn 1 — Foundation**:
 
 Khi giai đoạn 1 đạt tiêu chí nghiệm thu → chuyển sang giai đoạn 2.
 
+### 13.4. Quyết định còn mở (TBD)
+
+Các điểm sau **chưa chốt** và **không** được tự ý đặt số liệu:
+
+| Điểm mở | Câu hỏi cần quyết định | Nguồn |
+|---|---|---|
+| Nhóm quảng cáo thưởng cho Pro | Người dùng Pro vẫn được tự nguyện xem quảng cáo thưởng, hay có cách công bố rõ khác để nhận năng lượng? | `PRODUCT_VISION.md` 3.3, `TECHNICAL_ARCHITECTURE.md` 6.4 |
+| Ngưỡng cấp mở chặng 2/3 | Giữ công thức cấp và hạ ngưỡng, hay giữ ngưỡng và tăng XP/nội dung, hay bỏ rào cấp độ? | `GAME_DESIGN.md` 4.4 |
+| Giới hạn XP ôn tập | Ôn tập lặp lại có bị giới hạn (ví dụ 1 lần/bài/ngày) không? | `GAME_DESIGN.md` 4.4 |
+| Giá trị kiểm soát interpreter | Ngân sách bước, trần collection, mục tiêu bộ nhớ cụ thể | `TECHNICAL_ARCHITECTURE.md` 2.3 |
+
 ---
 
 ## 14. Nguyên tắc cuối cùng
@@ -470,31 +495,12 @@ và đủ công cụ để trẻ tự tạo ra thế giới của riêng mình.
 
 - [`PRODUCT_VISION.md`](PRODUCT_VISION.md) — triết lý sản phẩm, thế giới, mô hình kinh doanh.
 - [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, XP, cân bằng độ khó.
-- [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — Python runtime, module, lưu dữ liệu.
-```
+- [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — interpreter, module, lưu dữ liệu.
+- [`../README.md`](../README.md) — điểm vào dự án.
 
 ---
 
-Xong tài liệu **5/5: `docs/ROADMAP.md`**.
-
-## Tổng kết bộ tài liệu PyQuest
-
-Bạn đã có đủ bộ tài liệu để bắt đầu:
-
-| # | File | Vai trò |
-|---|---|---|
-| 1 | `README.md` | Giới thiệu dự án, trạng thái, cách chạy |
-| 2 | `docs/PRODUCT_VISION.md` | Triết lý sản phẩm, thế giới, nhân vật, mô hình kinh doanh |
-| 3 | `docs/GAME_DESIGN.md` | Luật chơi, năng lượng, XP, huy hiệu, cân bằng độ khó |
-| 4 | `docs/TECHNICAL_ARCHITECTURE.md` | Flutter, Python runtime, module, lưu dữ liệu, quảng cáo, thanh toán |
-| 5 | `docs/ROADMAP.md` | Giai đoạn triển khai, tiêu chí nghiệm thu, kiểm thử |
-
-**Nguyên tắc đã được duy trì xuyên suốt cả 5 tài liệu:**
-- Tài liệu sản phẩm xác định *xây trò chơi gì*.
-- Tài liệu kỹ thuật xác định *xây bằng cách nào*.
-- Roadmap xác định *làm gì trước và kiểm tra bằng gì*.
-- Không có nội dung đánh giá README hay hướng dẫn cá nhân trong tài liệu dự án.
-- Mọi con số gameplay đặt trong `game_config.json`, không hard-code.
-- Không test tràn lan, tập trung điểm rủi ro cao, test cuối theo chuyến phiêu lưu.
-
-**Bước tiếp theo:** bắt đầu **giai đoạn 1 — Foundation**, cụ thể là khởi tạo project Flutter và dựng cấu trúc thư mục theo `TECHNICAL_ARCHITECTURE.md`. Khi đạt tiêu chí nghiệm thu giai đoạn 1, chuyển sang giai đoạn 2 (Home Map), rồi giai đoạn 3 (lát cắt dọc quan trọng nhất).
+**Bước tiếp theo:** bắt đầu **giai đoạn 1 — Foundation**: khởi tạo project Flutter
+và dựng cấu trúc thư mục theo `TECHNICAL_ARCHITECTURE.md`. Khi đạt tiêu chí nghiệm
+thu giai đoạn 1, chuyển sang giai đoạn 2 (Home Map), rồi giai đoạn 3
+(lát cắt dọc quan trọng nhất).

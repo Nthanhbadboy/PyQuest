@@ -1,6 +1,3 @@
-# docs/PRODUCT_VISION.md
-
-```markdown
 # PyQuest — Product Vision
 
 > Tài liệu này xác định **PyQuest là trò chơi gì**, dành cho ai, bán giấc mơ gì,
@@ -29,6 +26,27 @@ PyQuest **không bán cảm giác "học thêm"**. PyQuest bán giấc mơ
 Trẻ mở PyQuest vì thích chơi → ở lại vì tò mò → tự hỏi
 *"Mình có thể tự làm một game như thế này không?"*
 Đó là lúc ứng dụng chuyển từ game giải trí thành công cụ dạy lập trình thực sự.
+
+---
+
+## Thuật ngữ cốt lõi (dùng thống nhất toàn bộ tài liệu)
+
+Các khái niệm dưới đây **không** được dùng thay thế cho nhau. Khi một tài liệu
+khác dùng thuật ngữ này, nghĩa phải đúng như bảng sau.
+
+| Thuật ngữ | Định nghĩa |
+|---|---|
+| **Home Map** | Khu vực khởi đầu chào đón trẻ: một thế giới có nhân vật, thoại, âm thanh — **không** phải màn hình danh sách bài học. Là điểm vào của mọi luồng chơi. |
+| **Main Map** | **Thế giới/khu vực miễn phí cốt lõi** chứa trải nghiệm học tập thiết yếu. Là nơi chứa Main Quest, mini-game và các địa điểm khám phá miễn phí. Main Map **không** bị khóa sau paywall. |
+| **Main Quest** | **Lộ trình học Python có cấu trúc, miễn phí** nằm trong Main Map (chặng 1–4). Main Quest là nội dung học; Main Map là thế giới chứa nó. Hai khái niệm **khác nhau**. |
+| **Mini-game Play Mode** | Chế độ chơi mini-game ngay, **không** bắt buộc đọc bài hay viết code trước. |
+| **Mini-game Creator Mode** | Chế độ xem/đổi luật chơi và dần học lập trình qua chính mini-game đó (xem mục 7.1). |
+| **Side Maps** | Bản đồ mở rộng **trả phí tùy chọn**, bổ sung chiều sâu — **không** bán quyền truy cập kiến thức Python cơ bản. |
+| **Nhà Thành Tích** (Achievement House) | **Một địa điểm vật lý trong thế giới PyQuest** trưng bày huy hiệu, chiến tích, bộ sưu tập và game do trẻ tạo. |
+| **Adventure Recap** | Bản tổng kết **dựa trên dữ liệu thật** về các hoạt động đã hoàn thành và kỹ năng mới học được (không viết cố định). |
+
+> **Lưu ý.** Trước đây tài liệu từng dùng "Main Map" để chỉ chính tuyến học.
+> Cách hiểu đúng từ nay: **Main Map = thế giới miễn phí**, **Main Quest = tuyến học trong đó**.
 
 ---
 
@@ -99,6 +117,13 @@ trẻ đã tạo game Python thật. Nếu là mô phỏng, phải nói rõ gi�
 - Mở một số quyền lợi bổ sung **đã công bố rõ**.
 - **Không** khóa Main Quest. **Không** tạo áp lực với trẻ.
 
+> **TBD — cần quyết định sản phẩm.** Quảng cáo thưởng là cách **tùy chọn** để
+> nhận thêm năng lượng. Nếu Pro ẩn toàn bộ nút quảng cáo, người dùng Pro sẽ
+> **không còn cách nhận +năng lượng qua quảng cáo**. Cần chốt một trong hai:
+> (a) người dùng Pro vẫn được **tự nguyện** xem quảng cáo thưởng để lấy năng
+> lượng, hoặc (b) Pro có **cách công bố rõ** khác để nhận phần năng lượng tương
+> đương. Chưa chốt thì **không** được mặc định Pro mất nguồn năng lượng này.
+
 ---
 
 ## 4. Cấu trúc thế giới game
@@ -114,18 +139,28 @@ Home Map **không phải** màn hình danh sách bài học.
 - Nhạc nền du dương, âm thanh tương tác phản hồi mỗi lần chạm.
 - Mini-game là **địa điểm trên bản đồ**, khám phá không theo thứ tự.
 
-### 4.2. Main Map — miễn phí
+### 4.2. Main Map — thế giới miễn phí cốt lõi
 
-Tuyến học Python cốt lõi, đi từ `print()` đến gỡ lỗi:
+**Main Map** là thế giới/khu vực miễn phí chứa trải nghiệm học tập thiết yếu.
+Nó bao gồm:
+
+- **Main Quest** — tuyến học Python có cấu trúc (xem mục 6).
+- Các **mini-game** miễn phí (xem mục 7).
+- Các **địa điểm khám phá** miễn phí: nhiệm vụ, thú cưng cơ bản, thành tựu học tập.
+
+Main Quest đi từ `print()` đến gỡ lỗi:
 
 ```
 print() → biến → điều kiện → vòng lặp → danh sách → hàm → gỡ lỗi
 ```
 
+Main Map là **thế giới**; Main Quest là **tuyến học nằm trong đó**.
+Đây là hai khái niệm khác nhau, không dùng thay thế cho nhau.
+
 **Cam kết:**
-- Không cần mua để mở bài học chính.
+- Không cần mua để mở Main Map hay Main Quest.
 - Không cần xem quảng cáo để truy cập bản đồ.
-- Có nhiệm vụ, XP, thú cưng cơ bản, thành tựu học tập.
+- Toàn bộ kiến thức Python cơ bản và kỹ năng tạo game đơn giản nằm trong Main Map.
 
 ### 4.3. Side Maps — mua từng gói
 
@@ -194,11 +229,21 @@ liên kết với một kiến thức Python để trẻ tự tạo game sau nà
 
 ### 7.1. Hai chế độ trong mỗi mini-game
 
-**Play Mode** — vào chơi ngay, không bắt buộc đọc bài hay viết code.
+**Mini-game Play Mode** — vào chơi ngay, **không** bắt buộc đọc bài hay viết code.
 Có điểm số, nhiệm vụ, âm thanh, hiệu ứng, thành tích.
 
-**Creator Mode** — xem game hoạt động, thay đổi quy tắc hoặc ghép khối lệnh,
-dần chuyển sang viết Python thật.
+**Mini-game Creator Mode** — trẻ xem trò chơi hoạt động và thay đổi nó theo hai
+cách, tách biệt rõ ràng:
+
+1. **Đổi luật chơi qua điều khiển có cấu trúc sẵn có** của game (ví dụ: chỉnh
+   tham số tốc độ, số xu, số màn, điều kiện thắng). Cách này **không** yêu cầu
+   chạy code.
+2. **Chạy code Python-like được hỗ trợ** thông qua interpreter giới hạn (xem
+   `TECHNICAL_ARCHITECTURE.md`). Cách này chỉ khả dụng ở các màn Creator Mode
+   đã mở code, và chỉ hỗ trợ tập con cú pháp đã công bố.
+
+Creator Mode tiến dần từ ghép khối → chỉnh tham số → xem code sinh ra → viết
+dòng lệnh đơn giản. Không phải màn Creator Mode nào cũng cần interpreter.
 
 ### 7.2. Đưa vào Home Map
 
@@ -231,9 +276,9 @@ cần xác minh qua cơ chế thanh toán nền tảng.
 
 | Tính năng | Miễn phí | Mua gói / Pro |
 |---|---|---|
-| Main Map | Toàn bộ tuyến học cốt lõi | Không cần mua |
+| Main Map (thế giới miễn phí, gồm Main Quest) | Toàn bộ thế giới và tuyến học cốt lõi | Không cần mua |
 | Năng lượng | Hồi theo thời gian, xem quảng cáo thưởng nếu đủ điều kiện | Có thể có quyền lợi bổ sung công bố rõ |
-| Bài học chính | Luôn truy cập được | Không khóa sau paywall |
+| Main Quest (bài học chính) | Luôn truy cập được | Không khóa sau paywall |
 | Side Maps | Xem trước nội dung và giá | Mở từng bản đồ đã mua |
 | Danh hiệu, huy hiệu đặc biệt | Có phần thưởng miễn phí | Bộ sưu tập độc quyền từ nhiệm vụ trả phí |
 | Bỏ quảng cáo | Có quảng cáo ở vị trí được phép | Pro bỏ quảng cáo thuộc phạm vi gói Pro |
@@ -365,12 +410,6 @@ và một công cụ đủ thật để trẻ tin mình có thể tự làm nên
 ## Tài liệu liên quan
 
 - [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, XP, cân bằng độ khó.
-- [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — Python runtime, module, lưu dữ liệu.
+- [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — runtime Python, module, lưu dữ liệu.
 - [`ROADMAP.md`](ROADMAP.md) — giai đoạn triển khai và tiêu chí nghiệm thu.
-```
-
----
-
-Xong tài liệu **2/5: `docs/PRODUCT_VISION.md`**.
-
-Nhắn **"3"** để mình viết tiếp tài liệu thứ ba — dự kiến là `docs/GAME_DESIGN.md` (nơi chốt thông số định lượng: năng lượng, thời gian hồi, XP, điều kiện nhận thưởng, cân bằng độ khó).
+- [`../README.md`](../README.md) — điểm vào dự án.
