@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+<title id="title">PyQuest character art direction — Kai and Lumi</title>
+<desc id="desc">Original visual reference sheet for two distinct, readable child-friendly characters in the PyQuest world. Kai is a playful young programmer in a green hoodie; Lumi is a small forest spirit with leaf ears, a petal cape and a glowing quest charm.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#172b42"/><stop offset="1" stop-color="#203c50"/></linearGradient>
+  <linearGradient id="hood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a9e76b"/><stop offset="1" stop-color="#54a94e"/></linearGradient>
+  <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe9d1"/><stop offset="1" stop-color="#efb98d"/></linearGradient>
+  <linearGradient id="lumi" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#80f0cf"/><stop offset="1" stop-color="#32ad9b"/></linearGradient>
+  <linearGradient id="cape" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b6f1a2"/><stop offset="1" stop-color="#58c28f"/></linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#071725" flood-opacity=".32"/></filter>
+  <style>
+    .outline{stroke:#24344b;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+    .detail{stroke:#24344b;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;fill:none}
+    .label{font-family:Nunito,Arial,sans-serif;fill:#fff8e8}
+    .muted{font-family:Nunito,Arial,sans-serif;fill:#c6d8e1}
+  </style>
+</defs>
+<rect width="1200" height="680" rx="32" fill="url(#bg)"/>
+<circle cx="180" cy="80" r="110" fill="#27465a" opacity=".5"/><circle cx="1050" cy="570" r="180" fill="#275b58" opacity=".28"/>
+<g fill="#f8d86b"><path d="M590 72l7 17 18 2-14 12 4 18-15-10-15 10 4-18-14-12 18-2z"/><circle cx="103" cy="180" r="5"/><circle cx="1080" cy="105" r="5"/><circle cx="615" cy="540" r="4"/></g>
+<text x="60" y="62" class="label" font-size="25" font-weight="800" letter-spacing="2">PYQUEST • CHARACTER ART DIRECTION</text>
+<text x="60" y="99" class="muted" font-size="17">Distinct silhouettes • expressive faces • readable at small sizes</text>
+<g filter="url(#shadow)">
+  <rect x="50" y="130" width="530" height="480" rx="28" fill="#f7f3e7"/>
+  <rect x="620" y="130" width="530" height="480" rx="28" fill="#edf9f1"/>
+</g>
+<!-- KAI: human silhouette, spiky hair, headphones, hoodie -->
+<g transform="translate(90 150)">
+  <ellipse cx="220" cy="398" rx="104" ry="18" fill="#24344b" opacity=".14"/>
+  <!-- legs and shoes -->
+  <path d="M174 325l-3 61 32 0 10-60M239 325l5 61 32 0-4-62" fill="#46628b" class="outline"/>
+  <path d="M158 378q-3-12 10-13l33 1q12 4 7 17l-39 4q-11-1-11-9z" fill="#f08a59" class="outline"/>
+  <path d="M238 378q-2-12 11-13l33 2q11 4 6 16l-38 4q-11 0-12-9z" fill="#f08a59" class="outline"/>
+  <!-- arms behind body -->
+  <path d="M168 229q-34 8-43 45l-11 31q-3 15 12 20 12 2 18-12l25-43M273 230q32 8 40 38l10 31q4 16-10 21-13 3-19-11l-25-42" fill="url(#hood)" class="outline"/>
+  <!-- hoodie body -->
+  <path d="M170 210q-34 4-44 34l-12 75q-2 13 13 17l51 8 87-1 48-8q14-3 11-17l-14-73q-10-29-41-34z" fill="url(#hood)" class="outline"/>
+  <path d="M177 220q43 29 83 0" fill="none" stroke="#398b48" stroke-width="7" stroke-linecap="round"/>
+  <path d="M195 231l-2 38M240 231l5 38" stroke="#fff1d4" stroke-width="5" stroke-linecap="round"/>
+  <path d="M191 275q26 10 52 0l-5 26q-21 12-43 0z" fill="#398b48" stroke="#24344b" stroke-width="5" stroke-linejoin="round"/>
+  <!-- neck -->
+  <path d="M195 194v28q25 19 49 0v-31" fill="url(#skin)" class="outline"/>
+  <!-- headphone band behind hair -->
+  <path d="M151 143q-2-73 65-76 68 2 71 76" fill="none" stroke="#24344b" stroke-width="14" stroke-linecap="round"/>
+  <path d="M151 143q-2-73 65-76 68 2 71 76" fill="none" stroke="#60c4e8" stroke-width="7" stroke-linecap="round"/>
+  <rect x="138" y="131" width="27" height="48" rx="11" fill="#354d69" class="outline"/>
+  <rect x="273" y="131" width="27" height="48" rx="11" fill="#354d69" class="outline"/>
+  <!-- ears and head -->
+  <ellipse cx="143" cy="155" rx="15" ry="21" fill="url(#skin)" class="outline"/>
+  <ellipse cx="281" cy="155" rx="15" ry="21" fill="url(#skin)" class="outline"/>
+  <path d="M144 122q-7-48 34-67l-4-28 32 19 22-31 12 34 36-11-10 37q19 19 11 53l-4 35q-8 44-59 49-48-4-63-42z" fill="url(#skin)" class="outline"/>
+  <!-- hair cap and spikes -->
+  <path d="M139 128l-14-38 32 13-2-43 32 28 12-49 24 39 26-32 2 43 32-13-12 49q-20-27-62-26-43-1-68 29z" fill="#4a3328" class="outline"/>
+  <!-- eyes, brows, smile -->
+  <path d="M166 129l24-4M230 125l23 5" class="detail"/>
+  <ellipse cx="180" cy="147" rx="9" ry="12" fill="#fff"/><ellipse cx="239" cy="147" rx="9" ry="12" fill="#fff"/>
+  <ellipse cx="183" cy="149" rx="5" ry="7" fill="#59412f"/><ellipse cx="242" cy="149" rx="5" ry="7" fill="#59412f"/>
+  <circle cx="185" cy="146" r="2.5" fill="#fff"/><circle cx="244" cy="146" r="2.5" fill="#fff"/>
+  <path d="M190 175q20 20 41 0" fill="none" stroke="#9e5547" stroke-width="6" stroke-linecap="round"/>
+  <path d="M159 163q9 9 18 1M246 164q9 8 17-2" stroke="#e78d7d" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+  <!-- tiny pixel badge -->
+  <rect x="257" y="251" width="27" height="27" rx="6" fill="#fff2b8" stroke="#24344b" stroke-width="4"/>
+  <path d="M264 258h5v5h-5zM273 267h5v5h-5zM264 267h5v5h-5z" fill="#54a94e"/>
+</g>
+<text x="315" y="570" text-anchor="middle" font-family="Nunito,Arial,sans-serif" font-size="33" font-weight="900" fill="#24344b">KAI</text>
+<text x="315" y="592" text-anchor="middle" font-family="Nunito,Arial,sans-serif" font-size="15" fill="#536779">Curious coder • bold hoodie • headphones</text>
+<!-- LUMI: distinct forest spirit with leaf ears and petal cape -->
+<g transform="translate(660 150)">
+  <ellipse cx="220" cy="398" rx="105" ry="18" fill="#24344b" opacity=".12"/>
+  <!-- floating leaf ears -->
+  <path d="M174 115Q115 74 126 25q48 4 64 64z" fill="#75d66f" class="outline"/>
+  <path d="M265 115Q321 72 312 27q-49 5-65 63z" fill="#75d66f" class="outline"/>
+  <path d="M136 42l40 54M302 44l-39 53" stroke="#398b62" stroke-width="5" stroke-linecap="round"/>
+  <!-- petal cape -->
+  <path d="M155 223q-42 12-48 67l-7 49q-1 13 13 17l40 7 25-48z" fill="url(#cape)" class="outline"/>
+  <path d="M285 223q42 12 48 67l7 49q1 13-13 17l-40 7-25-48z" fill="url(#cape)" class="outline"/>
+  <!-- body -->
+  <path d="M177 223q-24 13-29 43l-9 67q-2 14 12 18l68 5 69-5q14-4 12-18l-9-67q-5-30-29-43z" fill="url(#lumi)" class="outline"/>
+  <path d="M180 268q40 25 80 0l-5 50q-36 23-70 0z" fill="#d9fff0" stroke="#24344b" stroke-width="5" stroke-linejoin="round"/>
+  <!-- neck scarf -->
+  <path d="M174 219q47 25 93 0l-10 24q-38 22-73 0z" fill="#ffd76d" class="outline"/>
+  <!-- head -->
+  <path d="M151 149q0-62 68-65 67 4 69 65l-7 48q-10 47-62 52-50-5-61-52z" fill="url(#lumi)" class="outline"/>
+  <!-- leaf crown -->
+  <path d="M190 98Q167 60 184 38q27 18 33 51M220 92Q220 42 248 28q15 34-8 69M245 97q19-36 46-26 1 28-34 43" fill="#75d66f" class="outline"/>
+  <!-- eyes -->
+  <ellipse cx="190" cy="158" rx="12" ry="15" fill="#fff"/><ellipse cx="248" cy="158" rx="12" ry="15" fill="#fff"/>
+  <ellipse cx="193" cy="160" rx="7" ry="9" fill="#245d5c"/><ellipse cx="251" cy="160" rx="7" ry="9" fill="#245d5c"/>
+  <circle cx="195" cy="156" r="3" fill="#fff"/><circle cx="253" cy="156" r="3" fill="#fff"/>
+  <path d="M209 188q12 13 25 0" fill="none" stroke="#245d5c" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="173" cy="180" rx="10" ry="6" fill="#ffb1a3" opacity=".9"/><ellipse cx="264" cy="180" rx="10" ry="6" fill="#ffb1a3" opacity=".9"/>
+  <!-- arms and glowing quest charm -->
+  <path d="M153 250q-25 9-34 31M290 250q28 5 38 24" fill="none" stroke="#24344b" stroke-width="12" stroke-linecap="round"/>
+  <path d="M153 250q-25 9-34 31M290 250q28 5 38 24" fill="none" stroke="#55c7a5" stroke-width="7" stroke-linecap="round"/>
+  <path d="M315 276l8 14 16 2-12 11 3 16-15-8-14 8 3-16-12-11 16-2z" fill="#ffd76d" stroke="#24344b" stroke-width="4" stroke-linejoin="round"/>
+  <!-- small floating sparkles -->
+  <path d="M115 182l5 12 12 2-10 8 3 12-10-7-10 7 3-12-10-8 12-2z" fill="#ffd76d" stroke="#24344b" stroke-width="3"/>
+  <circle cx="315" cy="136" r="6" fill="#ffd76d"/><circle cx="120" cy="230" r="5" fill="#ffd76d"/>
+</g>
+<text x="885" y="570" text-anchor="middle" font-family="Nunito,Arial,sans-serif" font-size="33" font-weight="900" fill="#24344b">LUMI</text>
+<text x="885" y="592" text-anchor="middle" font-family="Nunito,Arial,sans-serif" font-size="15" fill="#536779">Forest quest-giver • leaf silhouette • charm</text>
+<text x="600" y="650" text-anchor="middle" class="muted" font-size="15">CONCEPT REFERENCE ONLY • Keep the existing painter architecture; use this sheet to guide silhouette, contrast and expression.</text>
+</svg>
