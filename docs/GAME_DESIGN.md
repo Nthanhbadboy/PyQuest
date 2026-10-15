@@ -1,7 +1,7 @@
 # PyQuest — Game Design
 
 > Tài liệu này xác định **luật chơi và thông số định lượng** của PyQuest:
-> năng lượng, XP, tiến trình, phần thưởng, điều kiện mở khóa, cân bằng độ khó.
+> năng lượng, tiến trình hoạt động, phần thưởng, điều kiện mở khóa và cân bằng độ khó.
 > Tài liệu **không** định nghĩa lại triết lý sản phẩm (xem `PRODUCT_VISION.md`)
 > và **không** đi vào quyết định kỹ thuật (xem `TECHNICAL_ARCHITECTURE.md`).
 >
@@ -63,17 +63,7 @@ Chọn nhiệm vụ → Học/Chơi → Nhận thưởng → Năng lượng gi�
 | Thời gian hồi 1 đơn vị | **10 phút** | Hồi đầy 20 đơn vị đầu tiên trong ~3h20 |
 | Năng lượng nhận khi xem quảng cáo thưởng | **+5** | Tối đa 3 lần hợp lệ mỗi ngày |
 
-**Tiến trình tăng năng lượng tối đa** (khớp với bảng quyền lợi cấp độ, mục 4.3):
-
-| Mức tối đa | Mở khóa khi | Ghi chú |
-|---|---|---|
-| **20** | Mặc định khi bắt đầu | |
-| **25** | Đạt cấp 8 | +5 |
-| **30** | Đạt cấp 15 | +5 |
-| **40** | Hoàn thành chặng 4 (Game Master), tương ứng cấp 20 | +10 |
-
-> **Quy tắc:** năng lượng tối đa chỉ tăng theo bảng trên. Trần **40** gắn với
-> hoàn thành chặng cuối, **không** tự mở chỉ vì đạt một cấp trung gian.
+**Tiến trình tăng năng lượng tối đa:** năng lượng tối đa ban đầu là 20, trần đề xuất là 40. Các mốc tăng thêm sẽ gắn với cột mốc gameplay/hoàn thành hoạt động được xác định khi cân bằng game; **không dựa trên XP hoặc cấp độ toàn cục**. Không cần thiết phải tăng năng lượng nếu điều đó không cải thiện trải nghiệm.
 
 ### 3.2. Mức tiêu hao theo hoạt động
 
@@ -121,131 +111,37 @@ Chọn nhiệm vụ → Học/Chơi → Nhận thưởng → Năng lượng gi�
 
 ---
 
-## 4. Hệ thống XP & cấp độ
+## 4. Mở hoạt động, điểm và thành tích — không có XP/cấp độ toàn cục
 
-### 4.1. Nguồn XP
+### 4.1. Vai trò của Main Map
 
-Cột **Loại** quyết định phần thưởng có được cộng lặp lại hay không.
-Chi tiết chống cộng trùng ở mục 4.4.
+**Main Map chỉ là bản đồ trung tâm để người chơi khám phá, chọn và mở các hoạt động.** Bản đồ không phải một thanh tiến trình và không yêu cầu tích XP để đi tiếp.
 
-| Hành động | XP | Loại | Ghi chú |
-|---|---|---|---|
-| Hoàn thành bài học Main Quest | **+10** | Một lần / bài | Chỉ lần đầu hoàn thành bài đó |
-| Hoàn thành bài tập Main Quest | **+15** | Một lần / bài tập | Chỉ lần đầu hoàn thành bài tập đó |
-| Hoàn thành một màn mini-game | **+20** | Một lần / màn | Theo `game_id` + `level_id` |
-| Thưởng mini-game không lỗi | **+30** | Một lần / màn | Chỉ cộng cùng lúc với lần hoàn thành đầu tiên, nếu đạt điều kiện |
-| Thử thách cuối chặng | **+100** | Một lần / chặng | Chỉ lần đầu hoàn thành thử thách chặng |
-| Nhiệm vụ ngày | **+25** | Lặp lại, giới hạn | Tối đa 1 lần / nhiệm vụ / ngày |
-| Xem lại bài cũ | **+2** | Lặp lại (giới hạn **TBD**) | Giới hạn **chưa chốt** — xem 4.4; khóa dự kiến `review:<lesson_id>:<local_day>` |
-| Game tự tạo chạy được (lần đầu) | **+50** | Một lần / game tự tạo | Thưởng sáng tạo, không cộng lại mỗi lần chạy |
-| Phát hiện lỗi trong Bug Hunter | **+15** | Một lần / lỗi | Mỗi lỗi (định danh duy nhất) chỉ cộng một lần |
+- Hoạt động không có kiến thức tiên quyết thì cho phép vào chơi ngay.
+- Hoạt động cần kiến thức cụ thể chỉ yêu cầu hoàn thành bài/map Main Quest liên quan trực tiếp.
+- Hoạt động có nội dung trả phí chỉ yêu cầu quyền sở hữu hợp lệ của gói tương ứng.
+- Không khóa một hoạt động chỉ vì người chơi chưa đạt XP/cấp độ chung.
+- Hiển thị rõ điều kiện mở khóa ngay tại hoạt động và cho phép đi tới nội dung tiên quyết liên quan.
 
-### 4.2. Công thức cấp độ
+### 4.2. Các khái niệm tiến trình được giữ lại
 
-XP cần để đi **từ cấp `n` lên cấp `n + 1`**:
-
-```
-XP_lên_cấp_tiếp(n) = 100 × n + 50 × (n − 1) = 150 × n − 50
-```
-
-Tổng XP tích lũy cần để **đạt tới cấp `L`** (bắt đầu ở cấp 1 với 0 XP) là tổng
-các mốc trên:
-
-```
-XP_tổng(L) = Σ (n = 1 … L − 1) XP_lên_cấp_tiếp(n)
-           = (L − 1) × (75 × L − 50)
-```
-
-| Mốc | XP cần để lên cấp tiếp theo | Tổng XP tích lũy để đạt cấp |
-|---|---|---|
-| 1 → 2 | 100 | Đạt cấp 2 = 100 |
-| 2 → 3 | 250 | Đạt cấp 3 = 350 |
-| 3 → 4 | 400 | Đạt cấp 4 = 750 |
-| 4 → 5 | 550 | Đạt cấp 5 = 1.300 |
-| 5 → 6 | 700 | Đạt cấp 6 = 2.000 |
-| 9 → 10 | 1.300 | Đạt cấp 10 = 6.300 |
-| 10 → 11 | 1.450 | Đạt cấp 11 = 7.750 |
-| 17 → 18 | 2.500 | Đạt cấp 18 = 22.100 |
-
-> **Tránh nhầm mốc:** **7.750 XP** là để **đạt cấp 11**, không phải cấp 10.
-> Đạt cấp 10 cần **6.300 XP**; đạt cấp 18 cần **22.100 XP**.
-
-**Cấp tối đa giai đoạn đầu:** 20.
-
-### 4.3. Quyền lợi theo cấp độ
-
-| Cấp | Mở khóa |
+| Khái niệm | Vai trò |
 |---|---|
-| 1 | Bắt đầu Main Quest chặng 1 |
-| 3 | Thú cưng đầu tiên |
-| 5 | Trang phục cho nhân vật đồng hành |
-| 8 | Năng lượng tối đa +5 (lên 25) |
-| 10 | Mở chặng 2 — Game Builder (**cần xem lại — xem 4.4**) |
-| 12 | Khu vực sáng tạo trong Nhà Thành Tích |
-| 15 | Năng lượng tối đa +5 (lên 30) |
-| 18 | Mở chặng 3 — Game Creator (**cần xem lại — xem 4.4**) |
-| 20 | Danh hiệu **Game Master**; hoàn thành chặng 4 mở năng lượng tối đa 40 |
+| **Điểm** | Chỉ dùng khi có mục đích cụ thể: điểm của một lượt chơi, điểm đóng góp, hoặc một loại điểm thưởng đã được định nghĩa. Không mặc định cộng mọi điểm thành một chỉ số tổng. |
+| **Kỷ lục/điểm riêng của game** | Thuộc game đó, dùng cho nâng cấp, so kỷ lục hoặc luật chơi của game. Không tự động chuyển thành điểm toàn cục. |
+| **Mở khóa hoạt động** | Dựa trên điều kiện thực sự cần: hoạt động trước đã hoàn thành, kiến thức tiên quyết, mốc thành tích cụ thể hoặc quyền sở hữu. |
+| **Thành tích/huy hiệu** | Ghi nhận một việc đã làm hoặc cột mốc đã đạt; chỉ cấp một lần theo điều kiện rõ ràng. |
+| **Danh hiệu** | Thể hiện một thành tựu hoặc vai trò cụ thể. Danh hiệu kỹ năng phải dựa trên bằng chứng năng lực, không phải mua hoặc nhận quà. |
+| **Quà tặng/vật phẩm** | Thuộc sở hữu và giao lưu xã hội; không tự động cấp thành tích hay quyền thắng trong thi đấu. |
+| **XP/cấp độ toàn cục** | **Không sử dụng trong thiết kế hiện tại.** Không tạo công thức XP, bảng cấp hay rào chắn cấp để điều hướng người chơi qua Main Map. Chỉ xem xét lại nếu sau này có nhu cầu sản phẩm cụ thể chứng minh được giá trị. |
 
-> Cấp độ **không** khóa bài học đã mở. Chỉ mở thêm nội dung mới.
+### 4.3. Chống nhận thưởng trùng
 
-### 4.4. Quy tắc một lần / lặp lại & chống cộng trùng
-
-**Nguyên tắc chung:** mọi phần thưởng "Một lần" phải được cộng **đúng một lần
-cho mỗi đối tượng** (bài học, bài tập, màn, lỗi, game tự tạo, thử thách chặng),
-**bất kể** trẻ hoàn thành lại bao nhiêu lần, thoát app giữa chừng, hay mở lại app.
-
-Mỗi phần thưởng "một lần" có một **khóa định danh duy nhất** được lưu bền vững
-(xem `TECHNICAL_ARCHITECTURE.md` mục 4.3 và 4.6):
-
-| Phần thưởng | Khóa chống cộng trùng (ví dụ) |
-|---|---|
-| Hoàn thành bài học (+10) | `lesson:<lesson_id>` |
-| Hoàn thành bài tập (+15) | `exercise:<exercise_id>` |
-| Hoàn thành màn mini-game (+20) | `game:<game_id>:<level_id>` |
-| Thưởng không lỗi (+30) | cùng khóa màn `game:<game_id>:<level_id>` |
-| Thử thách cuối chặng (+100) | `chapter:<chapter_id>` |
-| Game tự tạo chạy được (+50) | `custom_game:<custom_game_id>` |
-| Phát hiện lỗi (+15) | `bug:<game_id>:<bug_id>` |
-
-| Nhóm | Quy tắc |
-|---|---|
-| **Một lần** | Cộng khi **lần đầu** đối tượng được xác nhận hoàn thành. Khóa được ghi vào database; lần hoàn thành sau **không** cộng lại. |
-| **Thưởng không lỗi (+30)** | Gắn với lần hoàn thành đầu tiên của màn. Không cộng lại khi chơi lại. |
-| **Nhiệm vụ ngày (+25)** | Lặp lại nhưng tối đa **1 lần / nhiệm vụ / ngày**; đếm theo ngày địa phương. |
-| **Ôn tập (+2)** | Lặp lại; **giới hạn chưa chốt (TBD)** — xem ghi chú dưới. Khóa dự kiến `review:<lesson_id>:<local_day>`, **tách biệt** với nhiệm vụ ngày. |
-| **Thử thách cuối chặng (+100)** | Một lần / chặng. Thử lại không cộng thêm. |
-| **Phát hiện lỗi (+15)** | Mỗi lỗi định danh duy nhất một lần. |
-
-**Chống cộng trùng khi retry / mở lại app:** khóa "đã nhận thưởng một lần" và các
-lượt trong ngày (nhiệm vụ ngày, quảng cáo thưởng) phải được lưu bền vững trong
-SQLite và kiểm tra **trước** khi cộng. Cơ chế bảng cụ thể ở
-`TECHNICAL_ARCHITECTURE.md` mục 4.3 và 4.6.
-
-**XP ôn tập dùng khóa riêng, không dùng chung với nhiệm vụ ngày.** Việc ôn lại một
-bài và "nhiệm vụ ngày" là hai nguồn thưởng khác nhau, có khóa khác nhau
-(`review:<lesson_id>:<local_day>` so với `daily_quests(local_day, quest_id)`).
-Trộn hai khóa này sẽ khiến việc ôn bài bị tính như hoàn thành nhiệm vụ ngày, hoặc
-bị chặn oan.
-
-> **TBD — cần quyết định sản phẩm.**
->
-> **1. Rào chắn cấp độ mở chặng (chưa chốt).** Hai ngưỡng hiện tại đang quá cao so
-> với lượng XP mà nội dung cung cấp:
-> - Chặng 2 cần **cấp 10**, tức **6.300 XP** tích lũy (theo bảng 4.2).
-> - Chặng 3 cần **cấp 18**, tức **22.100 XP** tích lũy (theo bảng 4.2).
-> - Trong khi chặng 1 (12 bài) chỉ cung cấp khoảng vài trăm XP, và toàn bộ Main
->   Quest (~50 bài + mini-game) khó đạt tới các mốc trên.
->
-> Cần chốt **một** hướng: (a) giữ công thức cấp độ và **hạ** ngưỡng cấp mở chặng,
-> hoặc (b) giữ ngưỡng cấp và **tăng mạnh** XP/khối lượng nội dung, hoặc (c) bỏ
-> rào cấp độ và mở chặng thuần theo tiến trình bài học. Không tự đặt con số mới
-> trước khi quyết định.
->
-> **2. Giới hạn XP ôn tập (+2) (chưa chốt).** Hiện **chưa** có cơ chế giới hạn hoàn
-> chỉnh: chưa chốt số lần tối đa cho một bài, và bảng ở
-> `TECHNICAL_ARCHITECTURE.md` mới chỉ **dự kiến** khóa
-> `review:<lesson_id>:<local_day>`. Đề xuất mặc định "mỗi bài 1 lần XP ôn tập/ngày"
-> nhưng **cần xác nhận** trước khi coi là đã chốt.
+- Thành tích một lần, phần thưởng mốc và quyền mở khóa phải được lưu bền vững.
+- Dùng khóa định danh cho từng sự kiện/mốc để việc retry hoặc mở lại app không trao cùng một phần thưởng một lần nhiều lần.
+- Nhiệm vụ ngày có thể lặp lại theo ngày địa phương nhưng không bắt buộc, không có hình phạt khi bỏ lỡ và không dùng streak gây áp lực.
+- Chỉ ghi nhận phần thưởng sau khi xác minh điều kiện hoàn thành; thất bại không làm mất thành tích đã có.
+- Quy tắc chống trùng chỉ bảo vệ phần thưởng/thành tích thực sự tồn tại; **không tạo XP chỉ để có thứ chống cộng trùng**.
 
 ---
 
@@ -278,17 +174,13 @@ Màn tổng kết bài (30 giây)
 
 ### 5.3. Điều kiện mở khóa chặng tiếp theo
 
-| Chặng | Điều kiện | Trạng thái |
-|---|---|---|
-| Chặng 2 | Hoàn thành chặng 1 + đạt cấp 10 | Ngưỡng cấp **TBD** (xem 4.4) |
-| Chặng 3 | Hoàn thành chặng 2 + đạt cấp 18 | Ngưỡng cấp **TBD** (xem 4.4) |
-| Chặng 4 | Hoàn thành chặng 3 + có ít nhất 1 game tự tạo chạy được | Chốt |
+| Chặng | Điều kiện |
+|---|---|
+| Chặng 2 | Hoàn thành chặng 1. |
+| Chặng 3 | Hoàn thành chặng 2. |
+| Chặng 4 | Hoàn thành chặng 3 và có ít nhất 1 game tự tạo chạy được. |
 
-> Cấp độ chỉ là **rào chắn mềm** để đảm bảo trẻ không nhảy quá nhanh.
-> Nếu trẻ hoàn thành hết bài của chặng nhưng chưa đủ cấp,
-> hiển thị gợi ý ôn tập hoặc chơi mini-game liên quan.
-> **Lưu ý:** điều kiện "hoàn thành chặng trước" luôn đúng; chỉ các **ngưỡng cấp
-> độ** đang chờ quyết định ở mục 4.4.
+Các mini-game/hoạt động khác trên Main Map không mặc định bị khóa theo chặng. Chỉ yêu cầu hoàn thành nội dung trước khi kiến thức đó thực sự cần cho hoạt động tương ứng.
 
 ---
 
@@ -399,12 +291,12 @@ Màn tổng kết bài (30 giây)
 
 ### 8.2. Loại nhiệm vụ
 
-| Loại | Ví dụ | XP | Năng lượng |
+| Loại | Ví dụ | Phần thưởng/ghi nhận | Năng lượng |
 |---|---|---|---|
-| Học tập | Hoàn thành 1 bài Main Quest | +25 | 0 |
-| Luyện tập | Đạt 3 sao trong 1 màn bất kỳ | +25 | 0 |
-| Sáng tạo | Sửa và chạy thử 1 quy tắc trong Creator Mode | +25 | 0 |
-| Khám phá | Chơi 1 mini-game chưa từng chơi | +25 | 0 |
+| Học tập | Hoàn thành 1 bài Main Quest | Ghi nhận tiến trình bài học | 0 |
+| Luyện tập | Đạt 3 sao trong 1 màn bất kỳ | Kỷ lục/thành tích của màn | 0 |
+| Sáng tạo | Sửa và chạy thử 1 quy tắc trong Creator Mode | Ghi nhận hoạt động sáng tạo | 0 |
+| Khám phá | Chơi 1 mini-game chưa từng chơi | Ghi nhận khám phá | 0 |
 
 **Lưu ý:** nhiệm vụ ngày **không** tiêu hao năng lượng riêng —
 năng lượng đã tiêu hao theo hoạt động chính.
@@ -424,7 +316,7 @@ năng lượng đã tiêu hao theo hoạt động chính.
 | Thành phần | Bắt buộc | Ghi chú |
 |---|---|---|
 | Tiêu đề thành tựu | Có | Ví dụ: "Tuyệt vời! Bạn đã vượt mê cung!" |
-| Số liệu cụ thể | Có | Màn đã vượt, sao, XP |
+| Số liệu cụ thể | Có | Màn đã vượt, sao, kỷ lục hoặc thành tích phù hợp |
 | Kỹ năng vừa khám phá | Có | Gắn với kiến thức Python |
 | Lời thoại nhân vật | Có | Thay đổi theo nhân vật trong màn |
 | Nút "Chơi tiếp" | Có | |
@@ -469,7 +361,7 @@ Xuất hiện khi hoàn thành một chặng.
 
 - Không hiển thị đáp án trực tiếp.
 - Không tự động hoàn thành màn cho trẻ.
-- Không phạt XP khi thất bại.
+- Không trừ điểm/thành tích đã có khi thất bại.
 - Không khóa màn tiếp theo vì thất bại.
 
 ---
@@ -480,8 +372,8 @@ Xuất hiện khi hoàn thành một chặng.
 
 | Loại | Nguồn | Ghi chú |
 |---|---|---|
-| XP | Mọi hoạt động học tập | |
-| Năng lượng | Quảng cáo thưởng, lên cấp | |
+
+| Năng lượng | Hồi theo thời gian, quảng cáo thưởng hợp lệ hoặc mốc gameplay được công bố | |
 | Huy hiệu | Cột mốc, khám phá | |
 | Trang phục nhân vật | Cột mốc, sự kiện | |
 | Phụ kiện thú cưng | Nhiệm vụ, mini-game | |
@@ -521,7 +413,7 @@ Xuất hiện khi hoàn thành một chặng.
 ## 13. Bảng cấu hình đề xuất
 
 Toàn bộ thông số trên nên được đặt trong file cấu hình JSON,
-không hard-code. Ví dụ cấu trúc:
+không hard-code. Ví dụ cấu trúc (không có XP/cấp độ toàn cục):
 
 ```json
 {
@@ -531,21 +423,6 @@ không hard-code. Ví dụ cấu trúc:
     "regen_minutes_per_unit": 10,
     "reward_ad_amount": 5,
     "reward_ad_daily_limit": 3
-  },
-  "xp": {
-    "lesson_complete": 10,
-    "exercise_complete": 15,
-    "minigame_complete": 20,
-    "minigame_no_error_bonus": 30,
-    "chapter_challenge": 100,
-    "daily_quest": 25,
-    "review_lesson": 2,
-    "custom_game_runs": 50,
-    "bug_found": 15
-  },
-  "level": {
-    "formula": "100 * n + 50 * (n - 1)",
-    "max_level": 20
   },
   "session": {
     "reminder_minutes_1": 30,
