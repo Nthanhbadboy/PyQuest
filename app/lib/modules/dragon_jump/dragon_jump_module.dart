@@ -558,8 +558,13 @@ class _DragonPlayScreenState extends State<DragonPlayScreen> with SingleTickerPr
                 child: CustomPaint(painter: DragonPainter(g)),
               ),
             ),
-            SafeArea(
-              child: Padding(
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 0,
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
                 child: AnimatedBuilder(
                   animation: g,
@@ -595,8 +600,10 @@ class _DragonPlayScreenState extends State<DragonPlayScreen> with SingleTickerPr
                   ),
                 ),
               ),
+              ),
             ),
-            AnimatedBuilder(
+            Positioned.fill(
+              child: AnimatedBuilder(
               animation: g,
               builder: (context, _) => g.phase == DragonPhase.ready
                   ? IgnorePointer(
@@ -615,6 +622,7 @@ class _DragonPlayScreenState extends State<DragonPlayScreen> with SingleTickerPr
                       ),
                     )
                   : const SizedBox.shrink(),
+            ),
             ),
             if (_paused)
               Positioned.fill(

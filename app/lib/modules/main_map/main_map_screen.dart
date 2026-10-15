@@ -171,8 +171,13 @@ class _MainMapScreenState extends State<MainMapScreen> with TickerProviderStateM
               );
             }),
           ),
-          SafeArea(
-            child: Padding(
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
               child: Row(
                 children: [
@@ -202,6 +207,7 @@ class _MainMapScreenState extends State<MainMapScreen> with TickerProviderStateM
                   ),
                 ],
               ),
+            ),
             ),
           ),
           if (!_bubbleHidden)

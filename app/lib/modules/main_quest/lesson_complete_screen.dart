@@ -94,7 +94,8 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
         top: const Color(0xFFCFE4FF),
         child: Stack(
           children: [
-            SafeArea(
+            Positioned.fill(
+              child: SafeArea(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
                 child: Column(
@@ -207,6 +208,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                   ],
                 ),
               ),
+            ),
             ),
             if (!calm) const Positioned.fill(child: ConfettiBurst(count: 50)),
           ],

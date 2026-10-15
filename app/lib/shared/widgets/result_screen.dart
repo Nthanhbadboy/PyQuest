@@ -135,7 +135,8 @@ class _LevelResultScreenState extends State<LevelResultScreen> {
           top: d.success ? const Color(0xFFFFE9A8) : const Color(0xFFDDE9F7),
           child: Stack(
             children: [
-              SafeArea(
+              Positioned.fill(
+                child: SafeArea(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(18, 14, 18, 20),
                   child: Column(
@@ -304,6 +305,7 @@ class _LevelResultScreenState extends State<LevelResultScreen> {
                     ],
                   ),
                 ),
+              ),
               ),
               if (d.success && !calm) const Positioned.fill(child: ConfettiBurst()),
             ],
