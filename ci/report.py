@@ -49,18 +49,21 @@ def main():
     summary_lines += ["| %s | %s |" % (s, c) for s, c in statuses]
     title = ("FAILED: " + ", ".join(failed)) if failed else "All steps passed"
 
+    # Careful: the loop variable must not be called `name`, that would shadow
+    # the check-run name below (it did once; the check run came out named after
+    # the last log file).
     marked = [(path, os.path.basename(path)) for path in logs]
     primary = max(20000, int(MAX_TEXT * 0.6))
     rest = max(1, len(marked) - 1)
     budgets = ([primary] if marked else []) + [
         max(2000, (MAX_TEXT - primary) // rest) for _ in marked[1:]]
     sections = []
-    for (path, name), budget in zip(marked, budgets):
+    for (path, base), budget in zip(marked, budgets):
         body = trim(read(path), budget - 200)
-        if name.endswith(".md"):
+        if base.endswith(".md"):
             sections.append(body.rstrip())
         else:
-            sections.append("### %s\n```\n%s\n```" % (name, body))
+            sections.append("### %s\n```\n%s\n```" % (base, body))
     text = trim("\n\n---\n\n".join(sections), MAX_TEXT)
 
     payload = {
