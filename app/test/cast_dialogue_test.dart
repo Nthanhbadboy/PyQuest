@@ -10,8 +10,6 @@ import 'package:pyquest/shared/characters/characters.dart';
 import 'package:pyquest/shared/characters/dialogue.dart';
 import 'package:pyquest/shared/l10n/pq_l10n.dart';
 
-import 'test_helpers.dart';
-
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
