@@ -175,6 +175,29 @@ Cách thể hiện phù hợp:
 - Giữ dữ liệu, tiến trình, luật và vòng lặp của từng nhánh tách biệt ở mức thiết kế. Chỉ chia sẻ những dịch vụ nền thật sự cần thiết như hồ sơ, mở khóa kiến thức, điểm tổng sắp và danh hiệu; tránh tạo dependency chéo không cần thiết.
 - Khi thiết kế roadmap, có thể triển khai các nhánh ở thời điểm khác nhau nhưng phải giữ chúng trong tầm nhìn sản phẩm. “Chưa triển khai” không đồng nghĩa với “phụ thuộc vào nhánh khác” hoặc “bị loại bỏ”.
 
+
+### 6.2. Ba quy tắc sản phẩm cốt lõi: điểm, mở khóa kiến thức và lượt mini-game
+
+#### Dependency 1 — Mọi thành tích quy về điểm tổng sắp
+- Các nhánh vẫn độc lập về gameplay, nhưng thành tích của chúng có thể quy đổi theo quy tắc tương ứng thành điểm đóng góp cho hệ thống tổng sắp chung.
+- Bảng tuần, tháng, thi đấu, hoạt động, chuyên môn và đồng đội là các bảng/góc xếp hạng khác nhau; không phải các hệ thống điểm hoàn toàn tách rời. Cần quy định rõ loại điểm và kỳ tính của từng bảng.
+- Danh hiệu vẫn giữ ý nghĩa sưu tầm và thể hiện thành tích; những danh hiệu được quy định có điểm thưởng có thể đóng góp vào tổng sắp. Không mặc định mọi danh hiệu đều cho điểm như nhau.
+- Không để một nhánh có thể cày lặp vô hạn rồi chiếm toàn bộ bảng tổng sắp. Điểm, hệ số và giới hạn đóng góp cần phù hợp với từng loại hoạt động.
+
+#### Dependency 2 — Main Quest mở khóa hoạt động theo kiến thức đã học
+- Mỗi hoạt động xác định trước những kiến thức cần thiết, sau đó ánh xạ đến các map Main Quest dạy và kiểm tra các kiến thức đó.
+- Người chơi phải hoàn thành đủ những map tương ứng mới được mở khóa hoạt động. Khi chưa đủ điều kiện, giao diện phải nói rõ còn thiếu map nào hoặc cần học năng lực gì, đồng thời cho phép đi thẳng đến map liên quan.
+- Không bắt người chơi hoàn thành toàn bộ Main Quest để mở mọi thứ. Điều kiện chỉ cần bao phủ kiến thức thực sự cần cho hoạt động cụ thể.
+- Ngọc, mua Side Map hoặc quảng cáo không thay thế điều kiện kiến thức của hoạt động yêu cầu kỹ năng đó.
+
+#### Mini-game giải trí — điểm có giới hạn lượt và quảng cáo có giới hạn
+- Mini-game giải trí là hoạt động ngắn để thư giãn giữa các chặng học; vẫn có thể thưởng điểm và thành tích phù hợp.
+- Mỗi mini-game có số lượt chơi miễn phí trong một khoảng thời gian xác định. Khi hết lượt miễn phí, người chơi có thể dừng lại hoặc tự nguyện xem quảng cáo để nhận thêm lượt.
+- Số lượt xem quảng cáo để nhận lượt chơi thêm cũng phải có giới hạn rõ ràng; hết giới hạn thì không tiếp tục cấp lượt qua quảng cáo trong kỳ đó.
+- Quảng cáo vừa là nguồn doanh thu vừa tạo khoảng nghỉ ngắn, không được lặp liên tục, chặn Main Quest, buộc trẻ xem để tiếp tục học hoặc gây áp lực phải xem.
+- Không dùng quảng cáo để bán điểm, danh hiệu, thứ hạng hoặc thay thế kỹ năng. Điểm từ mini-game phải có mức trần/hạn mức phù hợp để không thể cày lặp rồi thống trị bảng tổng sắp.
+- Với sản phẩm hướng tới trẻ em, cách triển khai quảng cáo, nội dung quảng cáo, sự đồng ý của phụ huynh và giới hạn tần suất phải được rà soát theo chính sách nền tảng và quy định áp dụng trước khi phát hành. Không giả định mọi định dạng quảng cáo thưởng đều được phép ở mọi thị trường.
+
 ## 7. Hướng triển khai theo giai đoạn (không phải lý do loại bỏ tầm nhìn)
 
 - **Giai đoạn đầu:** module lắp ghép có sẵn, tùy chỉnh ngoại hình, khối lệnh giới hạn, mô phỏng đơn giản, điểm và kết quả xác định được.
