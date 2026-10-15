@@ -36,8 +36,8 @@ EMULATOR_STEP = "Emulator journey"   # the step that runs android-emulator-runne
 # The status keys ci/emulator_journey.sh writes, i.e. evidence that it ran.
 JOURNEY_KEYS = frozenset({
     "device_ready_journey", "journey", "device_ready_relaunch",
-    "install_regular_apk", "relaunch_screencap", "app_alive_after_relaunch",
-    "device_ready_returning", "returning",
+    "install_regular_apk", "relaunch_screencap", "relaunch_screen_blank",
+    "app_alive_after_relaunch", "device_ready_returning", "returning",
 })
 TAIL_LINES = 100            # the user-visible "last 100 relevant lines"
 MAX_REPORT_BYTES = 60000    # stays well below the check-run text limit
@@ -77,6 +77,21 @@ def first_error(paths):
             if ERROR_HINTS.search(line):
                 return line.strip()[:400], path
     return None, None
+
+
+def relaunch_evidence(root, limit=45):
+    """The display/window/frame lines that explain the phase-2 screenshot.
+
+    ci/emulator_journey.sh writes them while it captures
+    `34_relaunch_real_app.png`; the file is small on purpose, so the report can
+    print it in full and a black capture is explainable from the check page.
+    """
+    lines = read_lines(os.path.join(root, "emulator-relaunch-evidence.txt"))
+    if not lines:
+        return None
+    if len(lines) > limit:
+        lines = lines[:limit] + ["… [truncated - full file in the artifact]"]
+    return lines
 
 
 def status_keys(root):
@@ -202,10 +217,27 @@ def root_cause(failed_steps, not_run, bad_keys, keys, trap, script_ran,
         code = trap.get("exit_code") or "(exit code not recorded)"
         keys_text = ", ".join("`%s=%s`" % (k, v) for k, v in bad_keys) \
             if bad_keys else "no phase key was recorded"
-        return [
-            "**The workflow steps all succeeded; the journey script itself failed "
-            "during `%s` with exit code `%s`** (%s)." % (phase, code, keys_text),
-        ], None
+        lines = []
+        if str(code) == "0":
+            # A phase key can fail while the script still exits 0 (a drive that
+            # reports test failures, or a frame that cannot show the app), so
+            # "failed with exit code 0" must not be printed.
+            lines.append("**A phase failed while the journey script ran to the "
+                         "end (last phase: `%s`)**: %s." % (phase, keys_text))
+        else:
+            lines.append("**The workflow steps all succeeded; the journey script "
+                         "itself failed during `%s` with exit code `%s`** (%s)."
+                         % (phase, code, keys_text))
+        if any(name == "relaunch_screen_blank" and value != "0"
+               for name, value in bad_keys):
+            lines.append(
+                "The screenshot that is published as proof that the app renders "
+                "after a normal launch "
+                "(`docs/screenshots/34_relaunch_real_app.png`) is an all-black "
+                "frame, so that proof is missing. The display, window and frame "
+                "state recorded while it was captured is in `Screen and frame "
+                "state at the relaunch capture` below.")
+        return lines, None
     if not_run:
         return [
             "**No step reported a failure, but `%s` did not run.**"
@@ -392,6 +424,16 @@ def report(args, root):
     out.append("```")
     out.append("")
 
+    # --- relaunch evidence --------------------------------------------------
+    evidence = relaunch_evidence(root)
+    if evidence:
+        out.append("### Screen and frame state at the relaunch capture")
+        out.append("")
+        out.append("```")
+        out.extend(trim(line) for line in evidence)
+        out.append("```")
+        out.append("")
+
     # --- diagnostics + artifact --------------------------------------------
     out.append("### Diagnostics and artifact")
     out.append("")
@@ -404,7 +446,8 @@ def report(args, root):
         "emulator-progress.txt", "emulator-trap.txt", "emulator-step.log",
         "emulator-sampler.txt", "emulator-stop-reason.txt", "emulator-report.md",
         "runner-state-before.txt", "runner-state.txt", "status.txt", "journey.txt",
-        "relaunch.txt", "shrink.txt", "emulator-log-analysis.txt")
+        "relaunch.txt", "shrink.txt", "emulator-log-analysis.txt",
+        "emulator-relaunch-evidence.txt")
         if os.path.exists(os.path.join(root, name))]
     out.append("- files this report could read: %s"
                % (", ".join("`%s`" % n for n in present) if present else "_(none)_"))
