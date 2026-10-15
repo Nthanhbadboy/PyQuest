@@ -1,4 +1,4 @@
-import 'cast.dart';
+import '../../shared/characters/cast.dart';
 import '../../shared/l10n/pq_l10n.dart';
 import 'tutor_config.dart';
 import 'tutor_models.dart';

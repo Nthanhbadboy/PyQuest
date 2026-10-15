@@ -374,7 +374,7 @@ void main() {
         cfg,
       );
       expect(messages.last.content.length, lessThan(cfg.maxLessonContextChars + cfg.maxQuestionChars + 400));
-      expect('${messages.last.content}', contains('đã bỏ bớt'));
+      expect(messages.last.content, contains('đã bỏ bớt'));
     });
   });
 

@@ -171,9 +171,9 @@ class NovaPainter extends CastPainter2 {
     eye(canvas, const Offset(41, 38), 5.6, 6.8, look: const Offset(0.9, 0.5), iris: const Color(0xFF2E6E8C));
     eye(canvas, const Offset(59, 38), 5.6, 6.8, look: const Offset(0.9, 0.5), iris: const Color(0xFF2E6E8C));
     mouth(canvas, const Offset(50, 47), 9);
-    canvas.drawOval(const Rect.fromCenter(center: const Offset(32, 44), width: 7, height: 4.4),
+    canvas.drawOval(Rect.fromCenter(center: const Offset(32, 44), width: 7, height: 4.4),
         _fillC(PQColors.coral.withValues(alpha: 0.35)));
-    canvas.drawOval(const Rect.fromCenter(center: const Offset(68, 44), width: 7, height: 4.4),
+    canvas.drawOval(Rect.fromCenter(center: const Offset(68, 44), width: 7, height: 4.4),
         _fillC(PQColors.coral.withValues(alpha: 0.35)));
     reactionMarks(canvas, sparks: const [Offset(24, 16), Offset(76, 14), Offset(50, 6)], drop: const Offset(74, 30));
   }

@@ -49,7 +49,7 @@ enum TutorFailKind {
   blocked,
   badResponse;
 
-  PqStrings message(PqStrings s) => switch (this) {
+  String message(PqStrings s) => switch (this) {
         TutorFailKind.notConfigured => s.errNoConfig,
         TutorFailKind.network => s.errNetwork,
         TutorFailKind.timeout => s.errTimeout,

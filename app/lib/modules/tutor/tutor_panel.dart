@@ -611,17 +611,16 @@ class _Segment {
 }
 
 class _Tag extends StatelessWidget {
-  const _Tag({super.key, required this.text, required this.colour, this.wrap = false});
+  const _Tag({super.key, required this.text, required this.colour});
 
   final String text;
   final Color colour;
-  final bool wrap;
 
   @override
   Widget build(BuildContext context) {
     final label = Text(
       text,
-      maxLines: wrap ? 3 : 1,
+      maxLines: 2,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
         fontFamily: 'Nunito',

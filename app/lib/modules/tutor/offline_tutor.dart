@@ -55,7 +55,7 @@ class OfflineTutor {
     final vi = <TutorHintLevel, String>{
       TutorHintLevel.pointing: 'Nhìn kỹ $where nhé. '
           'Đó là chỗ quyết định kết quả của bước này.',
-      TutorHintLevel.question: 'Thử trả lời câu hỏi này trước: ${topic.question.vi(valuesOf(ctx))}',
+      TutorHintLevel.question: 'Thử trả lời câu hỏi này trước: ${topic.question(valuesOf(ctx)).vi}',
       TutorHintLevel.structure: 'Khung làm bài chỉ có dạng ${topic.shape.vi}. '
           'Bạn thử tự điền phần còn lại nhé.',
       TutorHintLevel.workedStart: 'Mình làm mẫu phần đầu, phần sau để bạn:\n'
@@ -67,7 +67,7 @@ class OfflineTutor {
     final en = <TutorHintLevel, String>{
       TutorHintLevel.pointing: 'Look closely at $where. '
           'That is what decides the result of this step.',
-      TutorHintLevel.question: 'First answer this question: ${topic.question.en(valuesOf(ctx))}',
+      TutorHintLevel.question: 'First answer this question: ${topic.question(valuesOf(ctx)).en}',
       TutorHintLevel.structure: 'The solution only has the shape ${topic.shape.en}. '
           'Fill in the rest yourself.',
       TutorHintLevel.workedStart: 'I will start it, you finish:\n'
@@ -151,7 +151,7 @@ class OfflineTutor {
     for (var i = 0; i < lines.length; i++) {
       final line = lines[i].trim();
       b.writeln(lang == PqLang.vi
-          ? '• Dòng ${i + 1}: `${line}` — ${_linePurposeVi(line)}'
+          ? '• Dòng ${i + 1}: `$line` — ${_linePurposeVi(line)}'
           : '• Line ${i + 1}: `$line` — ${_linePurposeEn(line)}');
     }
     b.write(lang == PqLang.vi

@@ -49,7 +49,7 @@ abstract final class CastDialogue {
     if (list != null && list.isNotEmpty) {
       return list[seed.abs() % list.length];
     }
-    final fallback = _fallback[lang == PqLang.vi ? 0 : 1][moment];
+    final fallback = _fallback[lang == PqLang.vi ? 'vi' : 'en']?[moment];
     if (fallback != null && fallback.isNotEmpty) {
       return fallback[seed.abs() % fallback.length];
     }
