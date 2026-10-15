@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import '../../shared/theme/palette.dart';
 import '../../shared/widgets/chunky_button.dart';
 import '../../shared/widgets/code_widgets.dart';
 import '../../shared/widgets/common.dart';
+import 'gemini_live_voice.dart';
 import 'tutor_models.dart';
 import 'tutor_session.dart';
 
@@ -69,6 +71,11 @@ class _TutorPanelState extends State<TutorPanel> {
   final List<_Line> _lines = [];
   bool _asking = false;
   bool _opened = false;
+  GeminiLiveVoice? _voice;
+  bool _voiceBusy = false;
+  String _voiceStatus = '';
+  String _voiceError = '';
+  final List<String> _voiceTranscript = <String>[];
 
   /// Last question sent, so «Thử lại» resends it through the AI provider
   /// instead of leaving the child with the offline answer.
@@ -111,10 +118,130 @@ class _TutorPanelState extends State<TutorPanel> {
 
   @override
   void dispose() {
+    unawaited(_voice?.dispose());
     _input.dispose();
     _focus.dispose();
     _scroll.dispose();
     super.dispose();
+  }
+
+  Future<void> _toggleVoice() async {
+    final voice = _voice ??= GeminiLiveVoice(
+      onStatus: (status) {
+        if (!mounted) return;
+        setState(() {
+          _voiceStatus = status;
+          if (status == 'Đã xong lượt nói' || status == 'Voice chưa kết nối') {
+            _voiceBusy = false;
+          }
+        });
+      },
+      onTranscript: (text, {required fromUser}) {
+        if (!mounted) return;
+        setState(() {
+          _voiceTranscript.add('${fromUser ? 'Bé' : _member.name}: $text');
+          if (_voiceTranscript.length > 6) _voiceTranscript.removeAt(0);
+        });
+      },
+      onError: (message) {
+        if (!mounted) return;
+        setState(() {
+          _voiceError = message;
+          _voiceBusy = false;
+        });
+      },
+    );
+    if (voice.isRecording) {
+      setState(() {
+        _voiceBusy = true;
+        _voiceError = '';
+      });
+      await voice.stopListening();
+      return;
+    }
+    if (_voiceBusy) return;
+    setState(() {
+      _voiceBusy = true;
+      _voiceError = '';
+      _voiceStatus = 'Đang bắt đầu…';
+    });
+    await voice.startListening(
+      characterName: _member.name,
+      language: _lang == PqLang.vi ? 'vi' : 'en',
+    );
+  }
+
+  Widget _voiceControls() {
+    final recording = _voice?.isRecording ?? false;
+    final waiting = _voiceBusy && !recording;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: PQColors.parchment,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: PQColors.sea.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(
+                recording ? Icons.graphic_eq_rounded : Icons.mic_rounded,
+                color: recording ? PQColors.coralDeep : PQColors.seaDeep,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _voiceStatus.isEmpty
+                      ? (_lang == PqLang.vi ? 'Thử nói chuyện bằng giọng nói' : 'Try a voice conversation')
+                      : _voiceStatus,
+                  style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w700, color: PQColors.ink),
+                ),
+              ),
+              if (waiting)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          FilledButton.icon(
+            key: const ValueKey('tutor_gemini_live_voice'),
+            onPressed: waiting ? null : _toggleVoice,
+            icon: Icon(recording ? Icons.stop_circle_rounded : Icons.mic_rounded),
+            label: Text(
+              recording
+                  ? (_lang == PqLang.vi ? 'Dừng để nghe câu trả lời' : 'Stop and hear reply')
+                  : (_lang == PqLang.vi ? 'Nói với ${_member.name}' : 'Talk to ${_member.name}'),
+            ),
+          ),
+          if (_voiceError.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(_voiceError, style: const TextStyle(color: PQColors.coralDeep, fontSize: 12)),
+          ],
+          if (_voiceTranscript.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            ..._voiceTranscript.take(3).map(
+              (line) => Padding(
+                padding: const EdgeInsets.only(top: 3),
+                child: Text(line, style: const TextStyle(fontFamily: 'Nunito', fontSize: 12, color: PQColors.inkSoft)),
+              ),
+            ),
+          ],
+          const SizedBox(height: 4),
+          Text(
+            _lang == PqLang.vi
+                ? 'Bản thử nghiệm: giữ quyền micro khi bắt đầu; Gemini Live gửi âm thanh lên mạng.'
+                : 'Experimental: microphone audio is sent to Gemini Live.',
+            style: const TextStyle(fontSize: 10, color: PQColors.inkSoft),
+          ),
+        ],
+      ),
+    );
   }
 
   TutorRequest _request(String question, {TutorQuickAction? action}) => TutorRequest(
@@ -184,7 +311,7 @@ class _TutorPanelState extends State<TutorPanel> {
   }
 
   Mood get _mood {
-    if (_asking || widget.services.tutor.busy) return Mood.thinking;
+    if (_asking || widget.services.tutor.busy || (_voiceBusy && !(_voice?.isRecording ?? false))) return Mood.thinking;
     final last = _lines.isEmpty ? null : _lines.last.reply;
     if (last == null) return Mood.happy;
     if (last.hintLevel == TutorHintLevel.full) return Mood.surprised;
@@ -221,6 +348,8 @@ class _TutorPanelState extends State<TutorPanel> {
               ),
               const SizedBox(height: 10),
               _quickActions(),
+              const SizedBox(height: 8),
+              _voiceControls(),
               const SizedBox(height: 8),
               _composer(busy),
               const SizedBox(height: 8),
