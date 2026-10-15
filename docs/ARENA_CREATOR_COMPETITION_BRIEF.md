@@ -85,7 +85,7 @@ Arena cần có ít nhất ba nhánh rõ ràng, không gộp mọi thứ thành 
 - Người chơi tạo nhiều sản phẩm theo thời gian: nhân vật, thú cưng, robot, phương tiện, bản thiết kế, chương trình điều khiển hoặc tác phẩm khác.
 - Có thể vẽ, tùy chỉnh và lắp ghép bộ phận; lập trình sản phẩm; lưu phiên bản; thử nghiệm; nâng cấp; đặt tên; xem lịch sử và trưng bày bộ sưu tập.
 - Sản phẩm không chỉ là skin hoặc đồ trang trí: khi phù hợp, chúng có logic/hành vi do code điều khiển và có thể được dùng trong các thử thách.
-- Có mục tiêu tích lũy như hoàn thành bộ sưu tập, mở khóa bộ phận, đạt cấp sáng tạo, hoàn thành chủ đề hoặc sở hữu các tác phẩm có đặc tính khác nhau.
+- Có mục tiêu tích lũy như hoàn thành bộ sưu tập, mở khóa bộ phận, hoàn thành chủ đề hoặc sở hữu các tác phẩm có đặc tính khác nhau. Không cần cấp sáng tạo/XP toàn cục.
 - Có thể tổ chức thử thách đánh giá từng tác phẩm hoặc cả bộ sưu tập. Điểm/danh hiệu gắn với tiêu chí của thử thách, không mặc định số lượng nhiều là chất lượng cao.
 - Nhánh này vẫn có giá trị với trẻ không muốn đối kháng trực tiếp; không bắt buộc mọi tác phẩm phải tham gia thi đấu.
 
@@ -346,8 +346,7 @@ PyQuest không cần một hệ thống XP phức tạp cho mọi trò chơi ch�
 - **Không tự động tạo thêm XP, level, điểm trận, điểm mùa, điểm tổng và nhiều loại tiền tệ** nếu chưa có mục đích sản phẩm cụ thể. Không tạo hai chỉ số cùng làm một việc chỉ vì tên gọi khác nhau.
 - Mỗi game được phép có **điểm số hoặc tài nguyên nội bộ riêng** khi gameplay thực sự cần (ví dụ sao dùng để nâng cấp lực bay). Chúng không mặc nhiên phải trở thành XP toàn cục hay điểm xếp hạng chung.
 - Kết quả game chỉ cần gửi sự kiện/kết quả có ý nghĩa sang lớp chung. Lớp chung kiểm tra điều kiện, trao điểm/danh hiệu/thành tích và mở khóa theo quy tắc rõ ràng; game không cần tự triển khai lại các hệ thống đó.
-- Nếu XP/cấp độ đang có trong tài liệu cũ, xem đó là **thiết kế cần được chứng minh bằng giá trị thực**, không phải yêu cầu bất biến. Không mở rộng công thức XP, bảng cấp, hệ số hoặc rào cấp chỉ để duy trì một hệ thống đã trở nên rườm rà. Trước khi triển khai, phải xác định nó giải quyết vấn đề gì mà điểm, thành tích và điều kiện mở khóa hiện có không giải quyết được.
-- Không được để cấp độ/XP chặn tùy tiện quyền chơi game khác. Chỉ khóa khi có lý do gameplay hoặc kiến thức tiên quyết thực sự; nói rõ điều kiện cho người chơi.
+- **Quyết định hiện tại: không có XP/cấp độ toàn cục trong PyQuest.** Không triển khai công thức XP, bảng cấp, phần thưởng theo cấp hay rào cấp. Main Map chỉ điều hướng và mở hoạt động; điều kiện mở khóa phải gắn trực tiếp với hoạt động/kiến thức cần thiết.
 - **Nguyên tắc chốt:** *gameplay đơn giản, trải nghiệm tốt; tiến trình dùng chung vừa đủ; không tạo thêm hệ thống chỉ để làm kiến trúc trông phức tạp hơn.*
 
 ## 15. Mô hình mô-đun và lớp dịch vụ chung
