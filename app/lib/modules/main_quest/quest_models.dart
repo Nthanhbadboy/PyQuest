@@ -5,11 +5,11 @@ import 'package:flutter/services.dart';
 import '../../shared/characters/characters.dart';
 
 sealed class LessonStep {
-  LessonStep(this.json) : id = json['id'] as String;
-  final Map<String, dynamic> json;
+  LessonStep(this.raw) : id = raw['id'] as String;
+  final Map<String, dynamic> raw;
   final String id;
 
-  List<String> get skills => (json['skills'] as List?)?.cast<String>() ?? const [];
+  List<String> get skills => (raw['skills'] as List?)?.cast<String>() ?? const [];
 
   /// Exercises are checked and counted; stories/examples are not.
   bool get isExercise => this is! StoryStep && this is! ExampleStep;
@@ -27,36 +27,36 @@ sealed class LessonStep {
 }
 
 class StoryStep extends LessonStep {
-  StoryStep(super.json);
-  String get text => json['text'] as String;
-  CharacterId get speaker => json['speaker'] == 'robo' ? CharacterId.robo : CharacterId.py;
-  Mood get mood => json['mood'] == 'thinking' ? Mood.thinking : Mood.happy;
+  StoryStep(super.raw);
+  String get text => raw['text'] as String;
+  CharacterId get speaker => raw['speaker'] == 'robo' ? CharacterId.robo : CharacterId.py;
+  Mood get mood => raw['mood'] == 'thinking' ? Mood.thinking : Mood.happy;
 }
 
 class ExampleStep extends LessonStep {
-  ExampleStep(super.json);
-  String get text => json['text'] as String;
-  String get code => json['code'] as String;
+  ExampleStep(super.raw);
+  String get text => raw['text'] as String;
+  String get code => raw['code'] as String;
 }
 
 class ChoiceStep extends LessonStep {
-  ChoiceStep(super.json);
-  String get question => json['question'] as String;
-  String? get code => json['code'] as String?;
-  List<String> get options => (json['options'] as List).cast<String>();
-  int get answer => (json['answer'] as num).toInt();
-  String get explain => json['explain'] as String? ?? '';
+  ChoiceStep(super.raw);
+  String get question => raw['question'] as String;
+  String? get code => raw['code'] as String?;
+  List<String> get options => (raw['options'] as List).cast<String>();
+  int get answer => (raw['answer'] as num).toInt();
+  String get explain => raw['explain'] as String? ?? '';
 }
 
 class FillStep extends LessonStep {
-  FillStep(super.json);
-  String get prompt => json['prompt'] as String;
-  String get template => json['template'] as String;
+  FillStep(super.raw);
+  String get prompt => raw['prompt'] as String;
+  String get template => raw['template'] as String;
 
   /// Options per blank; the first option is the intended answer (shuffled in UI).
-  List<List<String>> get blanks => [for (final b in json['blanks'] as List) (b as List).cast<String>()];
-  String get expectedOutput => json['expected_output'] as String;
-  String get explain => json['explain'] as String? ?? '';
+  List<List<String>> get blanks => [for (final b in raw['blanks'] as List) (b as List).cast<String>()];
+  String get expectedOutput => raw['expected_output'] as String;
+  String get explain => raw['explain'] as String? ?? '';
 
   String build(List<String?> picks) {
     var code = template;
@@ -68,53 +68,53 @@ class FillStep extends LessonStep {
 }
 
 class OrderStep extends LessonStep {
-  OrderStep(super.json);
-  String get prompt => json['prompt'] as String;
+  OrderStep(super.raw);
+  String get prompt => raw['prompt'] as String;
 
   /// Lines in the correct order (shuffled in UI).
-  List<String> get lines => (json['lines'] as List).cast<String>();
-  String get expectedOutput => json['expected_output'] as String;
+  List<String> get lines => (raw['lines'] as List).cast<String>();
+  String get expectedOutput => raw['expected_output'] as String;
 }
 
 class WriteStep extends LessonStep {
-  WriteStep(super.json);
-  String get prompt => json['prompt'] as String;
-  String? get expectedOutput => json['expected_output'] as String?;
-  String get solution => json['solution'] as String;
-  String get hint => json['hint'] as String? ?? '';
-  String get starter => json['starter'] as String? ?? '';
-  List<String> get mustContain => (json['must_contain'] as List?)?.cast<String>() ?? const [];
-  bool get lenient => json['lenient'] as bool? ?? false;
-  bool get anyOutput => json['any_output'] as bool? ?? false;
+  WriteStep(super.raw);
+  String get prompt => raw['prompt'] as String;
+  String? get expectedOutput => raw['expected_output'] as String?;
+  String get solution => raw['solution'] as String;
+  String get hint => raw['hint'] as String? ?? '';
+  String get starter => raw['starter'] as String? ?? '';
+  List<String> get mustContain => (raw['must_contain'] as List?)?.cast<String>() ?? const [];
+  bool get lenient => raw['lenient'] as bool? ?? false;
+  bool get anyOutput => raw['any_output'] as bool? ?? false;
 }
 
 class RobotStep extends LessonStep {
-  RobotStep(super.json);
-  String get prompt => json['prompt'] as String;
-  List<String> get rows => (json['rows'] as List).cast<String>();
-  String get starter => json['starter'] as String? ?? '';
-  String get solution => json['solution'] as String;
-  String get hint => json['hint'] as String? ?? '';
-  List<String> get mustContain => (json['must_contain'] as List?)?.cast<String>() ?? const [];
+  RobotStep(super.raw);
+  String get prompt => raw['prompt'] as String;
+  List<String> get rows => (raw['rows'] as List).cast<String>();
+  String get starter => raw['starter'] as String? ?? '';
+  String get solution => raw['solution'] as String;
+  String get hint => raw['hint'] as String? ?? '';
+  List<String> get mustContain => (raw['must_contain'] as List?)?.cast<String>() ?? const [];
 }
 
 class Lesson {
-  Lesson(this.json, this.chapterId)
-      : id = json['id'] as String,
-        number = (json['number'] as num).toInt(),
-        steps = [for (final s in json['steps'] as List) LessonStep.fromJson(s as Map<String, dynamic>)];
+  Lesson(this.raw, this.chapterId)
+      : id = raw['id'] as String,
+        number = (raw['number'] as num).toInt(),
+        steps = [for (final s in raw['steps'] as List) LessonStep.fromJson(s as Map<String, dynamic>)];
 
-  final Map<String, dynamic> json;
+  final Map<String, dynamic> raw;
   final String chapterId;
   final String id;
   final int number;
   final List<LessonStep> steps;
 
-  String get title => json['title'] as String;
-  String get skill => json['skill'] as String;
-  String get summary => json['summary'] as String;
-  String get pyLine => json['py_line'] as String;
-  bool get isChallenge => json['challenge'] as bool? ?? false;
+  String get title => raw['title'] as String;
+  String get skill => raw['skill'] as String;
+  String get summary => raw['summary'] as String;
+  String get pyLine => raw['py_line'] as String;
+  bool get isChallenge => raw['challenge'] as bool? ?? false;
   int get exerciseCount => steps.where((s) => s.isExercise).length;
 
   /// Skill ids recorded when the lesson is completed.

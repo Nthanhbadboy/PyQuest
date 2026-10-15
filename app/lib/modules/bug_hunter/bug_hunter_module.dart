@@ -433,6 +433,13 @@ class _BugPuzzleScreenState extends State<BugPuzzleScreen> {
     }
   }
 
+  Map<int, Color> _lineColors() {
+    final colors = <int, Color>{for (final l in _fixed) l: PQColors.success.withValues(alpha: 0.35)};
+    final wrong = _flashWrong;
+    if (wrong != null) colors[wrong] = PQColors.danger.withValues(alpha: 0.45);
+    return colors;
+  }
+
   @override
   Widget build(BuildContext context) {
     final seconds = _watch.elapsed.inSeconds;
@@ -493,10 +500,7 @@ class _BugPuzzleScreenState extends State<BugPuzzleScreen> {
                       fontSize: 15,
                       errorLine: _result?.success == false ? _result?.errorLine : null,
                       onLineTap: _tapLine,
-                      lineColors: {
-                        for (final l in _fixed) l: PQColors.success.withValues(alpha: 0.35),
-                        if (_flashWrong != null) _flashWrong!: PQColors.danger.withValues(alpha: 0.45),
-                      },
+                      lineColors: _lineColors(),
                     ),
                     const SizedBox(height: 10),
                     ChunkyButton(

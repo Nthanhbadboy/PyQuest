@@ -62,7 +62,7 @@ class _AdventureRecapScreenState extends State<AdventureRecapScreen> {
     final lines = chapterLessons
         .where((l) => mine.containsKey(l.id))
         .expand((l) => l.steps)
-        .map((st) => (st.json['solution'] as String?) ?? '')
+        .map((st) => (st.raw['solution'] as String?) ?? '')
         .fold<int>(0, (a, code) => a + (code.isEmpty ? 0 : code.split('\n').length));
     final maze = await s.progress.completedLevelCount(gameId: 'robot_maze');
     if (!mounted) return;

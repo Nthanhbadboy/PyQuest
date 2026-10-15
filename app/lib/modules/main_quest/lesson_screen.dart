@@ -246,7 +246,7 @@ class _LessonScreenState extends State<LessonScreen> {
         }
       case WriteStep w:
         await _checkWrite(w);
-      case RobotStep r:
+      case RobotStep _:
         await _robotKey.currentState?.run();
       case StoryStep _:
       case ExampleStep _:

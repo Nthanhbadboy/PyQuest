@@ -543,7 +543,7 @@ class _SavedList extends StatefulWidget {
 }
 
 class _SavedListState extends State<_SavedList> {
-  late List<CustomLevel> _items = List.of(widget.saved);
+  late final List<CustomLevel> _items = List.of(widget.saved);
 
   @override
   Widget build(BuildContext context) {

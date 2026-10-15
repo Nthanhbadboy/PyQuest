@@ -129,8 +129,8 @@ Shader _vertical(Rect r, Color top, Color bottom) =>
     LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [top, bottom]).createShader(r);
 
 /// Base class: draws in a 100×100 design space scaled to the canvas.
-abstract class _CastPainter extends CustomPainter {
-  _CastPainter({required this.t, required this.blink, required this.bob, required this.mood});
+abstract class CastPainter extends CustomPainter {
+  CastPainter({required this.t, required this.blink, required this.bob, required this.mood});
 
   final double t;
   final double blink;
@@ -172,12 +172,12 @@ abstract class _CastPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_CastPainter old) => old.t != t || old.blink != blink || old.bob != bob || old.mood != mood;
+  bool shouldRepaint(CastPainter old) => old.t != t || old.blink != blink || old.bob != bob || old.mood != mood;
 }
 
 // ------------------------------------------------------------------ Robo
 
-class RoboPainter extends _CastPainter {
+class RoboPainter extends CastPainter {
   RoboPainter({required super.t, required super.blink, required super.bob, required super.mood});
 
   static const _body = PQColors.teal;
@@ -309,7 +309,7 @@ class RoboPainter extends _CastPainter {
 
 // ------------------------------------------------------------------- Pip
 
-class PipPainter extends _CastPainter {
+class PipPainter extends CastPainter {
   PipPainter({required super.t, required super.blink, required super.bob, required super.mood, this.hat, this.run = 0, this.flap});
 
   final String? hat;
@@ -494,13 +494,13 @@ class PipPainter extends _CastPainter {
   }
 
   @override
-  bool shouldRepaint(_CastPainter old) =>
+  bool shouldRepaint(CastPainter old) =>
       super.shouldRepaint(old) || (old is PipPainter && (old.run != run || old.flap != flap || old.hat != hat));
 }
 
 // ----------------------------------------------------------------- Bitsy
 
-class BitsyPainter extends _CastPainter {
+class BitsyPainter extends CastPainter {
   BitsyPainter({required super.t, required super.blink, required super.bob, required super.mood});
 
   static const _fur = Color(0xFFA98BF5);
@@ -608,7 +608,7 @@ class BitsyPainter extends _CastPainter {
 
 // -------------------------------------------------------------------- Py
 
-class PyPainter extends _CastPainter {
+class PyPainter extends CastPainter {
   PyPainter({required super.t, required super.blink, required super.bob, required super.mood});
 
   static const _blue = PQColors.pyBlue;

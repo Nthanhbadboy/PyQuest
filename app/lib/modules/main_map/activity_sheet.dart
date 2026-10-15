@@ -9,7 +9,7 @@ import '../../shared/widgets/common.dart';
 import '../../shared/widgets/game_icons.dart';
 
 /// Bottom sheet shown when a place on the map is tapped.
-/// Pops with 'open' or 'lesson:<id>'.
+/// Pops with `open` or `lesson:<id>`.
 class ActivitySheet extends StatelessWidget {
   const ActivitySheet({super.key, required this.module, required this.status});
   final ActivityModule module;

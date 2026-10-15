@@ -33,10 +33,10 @@ abstract final class EventTypes {
   /// A level attempt failed. data: level_id, fails
   static const levelFailed = 'level_failed';
 
-  /// A lesson was finished. data: lesson_id, chapter_id, skills (List<String>), score
+  /// A lesson was finished. data: lesson_id, chapter_id, skills (`List<String>`), score
   static const lessonCompleted = 'lesson_completed';
 
-  /// An exercise was solved. data: exercise_id, skills (List<String>)
+  /// An exercise was solved. data: exercise_id, skills (`List<String>`)
   static const exerciseSolved = 'exercise_solved';
 
   /// data: chapter_id
