@@ -109,7 +109,18 @@ Có giới hạn rõ ràng (100.000 bước, 50 tầng gọi hàm, 10.000 ký t�
 kèm thông báo mà Python thật sẽ in. Danh sách đầy đủ hiển thị trong app
 (Cài đặt → *Về PyQuest Python*).
 
-Ảnh chụp thật từ Android emulator (CI) nằm ở [`docs/screenshots/`](docs/screenshots/).
+### Ảnh chụp thật (Android emulator API 34, Pixel 6, trong CI)
+
+| Bản đồ đảo | Mê Cung Robo | Kết quả màn |
+|---|---|---|
+| <img src="docs/screenshots/03_main_map.jpg" width="220"> | <img src="docs/screenshots/07_maze_program.jpg" width="220"> | <img src="docs/screenshots/09_maze_result.jpg" width="220"> |
+| **Bài học Python** | **Lỗi được giải thích** | **Tổng kết bài** |
+| <img src="docs/screenshots/16_lesson_fill_correct.jpg" width="220"> | <img src="docs/screenshots/17_lesson_code_error.jpg" width="220"> | <img src="docs/screenshots/19_lesson_complete.jpg" width="220"> |
+| **Rồng Nhảy** | **Hái Sao** | **Nhà Thành Tích** |
+| <img src="docs/screenshots/21_dragon_play.jpg" width="220"> | <img src="docs/screenshots/24_stars_play.jpg" width="220"> | <img src="docs/screenshots/29_achievement_house.jpg" width="220"> |
+
+Toàn bộ ảnh (kể cả lần mở lại app để kiểm tra dữ liệu đã lưu) nằm ở
+[`docs/screenshots/`](docs/screenshots/).
 
 ---
 

@@ -82,12 +82,21 @@ class StarsGame extends ChangeNotifier {
     started = true;
   }
 
-  void update(double dt) {
+  /// Fixed 1/60 s sub-steps keep the round in real time on slow devices.
+  void update(double frameDt) {
     if (size == Size.zero) return;
-    dt = dt.clamp(0, 1 / 30);
+    var remaining = frameDt.clamp(0.0, 0.25);
+    while (remaining > 1e-6) {
+      final step = math.min(remaining, 1 / 60);
+      _step(step);
+      remaining -= step;
+    }
+    notifyListeners();
+  }
+
+  void _step(double dt) {
     if (!started || over) {
       _updateFx(dt);
-      notifyListeners();
       return;
     }
     time += dt;
@@ -122,7 +131,6 @@ class StarsGame extends ChangeNotifier {
       over = true;
       events.add('over');
     }
-    notifyListeners();
   }
 
   void _spawnOne(double progress) {

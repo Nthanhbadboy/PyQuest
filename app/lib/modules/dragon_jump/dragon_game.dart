@@ -118,13 +118,23 @@ class DragonGame extends ChangeNotifier {
     _dust(jumpsUsed == 1 ? 6 : 10, jumpsUsed > 1);
   }
 
-  void update(double dt) {
+  /// Advances the world by [frameDt] seconds using fixed 1/60 s sub-steps,
+  /// so slow devices do not play in slow motion and collisions stay reliable.
+  void update(double frameDt) {
     if (size == Size.zero) return;
-    dt = dt.clamp(0, 1 / 30);
+    var remaining = frameDt.clamp(0.0, 0.25);
+    while (remaining > 1e-6) {
+      final step = math.min(remaining, 1 / 60);
+      _step(step);
+      remaining -= step;
+    }
+    notifyListeners();
+  }
+
+  void _step(double dt) {
     time += dt;
     if (phase == DragonPhase.ready) {
       runCycle += dt * 1.5;
-      notifyListeners();
       return;
     }
     if (phase == DragonPhase.over) {
@@ -133,7 +143,6 @@ class DragonGame extends ChangeNotifier {
       pipY = math.max(0, pipY + vy * dt);
       _updateParticles(dt);
       shake = math.max(0, shake - dt * 3);
-      notifyListeners();
       return;
     }
     speed = math.min(maxSpeed, speed + speedGain * dt);
@@ -169,7 +178,6 @@ class DragonGame extends ChangeNotifier {
 
     _collide(dt);
     _updateParticles(dt);
-    notifyListeners();
   }
 
   // ---------------------------------------------------------- spawning

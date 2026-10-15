@@ -27,6 +27,7 @@ Future<bool> waitFor(WidgetTester tester, String key, {int timeoutMs = 20000}) a
 
 Future<void> shot(String name) async {
   try {
+    await Future<void>.delayed(const Duration(milliseconds: 400));
     await binding.takeScreenshot(name);
   } catch (e) {
     debugPrint('screenshot $name failed: $e');
@@ -181,6 +182,9 @@ void main() {
     await boot(tester);
     await tapKey(tester, 'map_label_robot_maze');
     await tapKey(tester, 'sheet_open', waitMs: 1600);
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('open_workshop')), 300,
+        scrollable: find.byType(Scrollable).first);
+    await wait(tester, 500);
     await tapKey(tester, 'open_workshop', waitMs: 1600);
     await shot('26_workshop');
     await tapKey(tester, 'workshop_code', waitMs: 1800);
