@@ -1,0 +1,902 @@
+{
+ "chapter": {
+  "id": "code_apprentice",
+  "number": 1,
+  "title": "Code Apprentice",
+  "subtitle": "Học Việc Lập Trình",
+  "description": "12 bài học đầu tiên: print, biến, chuỗi chữ, so sánh và câu lệnh điều kiện."
+ },
+ "next_chapter": {
+  "number": 2,
+  "title": "Game Builder",
+  "subtitle": "Thợ Xây Game",
+  "description": "Vòng lặp, danh sách và hàm — sẽ có trong bản cập nhật sau."
+ },
+ "lessons": [
+  {
+   "id": "mq1_01",
+   "number": 1,
+   "title": "Xin chào, Python!",
+   "skill": "print()",
+   "summary": "Bạn đã dùng print() để máy tính nói ra một câu.",
+   "py_line": "Dòng code đầu tiên của bạn đã chạy! Mọi lập trình viên đều bắt đầu như thế.",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "Chào bạn nhỏ! Tớ là thầy Py. Máy tính làm theo lệnh rất giỏi, nhưng phải nói bằng ngôn ngữ nó hiểu. Python là một ngôn ngữ như thế!",
+     "id": "mq1_01_s1"
+    },
+    {
+     "type": "example",
+     "text": "Lệnh print() giúp máy tính nói ra một câu. Câu cần nói phải nằm trong dấu ngoặc kép \" \". Bấm Chạy để xem nhé!",
+     "code": "print(\"Xin chào!\")",
+     "id": "mq1_01_s2"
+    },
+    {
+     "type": "choice",
+     "question": "Dòng code nào in ra chữ Robo?",
+     "options": [
+      "print(\"Robo\")",
+      "print(Robo)",
+      "print[\"Robo\"]"
+     ],
+     "answer": 0,
+     "explain": "Chữ cần in phải nằm trong dấu ngoặc kép, và print dùng dấu ngoặc tròn ( ).",
+     "id": "mq1_01_s3"
+    },
+    {
+     "type": "fill",
+     "prompt": "Chọn mảnh ghép để chương trình in ra: PyQuest",
+     "template": "print(___)",
+     "blanks": [
+      [
+       "\"PyQuest\"",
+       "PyQuest",
+       "(PyQuest)"
+      ]
+     ],
+     "expected_output": "PyQuest",
+     "explain": "Có dấu ngoặc kép thì Python mới hiểu đó là chữ.",
+     "id": "mq1_01_s4"
+    },
+    {
+     "type": "write",
+     "prompt": "Đến lượt bạn! Viết một dòng code in ra:\nRobo thông minh",
+     "expected_output": "Robo thông minh",
+     "solution": "print(\"Robo thông minh\")",
+     "hint": "Gõ print, mở ngoặc tròn, rồi viết chữ trong dấu ngoặc kép: print(\"...\")",
+     "starter": "print(\"\")",
+     "must_contain": [],
+     "lenient": true,
+     "any_output": false,
+     "id": "mq1_01_s5"
+    }
+   ]
+  },
+  {
+   "id": "mq1_02",
+   "number": 2,
+   "title": "Nhiều dòng print",
+   "skill": "Thứ tự lệnh",
+   "summary": "Máy tính chạy code từ trên xuống dưới, mỗi print() là một dòng.",
+   "py_line": "Bạn đã biết máy tính làm việc theo thứ tự — giống hệt Robo trong mê cung!",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "Mỗi lệnh print() in ra một dòng. Máy tính đọc code từ trên xuống dưới, lần lượt từng dòng một.",
+     "id": "mq1_02_s1"
+    },
+    {
+     "type": "example",
+     "text": "Ba lệnh print, ba dòng chữ. Bấm Chạy nào!",
+     "code": "print(\"Một\")\nprint(\"Hai\")\nprint(\"Ba!\")",
+     "id": "mq1_02_s2"
+    },
+    {
+     "type": "order",
+     "prompt": "Chạm vào các dòng theo đúng thứ tự để in ra bài thơ:",
+     "lines": [
+      "print(\"Trời xanh\")",
+      "print(\"Mây trắng\")",
+      "print(\"Robo vui\")"
+     ],
+     "expected_output": "Trời xanh\nMây trắng\nRobo vui",
+     "id": "mq1_02_s3"
+    },
+    {
+     "type": "choice",
+     "question": "Dòng code này in ra gì?",
+     "options": [
+      "Pip",
+      "Báo lỗi",
+      "'Pip'"
+     ],
+     "answer": 0,
+     "explain": "Python chấp nhận cả dấu ' ' lẫn \" \", miễn là mở và đóng giống nhau.",
+     "code": "print('Pip')",
+     "id": "mq1_02_s4"
+    },
+    {
+     "type": "write",
+     "prompt": "Viết code in ra 2 dòng:\nXin chào\nHẹn gặp lại",
+     "expected_output": "Xin chào\nHẹn gặp lại",
+     "solution": "print(\"Xin chào\")\nprint(\"Hẹn gặp lại\")",
+     "hint": "Mỗi dòng chữ cần một lệnh print() riêng.",
+     "starter": "",
+     "must_contain": [],
+     "lenient": true,
+     "any_output": false,
+     "id": "mq1_02_s5"
+    }
+   ]
+  },
+  {
+   "id": "mq1_03",
+   "number": 3,
+   "title": "Con số biết tính",
+   "skill": "Số và phép tính",
+   "summary": "Python tính toán với + - * / và số thì không cần dấu ngoặc kép.",
+   "py_line": "Máy tính của bạn giờ là một chiếc máy tính siêu tốc!",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "Máy tính có thể tính toán cực nhanh! Khi viết số, ta KHÔNG dùng dấu ngoặc kép.",
+     "id": "mq1_03_s1"
+    },
+    {
+     "type": "example",
+     "text": "Dòng 1 tính phép cộng. Dòng 2 có dấu ngoặc kép nên chỉ in ra chữ.",
+     "code": "print(3 + 4)\nprint(\"3 + 4\")",
+     "id": "mq1_03_s2"
+    },
+    {
+     "type": "choice",
+     "question": "Dòng code này in ra gì?",
+     "options": [
+      "10",
+      "2 * 5",
+      "25"
+     ],
+     "answer": 0,
+     "explain": "Dấu * là phép nhân: 2 nhân 5 bằng 10.",
+     "code": "print(2 * 5)",
+     "id": "mq1_03_s3"
+    },
+    {
+     "type": "fill",
+     "prompt": "Chọn phép tính để chương trình in ra 6:",
+     "template": "print(10 ___ 4)",
+     "blanks": [
+      [
+       "-",
+       "+",
+       "*"
+      ]
+     ],
+     "expected_output": "6",
+     "explain": "10 trừ 4 bằng 6.",
+     "id": "mq1_03_s4"
+    },
+    {
+     "type": "write",
+     "prompt": "Robo có 12 hộp, mỗi hộp có 3 viên đá. Dùng print() và phép nhân để in ra tổng số viên đá.",
+     "expected_output": "36",
+     "solution": "print(12 * 3)",
+     "hint": "Phép nhân dùng dấu *. Ví dụ: print(2 * 5)",
+     "starter": "",
+     "must_contain": [
+      "*"
+     ],
+     "lenient": false,
+     "any_output": false,
+     "id": "mq1_03_s5"
+    },
+    {
+     "type": "choice",
+     "question": "print(7 / 2) in ra gì?",
+     "options": [
+      "3.5",
+      "3",
+      "7 / 2"
+     ],
+     "answer": 0,
+     "explain": "Phép chia / luôn cho ra số thập phân.",
+     "id": "mq1_03_s6"
+    }
+   ]
+  },
+  {
+   "id": "mq1_04",
+   "number": 4,
+   "title": "Biến — chiếc hộp có tên",
+   "skill": "Biến",
+   "summary": "Biến là chiếc hộp có tên để cất giá trị và dùng lại.",
+   "py_line": "Biến có mặt ở khắp nơi trong game: điểm số, tên nhân vật, số mạng...",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "Biến giống như một chiếc hộp có dán nhãn. Ta cất một giá trị vào hộp để dùng lại sau. Dấu = nghĩa là 'cất vào hộp'.",
+     "id": "mq1_04_s1"
+    },
+    {
+     "type": "example",
+     "text": "Hộp ten chứa chữ Robo, hộp tuoi chứa số 7.",
+     "code": "ten = \"Robo\"\ntuoi = 7\nprint(ten)\nprint(tuoi)",
+     "id": "mq1_04_s2"
+    },
+    {
+     "type": "choice",
+     "question": "Chương trình này in ra gì?",
+     "options": [
+      "50",
+      "diem",
+      "Báo lỗi"
+     ],
+     "answer": 0,
+     "explain": "diem không có dấu ngoặc kép nên Python in giá trị bên trong hộp diem.",
+     "code": "diem = 50\nprint(diem)",
+     "id": "mq1_04_s3"
+    },
+    {
+     "type": "fill",
+     "prompt": "Cất chữ Pip vào biến pet rồi in ra:",
+     "template": "pet = ___\nprint(pet)",
+     "blanks": [
+      [
+       "\"Pip\"",
+       "Pip",
+       "print"
+      ]
+     ],
+     "expected_output": "Pip",
+     "explain": "Chữ phải có dấu ngoặc kép. Không có ngoặc kép, Python sẽ đi tìm một biến tên Pip.",
+     "id": "mq1_04_s4"
+    },
+    {
+     "type": "write",
+     "prompt": "Tạo biến mon_an chứa món ăn bạn thích, rồi in biến đó ra.",
+     "expected_output": null,
+     "solution": "mon_an = \"Phở\"\nprint(mon_an)",
+     "hint": "Ví dụ: mon_an = \"Bánh mì\" rồi dòng sau: print(mon_an)",
+     "starter": "",
+     "must_contain": [
+      "mon_an =",
+      "print(mon_an)"
+     ],
+     "lenient": false,
+     "any_output": true,
+     "id": "mq1_04_s5"
+    },
+    {
+     "type": "choice",
+     "question": "Tên biến nào KHÔNG dùng được?",
+     "options": [
+      "diem_cao",
+      "2ban",
+      "ten"
+     ],
+     "answer": 1,
+     "explain": "Tên biến không được bắt đầu bằng chữ số.",
+     "id": "mq1_04_s6"
+    }
+   ]
+  },
+  {
+   "id": "mq1_05",
+   "number": 5,
+   "title": "Biến thay đổi",
+   "skill": "Cập nhật biến",
+   "summary": "Giá trị trong biến có thể thay đổi — đó là cách game cộng điểm.",
+   "py_line": "Bạn vừa học bí mật của mọi bảng điểm trong game!",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "Giá trị trong hộp có thể thay đổi! diem = diem + 10 nghĩa là: lấy giá trị cũ, cộng thêm 10, rồi cất lại vào hộp.",
+     "id": "mq1_05_s1"
+    },
+    {
+     "type": "example",
+     "text": "Điểm tăng dần sau mỗi dòng.",
+     "code": "diem = 0\ndiem = diem + 10\ndiem = diem + 5\nprint(diem)",
+     "id": "mq1_05_s2"
+    },
+    {
+     "type": "choice",
+     "question": "Chương trình này in ra gì?",
+     "options": [
+      "5",
+      "3",
+      "xu + 2"
+     ],
+     "answer": 0,
+     "explain": "xu bắt đầu là 3, cộng thêm 2 thành 5.",
+     "code": "xu = 3\nxu = xu + 2\nprint(xu)",
+     "id": "mq1_05_s3"
+    },
+    {
+     "type": "example",
+     "text": "Viết tắt: sao += 2 nghĩa là sao = sao + 2.",
+     "code": "sao = 1\nsao += 2\nprint(sao)",
+     "id": "mq1_05_s4"
+    },
+    {
+     "type": "order",
+     "prompt": "Xếp các dòng để chương trình in ra 15:",
+     "lines": [
+      "xu = 10",
+      "xu = xu + 5",
+      "print(xu)"
+     ],
+     "expected_output": "15",
+     "id": "mq1_05_s5"
+    },
+    {
+     "type": "write",
+     "prompt": "Pip có 5 xu và nhặt thêm 3 xu. Tạo biến xu = 5, cộng thêm 3, rồi in ra.",
+     "expected_output": "8",
+     "solution": "xu = 5\nxu = xu + 3\nprint(xu)",
+     "hint": "Dòng 1: xu = 5. Dòng 2: xu = xu + 3. Dòng 3: print(xu)",
+     "starter": "",
+     "must_contain": [
+      "xu"
+     ],
+     "lenient": false,
+     "any_output": false,
+     "id": "mq1_05_s6"
+    }
+   ]
+  },
+  {
+   "id": "mq1_06",
+   "number": 6,
+   "title": "Ghép chữ",
+   "skill": "Nối chuỗi và str()",
+   "summary": "Dấu + nối các chuỗi chữ; str() đổi số thành chữ.",
+   "py_line": "Giờ bạn có thể tạo những câu nói thay đổi theo game!",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "Dấu + có thể nối hai chuỗi chữ thành một câu dài hơn.",
+     "id": "mq1_06_s1"
+    },
+    {
+     "type": "example",
+     "text": "Nối lời chào với tên trong biến.",
+     "code": "ten = \"Bitsy\"\nprint(\"Xin chào \" + ten)",
+     "id": "mq1_06_s2"
+    },
+    {
+     "type": "example",
+     "text": "Thử chạy chương trình này xem chuyện gì xảy ra nhé...",
+     "code": "diem = 10\nprint(\"Điểm: \" + diem)",
+     "id": "mq1_06_s3"
+    },
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "thinking",
+     "text": "Python không cộng chữ với số được! Hãy dùng str() để đổi số thành chữ: str(10) cho ra \"10\".",
+     "id": "mq1_06_s4"
+    },
+    {
+     "type": "fill",
+     "prompt": "Sửa chương trình để in ra: Điểm: 10",
+     "template": "diem = 10\nprint(\"Điểm: \" + ___)",
+     "blanks": [
+      [
+       "str(diem)",
+       "diem",
+       "\"diem\""
+      ]
+     ],
+     "expected_output": "Điểm: 10",
+     "explain": "str(diem) biến số 10 thành chữ \"10\" để nối được.",
+     "id": "mq1_06_s5"
+    },
+    {
+     "type": "write",
+     "prompt": "Tạo biến tuoi = 9 rồi in ra câu: Tớ 9 tuổi",
+     "expected_output": "Tớ 9 tuổi",
+     "solution": "tuoi = 9\nprint(\"Tớ \" + str(tuoi) + \" tuổi\")",
+     "hint": "Ghép 3 phần: \"Tớ \" + str(tuoi) + \" tuổi\"",
+     "starter": "tuoi = 9\n",
+     "must_contain": [
+      "tuoi"
+     ],
+     "lenient": true,
+     "any_output": false,
+     "id": "mq1_06_s6"
+    }
+   ]
+  },
+  {
+   "id": "mq1_07",
+   "number": 7,
+   "title": "Đúng hay Sai?",
+   "skill": "So sánh",
+   "summary": "So sánh > < == cho ra True (đúng) hoặc False (sai).",
+   "py_line": "So sánh là bộ não giúp game quyết định thắng hay thua.",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "Máy tính có thể so sánh và trả lời True (đúng) hoặc False (sai). Dấu == dùng để hỏi 'có bằng nhau không?'.",
+     "id": "mq1_07_s1"
+    },
+    {
+     "type": "example",
+     "text": "Ba câu hỏi so sánh.",
+     "code": "print(5 > 3)\nprint(2 > 8)\nprint(4 == 4)",
+     "id": "mq1_07_s2"
+    },
+    {
+     "type": "choice",
+     "question": "Dấu == khác dấu = như thế nào?",
+     "options": [
+      "== để so sánh, = để cất giá trị vào biến",
+      "Hai dấu giống hệt nhau",
+      "== dùng để cộng"
+     ],
+     "answer": 0,
+     "explain": "= cất giá trị vào biến, còn == hỏi hai giá trị có bằng nhau không.",
+     "id": "mq1_07_s3"
+    },
+    {
+     "type": "choice",
+     "question": "Dòng code này in ra gì?",
+     "options": [
+      "False",
+      "True",
+      "10"
+     ],
+     "answer": 0,
+     "explain": "10 nhỏ hơn hoặc bằng 7? Sai, nên in ra False.",
+     "code": "print(10 <= 7)",
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_07_s4"
+    },
+    {
+     "type": "fill",
+     "prompt": "Chọn dấu so sánh để chương trình in ra True:",
+     "template": "diem = 80\nprint(diem ___ 50)",
+     "blanks": [
+      [
+       ">",
+       "<",
+       "="
+      ]
+     ],
+     "expected_output": "True",
+     "explain": "80 lớn hơn 50 nên kết quả là True.",
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_07_s5"
+    }
+   ]
+  },
+  {
+   "id": "mq1_08",
+   "number": 8,
+   "title": "Nếu... thì",
+   "skill": "Câu lệnh if",
+   "summary": "if giúp chương trình chỉ làm một việc khi điều kiện đúng.",
+   "py_line": "Với if, nhân vật của bạn biết tự ra quyết định!",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "if giúp máy tính ra quyết định: NẾU điều kiện đúng THÌ làm việc bên dưới. Nhớ dấu : ở cuối dòng và thụt lề 4 dấu cách nhé!",
+     "id": "mq1_08_s1"
+    },
+    {
+     "type": "example",
+     "text": "Pip còn năng lượng nên bay lên được.",
+     "code": "nang_luong = 5\nif nang_luong > 0:\n    print(\"Pip bay lên!\")\nprint(\"Xong\")",
+     "id": "mq1_08_s2"
+    },
+    {
+     "type": "choice",
+     "question": "Chương trình này in ra gì?",
+     "options": [
+      "Hết",
+      "Giàu quá!\nHết",
+      "Giàu quá!"
+     ],
+     "answer": 0,
+     "explain": "2 > 5 là False nên dòng thụt lề bị bỏ qua, chỉ còn dòng cuối.",
+     "code": "xu = 2\nif xu > 5:\n    print(\"Giàu quá!\")\nprint(\"Hết\")",
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_08_s3"
+    },
+    {
+     "type": "fill",
+     "prompt": "Chọn mảnh ghép để in ra: Hoàn hảo!",
+     "template": "sao = 3\nif sao ___ 3:\n    print(\"Hoàn hảo!\")",
+     "blanks": [
+      [
+       "==",
+       "=",
+       "!="
+      ]
+     ],
+     "expected_output": "Hoàn hảo!",
+     "explain": "Trong điều kiện ta dùng == để so sánh.",
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_08_s4"
+    },
+    {
+     "type": "write",
+     "prompt": "Tạo biến diem = 100. Nếu diem lớn hơn 90 thì in ra: Tuyệt vời!",
+     "expected_output": "Tuyệt vời!",
+     "solution": "diem = 100\nif diem > 90:\n    print(\"Tuyệt vời!\")",
+     "hint": "Dòng if kết thúc bằng dấu : và dòng print bên dưới thụt vào 4 dấu cách.",
+     "starter": "diem = 100\n",
+     "must_contain": [
+      "if"
+     ],
+     "lenient": true,
+     "any_output": false,
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_08_s5"
+    }
+   ]
+  },
+  {
+   "id": "mq1_09",
+   "number": 9,
+   "title": "Nếu không thì",
+   "skill": "if / else",
+   "summary": "else là con đường còn lại khi điều kiện sai.",
+   "py_line": "Giờ chương trình của bạn có thể chọn một trong hai con đường!",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "else là con đường còn lại: khi điều kiện SAI, máy tính làm phần else.",
+     "id": "mq1_09_s1"
+    },
+    {
+     "type": "example",
+     "text": "Tuổi chưa tới 10 nên chương trình đi vào nhánh else.",
+     "code": "tuoi = 8\nif tuoi >= 10:\n    print(\"Chơi màn khó\")\nelse:\n    print(\"Chơi màn vừa\")",
+     "id": "mq1_09_s2"
+    },
+    {
+     "type": "choice",
+     "question": "Chương trình này in ra gì?",
+     "options": [
+      "Mang ô",
+      "Đội mũ",
+      "Cả hai"
+     ],
+     "answer": 0,
+     "explain": "mua là True nên chạy nhánh if.",
+     "code": "mua = True\nif mua:\n    print(\"Mang ô\")\nelse:\n    print(\"Đội mũ\")",
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_09_s3"
+    },
+    {
+     "type": "order",
+     "prompt": "Xếp lại chương trình kiểm tra cánh cửa (chú ý thụt lề):",
+     "lines": [
+      "chia_khoa = False",
+      "if chia_khoa:",
+      "    print(\"Mở cửa\")",
+      "else:",
+      "    print(\"Tìm chìa khoá\")"
+     ],
+     "expected_output": "Tìm chìa khoá",
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_09_s4"
+    },
+    {
+     "type": "write",
+     "prompt": "Có biến diem = 7. Nếu diem >= 10 in ra Thắng, nếu không thì in ra Thử lại",
+     "expected_output": "Thử lại",
+     "solution": "diem = 7\nif diem >= 10:\n    print(\"Thắng\")\nelse:\n    print(\"Thử lại\")",
+     "hint": "Dùng if diem >= 10: rồi else: — nhớ thụt lề các dòng print.",
+     "starter": "diem = 7\n",
+     "must_contain": [
+      "if",
+      "else"
+     ],
+     "lenient": true,
+     "any_output": false,
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_09_s5"
+    }
+   ]
+  },
+  {
+   "id": "mq1_10",
+   "number": 10,
+   "title": "Nhiều lựa chọn",
+   "skill": "if / elif / else",
+   "summary": "elif kiểm tra thêm điều kiện; Python dừng ở điều kiện đúng đầu tiên.",
+   "py_line": "Bạn đã nắm vững cách ra quyết định — kỹ năng quan trọng nhất của lập trình viên game!",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "elif là viết tắt của else if: kiểm tra thêm một điều kiện nữa. Python dừng lại ở điều kiện ĐÚNG đầu tiên.",
+     "id": "mq1_10_s1"
+    },
+    {
+     "type": "example",
+     "text": "Chấm sao cho người chơi theo điểm.",
+     "code": "diem = 75\nif diem >= 90:\n    print(\"3 sao\")\nelif diem >= 50:\n    print(\"2 sao\")\nelse:\n    print(\"1 sao\")",
+     "id": "mq1_10_s2"
+    },
+    {
+     "type": "choice",
+     "question": "Nếu diem = 95 thì chương trình in ra gì?",
+     "options": [
+      "3 sao",
+      "2 sao",
+      "3 sao và 2 sao"
+     ],
+     "answer": 0,
+     "explain": "95 >= 90 đúng nên in 3 sao rồi dừng, không xét elif nữa.",
+     "code": "diem = 95\nif diem >= 90:\n    print(\"3 sao\")\nelif diem >= 50:\n    print(\"2 sao\")\nelse:\n    print(\"1 sao\")",
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_10_s3"
+    },
+    {
+     "type": "fill",
+     "prompt": "Chọn từ khoá còn thiếu để chương trình in ra: Nóng",
+     "template": "nhiet_do = 35\nif nhiet_do > 30:\n    print(\"Nóng\")\n___ nhiet_do > 20:\n    print(\"Mát\")\nelse:\n    print(\"Lạnh\")",
+     "blanks": [
+      [
+       "elif",
+       "else",
+       "if"
+      ]
+     ],
+     "expected_output": "Nóng",
+     "explain": "elif nối tiếp if; khi if đã đúng thì elif bị bỏ qua.",
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_10_s4"
+    },
+    {
+     "type": "write",
+     "prompt": "Có biến sao = 2. Dùng if/elif/else: 3 sao in Hoàn hảo, 2 sao in Tốt lắm, còn lại in Cố lên",
+     "expected_output": "Tốt lắm",
+     "solution": "sao = 2\nif sao == 3:\n    print(\"Hoàn hảo\")\nelif sao == 2:\n    print(\"Tốt lắm\")\nelse:\n    print(\"Cố lên\")",
+     "hint": "Ba nhánh: if sao == 3:, elif sao == 2:, else:",
+     "starter": "sao = 2\n",
+     "must_contain": [
+      "elif"
+     ],
+     "lenient": true,
+     "any_output": false,
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_10_s5"
+    }
+   ]
+  },
+  {
+   "id": "mq1_11",
+   "number": 11,
+   "title": "Điều khiển Robo bằng Python",
+   "skill": "Gọi hàm",
+   "summary": "Mỗi lệnh như right() là một hàm — gọi hàm bằng tên và dấu ().",
+   "py_line": "Bạn vừa điều khiển một robot bằng code thật!",
+   "challenge": false,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "robo",
+     "mood": "happy",
+     "text": "Còn nhớ các mũi tên trong Mê Cung Robo không? Trong Python, mỗi mũi tên là một lệnh gọi hàm: right(), left(), up(), down().",
+     "id": "mq1_11_s1"
+    },
+    {
+     "type": "robot",
+     "prompt": "Bấm Chạy để xem Robo đi theo code mẫu.",
+     "rows": [
+      "S...C"
+     ],
+     "starter": "right()\nright()\nright()\nright()\n",
+     "solution": "right()\nright()\nright()\nright()",
+     "hint": "Code mẫu đã đúng sẵn — chỉ cần bấm Chạy!",
+     "must_contain": [],
+     "id": "mq1_11_s2"
+    },
+    {
+     "type": "robot",
+     "prompt": "Viết code đưa Robo tới rương: sang phải, xuống dưới, sang phải, xuống dưới.",
+     "rows": [
+      "S.#",
+      "#..",
+      "##C"
+     ],
+     "starter": "right()\n",
+     "solution": "right()\ndown()\nright()\ndown()",
+     "hint": "Thứ tự: right(), down(), right(), down()",
+     "must_contain": [],
+     "id": "mq1_11_s3"
+    },
+    {
+     "type": "choice",
+     "question": "Lệnh nào đưa Robo đi lên?",
+     "options": [
+      "up()",
+      "Up()",
+      "up"
+     ],
+     "answer": 0,
+     "explain": "Python phân biệt chữ hoa/thường, và gọi hàm cần dấu ().",
+     "id": "mq1_11_s4"
+    },
+    {
+     "type": "robot",
+     "prompt": "Xem trước Chặng 2: dùng vòng lặp for để Robo đi 5 bước chỉ với 2 dòng code!",
+     "rows": [
+      "S....C"
+     ],
+     "starter": "for i in range(5):\n    \n",
+     "solution": "for i in range(5):\n    right()",
+     "hint": "Dòng thứ hai thụt vào 4 dấu cách: right()",
+     "must_contain": [
+      "for"
+     ],
+     "skills": [
+      "loops"
+     ],
+     "id": "mq1_11_s5"
+    }
+   ]
+  },
+  {
+   "id": "mq1_12",
+   "number": 12,
+   "title": "Thử thách Code Apprentice",
+   "skill": "Tổng hợp Chặng 1",
+   "summary": "Bạn đã kết hợp print, biến, chuỗi, điều kiện và lệnh robot.",
+   "py_line": "Chúc mừng Code Apprentice! Bạn đã sẵn sàng cho những cuộc phiêu lưu lớn hơn.",
+   "challenge": true,
+   "steps": [
+    {
+     "type": "story",
+     "speaker": "py",
+     "mood": "happy",
+     "text": "Đây là thử thách cuối Chặng 1! Hãy dùng tất cả những gì bạn đã học. Tớ tin bạn làm được!",
+     "id": "mq1_12_s1"
+    },
+    {
+     "type": "write",
+     "prompt": "Tạo biến ten = \"Pip\" và xu = 12. In ra câu: Pip có 12 xu",
+     "expected_output": "Pip có 12 xu",
+     "solution": "ten = \"Pip\"\nxu = 12\nprint(ten + \" có \" + str(xu) + \" xu\")",
+     "hint": "Ghép: ten + \" có \" + str(xu) + \" xu\"",
+     "starter": "",
+     "must_contain": [
+      "ten",
+      "xu"
+     ],
+     "lenient": true,
+     "any_output": false,
+     "id": "mq1_12_s2"
+    },
+    {
+     "type": "write",
+     "prompt": "Có biến nang_luong = 3. Nếu nang_luong > 0 in ra Bay lên!, nếu không thì in ra Nghỉ ngơi",
+     "expected_output": "Bay lên!",
+     "solution": "nang_luong = 3\nif nang_luong > 0:\n    print(\"Bay lên!\")\nelse:\n    print(\"Nghỉ ngơi\")",
+     "hint": "Dùng if ... : và else: như Bài 9.",
+     "starter": "nang_luong = 3\n",
+     "must_contain": [
+      "if",
+      "else"
+     ],
+     "lenient": true,
+     "any_output": false,
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_12_s3"
+    },
+    {
+     "type": "robot",
+     "prompt": "Đưa Robo tới rương báu, tránh bụi cây!",
+     "rows": [
+      "S..#.",
+      "##.#.",
+      "*...C",
+      "#####"
+     ],
+     "starter": "",
+     "solution": "right()\nright()\ndown()\ndown()\nright()\nright()",
+     "hint": "Đi sang phải 2 bước, xuống 2 bước, rồi sang phải 2 bước.",
+     "must_contain": [],
+     "id": "mq1_12_s4"
+    },
+    {
+     "type": "choice",
+     "question": "Bitsy viết code này nhưng bị lỗi. Lỗi ở đâu?",
+     "options": [
+      "Dòng 2: thiếu dấu : ở cuối",
+      "Dòng 1: sai tên biến",
+      "Dòng 3: thừa dấu ngoặc"
+     ],
+     "answer": 0,
+     "explain": "Câu lệnh if luôn kết thúc bằng dấu hai chấm :",
+     "code": "diem = 10\nif diem > 5\n    print(\"Giỏi\")",
+     "skills": [
+      "conditions"
+     ],
+     "id": "mq1_12_s5"
+    }
+   ]
+  }
+ ],
+ "playground_examples": [
+  {
+   "title": "Chào hỏi",
+   "code": "ten = \"bạn\"\nprint(\"Xin chào \" + ten + \"!\")"
+  },
+  {
+   "title": "Đếm sao",
+   "code": "for i in range(1, 6):\n    print(\"*\" * i)"
+  },
+  {
+   "title": "Đoán số bí mật",
+   "code": "bi_mat = 7\ndoan = 5\nif doan == bi_mat:\n    print(\"Trúng rồi!\")\nelif doan < bi_mat:\n    print(\"Lớn hơn nữa!\")\nelse:\n    print(\"Nhỏ hơn nữa!\")"
+  },
+  {
+   "title": "Bảng cửu chương",
+   "code": "so = 3\nfor i in range(1, 11):\n    print(str(so) + \" x \" + str(i) + \" = \" + str(so * i))"
+  },
+  {
+   "title": "Hàm chào",
+   "code": "def chao(ten):\n    return \"Chào \" + ten + \"!\"\n\nprint(chao(\"Robo\"))\nprint(chao(\"Pip\"))"
+  }
+ ]
+}
