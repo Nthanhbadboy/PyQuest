@@ -294,7 +294,7 @@ Tuyến học Python miễn phí, đủ để trẻ thực sự biết lập tr�
 - Nhận danh hiệu **Game Creator**.
 
 **Hệ thống hỗ trợ:**
-- XP, cấp độ theo `GAME_DESIGN.md`.
+- Mở hoạt động theo điều kiện đã công bố trong `GAME_DESIGN.md`; không triển khai XP/cấp độ toàn cục.
 - Nhiệm vụ ngày (3/ngày).
 - Màn tổng kết sau mỗi bài.
 - Adventure Recap sau mỗi chặng.
@@ -311,8 +311,7 @@ Tiêu hao năng lượng dùng luật đã có từ giai đoạn 4.
 ### 8.4. Tiêu chí nghiệm thu
 
 - [ ] Chặng 1 hoàn chỉnh, trẻ (hoặc người test) hoàn thành được 12 bài.
-- [ ] XP, cấp độ, mở khóa chặng hoạt động đúng `GAME_DESIGN.md`.
-      (Ngưỡng cấp mở chặng 2/3 còn **TBD** — xem `GAME_DESIGN.md` mục 4.4.)
+- [ ] Mở chặng theo tiến trình học/điều kiện thực sự cần; Main Map hiển thị và điều hướng tới hoạt động hợp lệ.
 - [ ] Màn tổng kết hiển thị số liệu lấy từ tiến trình đã lưu.
 - [ ] Adventure Recap hiển thị đúng số liệu sau chặng 1.
 - [ ] Nhà Thành Tích hiển thị huy hiệu, tường chiến tích, bộ sưu tập.
@@ -415,7 +414,7 @@ Bốn lỗi nghiêm trọng **phải** được kiểm tra ở mọi giai đoạ
 | Lỗi | Cách kiểm tra |
 |---|---|
 | **Mất dữ liệu** | Thoát app, mở lại, xác nhận trạng thái còn nguyên |
-| **Cộng thưởng sai** | Kiểm tra luồng nhận XP, năng lượng, huy hiệu |
+| **Cộng thưởng sai** | Kiểm tra luồng điểm thưởng đã định nghĩa, năng lượng và huy hiệu |
 | **Vượt giới hạn Python** | Chạy code gây vòng lặp vô hạn, kiểm tra dừng an toàn |
 | **Xác nhận Pro sai** | Mô phỏng purchase token giả, kiểm tra không mở nội dung |
 
@@ -477,8 +476,8 @@ Các điểm sau **chưa chốt** và **không** được tự ý đặt số li
 | Điểm mở | Câu hỏi cần quyết định | Nguồn |
 |---|---|---|
 | Nhóm quảng cáo thưởng cho Pro | Người dùng Pro vẫn được tự nguyện xem quảng cáo thưởng, hay có cách công bố rõ khác để nhận năng lượng? | `PRODUCT_VISION.md` 3.3, `TECHNICAL_ARCHITECTURE.md` 6.4 |
-| Ngưỡng cấp mở chặng 2/3 | Giữ công thức cấp và hạ ngưỡng, hay giữ ngưỡng và tăng XP/nội dung, hay bỏ rào cấp độ? | `GAME_DESIGN.md` 4.4 |
-| Giới hạn XP ôn tập | Ôn tập lặp lại có bị giới hạn (ví dụ 1 lần/bài/ngày) không? | `GAME_DESIGN.md` 4.4 |
+
+
 | Giá trị kiểm soát interpreter | Ngân sách bước, trần collection, mục tiêu bộ nhớ cụ thể | `TECHNICAL_ARCHITECTURE.md` 2.3 |
 
 ---
@@ -499,7 +498,7 @@ và đủ công cụ để trẻ tự tạo ra thế giới của riêng mình.
 ## Tài liệu liên quan
 
 - [`PRODUCT_VISION.md`](PRODUCT_VISION.md) — triết lý sản phẩm, thế giới, mô hình kinh doanh.
-- [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, XP, cân bằng độ khó.
+- [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, mở khóa hoạt động và cân bằng độ khó.
 - [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — interpreter, module, lưu dữ liệu.
 - [`../README.md`](../README.md) — điểm vào dự án.
 
