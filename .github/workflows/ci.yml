@@ -1,0 +1,141 @@
+name: PyQuest CI
+
+on:
+  push:
+    branches:
+      - 'arena/**'
+      - 'docs/deep-culi-split'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  checks: write
+
+concurrency:
+  group: pyquest-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.47.7'
+
+jobs:
+  # One-time: generate the Android/iOS platform folders with `flutter create`
+  # and commit them back, so the repository can be opened with plain
+  # `flutter run` afterwards.
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Need platform folders?
+        id: need
+        run: |
+          if [ -d app/android ]; then echo "need=false" >> "$GITHUB_OUTPUT"; else echo "need=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: subosito/flutter-action@v2
+        if: steps.need.outputs.need == 'true'
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - name: flutter create + commit
+        if: steps.need.outputs.need == 'true'
+        working-directory: app
+        run: |
+          flutter create --org com.pyquest --project-name pyquest --platforms android,ios .
+          # flutter create adds a counter-app widget test when none exists; we ship our own tests.
+          if git status --porcelain test/widget_test.dart | grep -q '^??'; then rm test/widget_test.dart; fi
+          flutter pub get
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A .
+          git commit -m "chore(app): generate Android/iOS platform folders via flutter create [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - name: Analyze and test
+        working-directory: app
+        shell: bash
+        run: |
+          set +e
+          flutter --version > ../flutter_version.txt 2>&1
+          flutter pub get > ../pub_get.txt 2>&1; echo "pub_get=$?" >> ../status.txt
+          flutter analyze --no-fatal-infos > ../analyze.txt 2>&1; echo "analyze=$?" >> ../status.txt
+          flutter test --reporter expanded > ../test.txt 2>&1; echo "test=$?" >> ../status.txt
+          cat ../status.txt
+      - name: Publish report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 ci/report.py "PyQuest check" status.txt flutter_version.txt pub_get.txt analyze.txt test.txt
+      - name: Fail if any step failed
+        run: "! grep -v '=0$' status.txt"
+
+  android:
+    needs: check
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[emulator]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Build debug APK
+        working-directory: app
+        shell: bash
+        run: |
+          set +e
+          flutter pub get > ../apk_build.txt 2>&1
+          flutter build apk --debug >> ../apk_build.txt 2>&1; echo "build_apk=$?" >> ../status.txt
+          ls -la build/app/outputs/flutter-apk/ >> ../apk_build.txt 2>&1
+          tail -40 ../apk_build.txt
+      - name: Emulator journey
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          ram-size: 4096M
+          disk-size: 6000M
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          working-directory: app
+          script: bash ../ci/emulator_journey.sh
+      - name: Publish report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 ci/report.py "PyQuest emulator" status.txt apk_build.txt journey.txt relaunch.txt
+      - name: Commit emulator screenshots
+        if: always()
+        shell: bash
+        run: |
+          if [ -d docs/screenshots ] && [ -n "$(git status --porcelain docs/screenshots)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/screenshots
+            git commit -m "docs: emulator screenshots from CI run ${GITHUB_RUN_ID} [skip ci]"
+            for i in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+              sleep 5
+            done
+          fi
