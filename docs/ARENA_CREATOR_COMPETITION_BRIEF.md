@@ -359,3 +359,12 @@ PyQuest không cần một hệ thống XP phức tạp cho mọi trò chơi ch�
 - Thêm một game mới không được buộc viết lại các game hiện có hoặc nhân bản hệ thống thành tích. Chỉ thêm module và kết nối qua giao diện chung đã xác định.
 - Thiết kế để triển khai từng phần: ban đầu có thể chỉ có một game, điểm/kỷ lục cơ bản và lưu kết quả; hệ thống bạn bè, giải đấu, sáng tạo cộng đồng và quà tặng được mở rộng khi cần nhưng vẫn thuộc tầm nhìn sản phẩm.
 
+
+
+## 16. Main Map chỉ điều hướng và mở hoạt động — không có XP toàn cục
+
+- Main Map là bản đồ trung tâm để người chơi khám phá, chọn và mở các hoạt động. Nó không phải một thanh cấp độ và không yêu cầu tích XP để đi từ địa điểm này sang địa điểm khác.
+- Mỗi hoạt động mở theo điều kiện cụ thể, dễ giải thích: chơi tự do, hoàn thành hoạt động tiên quyết có liên quan, đạt thành tích cụ thể hoặc có quyền sở hữu nội dung đã mua. Không thêm cấp XP chung làm cổng chắn mặc định.
+- Điểm của một game có thể phục vụ luật riêng của game; điểm thưởng chỉ tồn tại khi có công dụng rõ. Không gom điểm thành XP toàn cục theo mặc định.
+- Thành tích/danh hiệu ghi nhận hành động hoặc năng lực cụ thể; quà tặng là lớp sở hữu/giao lưu và không thay thế thành tích.
+- Tài liệu thiết kế và kiến trúc không được tiếp tục yêu cầu XP/cấp độ toàn cục. Khi bỏ XP, phải bỏ cả công thức, bảng cấp, phần thưởng theo cấp, schema lưu XP và tiêu chí nghiệm thu liên quan; không chỉ thêm ghi chú nói rằng XP không cần thiết.
