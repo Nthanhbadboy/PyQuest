@@ -32,14 +32,14 @@ trước khi bắt tay vào lát cắt dọc đầu tiên.
   sáng tạo, thi đấu; mỗi nhánh có luật chơi, tiến trình và phần thưởng riêng.
 - **Một nhánh học lập trình Python** (Main Quest) từ `print()` đến tự xây game
   hoàn chỉnh — là điểm mạnh của PyQuest, nhưng không bắt buộc để chơi trò khác.
-- **Sân chơi sáng tạo** — mỗi mini-game có Play Mode để chơi ngay và
-  Creator Mode để trẻ thay đổi luật chơi, dần chuyển sang viết code.
+- **Sân chơi sáng tạo** — mỗi mini-game có Play Mode để chơi ngay; những game
+  phù hợp có thêm Creator Mode để trẻ thay đổi luật chơi, dần chuyển sang viết code.
 
 ---
 
 ## Nguyên tắc thiết kế
 
-1. **Main Map miễn phí và đầy đủ cốt lõi** — không khóa sau paywall.
+1. **Main Map là hub điều hướng miễn phí, đầy đủ hoạt động cốt lõi** — không khóa sau paywall.
 2. **Side Maps bán chiều sâu**, không bán lại kiến thức cơ bản.
 3. **Năng lượng là tài nguyên gameplay thực sự**, không phải thanh trang trí.
 4. **Quảng cáo thưởng tự nguyện** — không bắt buộc để học kiến thức cơ bản.
@@ -59,11 +59,13 @@ trước khi bắt tay vào lát cắt dọc đầu tiên.
 
 - **Home Map** — thế giới khám phá với nhân vật dễ thương, thoại ngắn,
   nhạc nền du dương và phản hồi âm thanh mỗi lần chạm.
-- **Main Map** — thế giới/khu vực miễn phí cốt lõi chứa trải nghiệm học tập
-  thiết yếu.
-- **Main Quest** — tuyến học Python có cấu trúc, miễn phí, nằm trong Main Map.
+- **Main Map** — bản đồ trung tâm (hub) miễn phí để khám phá, chọn và mở hoạt
+  động. Bản thân nó **không phải một game lớn**; thế giới và gameplay nằm trong
+  các hoạt động mà nó dẫn tới.
+- **Main Quest** — tuyến học Python có cấu trúc, miễn phí, là **một hoạt động
+  nằm trong Main Map**.
 - **Mini-game** — Robot Maze, Dragon Jump, Catch the Stars, Bug Hunter, Pet Lab;
-  mỗi game có **Play Mode** và **Creator Mode**.
+  mỗi game có **Play Mode**; **một số game phù hợp** có thêm **Creator Mode**.
 - **Nhà Thành Tích** (Achievement House) — căn nhà trong thế giới PyQuest trưng
   bày huy hiệu, chiến tích, bộ sưu tập và game do trẻ tự tạo.
 - **Màn tổng kết & Adventure Recap** — ghi nhận thành tựu cụ thể, khích lệ
@@ -72,8 +74,10 @@ trước khi bắt tay vào lát cắt dọc đầu tiên.
   AI Pet Trainer Isle, Bug Hunter Kingdom, Legendary Title Isles.
 - **Năng lượng & quảng cáo thưởng** — điều tiết nhịp chơi, không chặn việc học.
 
-> **Thuật ngữ quan trọng:** *Main Map* là **thế giới miễn phí**; *Main Quest* là
-> **tuyến học Python nằm trong đó**. Hai khái niệm khác nhau, không dùng thay thế.
+> **Thuật ngữ quan trọng:** *Main Map* là **bản đồ trung tâm (hub điều hướng)
+> miễn phí**; *Main Quest* là **tuyến học Python nằm trong đó**. Main Map không
+> phải một game lớn — thế giới và gameplay nằm trong các hoạt động. Hai khái niệm
+> khác nhau, không dùng thay thế.
 > Định nghĩa đầy đủ ở [`docs/PRODUCT_VISION.md`](docs/PRODUCT_VISION.md).
 
 ---

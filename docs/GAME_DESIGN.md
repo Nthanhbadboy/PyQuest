@@ -193,9 +193,15 @@ Các mini-game/hoạt động khác trên Main Map không mặc định bị kh�
 
 ## 6. Mini-game — thông số thiết kế
 
-### 6.1. Cấu trúc chung mỗi mini-game
+> **Đây là giá trị tham khảo khởi điểm, không phải yêu cầu cho mọi game.** Mỗi
+> mini-game tự quyết định số màn, cách tính điểm, phần thưởng và **có Creator Mode
+> hay không**. Game thuần giải trí, giải đố hoặc suy luận không bắt buộc có Creator
+> Mode hay tiến trình chuyển sang code. Các bảng dưới đây chủ yếu mô tả mini-game
+> mẫu đầu tiên và các game đã dự kiến; chốt lại khi từng game được phát triển.
 
-| Thành phần | Số lượng giai đoạn đầu |
+### 6.1. Cấu trúc tham khảo cho mini-game
+
+| Thành phần | Số lượng giai đoạn đầu (tham khảo) |
 |---|---|
 | Số màn | 10 màn |
 | Độ khó | Tăng dần theo màn |
@@ -221,7 +227,10 @@ Các mini-game/hoạt động khác trên Main Map không mặc định bị kh�
 | **Bug Hunter** | 1–3 lỗi/màn | 100 | Thời gian để nhận ⭐⭐⭐ |
 | **Pet Lab** | 1–5 quy tắc | 100 | Độ phức tạp quy tắc để nhận ⭐⭐⭐ |
 
-### 6.4. Creator Mode — tiến trình chuyển sang code thật
+### 6.4. Creator Mode — tiến trình chuyển sang code thật (chỉ game có Creator Mode)
+
+**Mục này chỉ áp dụng cho game có Creator Mode hướng tới sáng tạo/lập trình.**
+Game không có Creator Mode bỏ qua mục này.
 
 | Màn | Cách thao tác | Kiến thức Python tương ứng |
 |---|---|---|

@@ -75,7 +75,7 @@ và giao diện đủ để bắt đầu gắn module.
 - Khởi tạo project Flutter, cấu trúc thư mục theo `TECHNICAL_ARCHITECTURE.md`.
 - Cấu hình build Android, chạy được trên thiết bị thật.
 - Điều hướng cơ bản giữa các màn hình rỗng.
-- Database SQLite với schema ban đầu (`settings`, `progress`, `player_state`, `energy_state`).
+- Database SQLite với schema ban đầu theo `TECHNICAL_ARCHITECTURE.md` mục 4.2 (`settings`, `progress`, `energy_state`, ...). **Không** tạo bảng XP/level toàn cục — bảng `player_state` cũ đã được bỏ.
 - Repository pattern cho việc đọc/ghi dữ liệu.
 - File cấu hình `game_config.json` với các thông số từ `GAME_DESIGN.md`.
 - Màn hình khởi động + màn hình home tạm.

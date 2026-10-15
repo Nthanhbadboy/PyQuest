@@ -40,16 +40,16 @@ khác dùng thuật ngữ này, nghĩa phải đúng như bảng sau.
 | Thuật ngữ | Định nghĩa |
 |---|---|
 | **Home Map** | Khu vực khởi đầu chào đón trẻ: một thế giới có nhân vật, thoại, âm thanh — **không** phải màn hình danh sách bài học. Là điểm vào của mọi luồng chơi. |
-| **Main Map** | **Bản đồ trung tâm miễn phí để khám phá, chọn và mở các hoạt động** như Main Quest, mini-game và địa điểm khám phá. Main Map là điểm điều hướng, không phải hệ thống XP/cấp độ và không bị khóa sau paywall. |
-| **Main Quest** | **Lộ trình học Python có cấu trúc, miễn phí** nằm trong Main Map (chặng 1–4). Main Quest là nội dung học; Main Map là thế giới chứa nó. Hai khái niệm **khác nhau**. |
+| **Main Map** | **Bản đồ trung tâm (hub điều hướng) miễn phí để khám phá, chọn và mở các hoạt động** như Main Quest, mini-game và địa điểm khám phá. Main Map là điểm điều hướng — **không** phải một game lớn tự thân, không phải hệ thống XP/cấp độ, và không bị khóa sau paywall. Thế giới và gameplay nằm trong các hoạt động. |
+| **Main Quest** | **Lộ trình học Python có cấu trúc, miễn phí** nằm trong Main Map (chặng 1–4). Main Quest là một **hoạt động học**; Main Map là **bản đồ/hub** chứa nó. Hai khái niệm **khác nhau**. |
 | **Mini-game Play Mode** | Chế độ chơi mini-game ngay, **không** bắt buộc đọc bài hay viết code trước. |
-| **Mini-game Creator Mode** | Chế độ xem/đổi luật chơi và dần học lập trình qua chính mini-game đó (xem mục 7.1). |
+| **Mini-game Creator Mode** | Chế độ xem/đổi luật chơi và dần học lập trình qua chính mini-game đó — **chỉ ở những game phù hợp**, không phải mọi game (xem mục 7.1). |
 | **Side Maps** | Bản đồ mở rộng **trả phí tùy chọn**, bổ sung chiều sâu — **không** bán quyền truy cập kiến thức Python cơ bản. |
 | **Nhà Thành Tích** (Achievement House) | **Một địa điểm vật lý trong thế giới PyQuest** trưng bày huy hiệu, chiến tích, bộ sưu tập và game do trẻ tạo. |
 | **Adventure Recap** | Bản tổng kết **dựa trên dữ liệu thật** về các hoạt động đã hoàn thành và kỹ năng mới học được (không viết cố định). |
 
 > **Lưu ý.** Trước đây tài liệu từng dùng "Main Map" để chỉ chính tuyến học.
-> Cách hiểu đúng từ nay: **Main Map = thế giới miễn phí**, **Main Quest = tuyến học trong đó**.
+> Cách hiểu đúng từ nay: **Main Map = bản đồ trung tâm (hub điều hướng) miễn phí**, **Main Quest = tuyến học trong đó**.
 
 ---
 
@@ -58,15 +58,16 @@ khác dùng thuật ngữ này, nghĩa phải đúng như bảng sau.
 Chín nguyên tắc dưới đây chi phối **mọi quyết định** về sản phẩm, từ nội dung
 đến mô hình kinh doanh, từ giao diện đến cách viết thoại.
 
-### 2.1. Main Map miễn phí và đầy đủ cốt lõi
+### 2.1. Main Map là hub điều hướng; hoạt động cốt lõi miễn phí
 
+Main Map chỉ là **hub khám phá và mở hoạt động**, không phải một game lớn tự thân.
 Tuyến học Python cốt lõi và khả năng tạo game đơn giản **không bị khóa sau paywall**.
 Trẻ không cần trả tiền để biết lập trình.
 
 ### 2.2. Side Maps bán chiều sâu, không bán lại kiến thức cơ bản
 
 Bản đồ trả phí mở ra **chiều sâu, trải nghiệm mới, phần thưởng độc quyền** —
-không bán lại những gì Main Map đã dạy.
+không bán lại kiến thức mà các hoạt động miễn phí đã dạy.
 
 ### 2.3. Năng lượng là tài nguyên gameplay thực sự
 
@@ -154,9 +155,11 @@ Home Map **không phải** màn hình danh sách bài học.
 - Nhạc nền du dương, âm thanh tương tác phản hồi mỗi lần chạm.
 - Mini-game là **địa điểm trên bản đồ**, khám phá không theo thứ tự.
 
-### 4.2. Main Map — thế giới miễn phí cốt lõi
+### 4.2. Main Map — hub điều hướng miễn phí
 
 **Main Map là bản đồ trung tâm và điểm vào của các hoạt động PyQuest.** Người chơi nhìn thấy những địa điểm/game đang có, chọn hoạt động, xem điều kiện cần thiết và đi thẳng đến hoạt động đó. Bản đồ có thể được trình bày như một thế giới sống động, nhưng chức năng cốt lõi là **khám phá, điều hướng và mở hoạt động** — không phải tích XP hay tăng cấp.
+
+**Main Map không phải một game lớn tự thân.** Thế giới và gameplay nằm trong các hoạt động mà nó dẫn tới; Main Map chỉ giúp tìm, chọn và mở chúng.
 
 Main Map có thể dẫn tới:
 
@@ -175,7 +178,7 @@ print() → biến → điều kiện → vòng lặp → danh sách → hàm �
 **Cam kết:**
 - Không cần mua để mở Main Map hay Main Quest.
 - Không cần xem quảng cáo để truy cập bản đồ.
-- Toàn bộ kiến thức Python cơ bản và kỹ năng tạo game đơn giản nằm trong Main Map.
+- Toàn bộ kiến thức Python cơ bản và kỹ năng tạo game đơn giản nằm trong các hoạt động của Main Map (đặc biệt Main Quest) — không cần mua.
 
 ### 4.3. Side Maps — mua từng gói
 
@@ -243,7 +246,11 @@ Một số mini-game liên kết với một kiến thức Python để trẻ t�
 | **Bug Hunter** | Tìm lệnh sai, sửa thứ tự khối lệnh | Cú pháp, logic, gỡ lỗi |
 | **Pet Lab** | Cho thú cưng ăn/chơi/nghỉ, tạo quy tắc phản ứng | Điều kiện, trạng thái, hàm, thiết kế hành vi |
 
-### 7.1. Hai chế độ trong mỗi mini-game
+### 7.1. Play Mode cho mọi game; Creator Mode khi phù hợp
+
+**Play Mode** có ở **mọi** mini-game. **Creator Mode** chỉ có ở **những game phù
+hợp** với sáng tạo/lập trình; mỗi game tự quyết định có chế độ này hay không. Game
+thuần giải trí, giải đố hoặc suy luận không bắt buộc phải có Creator Mode.
 
 **Mini-game Play Mode** — vào chơi ngay, **không** bắt buộc đọc bài hay viết code.
 Có điểm số, nhiệm vụ, âm thanh, hiệu ứng, thành tích.
@@ -292,7 +299,7 @@ cần xác minh qua cơ chế thanh toán nền tảng.
 
 | Tính năng | Miễn phí | Mua gói / Pro |
 |---|---|---|
-| Main Map (thế giới miễn phí, gồm Main Quest) | Toàn bộ thế giới và tuyến học cốt lõi | Không cần mua |
+| Main Map (hub điều hướng miễn phí, gồm Main Quest) | Toàn bộ hoạt động và tuyến học cốt lõi | Không cần mua |
 | Năng lượng | Hồi theo thời gian, xem quảng cáo thưởng nếu đủ điều kiện | Có thể có quyền lợi bổ sung công bố rõ |
 | Main Quest (bài học chính) | Luôn truy cập được | Không khóa sau paywall |
 | Side Maps | Xem trước nội dung và giá | Mở từng bản đồ đã mua |
