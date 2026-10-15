@@ -245,3 +245,85 @@ Cách thể hiện phù hợp:
 7. Giữ lại các tính năng hiện hữu khác khi viết lại; tài liệu này chỉ bổ sung/định nghĩa rõ Arena và giải sáng tạo, không phải danh sách đầy đủ toàn bộ PyQuest.
 8. Chỉ viết lại tài liệu sau khi hoàn thành bảng đối chiếu. Không sửa code ứng dụng trong nhiệm vụ rà soát tài liệu nếu chưa được yêu cầu.
 9. Không tuyên bố đã bảo toàn toàn bộ ý tưởng nếu chưa đối chiếu với nguồn gốc. Nêu rõ những điểm chưa xác định để người dùng quyết định.
+
+
+## 9. Thế giới làng PyQuest — mỗi ngôi nhà là một tính năng độc lập
+
+### 9.1. Nguyên tắc thế giới sống
+- Màn hình chính nên là một ngôi làng/thế giới có thể khám phá, không chỉ là menu chứa các nút chức năng.
+- Các ngôi nhà, công trình và cổng ma thuật là điểm vào những hệ thống gameplay khác nhau. Ví dụ: Thư viện Python/Tutor, tòa nhà Main Quest, Đấu trường, Xưởng sáng tạo, Bảo tàng/Bộ sưu tập và cổng tới Side Maps/Secret Isles.
+- Tutor là các nhân vật có tính cách, lĩnh vực và vai trò riêng. Họ có thể đi lại trong làng, tương tác với người chơi, xuất hiện tại sự kiện hoặc trao danh hiệu. Chạm vào nhân vật có thể mở trò chuyện (và voice chat nếu sản phẩm hỗ trợ); chạm vào ngôi nhà mở tính năng tương ứng.
+- Đây là tầm nhìn thế giới có thể mở rộng; không yêu cầu mọi nhân vật, hoạt ảnh hoặc công trình phải có ngay trong phiên bản đầu.
+
+### 9.2. Mỗi ngôi nhà là một module sản phẩm
+- Mỗi nhà đại diện cho một khả năng/tính năng được thiết kế riêng, có vòng lặp chơi, giao diện, luật, tiến trình, phần thưởng và nội dung mở rộng của chính nó.
+- Ví dụ: Thư viện tập trung vào học và luyện Python; Arena tập trung vào thi đấu; Xưởng sáng tạo tập trung vào vẽ/lắp ghép/lập trình sản phẩm; Bảo tàng tập trung vào trưng bày và sưu tập; Nhà bạn bè tập trung vào giao lưu; cổng thế giới dẫn tới các Side Maps.
+- Có thể bổ sung một ngôi nhà/tính năng mới mà không cần viết lại hoặc buộc mọi nhà hiện có phụ thuộc vào nó. Tính năng chưa triển khai vẫn thuộc tầm nhìn sản phẩm, không tự động bị coi là đã loại bỏ.
+- Các nhà độc lập về gameplay nhưng dùng chung lớp dịch vụ nền cần thiết: hồ sơ người chơi, điểm, danh hiệu, bạn bè/quyền riêng tư và các quy tắc mở khóa kiến thức có liên quan.
+- Không buộc người chơi phải đi qua mọi nhà. Người thích sáng tạo có thể tập trung sáng tạo; người thích thi đấu, khám phá, sưu tập hoặc giao lưu có thể theo đuổi nhánh mình yêu thích.
+
+### 9.3. Điểm và danh hiệu là cầu nối thành tích chung
+- Điểm và danh hiệu là lớp liên kết chung giữa các nhà, không phải dependency khiến cách chơi của nhà này phải phụ thuộc tiến trình nhà khác.
+- Danh hiệu là một dạng thành tích có thể có giá trị điểm theo quy tắc được công bố. Không mặc định mọi danh hiệu đều cho cùng số điểm; điểm không bắt buộc đổi ngược thành danh hiệu.
+- Cần phân biệt rõ: điểm phản ánh đóng góp theo công thức; danh hiệu ghi nhận thành tích/đặc trưng; vật phẩm/quà tặng thể hiện sở hữu hoặc quan hệ xã hội. Không đánh đồng ba loại này.
+- Danh hiệu thành tích phải kiếm được bằng điều kiện tương ứng. Danh hiệu mang tính xã hội được tặng có thể hiển thị riêng, không giả làm chứng nhận người nhận đã hoàn thành thử thách mà họ chưa đạt.
+- Mọi điểm cộng vào tổng sắp cần có luật chống cày lặp, giới hạn/hệ số phù hợp và không để một hoạt động duy nhất lấn át mọi chuyên môn.
+
+## 10. Vòng lặp dài hạn — dễ bắt đầu, luôn có điều tiếp theo để khám phá
+
+PyQuest học hỏi nguyên tắc sản phẩm từ các ứng dụng học tập có sức bền dài hạn: bắt đầu đơn giản, tạo mục tiêu ngắn dễ hiểu và mở ra con đường tiến bộ dài. Không sao chép máy móc cơ chế của sản phẩm khác; thiết kế vòng lặp phù hợp với game thế giới mở và trẻ em.
+
+- **Mục tiêu ngắn:** mỗi lần vào game có thể làm một việc nhỏ, như hoàn thành một đoạn map, thử một ý tưởng, chăm/thu thập vật phẩm hoặc giúp đội.
+- **Con đường dài:** Main Quest mở dần kiến thức; các nhà khác mở thêm thử thách, bộ sưu tập, sản phẩm, danh hiệu và thế giới mới.
+- **Quay lại kiến thức trong ngữ cảnh mới:** khái niệm đã học có thể được áp dụng khi lập trình robot, giải mê cung, tạo trò chơi hoặc tham gia thử thách khác.
+- **Nội dung định kỳ:** nhiệm vụ tuần/tháng, sự kiện theo mùa, thử thách cộng đồng và chủ đề sáng tạo mới có thể đem lại mục tiêu tiếp theo.
+- **Phần thưởng nhiều tầng:** tiến bộ cá nhân, điểm theo kỳ, danh hiệu lâu dài, sản phẩm để trưng bày, kỷ niệm với bạn bè và thành tích đội.
+- **Tôn trọng nghỉ ngơi:** năng lượng, lượt chơi và quảng cáo phải minh bạch, có giới hạn, không dùng nỗi sợ mất chuỗi hoặc phần thưởng để ép trẻ online liên tục.
+- Không cần hàng nghìn tính năng ngay từ ngày đầu. Cần một vòng chơi cốt lõi đủ hấp dẫn, sau đó có thể bổ sung nhà, nội dung và hoạt động mà không phá vỡ trải nghiệm đơn giản cho người mới.
+
+Nguyên tắc diễn đạt sản phẩm: **“Dễ bắt đầu như một hành trình học ngắn; càng đi sâu càng có nhiều thứ để sáng tạo, khám phá và chinh phục.”**
+
+## 11. Nhà bạn bè và hệ thống cộng đồng
+
+### 11.1. Kết bạn và khám phá thành tích
+- Người chơi có thể gửi/nhận lời mời kết bạn, xem hồ sơ được chia sẻ, danh hiệu, tác phẩm trưng bày và bộ sưu tập mà chủ hồ sơ cho phép người khác xem.
+- Có thể thăm không gian/trang trưng bày của bạn bè, xem sản phẩm sáng tạo, để lại phản hồi được kiểm soát như lời khen hoặc biểu tượng cảm xúc.
+- Kết bạn là tùy chọn. Không được bắt buộc phải có bạn hoặc tham gia cộng đồng để hoàn thành Main Quest hay tiếp cận kiến thức cốt lõi.
+- Quyền riêng tư cần cho phép người chơi/phụ huynh kiểm soát ai có thể tìm, kết bạn, xem tác phẩm, gửi quà hoặc tương tác.
+
+### 11.2. Đội nhóm và hoạt động xã hội
+- Người chơi có thể lập/tham gia đội để cùng giải mê cung, xây dựng sản phẩm, hoàn thành nhiệm vụ, dự thi và tích lũy thành tích chung.
+- Hiển thị đóng góp cá nhân và kết quả đội theo luật rõ ràng; có thể có danh hiệu cá nhân lẫn danh hiệu tập thể.
+- Tạo lý do tương tác thực chất: thử thách sản phẩm của bạn, giải mê cung do bạn tạo, cùng hoàn thành dự án, tham gia sự kiện cuối tuần hoặc xem triển lãm cộng đồng.
+- Tác phẩm do người chơi tạo có thể trở thành nội dung cho người chơi khác khám phá, trong phạm vi quyền riêng tư, kiểm duyệt và an toàn cho trẻ em.
+
+### 11.3. Quà tặng mua được và danh hiệu xã hội
+- Người chơi có thể tự nguyện mua quà trong cửa hàng bằng loại tiền tệ được quy định rồi gửi tặng bạn: hoa, hộp quà, thú cưng mini, pháo hoa, phụ kiện, vật phẩm trang trí hoặc quà theo dịp.
+- Có thể tặng danh hiệu xã hội độc đáo, khung hồ sơ, hiệu ứng, thiệp hoặc vật phẩm kỷ niệm. Ví dụ chủ đề: bạn đồng hành, ngôi sao của làng, người truyền cảm hứng, bạn sáng tạo tuyệt vời. Tên và cách thể hiện chỉ là ví dụ, cần được thiết kế sau.
+- Quà theo dịp có thể gắn với sinh nhật, ngày kết bạn, chiến thắng, hoàn thành dự án chung hoặc sự kiện theo mùa. Không dùng thông báo giả hoặc đồng hồ đếm ngược gây áp lực mua.
+- Quà/danh hiệu xã hội phải phân biệt trực quan với danh hiệu chứng minh kỹ năng hoặc thành tích thi đấu. Mua quà không mua được thứ hạng, điểm thi đấu hay chứng nhận kỹ năng.
+- Người nhận có thể xem quà và lời nhắn, lưu vật phẩm nếu phù hợp, hoặc từ chối/giới hạn quà theo thiết lập. Cần có biện pháp chống spam, quấy rối, giao dịch gian lận và gây áp lực tặng quà.
+- Không biến quà tặng thành nghĩa vụ: không phạt khi không tặng/không đáp lễ, không bắt mua quà để hoàn thành nhiệm vụ hoặc được công nhận là bạn bè.
+
+### 11.4. Người chơi tự tạo tranh, thiệp và quà
+- Xưởng sáng tạo có thể cung cấp công cụ vẽ tranh, thiết kế thiệp, chọn màu/nền, dùng nhãn dán, viết lời chúc và tạo vật phẩm đơn giản để tặng người khác.
+- Có thể mở rộng sang nhân vật, biểu tượng, huy hiệu, phụ kiện hoặc món quà tương tác do người chơi tự thiết kế; tùy khả năng sản phẩm, tác phẩm có thể được lưu vào bộ sưu tập của người nhận.
+- Có thể có album kỷ niệm, lịch sử quà đã trao, thiệp sinh nhật, lời chúc chiến thắng, cảm ơn, động viên hoặc tác phẩm kỷ niệm của đội.
+- Tác phẩm tự làm có thể miễn phí; quà mua sẵn là lựa chọn bổ sung, không thay thế ý nghĩa của món quà cá nhân.
+- Về sau, người chơi có thể học cách làm thiệp chuyển động, thêm hiệu ứng, tạo nhân vật biết vẫy tay hoặc lập trình món quà tương tác. Đây là cơ hội nối sáng tạo xã hội với kiến thức lập trình, không bắt mọi hoạt động tặng quà trở thành bài học hay bài kiểm tra.
+
+### 11.5. An toàn cộng đồng cho trẻ em
+- Thiết kế theo độ tuổi và rà soát các yêu cầu pháp lý/nền tảng trước khi phát hành: quyền riêng tư, sự đồng ý của phụ huynh khi cần, giới hạn tin nhắn, kiểm soát nội dung do người dùng tạo, chặn/báo cáo, chống giả mạo và bảo vệ giao dịch.
+- Không mặc định cho phép giao dịch điểm, danh hiệu thành tích hoặc tài khoản giữa người chơi. Mọi loại trao đổi phải có danh sách vật phẩm được phép, quy tắc rõ và biện pháp chống lừa đảo.
+- Nội dung do người chơi tạo và lời nhắn phải có cơ chế báo cáo/kiểm duyệt phù hợp. Cần tránh để thông tin cá nhân hoặc nội dung không phù hợp xuất hiện công khai.
+- Mọi mua hàng/quà tặng trả phí phải hiển thị rõ giá, vật phẩm nhận được và xác nhận trước giao dịch; cân nhắc kiểm soát của phụ huynh phù hợp với nhóm tuổi và thị trường.
+- Những cơ chế cộng đồng này là tầm nhìn sản phẩm cần bảo toàn; thứ tự triển khai có thể chia giai đoạn, không được lặng lẽ xóa khỏi tầm nhìn chỉ vì phiên bản đầu chưa có.
+
+## 12. Nguyên tắc tổng hợp không được làm mất khi cập nhật tài liệu
+1. **Mỗi nhà là một tính năng độc lập; điểm và danh hiệu là cầu nối thành tích chung.**
+2. **Người chơi có thể chơi theo sở thích và tiến bộ một mình; cộng đồng mở thêm lựa chọn chứ không phải điều kiện bắt buộc.**
+3. **Điểm, danh hiệu thành tích, danh hiệu xã hội và quà tặng là những khái niệm khác nhau, dù có thể cùng xuất hiện trong hồ sơ.**
+4. **Tặng quà là tự nguyện; tự vẽ tranh/thiệp và tự tạo quà phải được giữ như một phần của tầm nhìn sáng tạo.**
+5. **Vòng lặp dài hạn phải kết hợp mục tiêu ngắn, tiến trình lâu dài, nội dung mới và sự tôn trọng thời gian nghỉ.**
+6. **Tầm nhìn sản phẩm không đồng nghĩa roadmap phiên bản đầu.** Có thể triển khai từng phần, nhưng phải ghi rõ phần nào được giữ cho giai đoạn sau thay vì làm biến mất khỏi tài liệu.
+7. Khi rà soát hoặc viết lại tài liệu PyQuest, phải đối chiếu cả các mục mới 9–12, không chỉ Arena/Creator League. Không tự ý loại bỏ các tính năng xã hội, sáng tạo, quà tặng hoặc vòng lặp dài hạn vì lý do thu gọn phạm vi kỹ thuật.
