@@ -37,7 +37,7 @@ khác dùng thuật ngữ này, nghĩa phải đúng như bảng sau.
 | Thuật ngữ | Định nghĩa |
 |---|---|
 | **Home Map** | Khu vực khởi đầu chào đón trẻ: một thế giới có nhân vật, thoại, âm thanh — **không** phải màn hình danh sách bài học. Là điểm vào của mọi luồng chơi. |
-| **Main Map** | **Thế giới/khu vực miễn phí cốt lõi** chứa trải nghiệm học tập thiết yếu. Là nơi chứa Main Quest, mini-game và các địa điểm khám phá miễn phí. Main Map **không** bị khóa sau paywall. |
+| **Main Map** | **Bản đồ trung tâm miễn phí để khám phá, chọn và mở các hoạt động** như Main Quest, mini-game và địa điểm khám phá. Main Map là điểm điều hướng, không phải hệ thống XP/cấp độ và không bị khóa sau paywall. |
 | **Main Quest** | **Lộ trình học Python có cấu trúc, miễn phí** nằm trong Main Map (chặng 1–4). Main Quest là nội dung học; Main Map là thế giới chứa nó. Hai khái niệm **khác nhau**. |
 | **Mini-game Play Mode** | Chế độ chơi mini-game ngay, **không** bắt buộc đọc bài hay viết code trước. |
 | **Mini-game Creator Mode** | Chế độ xem/đổi luật chơi và dần học lập trình qua chính mini-game đó (xem mục 7.1). |
@@ -141,12 +141,13 @@ Home Map **không phải** màn hình danh sách bài học.
 
 ### 4.2. Main Map — thế giới miễn phí cốt lõi
 
-**Main Map** là thế giới/khu vực miễn phí chứa trải nghiệm học tập thiết yếu.
-Nó bao gồm:
+**Main Map là bản đồ trung tâm và điểm vào của các hoạt động PyQuest.** Người chơi nhìn thấy những địa điểm/game đang có, chọn hoạt động, xem điều kiện cần thiết và đi thẳng đến hoạt động đó. Bản đồ có thể được trình bày như một thế giới sống động, nhưng chức năng cốt lõi là **khám phá, điều hướng và mở hoạt động** — không phải tích XP hay tăng cấp.
+
+Main Map có thể dẫn tới:
 
 - **Main Quest** — tuyến học Python có cấu trúc (xem mục 6).
-- Các **mini-game** miễn phí (xem mục 7).
-- Các **địa điểm khám phá** miễn phí: nhiệm vụ, thú cưng cơ bản, thành tựu học tập.
+- Các **mini-game** miễn phí (xem mục 7), có thể chơi ngay mà không bắt buộc học trước nếu game không cần kiến thức tiên quyết.
+- Các **địa điểm/hoạt động khám phá** như nhiệm vụ, thú cưng cơ bản, Nhà Thành Tích và hoạt động cộng đồng khi được triển khai.
 
 Main Quest đi từ `print()` đến gỡ lỗi:
 
@@ -154,8 +155,7 @@ Main Quest đi từ `print()` đến gỡ lỗi:
 print() → biến → điều kiện → vòng lặp → danh sách → hàm → gỡ lỗi
 ```
 
-Main Map là **thế giới**; Main Quest là **tuyến học nằm trong đó**.
-Đây là hai khái niệm khác nhau, không dùng thay thế cho nhau.
+**Main Map là nơi chọn hoạt động; Main Quest là một hoạt động học có lộ trình nằm trong bản đồ.** Hai khái niệm khác nhau, không dùng thay thế cho nhau.
 
 **Cam kết:**
 - Không cần mua để mở Main Map hay Main Quest.
@@ -178,7 +178,7 @@ Main Map là **thế giới**; Main Quest là **tuyến học nằm trong đó**
 ### 5.1. Vòng lặp chính
 
 1. **Chọn nhiệm vụ** — bản đồ, thú cưng, kho báu, nhiệm vụ ngày.
-2. **Học và chơi** — bài học ngắn, đấu cú pháp, nhận XP, thu thập phần thưởng.
+2. **Học và chơi** — bài học ngắn, đấu cú pháp, thu thập phần thưởng và ghi nhận thành tích khi đạt điều kiện.
 3. **Năng lượng giảm** — thông báo sắp hết, hiển thị số lượt còn lại.
 4. **Nghỉ rồi chơi tiếp** — hồi theo thời gian, chờ nghỉ,
    hoặc xem quảng cáo thưởng nếu đủ điều kiện.
@@ -248,7 +248,7 @@ dòng lệnh đơn giản. Không phải màn Creator Mode nào cũng cần inte
 ### 7.2. Đưa vào Home Map
 
 - Nhân vật rủ trẻ chơi: *"Robot của tớ bị lạc rồi, giúp tớ nhé!"*
-- Chơi game nhận XP, huy hiệu, vật phẩm trang trí.
+- Chơi game để vui; khi đạt điều kiện cụ thể có thể nhận điểm thưởng, huy hiệu hoặc vật phẩm trang trí.
 - Phần thưởng học tập lớn hơn cho thử thách lập trình.
 - Một số game tiêu hao năng lượng.
 
@@ -374,7 +374,7 @@ Khi trẻ hoàn thành một chặng, PyQuest tạo báo cáo tổng kết cuộ
 | Duolingo nhấn mạnh | PyQuest tạo trải nghiệm |
 |---|---|
 | Chuỗi ngày học | Thế giới thay đổi theo tiến trình, không phạt trẻ khi nghỉ |
-| XP và cấp độ | XP kết hợp kỹ năng lập trình đã thực sự nắm được |
+| Mở khóa hoạt động | Điều kiện rõ ràng theo hoạt động/kiến thức cần thiết; không dùng XP/cấp độ toàn cục |
 | Huy hiệu | Huy hiệu xuất hiện trong Nhà Thành Tích |
 | Hoàn thành bài học | Nhân vật phản ứng, có hoạt ảnh và lời thoại riêng |
 | Tiến trình theo khóa học | Bản đồ phiêu lưu, nhân vật, vùng đất có câu chuyện |
@@ -409,7 +409,7 @@ và một công cụ đủ thật để trẻ tin mình có thể tự làm nên
 
 ## Tài liệu liên quan
 
-- [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, XP, cân bằng độ khó.
+- [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, mở khóa hoạt động và phần thưởng.
 - [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — runtime Python, module, lưu dữ liệu.
 - [`ROADMAP.md`](ROADMAP.md) — giai đoạn triển khai và tiêu chí nghiệm thu.
 - [`../README.md`](../README.md) — điểm vào dự án.
