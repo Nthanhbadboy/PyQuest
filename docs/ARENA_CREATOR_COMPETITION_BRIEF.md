@@ -130,6 +130,18 @@ Cách thể hiện phù hợp:
 - Side Maps / Secret Isles có thể mở rộng nội dung, bộ môn, chủ đề, vật phẩm, danh hiệu và trải nghiệm nâng cao theo mô hình thương mại đã mô tả trong tài liệu sản phẩm.
 - Thành tích từ Arena liên kết với hồ sơ, bộ sưu tập danh hiệu và bảng xếp hạng tuần/mùa.
 
+
+### 6.1. Các nhánh độc lập; dependency chung được giới hạn rõ ràng
+
+Đây là nguyên tắc kiến trúc sản phẩm bắt buộc:
+
+- **Mỗi nhánh là một hoạt động độc lập.** Đối kháng trực tiếp, tích lũy/bộ sưu tập sản phẩm, giải sáng tạo chuyên nghiệp và giải đồng đội có tiến trình, luật chơi, điều kiện tham gia, cách chấm điểm và phần thưởng riêng. Người chơi không phải hoàn thành một nhánh để được chơi nhánh khác, trừ điều kiện kiến thức/mở khóa đã quy định.
+- **Dependency về kiến thức đi từ Main Quest đến các nhánh hoạt động.** Người chơi phải vượt qua một số map Main Quest tương ứng để học đủ kiến thức trước khi mở khóa hoặc đủ điều kiện tham gia từng bộ môn. Mỗi bộ môn chỉ yêu cầu các map/kiến thức thật sự cần cho gameplay của nó; không khóa tất cả hoạt động sau khi hoàn thành toàn bộ Main Quest.
+- **Điểm tổng sắp và danh hiệu là lớp liên kết chung.** Thành tích của từng nhánh được quy đổi theo quy tắc của nhánh đó thành điểm đóng góp và/hoặc danh hiệu; hệ thống tổng hợp chúng vào hồ sơ và bảng tổng sắp tuần/mùa. Đây là cầu nối chung giữa các nhánh, không phải lý do để buộc tiến trình chơi của chúng phụ thuộc lẫn nhau.
+- Không yêu cầu người chơi phải sở hữu sản phẩm mới được đấu đối kháng nếu chế độ đó có phương án tham gia riêng; không bắt người thích sưu tầm phải thi đấu; không bắt thành viên muốn thi đồng đội phải hoàn thành Creator Pro League trước, trừ khi giải cụ thể yêu cầu kiến thức hoặc sản phẩm tương ứng.
+- Giữ dữ liệu, tiến trình, luật và vòng lặp của từng nhánh tách biệt ở mức thiết kế. Chỉ chia sẻ những dịch vụ nền thật sự cần thiết như hồ sơ, mở khóa kiến thức, điểm tổng sắp và danh hiệu; tránh tạo dependency chéo không cần thiết.
+- Khi thiết kế roadmap, có thể triển khai các nhánh ở thời điểm khác nhau nhưng phải giữ chúng trong tầm nhìn sản phẩm. “Chưa triển khai” không đồng nghĩa với “phụ thuộc vào nhánh khác” hoặc “bị loại bỏ”.
+
 ## 7. Hướng triển khai theo giai đoạn (không phải lý do loại bỏ tầm nhìn)
 
 - **Giai đoạn đầu:** module lắp ghép có sẵn, tùy chỉnh ngoại hình, khối lệnh giới hạn, mô phỏng đơn giản, điểm và kết quả xác định được.
