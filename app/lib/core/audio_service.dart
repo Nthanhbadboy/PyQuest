@@ -36,7 +36,9 @@ class AudioService with WidgetsBindingObserver {
       await AudioPlayer.global.setAudioContext(
         AudioContextConfig(focus: AudioContextConfigFocus.mixWithOthers).build(),
       );
-      _music = AudioPlayer();
+      // Position events are never used; disabling them avoids a frame callback
+      // on every frame while music plays.
+      _music = AudioPlayer()..positionUpdater = null;
       await _music!.setReleaseMode(ReleaseMode.loop);
       _ready = true;
       WidgetsBinding.instance.addObserver(this);
@@ -114,7 +116,7 @@ class _SfxChannel {
 
   Future<void> init() async {
     for (var i = 0; i < voices; i++) {
-      final p = AudioPlayer();
+      final p = AudioPlayer()..positionUpdater = null;
       await p.setPlayerMode(PlayerMode.lowLatency);
       await p.setReleaseMode(ReleaseMode.stop);
       await p.setSource(AssetSource(asset));
