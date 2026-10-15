@@ -12,6 +12,8 @@ __pycache__/
 /shrink.txt
 /analyse.txt
 /emulator-progress.txt
+/emulator-step.log
+/runner-state.txt
 /emulator-stop-reason.txt
 /emulator-log-analysis.txt
 /emulator-diagnostics/

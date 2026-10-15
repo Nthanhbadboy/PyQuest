@@ -201,7 +201,34 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           working-directory: app
-          script: bash ../ci/emulator_journey.sh
+          script: bash -c 'set -o pipefail; bash ../ci/emulator_journey.sh 2>&1 | tee ../emulator-step.log'
+      - name: Record runner state
+        if: always()
+        shell: bash
+        run: |
+          # The emulator action can fail before or after the journey script runs
+          # (for example when the emulator itself does not start). Its own output
+          # is only in the job log, so record what the runner can see here: this
+          # file is published in the check report and the artifact.
+          {
+            echo "utc: $(date -u '+%F %T')"
+            echo "runner: ${RUNNER_OS:-?} ${RUNNER_ARCH:-?}   cpus: $(nproc)   kernel: $(uname -r)"
+            echo "kvm: $(if [ -w /dev/kvm ]; then echo writable; else echo 'not writable / missing'; fi)"
+            echo
+            echo "\$ df -h /"; df -h /
+            echo; echo "\$ free -m"; free -m
+            echo; echo "\$ adb devices -l"; timeout -k 2 20 adb devices -l 2>&1
+            echo; echo "\$ ps (emulator, qemu, adb)"; ps -eo pid,ppid,stat,etime,pcpu,rss,args --sort=-rss \
+              | grep -E "^ *PID|emulator|qemu|adb" | grep -vE 'grep' | cut -c1-200 | head -n 20
+            echo; echo "\$ ls -la ~/.android/avd"; ls -la "$HOME/.android/avd" 2>&1 | head -n 20
+            for ini in "$HOME"/.android/avd/*.avd/config.ini; do
+              [ -f "$ini" ] || continue
+              echo; echo "\$ $ini"; cat "$ini"
+            done
+            echo; echo "\$ ls -la /tmp/android-$(id -un) (emulator crash reports)"; ls -laR "/tmp/android-$(id -un)" 2>&1 | head -n 60
+            echo; echo "\$ tail of emulator logs in /tmp"; find /tmp -maxdepth 3 -name '*emulator*log*' -o -maxdepth 3 -name 'qemu*.log' 2>/dev/null | head -n 10
+          } > runner-state.txt 2>&1 || true
+          echo "runner-state.txt: $(wc -c < runner-state.txt) bytes"
       - name: Analyse emulator logs
         if: always()
         run: |
@@ -233,8 +260,8 @@ jobs:
           reason=""
           if [ -f emulator-stop-reason.txt ]; then reason=emulator-stop-reason.txt; fi
           python3 ci/report.py "PyQuest emulator" status.txt emulator-progress.txt \
-            $reason $diag emulator-log-analysis.txt apk_build.txt journey.txt \
-            relaunch.txt shrink.txt
+            $reason $diag emulator-log-analysis.txt runner-state.txt \
+            emulator-step.log journey.txt relaunch.txt shrink.txt
       - name: Upload emulator logs and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -242,6 +269,8 @@ jobs:
           name: emulator-logs-attempt-${{ github.run_attempt }}
           path: |
             emulator-progress.txt
+            emulator-step.log
+            runner-state.txt
             emulator-stop-reason.txt
             emulator-log-analysis.txt
             emulator-diagnostics/
