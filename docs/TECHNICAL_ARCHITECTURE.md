@@ -23,7 +23,8 @@
 | **Quảng cáo** | Google AdMob (rewarded ads), chỉ dùng khi đã xác minh chính sách Families |
 | **Thanh toán** | Google Play Billing (Android), StoreKit (iOS sau) |
 | **Kiến trúc** | Module hóa, giao tiếp qua interface rõ ràng |
-| **Trạng thái dùng chung** | Một nguồn sự thật duy nhất cho tiến trình, năng lượng, thành tích |
+| **Trạng thái dùng chung** | Một nguồn sự thật duy nhất cho tiến trình hoạt động, năng lượng, thành tích và quyền mở khóa |
+| **XP/cấp độ toàn cục** | **Không dùng**; không có bảng XP/level hay công thức tăng cấp. Main Map chỉ điều hướng/mở hoạt động theo điều kiện trực tiếp |
 
 **Nguyên tắc chốt:** làm một **lát cắt dọc hoàn chỉnh** trước khi mở rộng.
 Mở app → chơi một mini-game → lưu kết quả → thoát ra mở lại vẫn còn kết quả.
