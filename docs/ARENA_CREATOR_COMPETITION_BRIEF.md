@@ -70,6 +70,33 @@ Có thể kết hợp:
 - Điểm realtime có thể là điểm tạm tính; điểm chính thức được chốt khi đánh giá hoàn tất.
 - Không âm thầm thay đổi điểm để ép một kết quả thắng/thua cụ thể.
 
+## 3A. Ba nhánh hoạt động trong Arena
+
+Arena cần có ít nhất ba nhánh rõ ràng, không gộp mọi thứ thành một kiểu thi đấu:
+
+### A. Đối kháng trực tiếp
+- Người chơi điều khiển sản phẩm/nhân vật của mình thi trực tiếp với một đối thủ trong cùng trận hoặc cùng thử thách.
+- Ví dụ: đua mê cung, đua vượt chướng ngại, đấu thú hoặc đấu robot chiến thuật.
+- Điểm, thanh tiến độ, vị trí, máu/năng lượng hoặc mục tiêu hoàn thành cập nhật trong lúc chơi để người chơi nhìn thấy diễn biến hơn-thua.
+- Kết quả trận quyết định thắng/thua, điểm giải, thứ hạng và phần thưởng tương ứng.
+- Tùy khả năng sản phẩm, đối thủ có thể là nhân vật do hệ thống điều khiển trong chế độ luyện tập hoặc người chơi thật trong giải trực tuyến. Phải thể hiện trung thực loại trận; không giả mạo người thật.
+
+### B. Tích lũy sản phẩm / bộ sưu tập sáng tạo
+- Người chơi tạo nhiều sản phẩm theo thời gian: nhân vật, thú cưng, robot, phương tiện, bản thiết kế, chương trình điều khiển hoặc tác phẩm khác.
+- Có thể vẽ, tùy chỉnh và lắp ghép bộ phận; lập trình sản phẩm; lưu phiên bản; thử nghiệm; nâng cấp; đặt tên; xem lịch sử và trưng bày bộ sưu tập.
+- Sản phẩm không chỉ là skin hoặc đồ trang trí: khi phù hợp, chúng có logic/hành vi do code điều khiển và có thể được dùng trong các thử thách.
+- Có mục tiêu tích lũy như hoàn thành bộ sưu tập, mở khóa bộ phận, đạt cấp sáng tạo, hoàn thành chủ đề hoặc sở hữu các tác phẩm có đặc tính khác nhau.
+- Có thể tổ chức thử thách đánh giá từng tác phẩm hoặc cả bộ sưu tập. Điểm/danh hiệu gắn với tiêu chí của thử thách, không mặc định số lượng nhiều là chất lượng cao.
+- Nhánh này vẫn có giá trị với trẻ không muốn đối kháng trực tiếp; không bắt buộc mọi tác phẩm phải tham gia thi đấu.
+
+### C. Giải đồng đội
+- Cho phép người chơi tham gia đội, cùng thực hiện mục tiêu và tích lũy thành tích tập thể.
+- Các vai trò có thể bổ trợ nhau, ví dụ: người thiết kế, người lắp ghép, người viết logic/code, người thử nghiệm và người tối ưu chiến thuật. Không nhất thiết phải khóa vai trò cứng; cách chia việc tùy định dạng giải.
+- Định dạng giải có thể gồm cùng nhau giải mê cung, phối hợp nhiều sản phẩm, xây dựng một tác phẩm chung, vượt chuỗi nhiệm vụ hoặc cộng điểm từ các thành viên trong một khoảng thời gian.
+- Điểm đội có thể dựa trên kết quả nhiệm vụ, tiến độ chung, chất lượng sản phẩm hoặc tổng thành tích thành viên theo luật cụ thể. Nêu rõ thành tích cá nhân và thành tích đội để người chơi thấy đóng góp của mình.
+- Hỗ trợ danh hiệu cá nhân lẫn danh hiệu tập thể: thành viên đội vô địch, đội sáng tạo xuất sắc, đội hoàn thành thử thách, danh hiệu theo mùa.
+- Giải đồng đội có thể triển khai sau các chế độ đơn người, nhưng phải được giữ trong tầm nhìn sản phẩm; không được loại bỏ chỉ vì chưa thuộc phiên bản đầu.
+
 ## 4. Danh hiệu, điểm tuần và thành tích lâu dài
 
 Arena phải tạo ra động lực theo nhiều cấp:
@@ -115,7 +142,7 @@ Cách thể hiện phù hợp:
 
 1. Đọc tài liệu sản phẩm hiện tại và các nguồn ý tưởng gốc được cung cấp, bao gồm Master Prompt và README lịch sử liên quan.
 2. Trước khi sửa, lập bảng đối chiếu từng tính năng theo trạng thái: **PRESERVED / WEAKENED / MISSING / CONFLICTING / DEFERRED**. Nêu rõ tính năng nằm ở tài liệu nào/mục nào.
-3. Đặc biệt kiểm tra Arena nhiều bộ môn, Creator Pro League, vẽ/lắp ghép, code điều khiển sản phẩm, mô phỏng, điểm/tiến độ realtime, chấm điểm, danh hiệu, điểm tuần/mùa, Main Quest miễn phí, Side Maps/Secret Isles và các mini-game đã có.
+3. Đặc biệt kiểm tra Arena nhiều bộ môn và đủ ba nhánh: đối kháng trực tiếp, tích lũy sản phẩm/bộ sưu tập sáng tạo, giải đồng đội; Creator Pro League; vẽ/lắp ghép; code điều khiển sản phẩm; mô phỏng; điểm/tiến độ realtime; chấm điểm; danh hiệu; điểm tuần/mùa; Main Quest miễn phí; Side Maps/Secret Isles và các mini-game đã có.
 4. Không được chỉ chăm chăm vào kiến trúc, giao dịch dữ liệu, kiểm thử hoặc chi tiết kỹ thuật rồi bỏ qua gameplay tạo nên bản sắc sản phẩm.
 5. Không tự ý xóa, giản lược hoặc đánh dấu “out of scope” cho ý tưởng sản phẩm đã có nguồn. Nếu có xung đột, ghi rõ và đề xuất lựa chọn; không tự quyết định loại bỏ.
 6. Phân biệt **tầm nhìn sản phẩm**, **thiết kế gameplay**, **kiến trúc kỹ thuật** và **thứ tự roadmap**. Một tính năng được triển khai sau không có nghĩa là không tồn tại trong tầm nhìn.
