@@ -179,6 +179,14 @@ jobs:
           tail -20 ../apk_build.txt
       - name: Emulator journey
         uses: reactivecircus/android-emulator-runner@v2
+        # Backstop only: every wait inside ci/emulator_journey.sh is bounded
+        # and fails with diagnostics well before this.
+        timeout-minutes: 65
+        env:
+          ADB_ONLINE_TIMEOUT: '90'    # adb must list the emulator as 'device'
+          BOOT_TIMEOUT: '120'         # sys.boot_completed must be 1
+          JOURNEY_TIMEOUT: '1500'     # fresh-install flutter drive
+          RETURNING_TIMEOUT: '900'    # returning-player flutter drive
         with:
           api-level: 34
           target: google_apis
@@ -201,7 +209,23 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 ci/report.py "PyQuest emulator" status.txt apk_build.txt journey.txt relaunch.txt shrink.txt
+        run: |
+          diag=""; [ -f emulator-diagnostics/summary.txt ] && diag=emulator-diagnostics/summary.txt
+          python3 ci/report.py "PyQuest emulator" status.txt emulator-progress.txt $diag apk_build.txt journey.txt relaunch.txt shrink.txt
+      - name: Upload emulator logs and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulator-logs-attempt-${{ github.run_attempt }}
+          path: |
+            emulator-progress.txt
+            emulator-diagnostics/
+            status.txt
+            journey.txt
+            relaunch.txt
+            apk_build.txt
+          if-no-files-found: warn
+          retention-days: 14
       - name: Commit emulator screenshots
         if: always()
         shell: bash

@@ -208,6 +208,11 @@ CI (GitHub Actions) chạy analyze + test + render preview cho mỗi lần push 
 tải ở mục *Artifacts* của lần chạy) và chạy hành trình trên Android emulator,
 tự lưu ảnh chụp vào `docs/screenshots/`.
 
+Mọi bước chờ trong `ci/emulator_journey.sh` đều có giới hạn thời gian (chỉnh qua
+`env:` của bước *Emulator journey*). Nếu emulator mất kết nối adb, không boot
+xong hoặc một bước quá hạn, script thu thập chẩn đoán rồi dừng với mã lỗi ≠ 0.
+Log tiến trình và chẩn đoán nằm ở artifact `emulator-logs-attempt-N`.
+
 ---
 
 ## Đóng góp & giấy phép
