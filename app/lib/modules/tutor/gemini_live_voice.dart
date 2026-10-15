@@ -33,7 +33,7 @@ class GeminiLiveVoice {
   WebSocketChannel? _channel;
   StreamSubscription<dynamic>? _socketSubscription;
   StreamSubscription<Uint8List>? _micSubscription;
-  final Completer<void> _setupComplete = Completer<void>();
+  Completer<void> _setupComplete = Completer<void>();
   final List<int> _responsePcm = <int>[];
   String _outputText = '';
   bool _recording = false;
@@ -54,6 +54,7 @@ class GeminiLiveVoice {
         '/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent',
         <String, String>{'key': _apiKey},
       );
+      _setupComplete = Completer<void>();
       final channel = WebSocketChannel.connect(uri);
       _channel = channel;
       _socketSubscription = channel.stream.listen(
@@ -180,6 +181,7 @@ class GeminiLiveVoice {
   Future<void> _playResponse() async {
     if (_responsePcm.isEmpty || _disposed) {
       onStatus('Đã xong lượt nói');
+      await _closeSocket();
       return;
     }
     try {
@@ -191,6 +193,9 @@ class GeminiLiveVoice {
       await _player.stop();
       await _player.play(DeviceFileSource(file.path));
       onStatus('Kai/Lumi đang nói…');
+      await _player.onPlayerComplete.first.timeout(const Duration(seconds: 60));
+      onStatus('Đã xong lượt nói');
+      await _closeSocket();
     } catch (error) {
       onError('Không phát được giọng nói: $error');
     }
