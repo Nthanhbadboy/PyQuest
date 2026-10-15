@@ -2,12 +2,15 @@
 
 **Build Your Game. Rule Your World.**
 
-Game lập trình dành cho trẻ dưới 12 tuổi — nơi trẻ không chỉ chơi game
-mà còn học cách **tự tạo ra trò chơi của riêng mình** bằng Python.
+**Một thế giới game chung, gồm nhiều nhánh hoạt động độc lập** dành cho trẻ dưới
+12 tuổi. Trẻ chọn kiểu trải nghiệm mình thích — phiêu lưu, khám phá, sưu tầm,
+giải đố, sáng tạo, thi đấu hoặc chơi cùng bạn bè. **Lập trình Python là một nhánh
+mạnh của PyQuest, không phải yêu cầu bắt buộc cho mọi trò chơi.**
 
 > Trẻ mở PyQuest vì thích chơi, ở lại vì tò mò, rồi tự hỏi:
 > *"Mình có thể tự làm một game như thế này không?"*
-> Đó là lúc ứng dụng chuyển từ game giải trí thành công cụ dạy lập trình thực sự.
+> Đó là lúc PyQuest mở thêm nhánh sáng tạo — nơi trẻ học cách tự tạo ra
+> trò chơi của riêng mình.
 
 ---
 
@@ -24,8 +27,11 @@ trước khi bắt tay vào lát cắt dọc đầu tiên.
 
 ## PyQuest là gì?
 
-- **Game phiêu lưu** có bản đồ, nhân vật, thú cưng, kho báu và nhiệm vụ.
-- **Công cụ học Python** với lộ trình từ `print()` đến tự xây game hoàn chỉnh.
+- **Thế giới game chung** với bản đồ, nhân vật, thú cưng, kho báu và nhiệm vụ.
+- **Nhiều nhánh hoạt động độc lập** — phiêu lưu/khám phá, sưu tầm, giải đố,
+  sáng tạo, thi đấu; mỗi nhánh có luật chơi, tiến trình và phần thưởng riêng.
+- **Một nhánh học lập trình Python** (Main Quest) từ `print()` đến tự xây game
+  hoàn chỉnh — là điểm mạnh của PyQuest, nhưng không bắt buộc để chơi trò khác.
 - **Sân chơi sáng tạo** — mỗi mini-game có Play Mode để chơi ngay và
   Creator Mode để trẻ thay đổi luật chơi, dần chuyển sang viết code.
 
@@ -43,6 +49,9 @@ trước khi bắt tay vào lát cắt dọc đầu tiên.
    mạng quảng cáo trước khi chốt cơ chế.
 8. **Python phải thật hoặc mô phỏng giới hạn rõ ràng** — không tô giao diện
    giống trình soạn code rồi tuyên bố trẻ đã tạo game Python thật.
+9. **Mỗi hoạt động độc lập, tiến trình riêng** — không có XP hay cấp độ toàn cục;
+   mở khóa gắn trực tiếp với hoạt động hoặc kiến thức thực sự cần. Bạn bè và
+   cộng đồng giúp chơi vui hơn, không phải điều kiện bắt buộc.
 
 ---
 
@@ -85,7 +94,7 @@ PyQuest/
 | Tài liệu | Vai trò |
 |---|---|
 | [`docs/PRODUCT_VISION.md`](docs/PRODUCT_VISION.md) | Ý tưởng sản phẩm, thế giới, nhân vật, mô hình kinh doanh, triết lý giáo dục |
-| [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md) | Luật chơi, năng lượng, XP, huy hiệu, thành tích, cân bằng độ khó |
+| [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md) | Luật chơi, năng lượng, mở khóa hoạt động, huy hiệu, thành tích, cân bằng độ khó |
 | [`docs/TECHNICAL_ARCHITECTURE.md`](docs/TECHNICAL_ARCHITECTURE.md) | Interpreter, module, lưu dữ liệu, quảng cáo, thanh toán |
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Giai đoạn triển khai, tiêu chí nghiệm thu và kiểm thử |
 

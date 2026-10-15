@@ -16,11 +16,14 @@
 | **Repository** | `PyQuest` (Private) |
 | **Đối tượng** | Trẻ dưới 12 tuổi |
 | **Nền tảng** | Mobile (Android trước, iOS sau) |
-| **Thể loại** | Game phiêu lưu + công cụ học lập trình |
+| **Thể loại** | Thế giới game nhiều nhánh hoạt động (phiêu lưu, khám phá, sưu tầm, giải đố, sáng tạo, thi đấu) + nhánh học lập trình Python |
 
 **Định vị cốt lõi:**
-PyQuest **không bán cảm giác "học thêm"**. PyQuest bán giấc mơ
-**tự tạo ra trò chơi của chính mình**. Python chỉ là công cụ để trẻ làm được điều đó.
+PyQuest là **một thế giới game chung gồm nhiều nhánh hoạt động độc lập**. Trẻ chọn
+kiểu trải nghiệm mình thích; mỗi nhánh có luật chơi, tiến trình và phần thưởng riêng.
+PyQuest **không bán cảm giác "học thêm"**. Điểm mạnh riêng của PyQuest là nhánh
+**tự tạo ra trò chơi của chính mình**; Python là công cụ cho nhánh đó — quan trọng,
+nhưng **không bắt buộc cho mọi hoạt động**.
 
 **Mục tiêu trải nghiệm:**
 Trẻ mở PyQuest vì thích chơi → ở lại vì tò mò → tự hỏi
@@ -52,7 +55,7 @@ khác dùng thuật ngữ này, nghĩa phải đúng như bảng sau.
 
 ## 2. Triết lý thiết kế
 
-Tám nguyên tắc dưới đây chi phối **mọi quyết định** về sản phẩm, từ nội dung
+Chín nguyên tắc dưới đây chi phối **mọi quyết định** về sản phẩm, từ nội dung
 đến mô hình kinh doanh, từ giao diện đến cách viết thoại.
 
 ### 2.1. Main Map miễn phí và đầy đủ cốt lõi
@@ -94,6 +97,18 @@ Kiểm tra **Google Play Families** và mạng quảng cáo định dùng
 
 Không tô giao diện giống trình soạn code rồi tuyên bố
 trẻ đã tạo game Python thật. Nếu là mô phỏng, phải nói rõ giới hạn.
+
+### 2.9. Nhiều nhánh độc lập; cộng đồng phục vụ gameplay
+
+PyQuest gồm nhiều nhánh hoạt động độc lập (phiêu lưu/khám phá, sưu tầm, giải đố,
+sáng tạo, thi đấu và nhánh học lập trình Python). Trẻ tiến bộ theo nhánh mình
+thích và **không** phải hoàn thành nhánh này để chơi nhánh khác, trừ khi kiến thức
+đó thực sự cần cho hoạt động cụ thể. Mở khóa hoạt động gắn trực tiếp với chính
+hoạt động đó; **không có XP/cấp độ toàn cục**.
+
+Bạn bè và cộng đồng tồn tại để **làm gameplay vui hơn** (chơi cùng nhau, so tài,
+khám phá, trao đổi kỷ niệm), **không** phải để PyQuest trở thành mạng xã hội.
+Không xây bảng tin, hệ thống đăng bài chung hay cơ chế gây áp lực tương tác.
 
 ---
 
@@ -216,8 +231,9 @@ kể cả tự làm game đơn giản.
 
 ## 7. Mini-game dựng sẵn
 
-Mỗi mini-game vừa giải trí vừa dạy tư duy lập trình,
-liên kết với một kiến thức Python để trẻ tự tạo game sau này.
+Mỗi mini-game trước hết phải **vui và dễ vào chơi ngay**.
+Một số mini-game liên kết với một kiến thức Python để trẻ tự tạo game sau này;
+**không** bắt mọi mini-game trở thành bài học lập trình.
 
 | Mini-game | Cách chơi | Tư duy Python |
 |---|---|---|
@@ -395,15 +411,19 @@ Hiệu ứng chiến thắng nhẹ và nhanh.
 - Thưởng cho việc chơi lâu hoặc xem nhiều quảng cáo.
 - Tuyên bố trẻ "đã tạo game Python thật" khi thực tế chỉ ghép khối.
 - Gây áp lực mua Pro bằng thông báo khẩn cấp hoặc giới hạn giả tạo.
+- Yêu cầu XP/cấp độ toàn cục để mở những hoạt động không liên quan.
+- Bắt mọi trò chơi phải là bài học Python.
+- Trở thành mạng xã hội (bảng tin, đăng bài, cơ chế gây áp lực tương tác).
 
 ---
 
 ## 15. Tóm tắt một câu
 
-**PyQuest biến trẻ từ người chơi thành người sáng tạo game**,
-bằng cách cho trẻ một thế giới đủ vui để ở lại,
+**PyQuest là một thế giới game nhiều nhánh, nơi trẻ chơi theo sở thích và
+dần trở thành người sáng tạo**, bằng cách cho trẻ một thế giới đủ vui để ở lại,
+nhiều nhánh để chọn,
 một lộ trình đủ nhẹ để bắt đầu,
-và một công cụ đủ thật để trẻ tin mình có thể tự làm nên trò chơi của riêng mình.
+và một nhánh sáng tạo đủ thật để trẻ tin mình có thể tự làm nên trò chơi của riêng mình.
 
 ---
 

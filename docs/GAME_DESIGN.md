@@ -18,7 +18,7 @@ con số có thể đổi.
 
 ## 1. Triết lý thiết kế gameplay
 
-Năm nguyên tắc chi phối mọi con số trong tài liệu này:
+Bảy nguyên tắc chi phối mọi con số trong tài liệu này:
 
 1. **Phiên chơi ngắn, không mệt.** Trẻ dưới 12 tuổi không nên ngồi quá lâu.
    Mỗi phiên lý tưởng 10–20 phút, có điểm dừng tự nhiên.
@@ -33,6 +33,13 @@ Năm nguyên tắc chi phối mọi con số trong tài liệu này:
 
 5. **Thử thách tăng dần, luôn có đường quay lại.**
    Trẻ thất bại có thể thử lại ngay hoặc luyện ở mini-game liên quan.
+
+6. **Mỗi hoạt động độc lập, tiến trình riêng.** Mỗi nhánh/mini-game có luật chơi,
+   điểm, tài nguyên và điều kiện mở khóa riêng; không ép mọi game dùng chung một
+   công thức điểm hay tiến trình, và **không có XP/cấp độ toàn cục**.
+
+7. **Bạn bè và cộng đồng là lựa chọn, không bắt buộc.** Chơi cùng nhau để vui hơn,
+   không phải điều kiện để tiến bộ hay mở khóa nội dung.
 
 ---
 
@@ -268,7 +275,7 @@ Các mini-game/hoạt động khác trên Main Map không mặc định bị kh�
 |---|---|
 | Tủ huy hiệu | Ngay từ đầu |
 | Tường chiến tích | Sau khi hoàn thành 5 màn |
-| Bộ sưu tập nhân vật | Sau khi có thú cưng đầu tiên (cấp 3) |
+| Bộ sưu tập nhân vật | Sau khi nhận thú cưng đầu tiên trong Main Quest |
 | Góc sáng tạo | Sau khi tạo game đầu tiên chạy được |
 | Huy hiệu bí mật | Bí mật — không công bố điều kiện |
 

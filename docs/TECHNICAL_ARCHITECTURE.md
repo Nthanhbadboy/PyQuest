@@ -211,6 +211,21 @@ abstract class AchievementService {
 }
 ```
 
+### 3.4. Mỗi game/nhánh là một module độc lập
+
+- Mỗi game hoặc nhánh hoạt động sở hữu **luật chơi, điểm số, kỹ năng, tài nguyên
+  và tiến trình riêng**. Lớp dùng chung không định nghĩa lại các phần này.
+- Lớp dùng chung chỉ cung cấp những gì **nhiều nhánh cùng cần**: điều hướng, hồ sơ
+  người chơi, thành tích liên quan, và — khi có mục đích rõ — điểm đóng góp/danh
+  hiệu như lớp liên kết thành tích. Không dùng chung một công thức điểm hay tiến
+  trình cho các game không liên quan.
+- Thêm một game/nhánh mới chỉ cần **thêm module và nối qua interface/event**; không
+  viết lại nền tảng và không nhân bản hệ thống thành tích.
+- **Không** dựng backend, hệ thống mạng xã hội phức tạp hay hạ tầng đồng bộ
+  realtime chỉ để phòng trước. Với game thiên về so điểm, gameplay có thể chạy cục
+  bộ trên máy người chơi và chỉ đồng bộ phần kết quả cần thiết khi một game cụ thể
+  thực sự cần.
+
 ---
 
 ## 4. Lưu dữ liệu
@@ -231,7 +246,6 @@ abstract class AchievementService {
 |---|---|---|
 | Progress | `progress`, `skills` | Bài học đã hoàn thành, kỹ năng đã nắm |
 | Reward claims | `reward_claims` | Khóa chống nhận trùng cho phần thưởng mốc và các thành tích được trao một lần |
-
 | Games | `game_results`, `unlocked_levels` | Điểm cao, màn đã mở, sao |
 | Energy | `energy_state` | Năng lượng hiện tại, năng lượng tối đa, thời điểm hồi tiếp theo |
 | Rewarded ads | `rewarded_ad_claims` | Số lượt quảng cáo hợp lệ trong ngày, theo ngày địa phương |
@@ -673,6 +687,7 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 | Localization sang ngôn ngữ nào | Trước giai đoạn hoàn thiện |
 | Người dùng Pro có được xem quảng cáo thưởng không | Quyết định sản phẩm (xem 6.4) |
 | Giá trị cụ thể của ngân sách bước, trần collection, mục tiêu bộ nhớ | Sau khi đo thực tế interpreter (xem 2.3) |
+| Hệ thống bạn bè/cộng đồng và đồng bộ thi đấu | Chỉ khi một game cụ thể cần; không dựng trước (xem 3.4) |
 
 
 ---
@@ -688,6 +703,7 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 | Quảng cáo | AdMob rewarded, tối đa 3/ngày |
 | Thanh toán | Google Play Billing |
 | Kiến trúc | Module hóa, interface rõ ràng |
+| Mở rộng nhánh mới | Thêm module + interface/event; không sửa nền tảng (xem 3.4) |
 | Kiểm thử | Không tràn lan, tập trung điểm rủi ro cao |
 | Lát cắt dọc đầu tiên | Mở app → chơi mini-game → lưu → mở lại vẫn còn |
 
