@@ -589,7 +589,8 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    final title = widget.isCustom ? level.title : 'Màn ${level.index + 1}: ${level.title}';
+    final title = level.title;
+    final subtitle = widget.isCustom ? 'Xưởng Mê Cung · chạy thử' : 'Mê Cung Robo · Màn ${level.index + 1}';
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: PQBackground(
@@ -600,9 +601,18 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
             children: [
               PQTopBar(
                 title: title,
-                subtitle: widget.isCustom ? 'Xưởng Mê Cung · chạy thử' : 'Mê Cung Robo',
+                subtitle: subtitle,
                 tone: PQTone.grass,
                 trailing: [
+                  if (!_codeMode)
+                    RoundIconButton(
+                      key: const ValueKey('maze_show_python'),
+                      icon: Icons.code_rounded,
+                      tooltip: 'Xem code Python',
+                      tone: _showPython ? PQTone.py : PQTone.parchment,
+                      size: 46,
+                      onPressed: () => setState(() => _showPython = !_showPython),
+                    ),
                   RoundIconButton(
                     key: const ValueKey('maze_hint'),
                     icon: Icons.lightbulb_rounded,
@@ -614,34 +624,37 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
                 ],
               ),
               _GoalsRow(level: level, commands: _codeMode ? null : commandCount(_program), pb: _pb),
-              Expanded(
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: CustomPaint(painter: MazeBoardPainter(level: level, playback: _pb, time: _time)),
-                      ),
+              if (_message != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
+                  child: GestureDetector(
+                    onTap: () => setState(() => _message = null),
+                    child: SpeechBubble(
+                      key: const ValueKey('maze_message'),
+                      character: CharacterId.robo,
+                      text: _message!,
+                      mood: _messageMood,
+                      portraitSize: 50,
                     ),
-                    if (_message != null)
-                      Positioned(
-                        left: 10,
-                        right: 10,
-                        top: 4,
-                        child: GestureDetector(
-                          onTap: () => setState(() => _message = null),
-                          child: SpeechBubble(
-                            key: const ValueKey('maze_message'),
-                            character: CharacterId.robo,
-                            text: _message!,
-                            mood: _messageMood,
-                            portraitSize: 58,
-                          ),
-                        ),
-                      ),
-                  ],
+                  ),
+                ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
+                  child: CustomPaint(
+                    size: Size.infinite,
+                    painter: MazeBoardPainter(level: level, playback: _pb, time: _time),
+                  ),
                 ),
               ),
+              if (_showPython && !_codeMode)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 120),
+                    child: SingleChildScrollView(child: CodeView(code: programToPython(_program), fontSize: 14)),
+                  ),
+                ),
               if (widget.isCustom) _modeSwitch(),
               if (_codeMode) _codePanel() else _blocksPanel(),
               _runRow(),
@@ -657,6 +670,7 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
       final active = _codeMode == code;
       return Expanded(
         child: GestureDetector(
+          key: ValueKey(code ? 'mode_code' : 'mode_blocks'),
           onTap: _phase == _Phase.running
               ? null
               : () {
@@ -683,7 +697,7 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
     }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 6, 14, 0),
+      padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
       child: Container(
         padding: const EdgeInsets.all(3),
         decoration: BoxDecoration(
@@ -727,35 +741,30 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
   }
 
   Widget _blocksPanel() {
+    final dirs = const [Dir.left, Dir.up, Dir.down, Dir.right];
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _programStrip(),
-          if (_showPython) ...[
-            const SizedBox(height: 6),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 130),
-              child: SingleChildScrollView(child: CodeView(code: programToPython(_program), fontSize: 14)),
-            ),
-          ],
           const SizedBox(height: 8),
           Row(
             children: [
-              for (final d in const [Dir.left, Dir.up, Dir.down, Dir.right]) ...[
+              for (var i = 0; i < dirs.length; i++) ...[
+                if (i > 0) const SizedBox(width: 6),
                 Expanded(
                   child: _PaletteButton(
-                    key: ValueKey('palette_${d.name}'),
-                    icon: d.icon,
-                    label: d.label,
+                    key: ValueKey('palette_${dirs[i].name}'),
+                    icon: dirs[i].icon,
+                    label: dirs[i].label,
                     tone: PQTone.sky,
-                    onTap: () => _addMove(d),
+                    onTap: () => _addMove(dirs[i]),
                   ),
                 ),
-                const SizedBox(width: 6),
               ],
-              if (level.allowLoops)
+              if (level.allowLoops) ...[
+                const SizedBox(width: 6),
                 Expanded(
                   child: _PaletteButton(
                     key: const ValueKey('palette_loop'),
@@ -764,9 +773,8 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
                     tone: PQTone.grape,
                     onTap: _openLoop == null ? _addLoop : _closeLoop,
                   ),
-                )
-              else
-                const Spacer(),
+                ),
+              ],
             ],
           ),
         ],
@@ -801,51 +809,24 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
     }
     return Container(
       height: 72,
-      padding: const EdgeInsets.fromLTRB(8, 6, 6, 6),
+      padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
       decoration: BoxDecoration(
         color: PQColors.cream,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: PQColors.ink, width: 2.4),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _program.isEmpty
-                ? Center(
-                    child: Text('Chạm mũi tên bên dưới để xếp lệnh',
-                        style: PQText.small.copyWith(color: PQColors.inkFaint), textAlign: TextAlign.center),
-                  )
-                : ListView(
-                    controller: _stripScroll,
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      for (final c in chips) Padding(padding: const EdgeInsets.only(right: 6), child: c),
-                    ],
-                  ),
-          ),
-          const SizedBox(width: 4),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _MiniIcon(icon: Icons.undo_rounded, onTap: _undo, tooltip: 'Hoàn tác'),
-              _MiniIcon(icon: Icons.delete_sweep_rounded, onTap: _clear, tooltip: 'Xoá hết'),
-            ],
-          ),
-          const SizedBox(width: 2),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _MiniIcon(
-                icon: Icons.code_rounded,
-                onTap: () => setState(() => _showPython = !_showPython),
-                tooltip: 'Xem code Python',
-                active: _showPython,
-              ),
-              const SizedBox(height: 24),
-            ],
-          ),
-        ],
-      ),
+      child: _program.isEmpty
+          ? Center(
+              child: Text('Chạm mũi tên bên dưới để xếp lệnh cho Robo',
+                  style: PQText.small.copyWith(color: PQColors.inkFaint), textAlign: TextAlign.center),
+            )
+          : ListView(
+              controller: _stripScroll,
+              scrollDirection: Axis.horizontal,
+              children: [
+                for (final c in chips) Padding(padding: const EdgeInsets.only(right: 6), child: c),
+              ],
+            ),
     );
   }
 
@@ -853,25 +834,28 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
     final running = _phase == _Phase.running;
     final failed = _phase == _Phase.failed;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
       child: Row(
         children: [
-          if (failed) ...[
-            Expanded(
-              child: ChunkyButton(
-                key: const ValueKey('maze_reset'),
-                label: 'Về chỗ cũ',
-                icon: Icons.replay_rounded,
-                tone: PQTone.parchment,
-                size: ChunkySize.medium,
-                expand: true,
-                onPressed: _tryAgain,
-              ),
+          if (!_codeMode) ...[
+            RoundIconButton(
+              key: const ValueKey('maze_undo'),
+              icon: Icons.undo_rounded,
+              tooltip: 'Hoàn tác',
+              size: 52,
+              onPressed: running || _history.isEmpty ? null : _undo,
+            ),
+            const SizedBox(width: 8),
+            RoundIconButton(
+              key: const ValueKey('maze_clear'),
+              icon: Icons.delete_sweep_rounded,
+              tooltip: 'Xoá hết',
+              size: 52,
+              onPressed: running || _program.isEmpty ? null : _clear,
             ),
             const SizedBox(width: 10),
           ],
           Expanded(
-            flex: 2,
             child: ChunkyButton(
               key: const ValueKey('maze_run'),
               label: running ? 'Robo đang đi...' : (failed ? 'Chạy lại' : 'Chạy'),
@@ -1132,35 +1116,6 @@ class _LoopChip extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _MiniIcon extends StatelessWidget {
-  const _MiniIcon({required this.icon, required this.onTap, required this.tooltip, this.active = false});
-  final IconData icon;
-  final VoidCallback onTap;
-  final String tooltip;
-  final bool active;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: tooltip,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: 34,
-          height: 26,
-          decoration: BoxDecoration(
-            color: active ? PQColors.pyBlue : PQColors.parchmentDeep,
-            borderRadius: BorderRadius.circular(9),
-            border: Border.all(color: PQColors.ink, width: 1.8),
-          ),
-          child: Icon(icon, size: 18, color: active ? Colors.white : PQColors.ink),
-        ),
       ),
     );
   }

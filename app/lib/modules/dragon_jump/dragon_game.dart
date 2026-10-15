@@ -66,7 +66,7 @@ class DragonGame extends ChangeNotifier {
 
   Size size = Size.zero;
   double get k => size.width / 400;
-  double get groundY => size.height * 0.76;
+  double get groundY => size.height * 0.8;
   double get pipX => size.width * 0.24;
 
   DragonPhase phase = DragonPhase.ready;
@@ -385,7 +385,15 @@ class DragonPainter extends CustomPainter {
 
     // Ground
     final groundRect = Rect.fromLTWH(-10, ground, size.width + 20, size.height - ground);
-    canvas.drawRect(groundRect, Paint()..color = const Color(0xFFC98E52));
+    canvas.drawRect(
+      groundRect,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFFD39A5C), Color(0xFFA9703E)],
+        ).createShader(groundRect),
+    );
     canvas.drawRect(Rect.fromLTWH(-10, ground, size.width + 20, 16 * k), Paint()..color = const Color(0xFF6CC04A));
     canvas.drawLine(Offset(-10, ground), Offset(size.width + 10, ground), _ink(3));
     canvas.drawLine(Offset(-10, ground + 16 * k), Offset(size.width + 10, ground + 16 * k), _ink(2, const Color(0xFF4E9A2B)));

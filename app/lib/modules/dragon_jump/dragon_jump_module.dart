@@ -159,7 +159,7 @@ class _DragonHomeScreenState extends State<DragonHomeScreen> {
                           const SpeechBubble(
                             character: CharacterId.pip,
                             text: 'Chạm màn hình để nhảy, chạm thêm lần nữa khi đang bay để vỗ cánh! Né đá, bụi gai và bọ cánh cứng nhé.',
-                            portraitSize: 64,
+                            showPortrait: false,
                           ),
                           const SizedBox(height: 12),
                           Row(

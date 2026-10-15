@@ -86,8 +86,10 @@ class SpeechBubble extends StatelessWidget {
     this.portraitSize = 84,
     this.bubbleColor = PQColors.cream,
     this.trailing,
+    this.showPortrait = true,
   });
 
+  final bool showPortrait;
   final CharacterId character;
   final String text;
   final Mood mood;
@@ -100,8 +102,10 @@ class SpeechBubble extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        CharacterView(id: character, size: portraitSize, mood: mood),
-        const SizedBox(width: 4),
+        if (showPortrait) ...[
+          CharacterView(id: character, size: portraitSize, mood: mood),
+          const SizedBox(width: 4),
+        ],
         Expanded(
           child: CustomPaint(
             painter: _BubblePainter(bubbleColor),

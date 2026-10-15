@@ -239,7 +239,11 @@ class _BadgeCabinet extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Expanded(child: BadgeMedal(icon: a.icon, color: a.color, locked: !got, secret: a.secret, size: 80)),
+                  Expanded(
+                    child: Center(
+                      child: FittedBox(child: BadgeMedal(icon: a.icon, color: a.color, locked: !got, secret: a.secret, size: 80)),
+                    ),
+                  ),
                   Text(
                     got || !a.secret ? a.title : '???',
                     textAlign: TextAlign.center,

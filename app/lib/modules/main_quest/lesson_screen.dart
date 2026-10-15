@@ -438,7 +438,12 @@ class _LessonScreenState extends State<LessonScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(c.question, style: PQText.h3),
+            SpeechBubble(
+              character: CharacterId.py,
+              text: c.question,
+              portraitSize: 64,
+              mood: _feedback == _Feedback.wrong ? Mood.thinking : Mood.happy,
+            ),
             if (c.code != null) ...[const SizedBox(height: 10), CodeView(code: c.code!)],
             const SizedBox(height: 12),
             for (var i = 0; i < c.options.length; i++)
@@ -467,8 +472,8 @@ class _LessonScreenState extends State<LessonScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(f.prompt, style: PQText.h3),
-            const SizedBox(height: 4),
+            SpeechBubble(character: CharacterId.py, text: f.prompt, portraitSize: 64),
+            const SizedBox(height: 8),
             _ExpectedBox(expected: f.expectedOutput),
             const SizedBox(height: 10),
             CodeView(code: code.replaceAll('___', '▢▢▢'), errorLine: _run?.errorLine),
@@ -507,8 +512,8 @@ class _LessonScreenState extends State<LessonScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(o.prompt, style: PQText.h3),
-            const SizedBox(height: 4),
+            SpeechBubble(character: CharacterId.py, text: o.prompt, portraitSize: 64),
+            const SizedBox(height: 8),
             _ExpectedBox(expected: o.expectedOutput),
             const SizedBox(height: 10),
             Text('Chương trình của bạn:', style: PQText.small),

@@ -52,7 +52,7 @@ void main() {
     // Open Robot Maze.
     await tapAndSettle(tester, find.byKey(const ValueKey('map_label_robot_maze')));
     await tapAndSettle(tester, find.byKey(const ValueKey('sheet_open')), wait: const Duration(milliseconds: 1500));
-    expect(find.text('Xưởng Mê Cung'), findsWidgets);
+    expect(find.byKey(const ValueKey('maze_level_1')), findsOneWidget);
 
     // Level 1 costs 2 energy.
     await tapAndSettle(tester, find.byKey(const ValueKey('maze_level_1')), wait: const Duration(milliseconds: 1500));
