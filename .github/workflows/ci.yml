@@ -187,6 +187,10 @@ jobs:
           BOOT_TIMEOUT: '120'         # sys.boot_completed must be 1
           JOURNEY_TIMEOUT: '1500'     # fresh-install flutter drive
           RETURNING_TIMEOUT: '900'    # returning-player flutter drive
+          STARTUP_GRACE: '240'        # ignore "no progress" right after a test starts
+          PRE_TEST_TIMEOUT: '900'     # stall limit while flutter drive still builds
+          PROGRESS_TIMEOUT: '300'     # stall limit while the tests run
+          WATCHDOG_KILL_AFTER: '20'   # SIGKILL for a drive that ignores SIGTERM
         with:
           api-level: 34
           target: google_apis
@@ -198,6 +202,20 @@ jobs:
           disable-animations: true
           working-directory: app
           script: bash ../ci/emulator_journey.sh
+      - name: Analyse emulator logs
+        if: always()
+        run: |
+          # Activity relaunch, configuration-change and ANR evidence lives in the
+          # system/events logcat buffers; pull those lines out where they can be
+          # read (the raw dump stays in the artifact).
+          if [ -f emulator-diagnostics/logcat_all.txt ]; then
+            python3 ci/analyze_logcat.py emulator-diagnostics/logcat_all.txt \
+              > emulator-log-analysis.txt 2>&1 || true
+          else
+            echo "no logcat dump in emulator-diagnostics/ (the journey produced none)" \
+              > emulator-log-analysis.txt
+          fi
+          head -n 60 emulator-log-analysis.txt
       - name: Shrink screenshots
         if: always()
         run: |
@@ -210,8 +228,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          diag=""; [ -f emulator-diagnostics/summary.txt ] && diag=emulator-diagnostics/summary.txt
-          python3 ci/report.py "PyQuest emulator" status.txt emulator-progress.txt $diag apk_build.txt journey.txt relaunch.txt shrink.txt
+          diag=""
+          if [ -f emulator-diagnostics/summary.txt ]; then diag=emulator-diagnostics/summary.txt; fi
+          reason=""
+          if [ -f emulator-stop-reason.txt ]; then reason=emulator-stop-reason.txt; fi
+          python3 ci/report.py "PyQuest emulator" status.txt emulator-progress.txt \
+            $reason $diag emulator-log-analysis.txt apk_build.txt journey.txt \
+            relaunch.txt shrink.txt
       - name: Upload emulator logs and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -219,6 +242,8 @@ jobs:
           name: emulator-logs-attempt-${{ github.run_attempt }}
           path: |
             emulator-progress.txt
+            emulator-stop-reason.txt
+            emulator-log-analysis.txt
             emulator-diagnostics/
             status.txt
             journey.txt

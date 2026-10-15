@@ -211,7 +211,22 @@ tự lưu ảnh chụp vào `docs/screenshots/`.
 Mọi bước chờ trong `ci/emulator_journey.sh` đều có giới hạn thời gian (chỉnh qua
 `env:` của bước *Emulator journey*). Nếu emulator mất kết nối adb, không boot
 xong hoặc một bước quá hạn, script thu thập chẩn đoán rồi dừng với mã lỗi ≠ 0.
-Log tiến trình và chẩn đoán nằm ở artifact `emulator-logs-attempt-N`.
+
+Song song mỗi `flutter drive`, `ci/check_test_progress.py` theo dõi tiến trình
+test (số test đã xong, ảnh chụp mới, log của app) và **dừng ngay** nếu app bị
+khởi động lại giữa chừng hoặc test không tiến triển — lý do được ghi vào
+`emulator-stop-reason.txt`. Trong hành trình, mỗi bước in ra một dòng
+`[PYQUEST] [<bước>] ...` và mỗi ảnh chụp có giới hạn thời gian riêng, nên log
+luôn cho biết test đang ở đâu.
+
+Log tiến trình, chẩn đoán emulator và bản trích xuất log hệ thống
+(`emulator-log-analysis.txt`: khởi động lại activity, đổi cấu hình, ANR) nằm ở
+artifact `emulator-logs-attempt-N`. Muốn trích xuất lại trên máy:
+
+```bash
+gh run download <run-id> -n emulator-logs-attempt-1 -D /tmp/e
+python3 ci/analyze_logcat.py /tmp/e/emulator-diagnostics/logcat_all.txt
+```
 
 ---
 

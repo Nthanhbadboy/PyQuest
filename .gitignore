@@ -1,0 +1,19 @@
+# Python bytecode from the CI helper scripts in ci/
+__pycache__/
+*.pyc
+
+# Files the CI helper scripts write next to the repository root, also when a
+# developer runs ci/emulator_journey.sh locally.
+/status.txt
+/journey.txt
+/relaunch.txt
+/apk_build.txt
+/apk_release.txt
+/shrink.txt
+/analyse.txt
+/emulator-progress.txt
+/emulator-stop-reason.txt
+/emulator-log-analysis.txt
+/emulator-diagnostics/
+/pyquest-debug.apk
+/pyquest-release.apk

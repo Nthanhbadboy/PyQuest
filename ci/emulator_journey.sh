@@ -20,6 +20,16 @@
 #   RETURNING_TIMEOUT   returning-player integration journey        (900)
 #   INSTALL_TIMEOUT     `adb install` of the regular debug APK      (300)
 #   ADB_CMD_TIMEOUT     any other single adb command                 (60)
+#   STARTUP_GRACE       ignore "no progress" right after a test       (240)
+#                       starts, while the engine draws its first frames
+#   PRE_TEST_TIMEOUT    stall limit while flutter drive still builds
+#                       and installs the app                        (900)
+#   PROGRESS_TIMEOUT    stall limit while the tests run              (300)
+#   WATCHDOG_KILL_AFTER SIGKILL for a drive that ignores SIGTERM    (20)
+#
+# ci/check_test_progress.py watches each drive and stops it when the app
+# restarts mid-test or stops making progress; the reason lands in
+# ../emulator-stop-reason.txt (also uploaded with the diagnostics).
 #
 # Exit status: 0 when every phase ran - test failures are recorded in
 # ../status.txt and reported by ci/report.py, as before. 1 when the emulator
@@ -34,6 +44,11 @@ BOOT_TIMEOUT=${BOOT_TIMEOUT:-120}
 JOURNEY_TIMEOUT=${JOURNEY_TIMEOUT:-1500}
 RETURNING_TIMEOUT=${RETURNING_TIMEOUT:-900}
 INSTALL_TIMEOUT=${INSTALL_TIMEOUT:-300}
+STARTUP_GRACE=${STARTUP_GRACE:-240}
+PRE_TEST_TIMEOUT=${PRE_TEST_TIMEOUT:-900}
+PROGRESS_TIMEOUT=${PROGRESS_TIMEOUT:-300}
+# If the drive ignores the watchdog's SIGTERM it gets SIGKILL after this.
+WATCHDOG_KILL_AFTER=${WATCHDOG_KILL_AFTER:-20}
 ADB_CMD_TIMEOUT=${ADB_CMD_TIMEOUT:-60}
 ADB_QUERY_TIMEOUT=${ADB_QUERY_TIMEOUT:-10}
 LOGCAT_DUMP_TIMEOUT=${LOGCAT_DUMP_TIMEOUT:-90}
@@ -45,6 +60,7 @@ OUT=..                                   # repository root (cwd is app/)
 STATUS=$OUT/status.txt
 PROGRESS=$OUT/emulator-progress.txt
 DIAG=$OUT/emulator-diagnostics
+STOP_REASON=$OUT/emulator-stop-reason.txt
 OFFLINE_FLAG=${TMPDIR:-/tmp}/pyquest-emulator-offline.$$
 EMU_PROC_RE='emulator/emulator|qemu-system|crashpad_handler|netsimd'   # the emulator's own binaries
 LAST_STATE=""
@@ -219,6 +235,7 @@ collect_diagnostics() {
   timeout -k 2 30 adb -s "$SERIAL" shell getprop > "$d/getprop.txt" 2>&1
 
   cp "$STATUS" "$OUT/journey.txt" "$OUT/relaunch.txt" "$d/" 2>/dev/null
+  cp "$STOP_REASON" "$d/" 2>/dev/null   # progress-watchdog reason, if any
   write_summary "$reason"
 }
 
@@ -292,29 +309,45 @@ watch_device() {
 }
 
 # run_drive <label> <status-key> <limit-seconds> <log-file> <test-target>
-# Full output goes to <log-file> and is streamed into the Actions log.
+# Full output goes to <log-file> and is streamed into the Actions log. Two
+# watchers run next to the drive: watch_device() for the emulator leaving the
+# 'device' state, ci/check_test_progress.py for a restart or a stall (a stuck
+# drive used to consume its whole 1500s limit - run 38782724298).
 run_drive() {
-  local label=$1 key=$2 secs=$3 logf=$4 target=$5 offset pid wpid rc t0 state
+  local label=$1 key=$2 secs=$3 logf=$4 target=$5 offset pid wpid ppid rc t0 state drive_start
   touch "$logf"
   offset=$(stat -c %s "$logf")
-  rm -f "$OFFLINE_FLAG"
+  rm -f "$OFFLINE_FLAG" "$STOP_REASON"
   log "   flutter drive $target (limit ${secs}s; output below and in $(basename "$logf"))"
   t0=$SECONDS
+  drive_start=$(date +%s)
   timeout -k 30 "$secs" flutter drive --no-pub --keep-app-running \
     --driver=test_driver/integration_test.dart --target="$target" -d "$SERIAL" >> "$logf" 2>&1 &
   pid=$!
   watch_device "$pid" "$label" &
   wpid=$!
+  python3 ../ci/check_test_progress.py --log "$logf" --pid "$pid" \
+    --screenshots "$OUT/docs/screenshots" --since "$drive_start" \
+    --reason-file "$STOP_REASON" --state-file "$DIAG/watch-state.json" \
+    --startup-grace "$STARTUP_GRACE" --pre-test-limit "$PRE_TEST_TIMEOUT" \
+    --idle-limit "$PROGRESS_TIMEOUT" --interval "$WATCH_INTERVAL" \
+    --kill-after "$WATCHDOG_KILL_AFTER" &
+  ppid=$!
   tail -c +"$((offset + 1))" -F --pid="$pid" "$logf" 2>/dev/null | sed -u 's/^/    | /'
   wait "$pid"
   rc=$?
-  kill "$wpid" 2>/dev/null
+  sleep 1   # let watch_device finish a poll, so an offline device is named as the cause
+  kill "$wpid" "$ppid" 2>/dev/null
   wait "$wpid" 2>/dev/null
+  wait "$ppid" 2>/dev/null
   echo "$key=$rc" >> "$STATUS"
   log "   flutter drive finished: exit $rc after $((SECONDS - t0))s"
   if [ -f "$OFFLINE_FLAG" ]; then
     state=$(cat "$OFFLINE_FLAG")
     fail - "Emulator $SERIAL left the 'device' state ('$state') for ${ADB_ONLINE_TIMEOUT}s during the $label; flutter drive was stopped after $((SECONDS - t0))s."
+  fi
+  if [ -f "$STOP_REASON" ]; then
+    fail - "the progress watchdog stopped the $label after $((SECONDS - t0))s: $(cat "$STOP_REASON")"
   fi
   if is_timeout "$rc"; then
     fail - "flutter drive for the $label exceeded its ${secs}s limit (emulator state now: $(adb_state))."
@@ -327,6 +360,7 @@ run_drive() {
 
 # ================================================================== main
 mkdir -p "$OUT/docs/screenshots"
+rm -f "$STOP_REASON"
 : > "$PROGRESS"
 log "PyQuest emulator journey on $SERIAL. Limits: adb online ${ADB_ONLINE_TIMEOUT}s, boot ${BOOT_TIMEOUT}s, journey ${JOURNEY_TIMEOUT}s, returning ${RETURNING_TIMEOUT}s, install ${INSTALL_TIMEOUT}s, adb command ${ADB_CMD_TIMEOUT}s."
 

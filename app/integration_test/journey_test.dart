@@ -1,66 +1,23 @@
 // Real-device journey used by CI (Android emulator). Each section is its own
 // test so one failure does not hide the rest; progress persists between them
 // because they share the same on-device database.
+//
+// Progress markers, bounded screenshots and the shared helpers live in
+// harness.dart.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
 import 'package:pyquest/app/pyquest_app.dart';
 
-late IntegrationTestWidgetsFlutterBinding binding;
-
-Future<void> wait(WidgetTester tester, int ms) async {
-  final end = DateTime.now().add(Duration(milliseconds: ms));
-  while (DateTime.now().isBefore(end)) {
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
-
-/// Waits (real time) until [key] is on screen, up to [timeoutMs].
-Future<bool> waitFor(WidgetTester tester, String key, {int timeoutMs = 20000}) async {
-  final end = DateTime.now().add(Duration(milliseconds: timeoutMs));
-  while (DateTime.now().isBefore(end)) {
-    if (find.byKey(ValueKey(key)).evaluate().isNotEmpty) return true;
-    await tester.pump(const Duration(milliseconds: 200));
-  }
-  return false;
-}
-
-Future<void> shot(String name) async {
-  try {
-    await Future<void>.delayed(const Duration(milliseconds: 400));
-    await binding.takeScreenshot(name);
-  } catch (e) {
-    debugPrint('screenshot $name failed: $e');
-  }
-}
-
-Future<void> tapKey(WidgetTester tester, String key, {int waitMs = 900}) async {
-  final f = find.byKey(ValueKey(key));
-  await tester.ensureVisible(f.first);
-  await wait(tester, 200);
-  await tester.tap(f.first);
-  await wait(tester, waitMs);
-}
-
-Future<void> boot(WidgetTester tester) async {
-  await binding.convertFlutterSurfaceToImage();
-  await tester.pumpWidget(const PyQuestApp());
-  await waitFor(tester, 'settings_button');
-  await wait(tester, 1200);
-}
-
-Future<void> toMap(WidgetTester tester) async {
-  final nav = tester.state<NavigatorState>(find.byType(Navigator).last);
-  nav.popUntil((r) => r.isFirst);
-  await wait(tester, 1200);
-}
+import 'harness.dart';
 
 void main() {
   binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
+  tearDownAll(finishScreenshots);
 
   testWidgets('01 first launch and island map', (tester) async {
-    await binding.convertFlutterSurfaceToImage();
+    step('01 first launch and island map');
+    await startScreenshots();
     await tester.pumpWidget(const PyQuestApp(minSplash: Duration(milliseconds: 2500)));
     await wait(tester, 900);
     await shot('01_splash');
@@ -77,6 +34,7 @@ void main() {
   });
 
   testWidgets('02 robot maze level 1', (tester) async {
+    step('02 robot maze level 1');
     await boot(tester);
     await tapKey(tester, 'map_label_robot_maze');
     await shot('04_activity_sheet');
@@ -104,6 +62,7 @@ void main() {
   });
 
   testWidgets('03 main quest lesson 1', (tester) async {
+    step('03 main quest lesson 1');
     await boot(tester);
     await tapKey(tester, 'map_label_main_quest');
     await tapKey(tester, 'sheet_open', waitMs: 1600);
@@ -139,6 +98,7 @@ void main() {
   });
 
   testWidgets('04 dragon jump run', (tester) async {
+    step('04 dragon jump run');
     await boot(tester);
     await tapKey(tester, 'map_label_dragon_jump');
     await tapKey(tester, 'sheet_open', waitMs: 1600);
@@ -159,6 +119,7 @@ void main() {
   });
 
   testWidgets('05 catch the stars', (tester) async {
+    step('05 catch the stars');
     await boot(tester);
     await tapKey(tester, 'map_label_catch_stars');
     await tapKey(tester, 'sheet_open', waitMs: 1600);
@@ -179,6 +140,7 @@ void main() {
   });
 
   testWidgets('06 creator workshop with python', (tester) async {
+    step('06 creator workshop with python');
     await boot(tester);
     await tapKey(tester, 'map_label_robot_maze');
     await tapKey(tester, 'sheet_open', waitMs: 1600);
@@ -199,6 +161,7 @@ void main() {
   });
 
   testWidgets('07 achievements, energy, quests, locked bug hunter', (tester) async {
+    step('07 achievements, energy, quests, locked bug hunter');
     await boot(tester);
     await tapKey(tester, 'map_label_achievement_house');
     await tapKey(tester, 'sheet_open', waitMs: 1800);
