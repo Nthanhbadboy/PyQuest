@@ -327,3 +327,35 @@ Nguyên tắc diễn đạt sản phẩm: **“Dễ bắt đầu như một hàn
 5. **Vòng lặp dài hạn phải kết hợp mục tiêu ngắn, tiến trình lâu dài, nội dung mới và sự tôn trọng thời gian nghỉ.**
 6. **Tầm nhìn sản phẩm không đồng nghĩa roadmap phiên bản đầu.** Có thể triển khai từng phần, nhưng phải ghi rõ phần nào được giữ cho giai đoạn sau thay vì làm biến mất khỏi tài liệu.
 7. Khi rà soát hoặc viết lại tài liệu PyQuest, phải đối chiếu cả các mục mới 9–12, không chỉ Arena/Creator League. Không tự ý loại bỏ các tính năng xã hội, sáng tạo, quà tặng hoặc vòng lặp dài hạn vì lý do thu gọn phạm vi kỹ thuật.
+
+## 13. Luật chơi đơn giản; trải nghiệm mới là trọng tâm
+
+Đây là nguyên tắc sản phẩm cần áp dụng khi nghĩ ý tưởng game mới hoặc rà soát kiến trúc PyQuest:
+
+- **Không đánh đồng game hay với logic phức tạp.** Một game có thể chỉ cần điều khiển, va chạm, thu thập, tính kết quả, nâng cấp, thất bại và chơi lại. Nếu vòng lặp đủ vui, phản hồi tốt và tiến trình hấp dẫn thì logic đơn giản là ưu điểm, không phải thiếu sót.
+- **Ưu tiên cảm giác chơi:** điều khiển mượt, hoạt ảnh có cá tính, hiệu ứng thu thập rõ ràng, âm thanh phù hợp, thế giới đẹp và dễ đọc, phản hồi tức thì, nhịp phần thưởng tốt. Đồ họa không cần siêu thực; phong cách đơn giản nhưng có chủ ý và chỉn chu vẫn có thể tạo trải nghiệm mạnh.
+- **Vòng lặp ngắn, mục tiêu nhìn thấy được:** chơi → thu thập/hoàn thành mục tiêu → nhận thưởng → nâng cấp hoặc mở khóa → thử thách xa hơn → thất bại/thử lại hoặc hồi sinh. Tùy game, có thể có kỷ lục cá nhân, nhiệm vụ, khám phá, thi đấu và chơi cùng bạn bè.
+- **Không bắt mọi lượt chơi phải dạy một bài học.** Play Mode phải vui và dễ vào chơi ngay. Creator Mode/Main Quest mở rộng từ trò chơi để người chơi khám phá cách thay đổi luật và dùng Python sáng tạo khi phù hợp.
+- **Không xây cả thế giới ngay từ đầu.** Làm một game nhỏ hoàn chỉnh nhưng có chất lượng trải nghiệm tốt; sau đó thêm game mới theo module.
+
+## 14. Không biến XP thành một hệ thống rườm rà
+
+PyQuest không cần một hệ thống XP phức tạp cho mọi trò chơi chỉ vì các game khác thường có cấp độ.
+
+- **Lớp liên kết chung tối thiểu:** điểm/đóng góp theo luật, điều kiện mở khóa hoạt động, thành tích, danh hiệu, vật phẩm/quà tặng và hồ sơ người chơi. Đây là những khái niệm đủ để kết nối các nhà độc lập.
+- **Không tự động tạo thêm XP, level, điểm trận, điểm mùa, điểm tổng và nhiều loại tiền tệ** nếu chưa có mục đích sản phẩm cụ thể. Không tạo hai chỉ số cùng làm một việc chỉ vì tên gọi khác nhau.
+- Mỗi game được phép có **điểm số hoặc tài nguyên nội bộ riêng** khi gameplay thực sự cần (ví dụ sao dùng để nâng cấp lực bay). Chúng không mặc nhiên phải trở thành XP toàn cục hay điểm xếp hạng chung.
+- Kết quả game chỉ cần gửi sự kiện/kết quả có ý nghĩa sang lớp chung. Lớp chung kiểm tra điều kiện, trao điểm/danh hiệu/thành tích và mở khóa theo quy tắc rõ ràng; game không cần tự triển khai lại các hệ thống đó.
+- Nếu XP/cấp độ đang có trong tài liệu cũ, xem đó là **thiết kế cần được chứng minh bằng giá trị thực**, không phải yêu cầu bất biến. Không mở rộng công thức XP, bảng cấp, hệ số hoặc rào cấp chỉ để duy trì một hệ thống đã trở nên rườm rà. Trước khi triển khai, phải xác định nó giải quyết vấn đề gì mà điểm, thành tích và điều kiện mở khóa hiện có không giải quyết được.
+- Không được để cấp độ/XP chặn tùy tiện quyền chơi game khác. Chỉ khóa khi có lý do gameplay hoặc kiến thức tiên quyết thực sự; nói rõ điều kiện cho người chơi.
+- **Nguyên tắc chốt:** *gameplay đơn giản, trải nghiệm tốt; tiến trình dùng chung vừa đủ; không tạo thêm hệ thống chỉ để làm kiến trúc trông phức tạp hơn.*
+
+## 15. Mô hình mô-đun và lớp dịch vụ chung
+
+- Mỗi game là một module độc lập, có luật chơi, giao diện, tài nguyên, tiến trình nội bộ và điều kiện thắng/thua riêng.
+- Module có thể báo các sự kiện chuẩn như bắt đầu, hoàn thành, thất bại, đạt kỷ lục, thu thập mốc quan trọng hoặc hoàn tất thử thách.
+- Lớp dùng chung chịu trách nhiệm cập nhật hồ sơ, điểm đóng góp, thành tích, danh hiệu, mở khóa và phần thưởng xã hội theo luật cấu hình.
+- Quà tặng thuộc lớp xã hội/sở hữu; quà được mua hoặc được bạn bè tặng không tự động chứng minh kỹ năng, không mua trực tiếp thành tích thi đấu.
+- Thêm một game mới không được buộc viết lại các game hiện có hoặc nhân bản hệ thống thành tích. Chỉ thêm module và kết nối qua giao diện chung đã xác định.
+- Thiết kế để triển khai từng phần: ban đầu có thể chỉ có một game, điểm/kỷ lục cơ bản và lưu kết quả; hệ thống bạn bè, giải đấu, sáng tạo cộng đồng và quà tặng được mở rộng khi cần nhưng vẫn thuộc tầm nhìn sản phẩm.
+
