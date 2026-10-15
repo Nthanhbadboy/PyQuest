@@ -267,3 +267,303 @@ Main Quest đủ kiến thức Python cơ bản và đủ kỹ năng để tạo
 - **Home Map:** nhân vật dễ thương, thoại thú vị, nhạc du dương, âm thanh tương tác.
 - **Mini-game:** vừa chơi giải trí, vừa dẫn trẻ vào tư duy lập trình qua Play Mode và Creator Mode.
 - **Nguyên tắc cuối:** trẻ mở vì thích chơi, ở lại vì tò mò, rồi tự hỏi mình có thể tự làm game như thế không.
+Dưới đây là bản sắp xếp đầy đủ, tiếp nối tài liệu tổng hợp trước, bổ sung toàn bộ nội dung mới trong file: đánh giá README, kiến trúc module, roadmap, Nhà Thành Tích, màn tổng kết, Adventure Recap, và hướng dẫn xử lý ảnh.
+
+---
+
+# PYQUEST — TÀI LIỆU TỔNG HỢP Ý TƯỞNG (PHẦN 2)
+
+## 13. Đánh giá README hiện tại trên repo
+
+**Repo:** `https://github.com/Nthanhbadboy/PyQuest` (đang ở chế độ Private)
+
+### 13.1. Phần đã tốt
+- Định vị PyQuest: chơi game để học cách tự tạo game.
+- Main Quest miễn phí, đủ kiến thức Python cơ bản và làm game đơn giản.
+- Side Maps bán nội dung mở rộng và danh hiệu độc quyền.
+- Vòng lặp năng lượng, quảng cáo thưởng và hồi năng lượng.
+- Home Map có nhân vật, nhạc nền, mini-game và hai chế độ Play/Creator.
+- Có nhận thức về quyền riêng tư và chính sách dành cho trẻ em.
+
+### 13.2. Phần cần sửa
+- Tài liệu dài, lặp lại ý tưởng ở nhiều mục.
+- Tên repository trong README là `pyquest-game-lab`, trong khi repo thực tế đã là `PyQuest`.
+- Chưa phân biệt rõ tính năng nào thuộc phiên bản đầu tiên, tính năng nào là kế hoạch tương lai.
+- Chưa xác định cách chạy Python thật hoặc giới hạn của cơ chế mô phỏng.
+- Chưa có hướng dẫn chạy dự án, kiểm thử và cấu trúc code thực tế.
+- Một số quyết định quan trọng như cách tính năng lượng, thời gian hồi, XP và điều kiện nhận thưởng vẫn chưa có quy tắc định lượng.
+
+### 13.3. Cấu trúc file đề xuất
+
+| File | Vai trò |
+|---|---|
+| `README.md` | Giới thiệu PyQuest, tính năng chính, trạng thái dự án và cách chạy |
+| `docs/PRODUCT_VISION.md` | Toàn bộ ý tưởng sản phẩm, Home Map, nhân vật, âm thanh, Main Quest, Side Maps và mô hình doanh thu |
+| `docs/GAME_DESIGN.md` | Vòng lặp gameplay, năng lượng, XP, mini-game, phần thưởng và cân bằng độ khó |
+| `docs/TECHNICAL_ARCHITECTURE.md` | Flutter, thực thi Python, lưu tiến độ, dịch vụ, quảng cáo và thanh toán |
+| `docs/ROADMAP.md` | Các giai đoạn triển khai, tiêu chí hoàn thành và kiểm thử |
+
+### 13.4. Nguyên tắc tài liệu
+- Tài liệu sản phẩm xác định **ta đang xây trò chơi gì**.
+- Tài liệu kỹ thuật xác định **xây bằng cách nào**.
+- Roadmap xác định **làm gì trước và kiểm tra bằng gì**.
+- Không để AI đọc một tài liệu dài rồi tự quyết định toàn bộ kiến trúc.
+
+**Bước tiếp theo hợp lý:** chỉnh README ngắn gọn, giữ nguyên các ý tưởng sản phẩm trong tài liệu riêng, rồi mới bắt đầu code.
+
+---
+
+## 14. So sánh độ phức tạp với Simple Calendar
+
+| Tiêu chí | Simple Calendar | PyQuest |
+|---|---|---|
+| Nghiệp vụ | Lịch, Task, Customer, Stops, thời gian, giá tiền… | Bài học, trò chơi, tiến trình học |
+| Quan hệ dữ liệu | Nhiều thực thể liên kết, sửa một chỗ ảnh hưởng chỗ khác | Có thể tách dữ liệu từng trò chơi và từng bản đồ |
+| Giao diện | Nhiều màn hình dùng chung trạng thái | Mỗi màn chơi có thể đóng gói độc lập |
+| Kiểm thử | Dễ phát sinh lỗi dây chuyền | Có thể nghiệm thu từng trò chơi |
+| Độ khó lớn nhất | Nghiệp vụ và trạng thái phức tạp | Chạy Python an toàn, nội dung giáo dục, quảng cáo và thanh toán |
+
+**Kết luận:** PyQuest dễ kiểm soát hơn nếu thiết kế kiến trúc ngay từ đầu. Gameplay và nội dung có thể chia nhỏ, hoàn thành và kiểm thử từng phần. Nhưng quảng cáo, thanh toán và lưu tiến trình vẫn cần thiết kế cẩn thận.
+
+---
+
+## 15. Kiến trúc theo module
+
+```
+PyQuest App Core
+├── Điều hướng
+├── Hồ sơ cục bộ
+├── Ngôn ngữ
+└── Âm thanh
+
+Main Quest
+└── Bài học Python và tiến trình (module riêng)
+
+Mini-games
+└── Robot Maze, Dragon Jump… (module riêng)
+
+Energy & Ads
+└── Năng lượng và quảng cáo thưởng (module riêng)
+
+Side Maps & Pro
+└── Bản đồ mở rộng và mua hàng (module riêng)
+```
+
+Các module giao tiếp qua những **interface rõ ràng**, thay vì gọi trực tiếp lẫn nhau tùy tiện.
+
+---
+
+## 16. Database — tách theo module logic
+
+Không nhất thiết phải tạo nhiều file database SQLite ngay từ đầu. Đề xuất tách theo module logic:
+
+| Module | Dữ liệu sở hữu |
+|---|---|
+| **Progress** | Bài học đã hoàn thành, XP, huy hiệu |
+| **Games** | Điểm cao, màn đã mở khóa, thành tích |
+| **Energy** | Năng lượng hiện tại và thời điểm hồi phục |
+| **Purchases** | Trạng thái quyền sở hữu bản đồ và Pro |
+| **Settings** | Ngôn ngữ, âm thanh, nhạc nền |
+
+Mỗi module sở hữu dữ liệu và API của mình. Ban đầu có thể dùng các file JSON riêng hoặc các bảng SQLite riêng trong một database; khi cần mới chuyển sang database vật lý riêng.
+
+**Lưu ý quan trọng:** quyền mua hàng không nên chỉ dựa vào một file cục bộ có thể chỉnh sửa; cần xác minh giao dịch qua cơ chế thanh toán của nền tảng.
+
+---
+
+## 17. Roadmap — chia việc theo nguyên tắc "xong mục nào, khóa mục đó"
+
+1. **Foundation:** khung Flutter, điều hướng, lưu dữ liệu và giao diện cơ bản.
+2. **Home Map:** thế giới chính, nhân vật, âm thanh.
+3. **Một mini-game hoàn chỉnh:** gameplay, điểm số, lưu kỷ lục và Creator Mode.
+4. **Main Quest:** bài học Python, bài tập và lưu tiến trình.
+5. **Python runtime:** thực thi mã an toàn, giới hạn tài nguyên và xử lý lỗi.
+6. **Energy & Ads:** hồi năng lượng và quảng cáo thưởng.
+7. **Side Maps & Pro:** nội dung mở rộng và mua hàng.
+8. **Hoàn thiện:** localization, accessibility, kiểm thử, build và phát hành.
+
+Mỗi mục có tiêu chí nghiệm thu, test riêng và chỉ chuyển sang mục kế tiếp khi đạt yêu cầu. Những module đã ổn định không bị sửa chỉ vì thêm một trò chơi mới, trừ khi có thay đổi hợp đồng giao tiếp được kiểm soát.
+
+### Nguyên tắc chốt từ đầu
+**Đừng xây cả thế giới PyQuest ngay lập tức.**  
+Hãy làm một **lát cắt dọc hoàn chỉnh**: mở app → vào một trò chơi → chơi được → lưu kết quả → thoát ra mở lại vẫn còn kết quả.  
+Khi lát cắt đó chạy ổn, phần còn lại chủ yếu là mở rộng theo module, thay vì liên tục chữa lỗi kiến trúc.
+
+---
+
+## 18. Nhà Thành Tích — Hall of Achievements
+
+Đây không chỉ là trang chứa huy hiệu. Nó là một **căn nhà trong thế giới PyQuest**, nơi mỗi thành tựu của trẻ được lưu lại và trưng bày.
+
+### 18.1. Thành phần
+- **Tủ huy hiệu:** mỗi huy hiệu đại diện cho một cột mốc, từ hoàn thành bài Python đầu tiên đến tự tạo trò chơi.
+- **Tường chiến tích:** thống kê số màn đã vượt qua, số trò chơi đã hoàn thành và số thế giới đã khám phá.
+- **Bộ sưu tập nhân vật:** mở khóa trang phục, phụ kiện và hiệu ứng cho nhân vật đồng hành.
+- **Góc sáng tạo:** trưng bày các trò chơi do trẻ tự xây dựng.
+- **Huy hiệu bí mật:** thưởng cho những khám phá thú vị, cách giải khác nhau hoặc phát hiện lỗi khó.
+
+### 18.2. Nguyên tắc thưởng
+Phần thưởng phải phản ánh **nỗ lực và sự tiến bộ**, chứ không chỉ thưởng cho việc chơi thật lâu hoặc xem thật nhiều quảng cáo.
+
+---
+
+## 19. Màn tổng kết sau mỗi màn chơi
+
+Mỗi màn kết thúc bằng một đoạn tổng kết ngắn, sinh động và có nội dung riêng, không phải màn hình hiện mỗi dòng "Level Complete".
+
+### 19.1. Ví dụ minh họa
+
+> **Tuyệt vời! Bạn đã vượt mê cung!**  
+> Robot Maze · Màn 5
+>
+> Bạn đã giúp Robo tìm đúng đường về nhà. Những lệnh bạn chọn chính là chìa khóa!
+>
+> | 12 | 8 | 1 |
+> |---|---|---|
+> | Màn đã vượt qua | Ngôi sao nhận được | Kỹ năng mới |
+>
+> **Kỹ năng vừa khám phá:**  
+> Bạn đã sử dụng thứ tự các lệnh để điều khiển robot. Đó chính là tư duy thuật toán!
+>
+> **Robo:** "Tuyệt! Thêm một nhà thám hiểm lập trình tài ba!"
+
+*Đây là minh họa cho trải nghiệm, chưa phải màn hình đã được triển khai.*
+
+### 19.2. Ba nguyên tắc cho màn tổng kết
+1. **Ghi nhận thành tựu cụ thể:** trẻ vừa học được gì, đã vượt qua bao nhiêu thử thách.
+2. **Khích lệ không gây áp lực:** không làm trẻ thấy mình kém cỏi nếu chưa thắng; có lời động viên và gợi ý thử lại.
+3. **Thay đổi theo hành trình:** nhân vật, lời thoại, hiệu ứng và phần thưởng phải đa dạng, tránh lặp lại một mẫu ở mọi màn.
+
+---
+
+## 20. Adventure Recap — Bức tranh tổng kết toàn bộ hành trình
+
+Ngoài tổng kết sau mỗi màn, khi trẻ hoàn thành một chặng lớn, PyQuest tạo một **Adventure Recap** — bản tổng kết cuộc phiêu lưu.
+
+### 20.1. Ví dụ báo cáo tổng kết một chặng
+
+> **Cuộc phiêu lưu của bạn**
+>
+> | 25 | 5 | 8 | 3 |
+> |---|---|---|---|
+> | Màn đã hoàn thành | Trò chơi đã chinh phục | Kỹ năng Python đã học | Huy hiệu đã mở khóa |
+>
+> **Lời nhắn của người hướng dẫn:**  
+> "Bạn đã đi từ những dòng lệnh đầu tiên đến việc tự điều khiển nhân vật trong trò chơi. Bạn không chỉ vượt màn — bạn đang học cách tạo ra thế giới của riêng mình."
+
+*Số liệu trên chỉ là ví dụ minh họa. Trong ứng dụng thật, mọi con số phải lấy từ tiến trình đã lưu, không được viết cố định.*
+
+---
+
+## 21. Làm sinh động hơn Duolingo bằng cách nào?
+
+| Duolingo thường nhấn mạnh | PyQuest nên tạo trải nghiệm |
+|---|---|
+| Chuỗi ngày học | Thế giới thay đổi theo tiến trình, không phạt trẻ khi nghỉ |
+| XP và cấp độ | XP kết hợp kỹ năng lập trình đã thực sự nắm được |
+| Huy hiệu | Huy hiệu xuất hiện trong Nhà Thành Tích |
+| Hoàn thành bài học | Nhân vật phản ứng, có hoạt ảnh và lời thoại riêng |
+| Tiến trình theo khóa học | Bản đồ phiêu lưu, nhân vật và các vùng đất có câu chuyện |
+| Ôn tập kiến thức | Mini-game biến kỹ năng cũ thành thử thách mới |
+
+**Lưu ý:** Âm thanh, nhạc nền và hoạt ảnh nên có thể bật/tắt. Hiệu ứng chiến thắng cần nhẹ và nhanh, không làm trẻ phải xem màn hình chờ dài sau mỗi bài.
+
+---
+
+## 22. Tách module cho hệ thống thành tích
+
+Để tính năng này không làm dự án rối lên, tách thành **ba module độc lập**:
+
+1. **`achievement_engine`:** xác định điều kiện mở khóa huy hiệu và thành tích.
+2. **`progress_tracker`:** ghi nhận màn đã hoàn thành, trò chơi, kỹ năng và chặng học.
+3. **`achievement_house`:** giao diện căn nhà, bộ sưu tập, hoạt ảnh và tổng kết.
+
+### Luồng hoạt động
+- Các trò chơi chỉ gửi **sự kiện chuẩn hóa**, chẳng hạn `level_completed`, `game_completed` hoặc `skill_mastered`.
+- Hệ thống tiến trình lưu sự kiện và tính thành tích.
+- Nhà Thành Tích chỉ đọc dữ liệu để hiển thị.
+
+Nhờ vậy, thêm trò chơi mới không phải viết lại toàn bộ hệ thống huy hiệu.
+
+### Thứ tự triển khai
+Đưa Nhà Thành Tích và màn tổng kết vào **thiết kế nền tảng ngay từ đầu**, nhưng chỉ triển khai giao diện đầy đủ **sau khi đã có một mini-game mẫu chạy hoàn chỉnh**. Như thế ta kiểm tra được cả vòng đời:
+
+> chơi → ghi nhận tiến trình → trao thành tích → xem tổng kết → quay lại thế giới phiêu lưu.
+
+---
+
+## 23. Xử lý hình ảnh trong phiên chat
+
+### 23.1. Phân biệt hai loại ảnh
+- **Ảnh AI tạo ra:** xuất hiện trong mục Images của ChatGPT.
+- **Ảnh tham khảo:** lấy từ kết quả tìm kiếm, không mặc nhiên có giấy phép sử dụng thương mại.
+
+### 23.2. Cách tải ảnh AI tạo ra
+1. Truy cập **ChatGPT Images** bằng tài khoản đang dùng.
+2. Mở ảnh cần lấy, nhấn **Save**.
+3. Chọn thư mục đích trên máy tính nếu trình duyệt hỏi.
+
+*Lưu ý:* Thư viện Images không đảm bảo chứa toàn bộ ảnh đã xuất hiện trong cuộc trò chuyện.
+
+### 23.3. Cách tải ảnh tham khảo
+1. Quay lại câu trả lời có ảnh trong cuộc trò chuyện.
+2. Nhấp vào ảnh để mở lớn nếu giao diện hỗ trợ.
+3. Nhấp chuột phải, chọn **Save image as…**
+4. Lưu vào thư mục `D:\PyQuest_Images\References`.
+5. Lặp lại với từng ảnh.
+
+Nếu trình duyệt không hiện tùy chọn lưu, thử mở ảnh trong tab mới. Nếu vẫn không được, dùng đường dẫn nguồn của ảnh để tải từ trang gốc.
+
+### 23.4. Tạo thư mục quản lý ảnh
+
+Trên Windows, mở PowerShell và chạy:
+
+```powershell
+New-Item -ItemType Directory -Force -Path `
+  "D:\PyQuest_Images\AI_Generated", `
+  "D:\PyQuest_Images\References"
+```
+
+Sau đó phân loại:
+- **AI_Generated:** ảnh AI thực sự được tạo trong ChatGPT.
+- **References:** ảnh tham khảo từ kết quả tìm kiếm.
+
+Đặt tên file theo nội dung, ví dụ: `achievement_house.png`, `robot_maze.png`, `dragon_jump.png`.
+
+### 23.5. Lưu ý quan trọng
+- Chưa xác minh được danh sách file gốc và số lượng ảnh trong toàn bộ phiên chat.
+- Không thể cung cấp lệnh PowerShell bảo đảm tự động tải đủ tất cả ảnh lịch sử.
+- Việc lưu thủ công là phương án chắc chắn hơn khi chưa có danh sách URL hoặc file ảnh nguồn.
+- **Giữ riêng ảnh tham khảo với ảnh được phép sử dụng trong sản phẩm phát hành.** Ảnh tìm kiếm trên mạng không mặc nhiên có giấy phép sử dụng thương mại.
+
+---
+
+## 24. Tổng kết định hướng mở rộng
+
+### Đã chốt
+- **PyQuest** — biến trẻ từ người chơi thành người sáng tạo game.
+- **Main Map miễn phí**, đầy đủ kiến thức Python cơ bản và kỹ năng tạo game đơn giản.
+- **Năng lượng** điều tiết nhịp chơi, có nghỉ ngơi và hồi theo thời gian.
+- **Quảng cáo thưởng** tự nguyện, có kiểm soát.
+- **Side Maps** bán chiều sâu, trải nghiệm mới và bộ sưu tập độc quyền.
+- **Pro** là lựa chọn nâng cấp riêng, không khóa tuyến học chính.
+- **Home Map** có nhân vật dễ thương, thoại thú vị, nhạc du dương, âm thanh tương tác.
+- **Mini-game** có Play Mode và Creator Mode.
+- **Nhà Thành Tích** và **màn tổng kết** là phần thiết kế nền tảng, triển khai giao diện sau khi có mini-game mẫu.
+- **Adventure Recap** tổng kết hành trình theo chặng.
+- **Kiến trúc module** tách biệt: Core, Main Quest, Mini-games, Energy & Ads, Side Maps & Pro, Achievement.
+- **Database** tách theo module logic: Progress, Games, Energy, Purchases, Settings.
+- **Roadmap** chia theo giai đoạn, mỗi mục có tiêu chí nghiệm thu riêng.
+
+### Nguyên tắc cuối cùng
+> Trẻ mở PyQuest vì thích chơi, ở lại vì tò mò, rồi tự hỏi:  
+> **"Mình có thể tự làm một game như thế này không?"**  
+> Đó là lúc ứng dụng chuyển từ game giải trí thành công cụ dạy lập trình thực sự.
+
+### Việc cần làm tiếp theo
+1. Chỉnh README ngắn gọn, đúng tên repo `PyQuest`.
+2. Tách tài liệu sản phẩm sang `docs/PRODUCT_VISION.md`.
+3. Viết `docs/GAME_DESIGN.md` với quy tắc định lượng: năng lượng, thời gian hồi, XP, điều kiện nhận thưởng.
+4. Viết `docs/TECHNICAL_ARCHITECTURE.md` với quyết định về Python runtime, Flutter, lưu tiến trình, quảng cáo và thanh toán.
+5. Viết `docs/ROADMAP.md` với tiêu chí nghiệm thu từng giai đoạn.
+6. Bắt đầu bằng **lát cắt dọc hoàn chỉnh**: mở app → chơi một mini-game → lưu kết quả → mở lại vẫn còn.
