@@ -125,9 +125,18 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
+  // flutter_test installs a mock HttpClient that answers 400 to every request.
+  // The provider tests need real sockets to a loopback stub relay, so the mock
+  // is removed for this file only (each test file runs in its own isolate).
+  // Nothing here reaches the internet: the relay is a local HttpServer.
+  HttpOverrides.global = null;
+
   late FakeRelay relay;
 
-  setUp(() async => relay = await FakeRelay.start());
+  setUp(() async {
+    HttpOverrides.global = null;
+    relay = await FakeRelay.start();
+  });
   tearDown(() async => relay.stop());
 
   group('real provider path (HTTP, local stub)', () {
