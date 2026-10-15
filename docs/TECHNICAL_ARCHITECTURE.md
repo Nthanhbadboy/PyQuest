@@ -157,14 +157,14 @@ Chỉ được gọi qua `PythonRuntime`.
              │                            │
     ┌────────▼────────┐          ┌────────▼────────┐
     │   Main Quest    │          │   Mini-games    │
-    │  (Bài học, XP)  │          │  (Robot Maze…)  │
+    │ (Bài học, tiến trình) │          │  (Robot Maze…)  │
     └────────┬────────┘          └────────┬────────┘
              │                            │
              └────────────┬───────────────┘
                           │
              ┌────────────▼────────────┐
              │   Shared State Layer    │
-             │ (Progress, Energy, XP)  │
+             │ (Progress, Energy, Achievements)  │
              └────────────┬────────────┘
                           │
         ┌─────────────────┼─────────────────┐
@@ -188,7 +188,7 @@ Chỉ được gọi qua `PythonRuntime`.
 // Progress module interface
 abstract class ProgressService {
   Future<PlayerProgress> getProgress();
-  Future<void> recordLessonCompleted(String lessonId, int xp);
+  Future<void> recordLessonCompleted(String lessonId);
   Future<void> recordGameCompleted(String gameId, int stars, int score);
   Future<void> recordSkillMastered(String skillId);
 }
@@ -229,8 +229,8 @@ abstract class AchievementService {
 | Module | Bảng | Dữ liệu sở hữu |
 |---|---|---|
 | Progress | `progress`, `skills` | Bài học đã hoàn thành, kỹ năng đã nắm |
-| Reward claims | `reward_claims` | Khóa chống cộng trùng cho bài tập, game tự tạo, thử thách chặng, lỗi, và XP ôn tập |
-| XP & Level | `player_state` | Tổng XP, cấp hiện tại |
+| Reward claims | `reward_claims` | Khóa chống nhận trùng cho phần thưởng mốc và các thành tích được trao một lần |
+
 | Games | `game_results`, `unlocked_levels` | Điểm cao, màn đã mở, sao |
 | Energy | `energy_state` | Năng lượng hiện tại, năng lượng tối đa, thời điểm hồi tiếp theo |
 | Rewarded ads | `rewarded_ad_claims` | Số lượt quảng cáo hợp lệ trong ngày, theo ngày địa phương |
@@ -246,7 +246,6 @@ CREATE TABLE progress (
   id INTEGER PRIMARY KEY,
   lesson_id TEXT NOT NULL UNIQUE,
   completed_at INTEGER NOT NULL,
-  xp_awarded INTEGER NOT NULL
 );
 
 CREATE TABLE game_results (
@@ -274,12 +273,6 @@ CREATE TABLE purchases (
   purchased_at INTEGER NOT NULL
 );
 
-CREATE TABLE player_state (
-  id INTEGER PRIMARY KEY CHECK (id = 1),
-  total_xp INTEGER NOT NULL DEFAULT 0,
-  level INTEGER NOT NULL DEFAULT 1
-);
-
 -- Chống cộng trùng phần thưởng quảng cáo theo ngày địa phương.
 CREATE TABLE rewarded_ad_claims (
   local_day TEXT NOT NULL,          -- ví dụ '2026-10-15'
@@ -298,9 +291,6 @@ CREATE TABLE daily_quests (
 
 -- Phần thưởng "một lần" dùng chung: mỗi phần thưởng chỉ có một khóa duy nhất.
 -- Ví dụ: 'exercise:05a', 'custom_game:12', 'chapter:01', 'bug:robot_maze:07'.
--- XP ôn tập dùng khóa riêng CÓ kèm ngày địa phương:
---   'review:<lesson_id>:<local_day>'
--- Không dùng chung bảng/khóa này với daily_quests.
 CREATE TABLE reward_claims (
   reward_key TEXT PRIMARY KEY,
   awarded_at INTEGER NOT NULL
@@ -339,21 +329,14 @@ Mục tiêu: các sự kiện hoàn thành lặp lại hoặc việc **thoát/m�
 
 - **Ghi "lần đầu" bằng INSERT có ràng buộc duy nhất.** Ví dụ: hoàn thành bài học
   → `INSERT INTO progress(lesson_id, ...)`. Nếu `lesson_id` đã tồn tại, lệnh
-  thất bại và **không** cộng XP. Tương tự với màn mini-game qua `game_results`.
+  thất bại và không ghi nhận hoàn thành. Tương tự với màn mini-game qua `game_results`.
 - **Các phần thưởng một lần khác (bài tập, game tự tạo, thử thách chặng, lỗi)
   dùng chung bảng `reward_claims`** với `reward_key` duy nhất (`exercise:…`,
-  `custom_game:…`, `chapter:…`, `bug:…`). Chỉ cộng XP khi insert khóa mới thành
-  công; khóa đã tồn tại thì bỏ qua.
-- **XP/level cập nhật trong cùng transaction** với bản ghi "lần đầu". Nếu bản ghi
-  đã tồn tại, bỏ qua cả XP.
+  `custom_game:…`, `chapter:…`, `bug:…`). Chỉ trao phần thưởng mốc khi insert khóa mới thành công; khóa đã tồn tại thì bỏ qua.
 - **Quảng cáo thưởng:** tăng `claims_used` trong `rewarded_ad_claims` **chỉ sau**
   callback xác nhận hợp lệ. Đọc lại số lượt trước khi cho phép xem.
 - **Nhiệm vụ ngày:** kiểm tra khóa `(local_day, quest_id)` trong `daily_quests`
   trước khi cộng; dùng ngày **địa phương** để reset.
-- **XP ôn tập:** kiểm tra khóa `review:<lesson_id>:<local_day>` trong
-  `reward_claims` trước khi cộng. Đây là khóa **riêng**, **không** dùng chung với
-  `daily_quests`. Số lần tối đa mỗi bài mỗi ngày **chưa chốt** — xem
-  `GAME_DESIGN.md` mục 4.4.
 - **Tính idempotent:** xử lý cùng một sự kiện nhiều lần (do retry, resume,
   hoặc mở lại app) cho kết quả như xử lý một lần.
 
@@ -606,7 +589,7 @@ Không cần nhiều test, nhưng **phải** có điểm kiểm tra đủ sức 
 | Lỗi cần phát hiện | Cách kiểm tra |
 |---|---|
 | **Mất dữ liệu** | Thoát app, mở lại, xác nhận trạng thái còn nguyên |
-| **Cộng thưởng sai** | Kiểm tra luồng nhận XP, năng lượng, huy hiệu |
+| **Cộng thưởng sai** | Kiểm tra luồng nhận điểm thưởng đã định nghĩa, năng lượng và huy hiệu |
 | **Vượt giới hạn Python** | Chạy code gây vòng lặp vô hạn, kiểm tra dừng an toàn |
 | **Xác nhận Pro sai** | Mô phỏng purchase token giả, kiểm tra không mở nội dung |
 
@@ -689,7 +672,7 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 | Localization sang ngôn ngữ nào | Trước giai đoạn hoàn thiện |
 | Người dùng Pro có được xem quảng cáo thưởng không | Quyết định sản phẩm (xem 6.4) |
 | Giá trị cụ thể của ngân sách bước, trần collection, mục tiêu bộ nhớ | Sau khi đo thực tế interpreter (xem 2.3) |
-| Ngưỡng cấp mở chặng 2/3 và giới hạn XP ôn tập | Quyết định sản phẩm (xem `GAME_DESIGN.md` 4.4) |
+
 
 ---
 
@@ -712,6 +695,6 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 ## Tài liệu liên quan
 
 - [`PRODUCT_VISION.md`](PRODUCT_VISION.md) — triết lý sản phẩm, thế giới, mô hình kinh doanh.
-- [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, XP, cân bằng độ khó.
+- [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, mở khóa hoạt động và cân bằng độ khó.
 - [`ROADMAP.md`](ROADMAP.md) — giai đoạn triển khai và tiêu chí nghiệm thu.
 - [`../README.md`](../README.md) — điểm vào dự án.
