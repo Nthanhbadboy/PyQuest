@@ -251,76 +251,91 @@ class AdaPainter extends CastPainter2 {
 
 // ---------------------------------------------------------------- 3. Kai
 
-/// Kai — playful programmer: spiky hair, hoodie with drawstrings, headphones.
+/// Kai — readable young programmer silhouette: headphones, swept spikes and hoodie.
 class KaiPainter extends CastPainter2 {
   KaiPainter({required super.t, required super.blink, required super.bob, required super.mood});
 
   static const _hoodie = PQColors.grass;
   static const _hoodieDeep = PQColors.grassDeep;
   static const _hair = Color(0xFF3A2A1E);
+  static const _skin = Color(0xFFFFDDBA);
+  static const _shoe = PQColors.coral;
 
   @override
   void draw(Canvas canvas) {
-    final bounce = math.sin(t * 2 * math.pi * 2) * 1.6;
-    // Shoes.
+    final bounce = math.sin(t * 2 * math.pi * 2) * 1.4;
+    // Shoes and separated legs make the human silhouette clear at thumbnail size.
     for (final x in [41.0, 57.0]) {
-      final shoe = _roundPath(x - 1, 86 + (celebrating ? -bounce : 0), 15, 8, 4);
-      _shape(canvas, shoe, PQColors.coral, 2.4);
+      _shape(canvas, _roundPath(x - 5, 85 + (celebrating ? -bounce : 0), 13, 7, 3.5), _shoe, 2.2);
+      _shape(canvas, _roundPath(x - 1, 74, 7, 13, 3), const Color(0xFF3E5A86), 2.2);
     }
-    // Legs.
-    for (final x in [43.0, 55.0]) {
-      final leg = _roundPath(x, 74, 10, 14, 4);
-      _shape(canvas, leg, const Color(0xFF3E5A86), 2.4);
-    }
-    // Hoodie body.
-    final body = _roundPath(33, 56, 34, 24, 10);
-    _shape(canvas, body, _hoodie, 2.7, shader: _gradC(const Rect.fromLTWH(33, 56, 34, 24), const Color(0xFFA5E06B), _hoodie));
-    // Hood roll + drawstrings.
+
+    // Arms sit behind the hoodie; celebrating raises the right hand.
+    arm(canvas, const Offset(34, 61), 0.72, 14, 8, _hoodie);
+    arm(canvas, const Offset(66, 60), celebrating ? -2.25 : -0.68, 14, 8, _hoodie);
+
+    // Hoodie with a distinct shoulder line and pocket.
+    _shape(canvas, _roundPath(32, 53, 36, 28, 10), _hoodie, 2.7,
+        shader: _gradC(const Rect.fromLTWH(32, 53, 36, 28), const Color(0xFFA9E86C), _hoodie));
     final hood = Path()
-      ..moveTo(37, 58)
-      ..quadraticBezierTo(50, 66, 63, 58);
-    canvas.drawPath(hood, _lineC(3.4, _hoodieDeep));
-    canvas.drawLine(const Offset(45, 62), const Offset(44, 70), _lineC(1.8, PQColors.cream));
-    canvas.drawLine(const Offset(55, 62), const Offset(56, 70), _lineC(1.8, PQColors.cream));
-    // Front pocket.
-    final pocket = _roundPath(42, 71, 16, 8, 3);
-    _shape(canvas, pocket, _hoodieDeep, 2);
-    // Arms: one raised when celebrating.
-    arm(canvas, const Offset(35, 60), 0.55, 14, 8, _hoodie);
-    arm(canvas, const Offset(65, 60), celebrating ? -2.2 : -0.55, 14, 8, _hoodie);
-    // Headphones around the neck.
-    final band = Path()
-      ..moveTo(30, 46)
-      ..quadraticBezierTo(50, 60, 70, 46);
-    canvas.drawPath(band, _lineC(3, PQColors.night));
-    for (final x in [30.0, 70.0]) {
-      final cup = _roundPath(x - 4, 44, 9, 9, 4);
-      _shape(canvas, cup, PQColors.night, 2.2);
+      ..moveTo(38, 56)
+      ..quadraticBezierTo(50, 68, 62, 56);
+    canvas.drawPath(hood, _lineC(3, _hoodieDeep));
+    canvas.drawLine(const Offset(45, 61), const Offset(44, 69), _lineC(1.8, PQColors.cream));
+    canvas.drawLine(const Offset(55, 61), const Offset(56, 69), _lineC(1.8, PQColors.cream));
+    _shape(canvas, _roundPath(41, 70, 18, 8, 3), _hoodieDeep, 1.8);
+    // Tiny pixel emblem on the chest.
+    _shape(canvas, _roundPath(57, 59, 7, 7, 1.5), PQColors.cream, 1.4);
+    for (final p in const [Offset(59, 61), Offset(62, 64), Offset(59, 64)]) {
+      canvas.drawRect(Rect.fromLTWH(p.dx, p.dy, 1.5, 1.5), _fillC(_hoodieDeep));
     }
-    // Head.
-    final head = _ovalPath(50, 35, 40, 39);
-    _shape(canvas, head, PQColors.skinLight, 2.8, shader: _gradC(const Rect.fromLTWH(30, 16, 40, 39), const Color(0xFFFFE3C4), PQColors.skin));
-    // Spiky hair.
+
+    // Neck and headphones now frame the head, rather than hanging like a necklace.
+    _shape(canvas, _roundPath(45, 47, 10, 11, 3), _skin, 2.2);
+    final band = Path()
+      ..moveTo(29, 35)
+      ..cubicTo(27, 7, 73, 7, 71, 35);
+    canvas.drawPath(band, _lineC(5, PQColors.night));
+    canvas.drawPath(band, _lineC(2, PQColors.sky));
+    for (final x in [29.0, 71.0]) {
+      _shape(canvas, _roundPath(x - 4, 29, 8, 13, 3), PQColors.night, 2.2);
+      canvas.drawLine(Offset(x - 1, 33), Offset(x + 1, 38), _lineC(1.4, PQColors.sky));
+    }
+
+    // Head, ears and a more intentional hair silhouette.
+    _shape(canvas, _ovalPath(50, 35, 39, 39), _skin, 2.7,
+        shader: _gradC(const Rect.fromLTWH(30.5, 15.5, 39, 39), const Color(0xFFFFE8CF), PQColors.skin));
+    for (final x in [31.0, 69.0]) {
+      _shape(canvas, _ovalPath(x, 37, 7, 10), _skin, 2);
+    }
     final spikes = Path()
-      ..moveTo(28, 33)
-      ..lineTo(22, 18)
-      ..lineTo(33, 24)
-      ..lineTo(34, 10)
-      ..lineTo(43, 21)
-      ..lineTo(50, 7)
-      ..lineTo(56, 21)
-      ..lineTo(66, 11)
+      ..moveTo(29, 33)
+      ..lineTo(23, 19)
+      ..lineTo(34, 24)
+      ..lineTo(35, 10)
+      ..lineTo(44, 21)
+      ..lineTo(51, 6)
+      ..lineTo(57, 20)
+      ..lineTo(67, 11)
       ..lineTo(68, 24)
       ..lineTo(78, 19)
       ..lineTo(72, 34)
-      ..quadraticBezierTo(60, 22, 50, 22)
-      ..quadraticBezierTo(38, 22, 28, 33)
+      ..quadraticBezierTo(61, 24, 50, 24)
+      ..quadraticBezierTo(39, 24, 29, 33)
       ..close();
-    _shape(canvas, spikes, _hair, 2.6, shader: _gradC(const Rect.fromLTWH(22, 7, 56, 28), const Color(0xFF5A422F), _hair));
-    eye(canvas, const Offset(41, 39), 5.6, 6.6, look: const Offset(0.8, 0.6), iris: const Color(0xFF5C3A1E));
-    eye(canvas, const Offset(59, 39), 5.6, 6.6, look: const Offset(0.8, 0.6), iris: const Color(0xFF5C3A1E));
-    mouth(canvas, const Offset(50, 48), 10, curve: 3.6);
-    if (sad) canvas.drawLine(const Offset(34, 29), const Offset(46, 31), _lineC(2.2));
+    _shape(canvas, spikes, _hair, 2.6,
+        shader: _gradC(const Rect.fromLTWH(23, 6, 55, 29), const Color(0xFF5B4230), _hair));
+
+    // Brows, bright eyes and an open, friendly smile.
+    canvas.drawLine(const Offset(35, 29), Offset(44, sad ? 31 : 28), _lineC(2.1, _hair));
+    canvas.drawLine(const Offset(56, 28), Offset(65, sad ? 31 : 29), _lineC(2.1, _hair));
+    eye(canvas, const Offset(41, 38), 5.3, 6.6, look: const Offset(0.5, 0.5), iris: const Color(0xFF5C3A1E));
+    eye(canvas, const Offset(59, 38), 5.3, 6.6, look: const Offset(0.5, 0.5), iris: const Color(0xFF5C3A1E));
+    mouth(canvas, const Offset(50, 47), 10, curve: 3.2);
+    // Cheek warmth and a tiny headphone status light.
+    canvas.drawCircle(const Offset(35, 45), 2.1, _fillC(const Color(0xFFE99A87).withValues(alpha: 0.72)));
+    canvas.drawCircle(const Offset(65, 45), 2.1, _fillC(const Color(0xFFE99A87).withValues(alpha: 0.72)));
+    canvas.drawCircle(const Offset(71, 39), 1.2, _fillC(PQColors.sun));
     reactionMarks(canvas, sparks: const [Offset(20, 12), Offset(80, 12), Offset(50, 2)], drop: const Offset(26, 28));
   }
 }
@@ -675,93 +690,126 @@ class BitPainter extends CastPainter2 {
 
 // --------------------------------------------------------------- 8. Lumi
 
-/// Lumi — forest spirit who hands out quests and creative challenges.
+/// Lumi — a tiny forest quest-spirit with unmistakable leaf ears and a charm.
 class LumiPainter extends CastPainter2 {
   LumiPainter({required super.t, required super.blink, required super.bob, required super.mood});
 
-  static const _body = Color(0xFFF3FFFB);
-  static const _bodyShade = Color(0xFFB7E8DE);
-  static const _glow = Color(0xFF4FE0C0);
+  static const _mint = Color(0xFF70DEC2);
+  static const _mintDeep = Color(0xFF279B88);
+  static const _leaf = Color(0xFF78D96A);
+  static const _leafDeep = Color(0xFF3B9D63);
+  static const _cream = Color(0xFFEFFFF5);
+  static const _gold = Color(0xFFFFD66D);
 
   @override
   void draw(Canvas canvas) {
     final float = math.sin(t * 2 * math.pi) * 1.8;
-    // Soft halo, always behind the body.
-    canvas.drawCircle(const Offset(50, 52), 40, _fillC(_glow.withValues(alpha: 0.16)));
-    canvas.drawCircle(const Offset(50, 52), 30, _fillC(_glow.withValues(alpha: 0.14)));
-    // Legs: slender, elegant deer-like.
-    for (final x in [43.0, 57.0]) {
-      final leg = _roundPath(x, 76, 6.5, 16, 3.2);
-      _shape(canvas, leg, _bodyShade, 2.2);
-      final hoof = _roundPath(x - 1, 89, 8.5, 4.5, 2);
-      _shape(canvas, hoof, PQColors.woodDeep, 2);
-    }
-    // Body.
-    final body = _ovalPath(50, 68, 30, 28);
-    _shape(canvas, body, _body, 2.7, shader: _gradC(const Rect.fromLTWH(35, 54, 30, 28), Colors.white, _bodyShade));
-    // Flowing tail.
-    final tail = Path()
-      ..moveTo(64, 70)
-      ..quadraticBezierTo(78, 66, 76, 52)
-      ..quadraticBezierTo(70, 62, 63, 64)
+    canvas.save();
+    canvas.translate(0, float);
+
+    // Soft magical glow stays behind the clear silhouette.
+    canvas.drawCircle(const Offset(50, 51), 38, _fillC(_mint.withValues(alpha: 0.13)));
+    canvas.drawCircle(const Offset(50, 51), 29, _fillC(_mint.withValues(alpha: 0.12)));
+
+    // Leaf ears: long, pointed, and large enough to identify Lumi at a glance.
+    final leftEar = Path()
+      ..moveTo(40, 25)
+      ..quadraticBezierTo(17, 20, 13, 4)
+      ..quadraticBezierTo(34, 5, 44, 20)
       ..close();
-    _shape(canvas, tail, _glow, 2.2);
-    // Neck.
-    final neck = Path()
-      ..moveTo(45, 58)
-      ..quadraticBezierTo(44, 46, 48, 40)
-      ..lineTo(58, 42)
-      ..quadraticBezierTo(54, 50, 55, 60)
+    _shape(canvas, leftEar, _leaf, 2.5,
+        shader: _gradC(const Rect.fromLTWH(13, 4, 31, 21), const Color(0xFFA3F27D), _leaf));
+    canvas.drawLine(const Offset(19, 8), const Offset(39, 21), _lineC(1.5, _leafDeep));
+    final rightEar = Path()
+      ..moveTo(60, 25)
+      ..quadraticBezierTo(83, 20, 87, 4)
+      ..quadraticBezierTo(66, 5, 56, 20)
       ..close();
-    _shape(canvas, neck, _body, 2.5, shader: _gradC(const Rect.fromLTWH(44, 40, 14, 20), Colors.white, _bodyShade));
-    // Head: narrow with a gentle muzzle.
-    final head = _ovalPath(52, 32, 30, 26);
-    _shape(canvas, head, _body, 2.7, shader: _gradC(const Rect.fromLTWH(37, 19, 30, 26), Colors.white, _bodyShade));
-    final muzzle = _ovalPath(64, 36, 12, 9);
-    _shape(canvas, muzzle, Colors.white, 2.1);
-    final nose = Path()
-      ..moveTo(69, 34)
-      ..lineTo(72, 36)
-      ..lineTo(69, 38)
+    _shape(canvas, rightEar, _leaf, 2.5,
+        shader: _gradC(const Rect.fromLTWH(56, 4, 31, 21), const Color(0xFFA3F27D), _leaf));
+    canvas.drawLine(const Offset(81, 8), const Offset(61, 21), _lineC(1.5, _leafDeep));
+
+    // Short petal cape gives Lumi a separate shoulder and outer contour.
+    final cape = Path()
+      ..moveTo(34, 52)
+      ..quadraticBezierTo(21, 48, 20, 62)
+      ..lineTo(25, 78)
+      ..quadraticBezierTo(29, 82, 34, 75)
+      ..lineTo(40, 63)
       ..close();
-    canvas.drawPath(nose, _fillC(PQColors.grapeDeep));
-    mouth(canvas, const Offset(61, 40), 6, curve: 2, stroke: 1.8);
-    // Antlers of light.
-    for (final s in [-1.0, 1.0]) {
-      final antler = Path()
-        ..moveTo(52 + s * 7, 21)
-        ..quadraticBezierTo(52 + s * 12, 10, 52 + s * 20, 6);
-      canvas.drawPath(antler, _lineC(2.4, _glow));
-      final branch = Path()
-        ..moveTo(52 + s * 14, 12)
-        ..lineTo(52 + s * 22, 12);
-      canvas.drawPath(branch, _lineC(1.8, _glow));
+    _shape(canvas, cape, const Color(0xFFB6F0A2), 2.3);
+    final capeRight = Path()
+      ..moveTo(66, 52)
+      ..quadraticBezierTo(79, 48, 80, 62)
+      ..lineTo(75, 78)
+      ..quadraticBezierTo(71, 82, 66, 75)
+      ..lineTo(60, 63)
+      ..close();
+    _shape(canvas, capeRight, const Color(0xFFB6F0A2), 2.3);
+
+    // Little feet and rounded body; the pale belly separates the torso from the head.
+    for (final x in [41.0, 59.0]) {
+      _shape(canvas, _roundPath(x - 4, 82, 9, 7, 3), _mintDeep, 2);
     }
-    // Leaf ears.
-    for (final left in [true, false]) {
-      final dir = left ? -1.0 : 1.0;
-      final ear = Path()
-        ..moveTo(52 + dir * 11, 22)
-        ..quadraticBezierTo(52 + dir * 22, 16, 52 + dir * 26, 24)
-        ..quadraticBezierTo(52 + dir * 18, 26, 52 + dir * 11, 22)
-        ..close();
-      _shape(canvas, ear, _bodyShade, 2.1);
-      canvas.drawLine(Offset(52 + dir * 13, 22), Offset(52 + dir * 23, 21), _lineC(1.3, _glow));
+    _shape(canvas, _ovalPath(50, 67, 36, 30), _mint, 2.7,
+        shader: _gradC(const Rect.fromLTWH(32, 52, 36, 30), const Color(0xFF9BF0D8), _mintDeep));
+    _shape(canvas, _ovalPath(50, 70, 20, 17), _cream, 1.8);
+
+    // Scarf and quest medallion anchor the character's role in the game.
+    final scarf = Path()
+      ..moveTo(34, 49)
+      ..quadraticBezierTo(50, 57, 66, 49)
+      ..lineTo(63, 56)
+      ..quadraticBezierTo(50, 62, 37, 56)
+      ..close();
+    _shape(canvas, scarf, _gold, 2.2);
+    _shape(canvas, _roundPath(58, 57, 10, 12, 4), _gold, 2);
+    canvas.drawLine(const Offset(63, 59), const Offset(63, 64), _lineC(1.5, PQColors.woodDeep));
+
+    // Large friendly head with a subtle cheek shape, not an undifferentiated blob.
+    _shape(canvas, _ovalPath(50, 34, 43, 37), _mint, 2.8,
+        shader: _gradC(const Rect.fromLTWH(28.5, 15.5, 43, 37), const Color(0xFFB5F5E3), _mint));
+    // Three-leaf crown.
+    final crownLeaves = [
+      Path()..moveTo(38, 20)..quadraticBezierTo(29, 7, 38, 2)..quadraticBezierTo(47, 8, 43, 21)..close(),
+      Path()..moveTo(47, 19)..quadraticBezierTo(45, 3, 54, 0)..quadraticBezierTo(61, 10, 53, 21)..close(),
+      Path()..moveTo(55, 21)..quadraticBezierTo(62, 8, 71, 10)..quadraticBezierTo(70, 20, 58, 24)..close(),
+    ];
+    for (final leaf in crownLeaves) {
+      _shape(canvas, leaf, _leaf, 1.8);
     }
-    eye(canvas, const Offset(46, 31), 4.6, 5.6, look: const Offset(0.8, 0.5), iris: const Color(0xFF1E7A66));
-    eye(canvas, const Offset(58, 30), 4.6, 5.6, look: const Offset(0.8, 0.5), iris: const Color(0xFF1E7A66));
-    // Floating motes that drift with the idle animation.
-    for (var i = 0; i < 3; i++) {
-      final a = t * 2 * math.pi + i * 2.1;
-      final c = Offset(50 + math.cos(a) * 30, 50 + math.sin(a) * 14 + float);
-      canvas.drawCircle(c, 2.6, _fillC(_glow.withValues(alpha: 0.85)));
-      canvas.drawCircle(c, 4.6, _fillC(_glow.withValues(alpha: 0.25)));
+
+    // Expressive eyes and cheeks, consistent with the rest of the PyQuest cast.
+    canvas.drawLine(const Offset(36, 28), const Offset(44, 27), _lineC(1.8, _mintDeep));
+    canvas.drawLine(const Offset(56, 27), const Offset(64, 28), _lineC(1.8, _mintDeep));
+    eye(canvas, const Offset(41, 35), 5.4, 6.7, look: const Offset(0.5, 0.4), iris: const Color(0xFF1E6E60));
+    eye(canvas, const Offset(59, 35), 5.4, 6.7, look: const Offset(0.5, 0.4), iris: const Color(0xFF1E6E60));
+    canvas.drawCircle(const Offset(32, 43), 2.7, _fillC(const Color(0xFFFFA99C).withValues(alpha: 0.78)));
+    canvas.drawCircle(const Offset(68, 43), 2.7, _fillC(const Color(0xFFFFA99C).withValues(alpha: 0.78)));
+    mouth(canvas, const Offset(50, 45), 8, curve: 2.8);
+
+    // Floating golden quest-star, plus gentle idle motes.
+    final starCenter = Offset(79, 54 + math.sin(t * 2 * math.pi * 1.5) * 2);
+    final star = Path();
+    for (var i = 0; i < 10; i++) {
+      final radius = i.isEven ? 5.3 : 2.5;
+      final angle = -math.pi / 2 + i * math.pi / 5;
+      final point = Offset(starCenter.dx + math.cos(angle) * radius, starCenter.dy + math.sin(angle) * radius);
+      if (i == 0) {
+        star.moveTo(point.dx, point.dy);
+      } else {
+        star.lineTo(point.dx, point.dy);
+      }
     }
+    star.close();
+    _shape(canvas, star, _gold, 1.7);
+    canvas.drawCircle(const Offset(17, 38), 1.8, _fillC(_gold));
+    canvas.drawCircle(const Offset(83, 31), 1.6, _fillC(_gold));
     if (thinking || confused) {
-      canvas.drawCircle(const Offset(78, 22), 2.2, _fillC(_glow.withValues(alpha: 0.8)));
-      canvas.drawCircle(const Offset(84, 15), 3.2, _fillC(_glow.withValues(alpha: 0.6)));
-      canvas.drawCircle(const Offset(90, 8), 4.2, _fillC(_glow.withValues(alpha: 0.45)));
+      canvas.drawCircle(const Offset(82, 18), 2.2, _fillC(_mintDeep));
+      canvas.drawCircle(const Offset(88, 12), 3.2, _fillC(_mint));
     }
+    canvas.restore();
     reactionMarks(canvas, sparks: const [Offset(14, 30), Offset(86, 34), Offset(50, 2)], drop: const Offset(30, 22));
   }
 }
