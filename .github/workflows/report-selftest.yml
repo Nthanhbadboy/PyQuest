@@ -62,12 +62,14 @@ jobs:
       - name: Report to step summary
         if: always()
         run: |
+          # --out is relative to --repo-root, exactly like the android job
           python3 ci/job_summary.py --repo-root selftest/no-output \
-            --out selftest/no-output/emulator-report.md \
+            --out emulator-report.md \
             --step "Checkout=${{ steps.checkout.outcome }}" \
             --step "Fixture for the emulator-action failure shape=${{ steps.harmless_failure.outcome }}" \
             --step "Required step after a failure=${{ steps.skipped_required.outcome }}" \
             --upload-outcome success --artifact-name selftest
+          test -s selftest/no-output/emulator-report.md
           echo "step summary for this step: $(wc -c < "$GITHUB_STEP_SUMMARY") bytes"
           cat selftest/no-output/emulator-report.md
 
@@ -105,13 +107,15 @@ jobs:
       - name: Report to step summary
         if: always()
         run: |
+          # --out is relative to --repo-root, exactly like the android job
           python3 ci/job_summary.py --repo-root selftest/all-ok \
-            --out selftest/all-ok/emulator-report.md \
+            --out emulator-report.md \
             --step "Checkout=${{ steps.checkout.outcome }}" \
             --step "Benign step=${{ steps.benign.outcome }}" \
             --step "Best-effort step=${{ steps.optional_step.outcome }}" \
             --optional-step "Best-effort step" \
             --upload-outcome success --artifact-name selftest
+          test -s selftest/all-ok/emulator-report.md
           echo "step summary for this step: $(wc -c < "$GITHUB_STEP_SUMMARY") bytes"
           cat selftest/all-ok/emulator-report.md
 

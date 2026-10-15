@@ -435,7 +435,8 @@ def main():
     parser.add_argument("--artifact-name", default="emulator-logs-attempt-?")
     parser.add_argument("--check-name", default="PyQuest emulator")
     parser.add_argument("--step-log", default="emulator-step.log")
-    parser.add_argument("--out", default="emulator-report.md")
+    parser.add_argument("--out", default="emulator-report.md",
+                        help="report file, relative to --repo-root")
     parser.add_argument("--repo-root", default=".")
     args = parser.parse_args()
     text = report(args, args.repo_root)
