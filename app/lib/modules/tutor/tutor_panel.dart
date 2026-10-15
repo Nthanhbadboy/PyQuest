@@ -73,6 +73,7 @@ class _TutorPanelState extends State<TutorPanel> {
   bool _opened = false;
   GeminiLiveVoice? _voice;
   bool _voiceBusy = false;
+  CharacterId _voiceCharacter = CharacterId.kai;
   String _voiceStatus = '';
   String _voiceError = '';
   final List<String> _voiceTranscript = <String>[];
@@ -139,7 +140,7 @@ class _TutorPanelState extends State<TutorPanel> {
       onTranscript: (text, {required fromUser}) {
         if (!mounted) return;
         setState(() {
-          _voiceTranscript.add('${fromUser ? 'Bé' : _member.name}: $text');
+          _voiceTranscript.add('${fromUser ? 'Bé' : _voiceCharacter.displayName}: $text');
           if (_voiceTranscript.length > 6) _voiceTranscript.removeAt(0);
         });
       },
@@ -166,7 +167,7 @@ class _TutorPanelState extends State<TutorPanel> {
       _voiceStatus = 'Đang bắt đầu…';
     });
     await voice.startListening(
-      characterName: _member.name,
+      characterName: _voiceCharacter.displayName,
       language: _lang == PqLang.vi ? 'vi' : 'en',
     );
   }
@@ -185,6 +186,39 @@ class _TutorPanelState extends State<TutorPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CharacterView(
+                id: CharacterId.kai,
+                size: 42,
+                mood: _voiceCharacter == CharacterId.kai
+                    ? (recording ? Mood.surprised : (_voiceStatus.contains('đang nói') ? Mood.happy : Mood.neutral))
+                    : Mood.neutral,
+              ),
+              const SizedBox(width: 8),
+              ChoiceChip(
+                label: const Text('Kai'),
+                selected: _voiceCharacter == CharacterId.kai,
+                onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.kai),
+              ),
+              const SizedBox(width: 8),
+              ChoiceChip(
+                label: const Text('Lumi'),
+                selected: _voiceCharacter == CharacterId.lumi,
+                onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.lumi),
+              ),
+              const SizedBox(width: 8),
+              CharacterView(
+                id: CharacterId.lumi,
+                size: 42,
+                mood: _voiceCharacter == CharacterId.lumi
+                    ? (recording ? Mood.surprised : (_voiceStatus.contains('đang nói') ? Mood.happy : Mood.neutral))
+                    : Mood.neutral,
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
           Row(
             children: [
               Icon(
@@ -216,7 +250,7 @@ class _TutorPanelState extends State<TutorPanel> {
             label: Text(
               recording
                   ? (_lang == PqLang.vi ? 'Dừng để nghe câu trả lời' : 'Stop and hear reply')
-                  : (_lang == PqLang.vi ? 'Nói với ${_member.name}' : 'Talk to ${_member.name}'),
+                  : (_lang == PqLang.vi ? 'Nói với ${_voiceCharacter.displayName}' : 'Talk to ${_voiceCharacter.displayName}'),
             ),
           ),
           if (_voiceError.isNotEmpty) ...[
@@ -311,6 +345,8 @@ class _TutorPanelState extends State<TutorPanel> {
   }
 
   Mood get _mood {
+    if (_voice?.isRecording ?? false) return Mood.surprised;
+    if (_voiceStatus.contains('đang nói')) return Mood.happy;
     if (_asking || widget.services.tutor.busy || (_voiceBusy && !(_voice?.isRecording ?? false))) return Mood.thinking;
     final last = _lines.isEmpty ? null : _lines.last.reply;
     if (last == null) return Mood.happy;
