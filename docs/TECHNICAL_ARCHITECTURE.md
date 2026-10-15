@@ -245,7 +245,7 @@ abstract class AchievementService {
 CREATE TABLE progress (
   id INTEGER PRIMARY KEY,
   lesson_id TEXT NOT NULL UNIQUE,
-  completed_at INTEGER NOT NULL,
+  completed_at INTEGER NOT NULL
 );
 
 CREATE TABLE game_results (
