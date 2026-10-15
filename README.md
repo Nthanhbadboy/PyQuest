@@ -219,6 +219,13 @@ khởi động lại giữa chừng hoặc test không tiến triển — lý do
 `[PYQUEST] [<bước>] ...` và mỗi ảnh chụp có giới hạn thời gian riêng, nên log
 luôn cho biết test đang ở đâu.
 
+Bốn mốc thời gian của watchdog (chỉnh qua `env:` của bước *Emulator journey*):
+`STARTUP_GRACE=240` (bỏ qua "không tiến triển" ngay sau khi một test bắt đầu,
+tránh báo sai khi emulator chậm), `PRE_TEST_TIMEOUT=900` (lúc `flutter drive`
+còn build/install), `PROGRESS_TIMEOUT=300` (lúc test đang chạy) và
+`WATCHDOG_KILL_AFTER=20` (SIGKILL nếu drive bỏ qua SIGTERM). Watchdog không bao
+giờ khởi động lại adb/emulator; nó ghi lý do rồi dừng drive.
+
 Log tiến trình, chẩn đoán emulator và bản trích xuất log hệ thống
 (`emulator-log-analysis.txt`: khởi động lại activity, đổi cấu hình, ANR) nằm ở
 artifact `emulator-logs-attempt-N`. Muốn trích xuất lại trên máy:
