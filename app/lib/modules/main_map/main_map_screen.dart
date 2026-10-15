@@ -181,7 +181,7 @@ class _MainMapScreenState extends State<MainMapScreen> with TickerProviderStateM
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
               child: Row(
                 children: [
-                  const _IslandTitle(),
+                  const Flexible(child: _IslandTitle()),
                   const Spacer(),
                   const EnergyPill(),
                   const SizedBox(width: 8),
@@ -192,7 +192,7 @@ class _MainMapScreenState extends State<MainMapScreen> with TickerProviderStateM
                       icon: Icons.assignment_turned_in_rounded,
                       tooltip: 'Nhiệm vụ hôm nay',
                       tone: PQTone.sun,
-                      size: 48,
+                      size: 44,
                       badge: s.quests.claimable,
                       onPressed: () => showDailyQuests(context),
                     ),
@@ -202,7 +202,7 @@ class _MainMapScreenState extends State<MainMapScreen> with TickerProviderStateM
                     key: const ValueKey('settings_button'),
                     icon: Icons.settings_rounded,
                     tooltip: 'Cài đặt',
-                    size: 48,
+                    size: 44,
                     onPressed: () => showSettingsSheet(context),
                   ),
                 ],
@@ -288,6 +288,8 @@ class _IslandTitle extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           RichText(
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             text: TextSpan(
               style: PQText.h3.copyWith(fontSize: 19, height: 1.0),
               children: const [
@@ -296,7 +298,7 @@ class _IslandTitle extends StatelessWidget {
               ],
             ),
           ),
-          Text('Đảo Khởi Đầu', style: PQText.small.copyWith(fontSize: 12, height: 1.1)),
+          Text('Đảo Khởi Đầu', maxLines: 1, overflow: TextOverflow.ellipsis, style: PQText.small.copyWith(fontSize: 12, height: 1.1)),
         ],
       ),
     );

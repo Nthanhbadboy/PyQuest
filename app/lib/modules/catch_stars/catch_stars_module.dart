@@ -450,7 +450,7 @@ class _StarsPlayScreenState extends State<StarsPlayScreen> with SingleTickerProv
         tone: PQTone.night,
       ),
     );
-    if (!mounted) return;
+    if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? false)) return;
     switch (action) {
       case ResultAction.primary:
         if (!await spendEnergy(context, cost)) {

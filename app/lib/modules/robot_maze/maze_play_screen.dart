@@ -550,7 +550,7 @@ class _MazePlayScreenState extends State<MazePlayScreen> with TickerProviderStat
         tone: PQTone.grass,
       ),
     );
-    if (!mounted) return;
+    if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? false)) return;
     switch (action) {
       case ResultAction.primary:
         if (next == null) {

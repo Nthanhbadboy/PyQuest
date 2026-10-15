@@ -396,16 +396,12 @@ class _MazeWorkshopScreenState extends State<MazeWorkshopScreen> with SingleTick
                 padding: const EdgeInsets.fromLTRB(12, 4, 12, 10),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: ChunkyButton(
-                        key: const ValueKey('workshop_new'),
-                        label: 'Mới',
-                        icon: Icons.add_rounded,
-                        tone: PQTone.parchment,
-                        size: ChunkySize.medium,
-                        expand: true,
-                        onPressed: _newMaze,
-                      ),
+                    RoundIconButton(
+                      key: const ValueKey('workshop_new'),
+                      icon: Icons.add_rounded,
+                      tooltip: 'Mê cung mới',
+                      size: 52,
+                      onPressed: _newMaze,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -421,7 +417,6 @@ class _MazeWorkshopScreenState extends State<MazeWorkshopScreen> with SingleTick
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      flex: 2,
                       child: ChunkyButton(
                         key: const ValueKey('workshop_test'),
                         label: 'Chạy thử',

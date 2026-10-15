@@ -82,6 +82,9 @@ Future<void> precacheMap(WidgetTester tester) async {
       'assets/images/thumb_maze.webp',
       'assets/images/thumb_tower.webp',
       'assets/images/thumb_volcano.webp',
+      'assets/images/thumb_observatory.webp',
+      'assets/images/thumb_workshop.webp',
+      'assets/images/thumb_house.webp',
     ]) {
       await precacheImage(AssetImage(a), ctx);
     }
@@ -230,7 +233,7 @@ void main() {
     }
     await pumpFor(tester, const Duration(seconds: 2));
     await capture(tester, 'd03_dragon_result');
-    await home(tester);
+    await tap(tester, 'result_map', ms: 2000);
     await tap(tester, 'map_label_catch_stars', ms: 900);
     await tap(tester, 'sheet_open', ms: 1500);
     await capture(tester, 'd04_stars_home');

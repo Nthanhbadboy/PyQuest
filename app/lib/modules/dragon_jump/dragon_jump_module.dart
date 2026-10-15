@@ -511,7 +511,7 @@ class _DragonPlayScreenState extends State<DragonPlayScreen> with SingleTickerPr
         tone: PQTone.coral,
       ),
     );
-    if (!mounted) return;
+    if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? false)) return;
     switch (action) {
       case ResultAction.primary:
         if (!await spendEnergy(context, cost)) {

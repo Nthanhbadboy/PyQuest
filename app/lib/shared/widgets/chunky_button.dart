@@ -112,7 +112,9 @@ class _ChunkyButtonState extends State<ChunkyButton> {
               height: _height,
               width: widget.expand ? double.infinity : null,
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: widget.size == ChunkySize.small ? 14 : 22),
+                padding: EdgeInsets.symmetric(
+                  horizontal: switch (widget.size) { ChunkySize.large => 22, ChunkySize.medium => 14, ChunkySize.small => 12 },
+                ),
                 child: Center(widthFactor: 1, child: content),
               ),
             ),

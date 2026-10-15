@@ -416,7 +416,7 @@ class _BugPuzzleScreenState extends State<BugPuzzleScreen> {
         tone: PQTone.grape,
       ),
     );
-    if (!mounted) return;
+    if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? false)) return;
     switch (action) {
       case ResultAction.primary:
         if (next == null || !await spendEnergy(context, nextCost)) {

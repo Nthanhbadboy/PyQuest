@@ -723,15 +723,17 @@ class _OptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = switch (state) {
-      _OptionState.correct => const Color(0xFFDDF5D2),
-      _OptionState.wrong => const Color(0xFFFFE0D6),
-      _OptionState.idle => selected ? const Color(0xFFFFF1C2) : PQColors.cream,
-    };
+    final color = code
+        ? (selected || state != _OptionState.idle ? PQColors.codeBgSoft : PQColors.codeBg)
+        : switch (state) {
+            _OptionState.correct => const Color(0xFFDDF5D2),
+            _OptionState.wrong => const Color(0xFFFFE0D6),
+            _OptionState.idle => selected ? const Color(0xFFFFF1C2) : PQColors.cream,
+          };
     final border = switch (state) {
       _OptionState.correct => PQColors.success,
       _OptionState.wrong => PQColors.coralDeep,
-      _OptionState.idle => selected ? PQColors.sunDeep : PQColors.ink,
+      _OptionState.idle => selected ? (code ? PQColors.pyYellow : PQColors.sunDeep) : PQColors.ink,
     };
     return GestureDetector(
       onTap: onTap,
@@ -744,10 +746,19 @@ class _OptionCard extends StatelessWidget {
           border: Border.all(color: border, width: selected || state != _OptionState.idle ? 3 : 2.2),
           boxShadow: [BoxShadow(color: PQColors.ink.withValues(alpha: 0.15), offset: const Offset(0, 3), blurRadius: 0)],
         ),
-        child: code
-            ? Text.rich(TextSpan(children: highlightPython(text, PQText.code.copyWith(fontSize: 16, color: PQColors.ink))),
-                style: PQText.code.copyWith(fontSize: 16, color: PQColors.ink))
-            : Text(text, style: PQText.bodyStrong),
+        child: Row(
+          children: [
+            Expanded(
+              child: code
+                  ? Text.rich(TextSpan(children: highlightPython(text, PQText.code.copyWith(fontSize: 16))),
+                      style: PQText.code.copyWith(fontSize: 16))
+                  : Text(text, style: PQText.bodyStrong),
+            ),
+            if (state != _OptionState.idle)
+              Icon(state == _OptionState.correct ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                  color: state == _OptionState.correct ? PQColors.success : PQColors.coralDeep, size: 26),
+          ],
+        ),
       ),
     );
   }
