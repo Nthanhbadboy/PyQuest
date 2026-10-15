@@ -426,7 +426,8 @@ class _DragonPlayScreenState extends State<DragonPlayScreen> with SingleTickerPr
     final g = _game!;
     final dt = (elapsed - _last).inMicroseconds / 1e6;
     _last = elapsed;
-    if (_paused) return;
+    // Auto-pause while a dialog (e.g. a break reminder) covers the game.
+    if (_paused || !(ModalRoute.of(context)?.isCurrent ?? true)) return;
     g.update(dt);
     if (g.events.isNotEmpty) {
       final audio = AppScope.of(context).audio;

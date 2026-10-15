@@ -104,9 +104,10 @@ Future<void> home(WidgetTester tester) async {
   await pumpFor(tester, const Duration(seconds: 2));
 }
 
-Future<AppServices> start(WidgetTester tester, {bool rich = true, bool intro = false}) async {
-  tester.view.physicalSize = const Size(1170, 2532); // 390 x 844 @3x
-  tester.view.devicePixelRatio = 3.0;
+Future<AppServices> start(WidgetTester tester, {bool rich = true, bool intro = false, bool small = false}) async {
+  // Default: 390 x 844 @3x. Small: 360 x 640 @2x (older/compact Android phones).
+  tester.view.physicalSize = small ? const Size(720, 1280) : const Size(1170, 2532);
+  tester.view.devicePixelRatio = small ? 2.0 : 3.0;
   addTearDown(tester.view.reset);
   final s = await seeded(tester, rich: rich);
   if (intro) await tester.runAsync(() => s.settings.setRaw('intro_seen', '0'));
@@ -288,6 +289,30 @@ void main() {
     await tap(tester, 'open_playground', ms: 1500);
     await tap(tester, 'playground_run', ms: 800);
     await capture(tester, 'e08_playground');
+    await finish(tester, s);
+  });
+
+  testWidgets('render F: small phone 360x640', (tester) async {
+    final s = await start(tester, small: true);
+    await capture(tester, 'f00_small_map');
+    await tap(tester, 'map_label_robot_maze', ms: 900);
+    await tap(tester, 'sheet_open', ms: 1500);
+    await tap(tester, 'maze_level_4', ms: 1500);
+    for (final k in ['palette_down', 'palette_down', 'palette_down', 'palette_down', 'palette_right', 'palette_right']) {
+      await tap(tester, k, ms: 150);
+    }
+    await capture(tester, 'f01_small_maze');
+    await home(tester);
+    await tap(tester, 'map_label_main_quest', ms: 900);
+    await tap(tester, 'sheet_open', ms: 1500);
+    await tap(tester, 'lesson_card_mq1_04', ms: 1500);
+    await tap(tester, 'lesson_continue', ms: 500);
+    await tap(tester, 'example_run', ms: 500);
+    await capture(tester, 'f02_small_lesson');
+    await home(tester);
+    await tap(tester, 'map_label_dragon_jump', ms: 900);
+    await tap(tester, 'sheet_open', ms: 1500);
+    await capture(tester, 'f03_small_dragon_home');
     await finish(tester, s);
   });
 }

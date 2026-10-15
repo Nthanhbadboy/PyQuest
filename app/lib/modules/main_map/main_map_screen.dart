@@ -181,8 +181,8 @@ class _MainMapScreenState extends State<MainMapScreen> with TickerProviderStateM
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
               child: Row(
                 children: [
-                  const Flexible(child: _IslandTitle()),
-                  const Spacer(),
+                  const Expanded(child: Align(alignment: Alignment.centerLeft, child: _IslandTitle())),
+                  const SizedBox(width: 8),
                   const EnergyPill(),
                   const SizedBox(width: 8),
                   ListenableBuilder(

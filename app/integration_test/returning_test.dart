@@ -34,7 +34,11 @@ void main() {
   testWidgets('returning player sees saved progress', (tester) async {
     await binding.convertFlutterSurfaceToImage();
     await tester.pumpWidget(const PyQuestApp());
-    await wait(tester, 4000);
+    final end = DateTime.now().add(const Duration(seconds: 20));
+    while (DateTime.now().isBefore(end) && find.byKey(const ValueKey('settings_button')).evaluate().isEmpty) {
+      await tester.pump(const Duration(milliseconds: 200));
+    }
+    await wait(tester, 1500);
     expect(find.byKey(const ValueKey('welcome_next')), findsNothing, reason: 'intro was already seen');
     await binding.takeScreenshot('40_relaunch_map');
 

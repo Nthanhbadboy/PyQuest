@@ -12,7 +12,9 @@ permissions:
   checks: write
 
 concurrency:
-  group: pyquest-ci-${{ github.ref }}
+  # Emulator runs ([emulator] in the commit message) only cancel each other,
+  # so a quick follow-up push never kills a long device run.
+  group: pyquest-ci-${{ github.ref }}-${{ contains(github.event.head_commit.message, '[emulator]') }}
   cancel-in-progress: true
 
 env:
@@ -86,12 +88,16 @@ jobs:
       - name: Fail if any step failed
         run: "! grep -v '=0$' status.txt"
 
-  android:
+  apk:
     needs: check
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[emulator]')
     runs-on: ubuntu-latest
-    timeout-minutes: 80
+    timeout-minutes: 40
     steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/share/swift || true
+          df -h / | tail -1
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
@@ -102,21 +108,63 @@ jobs:
           channel: stable
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
-      - name: Gradle cache
-        uses: actions/cache@v4
+      - name: Build release APK
+        working-directory: app
+        shell: bash
+        run: |
+          set +e
+          flutter pub get > ../apk_release.txt 2>&1
+          flutter build apk --release >> ../apk_release.txt 2>&1; echo "build_apk_release=$?" >> ../status.txt
+          cp build/app/outputs/flutter-apk/app-release.apk ../pyquest-release.apk
+          ls -la ../pyquest-release.apk >> ../apk_release.txt 2>&1
+          tail -25 ../apk_release.txt
+      - name: Upload release APK
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('app/android/**/*.gradle*', 'app/android/gradle/wrapper/gradle-wrapper.properties', 'app/pubspec.lock') }}
-          restore-keys: gradle-${{ runner.os }}-
+          name: pyquest-release-apk
+          path: pyquest-release.apk
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Publish report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 ci/report.py "PyQuest release APK" status.txt apk_release.txt
+
+  android:
+    needs: check
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[emulator]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - name: Free disk space
+        run: |
+          df -h / | tail -1
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/share/swift \
+            /usr/local/share/powershell /usr/local/share/chromium /opt/microsoft /opt/google "$AGENT_TOOLSDIRECTORY" || true
+          if [ -d /usr/local/lib/android/sdk/ndk ]; then
+            cd /usr/local/lib/android/sdk/ndk && sudo find . -maxdepth 1 -mindepth 1 ! -name '28.2*' -exec rm -rf {} + || true
+          fi
+          sudo docker image prune --all --force > /dev/null 2>&1 || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
           ls -la /dev/kvm || true
-      - name: Build APKs (debug for the emulator, release for testers)
+      - name: Build debug APK
         working-directory: app
         shell: bash
         run: |
@@ -124,22 +172,11 @@ jobs:
           flutter pub get > ../apk_build.txt 2>&1
           flutter build apk --debug >> ../apk_build.txt 2>&1; echo "build_apk_debug=$?" >> ../status.txt
           cp build/app/outputs/flutter-apk/app-debug.apk ../pyquest-debug.apk
-          flutter build apk --release >> ../apk_build.txt 2>&1; echo "build_apk_release=$?" >> ../status.txt
-          cp build/app/outputs/flutter-apk/app-release.apk ../pyquest-release.apk
-          ls -la ../*.apk >> ../apk_build.txt 2>&1
+          ls -la ../pyquest-debug.apk >> ../apk_build.txt 2>&1
           (cd android && ./gradlew --stop) >/dev/null 2>&1
+          df -h / >> ../apk_build.txt
           free -m >> ../apk_build.txt
-          tail -30 ../apk_build.txt
-      - name: Upload APKs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pyquest-apks
-          path: |
-            pyquest-release.apk
-            pyquest-debug.apk
-          if-no-files-found: warn
-          retention-days: 14
+          tail -20 ../apk_build.txt
       - name: Emulator journey
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -148,7 +185,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           ram-size: 3072M
-          disk-size: 6000M
+          disk-size: 2048M
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           working-directory: app
@@ -156,6 +193,7 @@ jobs:
       - name: Shrink screenshots
         if: always()
         run: |
+          df -h / | tail -1
           pip install --quiet pillow || true
           python3 ci/shrink_screenshots.py > shrink.txt 2>&1 || true
           cat shrink.txt

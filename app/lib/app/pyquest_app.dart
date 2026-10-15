@@ -67,6 +67,8 @@ class _PyQuestAppState extends State<PyQuestApp> {
         title: 'PyQuest',
         debugShowCheckedModeBanner: false,
         theme: theme,
+        // Respect the system text size, but cap it so game layouts stay intact.
+        builder: (context, child) => MediaQuery.withClampedTextScaling(maxScaleFactor: 1.2, child: child!),
         home: const MainMapScreen(),
       ),
     );

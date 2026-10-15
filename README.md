@@ -16,12 +16,12 @@ mạnh của PyQuest, không phải yêu cầu bắt buộc cho mọi trò chơi
 
 ## Trạng thái dự án
 
-**Giai đoạn:** Đang xây dựng nền tảng — chưa phát hành.
+**Giai đoạn:** Bản chơi được đầu tiên — **v0.1 "Đảo Khởi Đầu"** (chưa phát hành).
 **Repository:** Private.
-**Nền tảng mục tiêu:** Flutter (Android trước, iOS sau).
+**Nền tảng:** Flutter 3.47 · Android trước (đã chạy trên Android emulator trong CI), kiến trúc giữ tương thích iOS.
 
-Tiến độ hiện tại đang ở bước **chuẩn hóa tài liệu và chốt quyết định kỹ thuật**
-trước khi bắt tay vào lát cắt dọc đầu tiên.
+Mã nguồn ứng dụng nằm trong [`app/`](app/). Mô tả những gì đã có ở mục
+[Bản dựng hiện tại](#bản-dựng-hiện-tại--v01-đảo-khởi-đầu).
 
 ---
 
@@ -82,18 +82,61 @@ trước khi bắt tay vào lát cắt dọc đầu tiên.
 
 ---
 
+## Bản dựng hiện tại — v0.1 "Đảo Khởi Đầu"
+
+Một hòn đảo vẽ tay là **Main Map (hub)**: chạm vào từng địa điểm để mở hoạt động
+riêng. Không có XP hay cấp độ toàn cục — mỗi hoạt động có luật chơi, điểm,
+tài nguyên và tiến trình của riêng nó.
+
+| Địa điểm | Hoạt động | Cần Python? | Có gì |
+|---|---|---|---|
+| **Tháp Python** | Main Quest | Có | Chặng 1 *Code Apprentice*: 12 bài, 64 bước (truyện, ví dụ chạy được, trắc nghiệm, ghép mảnh, xếp dòng, tự viết code, điều khiển Robo bằng code). Màn tổng kết bài, Adventure Recap, Sân tập code miễn phí. |
+| **Mê Cung Robo** | Mini-game xếp lệnh | Không | 10 màn, 3 sao (tới rương · nhặt đủ đá quý · ít lệnh), khối Lặp lại, gợi ý theo số lần sai, xem code Python sinh ra. **Xưởng Mê Cung (Creator Mode):** tự vẽ mê cung, đặt luật, chứng minh giải được bằng khối lệnh hoặc code Python. |
+| **Núi Lửa Pip** | Rồng Nhảy (arcade) | Không | Game loop riêng, vật lý nhảy 2 lần, chướng ngại, xu. Xu chỉ dùng trong **Tổ Rồng** (nâng cấp + mũ cho Pip). |
+| **Đài Thiên Văn** | Hái Sao (arcade) | Không | Kéo bình hứng sao, combo, sao cầu vồng, né thiên thạch. Sao hái được thắp sáng **Bản đồ chòm sao** (sưu tầm). |
+| **Xưởng Bitsy** | Săn Bọ Lỗi (debug) | Có | 12 câu đố, 20 con bọ; mở khi học xong Bài 3 (nút "Đi tới bài học"). |
+| **Nhà Thành Tích** | Thành tích | — | 15 huy hiệu (3 bí mật), Tường chiến tích, Bộ sưu tập, Góc sáng tạo — mở dần theo hành trình. |
+
+Hệ thống chung: năng lượng hồi theo thời gian (kể cả khi tắt app; không quảng cáo,
+không mua bán), nhiệm vụ hằng ngày (3 nhiệm vụ, nhận tem, không chuỗi ngày),
+nhắc nghỉ 30/45/60 phút và bài nghỉ mắt 20 giây, âm thanh/nhạc tự tạo, chế độ êm dịu,
+lưu toàn bộ tiến trình bằng SQLite.
+
+**PyQuest Python (mô phỏng)** là một tập con Python viết bằng Dart, chạy ngay trên
+máy: biến, số, chuỗi, f-string, list, if/elif/else, for/while, def/return.
+Có giới hạn rõ ràng (100.000 bước, 50 tầng gọi hàm, 10.000 ký tự output; không
+`import`, class, dict, tuple, `input()`...). Lỗi được giải thích bằng tiếng Việt
+kèm thông báo mà Python thật sẽ in. Danh sách đầy đủ hiển thị trong app
+(Cài đặt → *Về PyQuest Python*).
+
+Ảnh chụp thật từ Android emulator (CI) nằm ở [`docs/screenshots/`](docs/screenshots/).
+
+---
+
 ## Cấu trúc repository
 
 ```text
 PyQuest/
 ├── README.md
-├── docs/
-│   ├── PRODUCT_VISION.md
-│   ├── GAME_DESIGN.md
-│   ├── TECHNICAL_ARCHITECTURE.md
-│   └── ROADMAP.md
-└── app/                 # Mã nguồn Flutter (sẽ bổ sung khi bắt đầu code)
+├── docs/                      # Tài liệu sản phẩm + ảnh chụp màn hình
+├── .github/workflows/ci.yml   # Analyze, test, render preview, build APK, emulator
+├── ci/                        # Script CI (báo cáo, hành trình trên emulator)
+└── app/                       # Ứng dụng Flutter
+    ├── lib/
+    │   ├── app/               # Khởi động, AppServices, registry các địa điểm
+    │   ├── core/              # Sự kiện, cấu hình, âm thanh, cài đặt, phiên chơi
+    │   ├── data/              # SQLite (migration) + repository
+    │   ├── modules/           # Mỗi hoạt động một module độc lập
+    │   ├── python_runtime/    # PyQuest Python (lexer, parser, interpreter)
+    │   └── shared/            # Theme, nhân vật vẽ bằng code, widget dùng chung
+    ├── assets/                # Bản đồ, font, âm thanh, cấu hình, nội dung (JSON)
+    ├── test/                  # Unit, widget, render preview
+    └── integration_test/      # Hành trình trên thiết bị thật/emulator
 ```
+
+Thêm một trò chơi mới = tạo module trong `lib/modules/` + thêm một dòng vào
+`lib/app/activity_registry.dart`; bản đồ, năng lượng, sự kiện, huy hiệu và lưu
+trữ không cần sửa.
 
 | Tài liệu | Vai trò |
 |---|---|
@@ -135,15 +178,24 @@ giá sau, khi mô phỏng đã chứng minh giá trị sư phạm. Chi tiết �
 
 ## Cách chạy
 
-> Sẽ cập nhật khi mã nguồn Flutter được khởi tạo ở giai đoạn Foundation.
-
-Dự kiến:
+Yêu cầu: Flutter SDK stable (đã kiểm tra với 3.47.7), Android SDK hoặc thiết bị Android.
 
 ```bash
-# Yêu cầu: Flutter SDK (stable), Dart
+cd app
 flutter pub get
-flutter run
+flutter run                     # chạy trên thiết bị/emulator Android
+
+flutter analyze                 # kiểm tra tĩnh
+flutter test --exclude-tags render          # unit + widget test
+flutter test --tags render test/render      # xuất ảnh preview vào build/previews/
+flutter drive --driver=test_driver/integration_test.dart \
+  --target=integration_test/journey_test.dart   # hành trình trên thiết bị, chụp màn hình
 ```
+
+CI (GitHub Actions) chạy analyze + test + render preview cho mỗi lần push vào
+`arena/**`; commit có `[emulator]` trong message sẽ build APK (debug + release,
+tải ở mục *Artifacts* của lần chạy) và chạy hành trình trên Android emulator,
+tự lưu ảnh chụp vào `docs/screenshots/`.
 
 ---
 

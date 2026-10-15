@@ -15,6 +15,16 @@ Future<void> wait(WidgetTester tester, int ms) async {
   }
 }
 
+/// Waits (real time) until [key] is on screen, up to [timeoutMs].
+Future<bool> waitFor(WidgetTester tester, String key, {int timeoutMs = 20000}) async {
+  final end = DateTime.now().add(Duration(milliseconds: timeoutMs));
+  while (DateTime.now().isBefore(end)) {
+    if (find.byKey(ValueKey(key)).evaluate().isNotEmpty) return true;
+    await tester.pump(const Duration(milliseconds: 200));
+  }
+  return false;
+}
+
 Future<void> shot(String name) async {
   try {
     await binding.takeScreenshot(name);
@@ -34,7 +44,8 @@ Future<void> tapKey(WidgetTester tester, String key, {int waitMs = 900}) async {
 Future<void> boot(WidgetTester tester) async {
   await binding.convertFlutterSurfaceToImage();
   await tester.pumpWidget(const PyQuestApp());
-  await wait(tester, 3500);
+  await waitFor(tester, 'settings_button');
+  await wait(tester, 1200);
 }
 
 Future<void> toMap(WidgetTester tester) async {
@@ -52,7 +63,8 @@ void main() {
     await tester.pumpWidget(const PyQuestApp(minSplash: Duration(milliseconds: 2500)));
     await wait(tester, 900);
     await shot('01_splash');
-    await wait(tester, 3000);
+    await waitFor(tester, 'welcome_next');
+    await wait(tester, 800);
     expect(find.byKey(const ValueKey('welcome_next')), findsOneWidget);
     await shot('02_welcome');
     for (var i = 0; i < 3; i++) {
