@@ -180,9 +180,51 @@ class _TutorPanelState extends State<TutorPanel> {
     );
   }
 
-  Widget _voiceControls() {
+  Widget _voiceControls({bool compact = false}) {
     final recording = _voice?.isRecording ?? false;
     final waiting = _voiceBusy && !recording;
+
+    // The regular tutor sheet also contains the transcript, quick actions,
+    // composer, and privacy notes. Keep the idle voice entry compact so it
+    // doesn't force the bottom sheet to overflow on shorter phones.
+    if (compact) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: PQColors.parchment,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: PQColors.sea.withValues(alpha: 0.25)),
+        ),
+        child: Row(
+          children: [
+            ChoiceChip(
+              label: const Text('Kai'),
+              selected: _voiceCharacter == CharacterId.kai,
+              onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.kai),
+              visualDensity: VisualDensity.compact,
+            ),
+            const SizedBox(width: 4),
+            ChoiceChip(
+              label: const Text('Lumi'),
+              selected: _voiceCharacter == CharacterId.lumi,
+              onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.lumi),
+              visualDensity: VisualDensity.compact,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: FilledButton.icon(
+                key: const ValueKey('tutor_gemini_live_voice'),
+                onPressed: waiting ? null : _toggleVoice,
+                icon: Icon(recording ? Icons.stop_circle_rounded : Icons.mic_rounded),
+                label: Text(_lang == PqLang.vi ? 'Trò chuyện' : 'Voice'),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(10),
@@ -416,7 +458,7 @@ class _TutorPanelState extends State<TutorPanel> {
                 ),
               ],
               const SizedBox(height: 8),
-              _voiceControls(),
+              _voiceControls(compact: !voiceMode),
               if (!voiceMode) ...[
                 const SizedBox(height: 8),
                 _composer(busy),
