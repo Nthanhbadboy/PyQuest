@@ -185,6 +185,26 @@ một dòng; `diff` với `git show 560106e:…` cùng dòng → **byte-identica
 "children under 12, consistent with `PRODUCT_VISION.md` §1", giữ câu "not a preschool playroom").
 Không sửa ảnh, không sửa file khác trong thư mục reference của người dùng.
 
+## EV-ID-010 — Flutter CI có lúc đỏ vì **chính harness render**; đã sửa trong scope `test`
+
+Run `38873447429` @ `0968d1d` (commit **chỉ sửa docs**): `pub_get=0 analyze=0 test=0`
+nhưng **`render=1`**, lỗi `A Timer is still pending even after the widget tree was disposed`
+ở `render D: arcade games`. Chuỗi stack trỏ đúng nguồn: `_tick` của Catch Stars
+(`app/lib/modules/catch_stars/catch_stars_module.dart:386`) hẹn
+`Future.delayed(900ms)` cho cảnh "game over"; harness kết thúc ngay trong cửa sổ 900 ms đó
+thì timer còn sống lúc teardown. Đây là **race của test**, phụ thuộc nhịp pump, nên ba run
+trước đó (`c39a86f`, `8e2111b`, `f3f8210`) render vẫn `+9` xanh.
+
+Cách xử lý: chỉ sửa `app/test/render/render_screens_test.dart::finish()` — gỡ cây widget
+bằng `pumpWidget(SizedBox.shrink())` rồi pump thêm 1100 ms (> chu kỳ timer dài nhất) để
+callback kịp chạy và tự thoát nhờ guard `if (!mounted) return`. Không đổi assertion, không
+`ignore` lỗi, không đụng `app/lib/**`.
+
+Ghi nhận cho design (không tự sửa, thuộc scope runtime): mini-game **không huỷ** delayed
+callback khi dispose, chỉ dựa vào guard `mounted`. Trong app thật vô hại, nhưng nếu sau này
+`_finish` ghi DB/sau animation thì sẽ có callback chạy sau khi màn chơi đã đóng. Đề xuất
+nhỏ cho gói UI/game riêng: lưu `Timer` và `cancel()` trong `dispose()`.
+
 ## Chưa kiểm tra được — không được suy ra từ các mục trên
 
 1. Render "after" của PQC-003 chưa tồn tại vì chưa có asset mới — xem mục 2.

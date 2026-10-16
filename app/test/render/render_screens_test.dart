@@ -134,6 +134,13 @@ Future<AppServices> start(WidgetTester tester, {bool rich = true, bool intro = f
 Future<void> finish(WidgetTester tester, AppServices s) async {
   s.dispose();
   await pumpFor(tester, const Duration(seconds: 4));
+  // Gỡ cây widget rồi pump thêm một nhịp dài hơn Timer dài nhất mà mini-game hẹn,
+  // nếu không render D có thể kết thúc đúng giữa lúc Catch Stars vừa đặt
+  // `Future.delayed(900ms)` cho màn hình kết quả → "A Timer is still pending even
+  // after the widget tree was disposed" và đỏ cả render job không liên quan gì tới
+  // thay đổi đang được kiểm. Đây là sửa harness (chỉ `app/test/**`), không nới assert.
+  await tester.pumpWidget(const SizedBox.shrink());
+  await pumpFor(tester, const Duration(milliseconds: 1100));
 }
 
 void main() {
