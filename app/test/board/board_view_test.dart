@@ -661,8 +661,10 @@ void main() {
     await tester.pumpAndSettle();
     final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
         as Map<String, dynamic>)['ops']! as List<dynamic>;
+    // Raw fixture op 0 clears, op 1 is the token group, and op 2 is the output. Read the authored
+    // label from the output op; the prior index accidentally tested the group's VI text instead.
     final Map<String, dynamic> alt =
-        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
+        (beatOps[2] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
     final String viAlt = alt['vi']! as String;
     expect(find.bySemanticsLabel(RegExp(RegExp.escape(viAlt))), findsWidgets,
         reason: 'authored VI label must occur in the real semantics tree: "$viAlt"');
@@ -683,7 +685,7 @@ void main() {
     final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
         as Map<String, dynamic>)['ops']! as List<dynamic>;
     final Map<String, dynamic> alt =
-        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
+        (beatOps[2] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
     controller.setLocale('en');
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel(RegExp(RegExp.escape(alt['en']! as String))), findsWidgets,
@@ -706,7 +708,7 @@ void main() {
     final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
         as Map<String, dynamic>)['ops']! as List<dynamic>;
     final Map<String, dynamic> alt =
-        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
+        (beatOps[2] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
     controller.setLocale('en');
     await tester.pumpAndSettle();
     expect(controller.learnerAdvance(), isTrue);
