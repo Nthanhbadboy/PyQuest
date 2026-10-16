@@ -1,0 +1,42 @@
+{
+  "review": "PQD-003-r15",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "b0475f415767576a6036aa7a23131e0863ba15a2",
+  "run_id": 38955349050,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38955349050",
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "custom_report_check_id": 117158869377,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 10.7,
+  "ordinary": {
+    "passed": 342,
+    "failed": 6
+  },
+  "render_passed": 10,
+  "confirmed_failure_names": [
+    "R10-D1-sem: semantic output ở beat 2 mang nhãn VI đã author",
+    "R10-D1: output VI ban đầu có prose, thứ tự và semantics thật",
+    "R10-D2-sem: sau setLocale(en), semantic output cập nhật sang EN",
+    "R10-D2: đổi locale VI→EN cập nhật chữ và semantics trên cùng controller"
+  ],
+  "missing_failure_names": 2,
+  "full_failure_stack_traces_retrieved": false,
+  "failed_job_log_download": "EOF from Actions log endpoint",
+  "runtime_and_preview_identical_to": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+  "changed_paths": [
+    "app/test/board/board_view_test.dart"
+  ],
+  "source_sha256": {
+    "app/test/board/board_view_test.dart": "041a1bde8f8c368eb9c469ae00f962d6793c631c01b908bc5b9853214a3ead42"
+  },
+  "new_images_inspected": 0,
+  "local_flutter_tests_run": false
+}

@@ -32,25 +32,26 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision14: review0dfb01e, authorization r6 giữ nguyên**.
-Đọc task003, `reviews/PQD-003-r14.md` + r14-ci.json/PQC-010-r8/ci-report.md.
+Task hiện tại là **PQD-003 revision15: review b0475f4, authorization r6 giữ nguyên**.
+Đọc task003, `reviews/PQD-003-r15.md`, receipt r15 và `PQC-010-r9/ci-report.md`.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
 **Làm ngay, không ACK-only:**
-1. CI38954357993/report117155376969: analyze sạch9.0s,342pass/3fail,10renderpass.
-   CảD1/D2/D3 đều đỏ.1declaration→3, không có bằngchứng3runtime regression mới.
-2. D1 không gọi setLocale: ưu tiên first failed assertion của VI ban đầu. Trả actual/
-   expected, outcome/beat/locale, target count/rect/viewport, visible output và node
-   semantics. Không tiếp tục đoán bằng pump/wrapper hoặc sửa controller.locale trước.
-3. Full log bịchặn thì thêm diagnostic checkpoint cases tênrõ hoặc ảnh diagnostic
-   test-host nhỏ qua kênh capture sẵncó theo review§2; không bỏ D1–D3, không sửa CI/
-   publisher hay đưa debug text vào runtime. Không coi diagnostic là ảnh nghiệmthu.
-4. D3 roundtrip cần marker ink/note và assertions giữstate trên cùngcontroller,
-   cùng code/output/prose/semantics đúng. Không reset controller giữa các mốc.
-5. Runtime/capture không đổi từd18b3d4: giữ groupX/scale/capture/Tab/output đã đóng.
-   Trả testedSHA/run/custom report/CI xanh, giải thích count nếu thêmtests. Scope
-   010/014/015 giữ nguyên;014 độc lập,015 sau014CI xanh, dependency chỉ015. Không mở
-   LessonScreen/AI/voice/art/social/economy/P06/CI/publisher hoặc apply lại guard.
+1. Run38955349050/report117158869377: analyze sạch10.7s,342pass/6fail,10renderpass.
+   D1/D2/D1-sem/D2-sem được report nêu rõ;2 tên bị cắt, chưa xác minh D3/D3-sem.
+2. D1/D2 vẫn fail sau khi bỏ label assertions: không kết luận chỉ semantics sai.
+   D1 chưa đổi locale. Thu first failure ở setup-only → scroll-only → content/node:
+   outcome/beat/locale, finder count/rect/offset, actual/expected hoặc exception.
+   Không đoán sửa controller, thêm pump/wrapper; không tiếp tục chỉ tách locale tests.
+3. Diagnostic nhỏ theo r15§2/r14§2 nếu log không tải được. Có thể so setup có/không
+   semantics trong diagnostic riêng, không tắt semantics ở acceptance để làm xanh.
+   Không sửa CI/publisher/debug runtime, không bỏ assertions/tests.
+4. Đổi tên/comment visible cases cho đúng phạm vi; thêm learner marker và assertions
+   roundtrip VI→EN→VI cùng controller. D3/D3-sem hiện chưa seed ink.
+5. Giữ runtime/capture và các fixes d18b3d4 đã đóng. Trả exact SHA/run/report,
+   actual first failure nếu còn đỏ, giải thích count delta. Scope010/014/015 giữ
+   nguyên;014 độc lập,015 sau014CI xanh, dependency chỉ015. Không mở LessonScreen/
+   AI/voice/art/social/economy/P06/CI/publisher hoặc apply lại guard.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
