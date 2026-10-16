@@ -89,6 +89,7 @@ jobs:
         run: "! grep -v '=0$' status.txt"
 
   apk:
+    # Hands-free Gemini Live tutor verification build; [apk] runs this job alone.
     # APK-only test builds can run on [apk] commits without waiting for the
     # unrelated render-test gate. Emulator runs remain opt-in via [emulator].
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[emulator]') || contains(github.event.head_commit.message, '[apk]')
