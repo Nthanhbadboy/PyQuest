@@ -132,7 +132,7 @@ class _TutorPanelState extends State<TutorPanel> {
         if (!mounted) return;
         setState(() {
           _voiceStatus = status;
-          if (status == 'Đã xong lượt nói' || status == 'Voice chưa kết nối') {
+          if (status == 'Đã dừng trò chuyện' || status == 'Voice chưa kết nối') {
             _voiceBusy = false;
           }
         });
@@ -229,7 +229,7 @@ class _TutorPanelState extends State<TutorPanel> {
               Expanded(
                 child: Text(
                   _voiceStatus.isEmpty
-                      ? (_lang == PqLang.vi ? 'Thử nói chuyện bằng giọng nói' : 'Try a voice conversation')
+                      ? (_lang == PqLang.vi ? 'Chạm để bắt đầu trò chuyện rảnh tay' : 'Tap to start a hands-free conversation')
                       : _voiceStatus,
                   style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w700, color: PQColors.ink),
                 ),
@@ -249,8 +249,8 @@ class _TutorPanelState extends State<TutorPanel> {
             icon: Icon(recording ? Icons.stop_circle_rounded : Icons.mic_rounded),
             label: Text(
               recording
-                  ? (_lang == PqLang.vi ? 'Dừng để nghe câu trả lời' : 'Stop and hear reply')
-                  : (_lang == PqLang.vi ? 'Nói với ${_voiceCharacter.displayName}' : 'Talk to ${_voiceCharacter.displayName}'),
+                  ? (_lang == PqLang.vi ? 'Dừng trò chuyện' : 'Stop conversation')
+                  : (_lang == PqLang.vi ? 'Bắt đầu trò chuyện với ${_voiceCharacter.displayName}' : 'Start talking with ${_voiceCharacter.displayName}'),
             ),
           ),
           if (_voiceError.isNotEmpty) ...[
@@ -269,8 +269,8 @@ class _TutorPanelState extends State<TutorPanel> {
           const SizedBox(height: 4),
           Text(
             _lang == PqLang.vi
-                ? 'Bản thử nghiệm: giữ quyền micro khi bắt đầu; Gemini Live gửi âm thanh lên mạng.'
-                : 'Experimental: microphone audio is sent to Gemini Live.',
+                ? 'Trò chuyện rảnh tay: sau khi bắt đầu, tutor nghe và trả lời bằng giọng nói. Chạm Dừng để kết thúc.'
+                : 'Hands-free conversation: the tutor listens and replies aloud. Tap Stop to end.',
             style: const TextStyle(fontSize: 10, color: PQColors.inkSoft),
           ),
         ],
