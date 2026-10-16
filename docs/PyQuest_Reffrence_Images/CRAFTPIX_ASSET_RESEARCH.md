@@ -65,6 +65,35 @@ An asset is accepted only if it:
 
 Do not commit downloaded ZIPs, raw artwork, preview screenshots, or extracted assets into this public reference folder just to build a gallery: the CraftPix license prohibits redistributing source art separately. Keep a source/asset manifest here. If an asset is selected for the actual PyQuest app, include only the specific optimized files used by the running app under the applicable license and ensure they are not exposed as standalone downloadable artwork. For visual references in this folder, prefer links to the official pages and original app screenshots created by the project team.
 
+
+## New source: free animated characters with direct downloads (no account)
+
+**Best verified source for immediate sprite-sheet candidates:** AutoSprite Free Library — https://www.autosprite.io/free-sprite-sheets
+
+The official library states that its downloadable character sprite sheets are CC0, usable commercially, require no attribution, and have no sign-up gate. Each page exposes a direct ZIP URL plus PNG sheets and JSON atlas files. This is a better fit for testing than CraftPix's sign-in-gated downloads.
+
+| Candidate | Official page | Animation content | Direct ZIP (no login shown) | Best role / limitation |
+|---|---|---|---|---|
+| Forest Druid | https://www.autosprite.io/free-sprite-sheets/forest-druid | Idle, walk, run; 75 frames; 384×384 frames | https://pub-63ab27389d044634a73e89c1a0c6d4a6.r2.dev/free-library/sprite-sheets/forest-druid/forest-druid.zip | Best candidate to test as a moving village character; fantasy look may be too dramatic for ordinary villagers. |
+| Hooded Blade | https://www.autosprite.io/free-sprite-sheets/hooded-blade | Idle, run, attack, jump; 95 frames; 512×512 frames | https://pub-63ab27389d044634a73e89c1a0c6d4a6.r2.dev/free-library/sprite-sheets/hooded-blade/hooded-blade.zip | Hero / quest NPC, not a crowd villager; larger frames mean optimize before shipping. |
+| Knight | https://www.autosprite.io/free-sprite-sheets/knight | Check page before selection | Open the product page and use its direct ZIP link | Potential guard / arena NPC; verify animation list and style first. |
+| Wanderer | https://www.autosprite.io/free-sprite-sheets/wanderer | One 64-frame motion clip; 512×512 frames | https://pub-63ab27389d044634a73e89c1a0c6d4a6.r2.dev/free-library/sprite-sheets/wanderer/wanderer.zip | Atmospheric roaming character only; it is not documented as separate idle/walk/run states. |
+| Dancer | https://www.autosprite.io/free-sprite-sheets/dancer | One 64-frame motion clip; 512×512 frames | https://pub-63ab27389d044634a73e89c1a0c6d4a6.r2.dev/free-library/sprite-sheets/dancer/dancer.zip | Optional plaza activity; not a general NPC. |
+
+More direct candidates: Knight, Alchemist, Twin-Dagger Rogue, Arcane Mage, Red Dragon, Witch, Ninja, Paladin, Goblin and Dancer are listed at https://www.autosprite.io/free-sprite-sheets. Do not assume all have the same animation states; inspect each item page.
+
+**Important technical caveat:** a free animated sheet is not automatically an isometric 2.5D villager. Before choosing, inspect its actual camera angle and frame consistency. AutoSprite's pages describe transparent PNG sheets plus JSON atlases, but the inspected Forest Druid and Hooded Blade prompts describe side-view characters, so they are proof of no-login animated assets—not yet approved as the final village art direction.
+
+### Other no-account sources
+
+- **Kenney Mini Characters (3D, animated, CC0):** https://kenney.nl/assets/mini-characters — official page lists 25 files, animation and CC0; the page has a “Continue without donating” route. Useful if the team wants to render 3D characters from a fixed isometric camera into sprites.
+- **Kenney New Platformer Pack (2D, CC0):** https://kenney.nl/assets/new-platformer-pack — 440 files; check the included character animation states and whether its side-view style fits before use.
+- **OpenGameArt OPP2017 sprites:** https://opengameart.org/content/opp2017-sprites-characters-objects-effects — more than 100 sprites/animations including villagers, animals and travelers. The page lists multiple licenses, so inspect the exact files and their license metadata before shipping; do not assume the whole archive is uniformly CC0.
+
+### Download status / honest boundary
+
+The official AutoSprite pages expose direct public ZIP links without a sign-in prompt. However, this ChatGPT execution environment could not retrieve the binary archive over its network, so **no ZIP or PNG has been committed to the repository yet**. Do not mark any candidate as downloaded or integrated until the actual files are present and inspected. Use the direct ZIP links above from a normal browser, then add only optimized, license-compatible assets to the app's runtime asset folder (not this reference folder).
+
 ## Important status
 
-This document is a shortlist for investigation, not evidence that the assets have been downloaded, license-reviewed for a specific release, or integrated. Update this file with exact products and manifest entries only after inspecting the actual archives.
+This document is a shortlist for investigation, not evidence that assets have been downloaded, license-reviewed for a specific release, or integrated. CraftPix downloads remain sign-in-gated. AutoSprite exposes direct no-sign-in download URLs, but the current tool environment could not retrieve their binary archives. Update this file with exact manifest entries only after inspecting the actual archives.
