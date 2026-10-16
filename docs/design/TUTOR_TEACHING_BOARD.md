@@ -130,3 +130,12 @@ Task design PQD-003 giao code đọc/source-map, contract/fixture tests theo ph�
 Chưa mở thay runtime/voice/art/dependency toàn app; production cần implementation task
 có allowlist sau khi review prototype và hợp đồng. Không đánh dấu “AI giảng trên bảng
 đã xong” từ screenshot hoặc timer demo.
+
+## Yêu cầu xuyên suốt: ngôn ngữ
+
+PyQuest phải đa ngôn ngữ, mặc định theo hệ thống và cho đổi/lưu trong Cài đặt.
+Áp dụng cho UI, lời Tutor, bài học và bảng giảng; không dịch code, dữ liệu trẻ nhập
+hoặc expected output. Đổi locale không mất bài/nét/tiến trình và không phát lại
+voice/reply locale cũ. Xem [LANGUAGE_AND_LOCALIZATION.md](LANGUAGE_AND_LOCALIZATION.md)
+cho fallback, VI/EN ban đầu, kiến trúc mở rộng và nghiệm thu toàn app. P03/P04 đã có
+mẫu tương tác; đây chưa phải bằng chứng Flutter/AI/voice đã đa ngôn ngữ.

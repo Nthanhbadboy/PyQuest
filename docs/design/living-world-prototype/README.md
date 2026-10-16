@@ -64,12 +64,20 @@ selected targets48px, không overflow kể cả board embedded, keyboard selecti
 P03 standalone browser suite cũng chạy lại sau thay đổi bridge và PASS.
 
 Chưa kiểm: thiết bị/TalkBack/stylus, font scale2, battery/frame budget, collision/occlusion
-production, AI/voice/storage hoặc child usability. Lời nói được soạn sẵn không phải AI
+production, AI/voice/learner-work storage hoặc child usability. Lời nói được soạn sẵn không phải AI
 hiểu hình/nét. Không tạo fake XP, mở khóa, online players hoặc reward khi đi thuyền.
 
 ## Handoff
 
-`../LIVING_WORLD_DIRECTION.md` là quyết định sáng tạo và ràng buộc. PQD-003 revision2
+`../LIVING_WORLD_DIRECTION.md` là quyết định sáng tạo và ràng buộc. PQD-003 revision3
 nhận thêm world context, nhưng bảng Tutor vẫn là việc code ưu tiên; không mở runtime
 hoặc biến request này thành một orchestration framework. Mẫu P03 dùng thêm `?embedded=1`
 để vào lớp trực tiếp/ẩn header; đường standalone vẫn giữ nguyên.
+
+## Ngôn ngữ
+
+Cài đặt → Theo hệ thống / Tiếng Việt / English. UI, Tutor script và board cùng lựa
+chọn, parent/iframe đồng bộ ngay cả khi storage bị chặn; không reset input/ink/route.
+Chỉ preference lưu ở localStorage; bài/nét vẫn chỉ trong phiên. Xem
+`../shared-l10n/README.md` cho thêm 9 unit tests, browser locale suite và evidence;
+`../LANGUAGE_AND_LOCALIZATION.md` là contract toàn app, chưa phải Flutter đã localize.

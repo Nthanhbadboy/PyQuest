@@ -7,10 +7,11 @@ chat hai người không thể là giao diện học chính.
 ## Xem/bấm thử
 
 ```sh
-python3 -m http.server 8000 --bind 0.0.0.0 --directory docs/design/tutor-board-prototype
+python3 tools/design/serve_world.py --port 8001
 ```
 
-Mở Live Preview. Từ làng → **Cùng Robo mở bảng**:
+Mở Live Preview tại `/tutor-board-prototype/` (server root là P04). Cần serve cả
+`docs/design` vì dùng `shared-l10n`. Từ làng → **Cùng Robo mở bảng**:
 - Chọn Chữ & lời chào hoặc Số & phép cộng.
 - Dùng trước/sau, Xem từng bước, Tạm dừng, Xem lại từ đầu. Beat chỉ thay sau thao tác
   hoặc timer demo3.3s; không giả là đồng bộ giọng nói.
@@ -36,7 +37,8 @@ Các cú pháp khác nói rõ chưa hỗ trợ, không gán thất bại bài h�
 pin hash trong lessons.json; kế hoạch giảng được soạn riêng. Bài3 demo chỉ khám phá
 example, không thay bài multiplication/choice hay chấm điểm nguồn.
 
-Không lưu DB/localStorage, không gửi câu hỏi/code/nét vẽ đi đâu, không cộng điểm,
+Không lưu bài/code/nét vào DB/localStorage; **chỉ preference ngôn ngữ được lưu**.
+Không gửi câu hỏi/code/nét vẽ đi đâu, không cộng điểm,
 energy, XP hoặc hoàn thành lesson. Tải lại mất state. Note là ghi chú cục bộ, **chưa
 có AI đọc hiểu nét vẽ hay trả lời theo ghi chú**. Voice chưa tích hợp, không có mic.
 Đây là các giới hạn của mẫu, không phải rút bỏ yêu cầu AI tương tác trong sản phẩm.
@@ -45,7 +47,7 @@ có AI đọc hiểu nét vẽ hay trả lời theo ghi chú**. Voice chưa tíc
 
 ```sh
 node --test tools/design/test_tutor_board.mjs
-# Cần server8000 và dependencies tools/design/package.json:
+# Cần server8001 và dependencies tools/design/package.json:
 NODE_PATH=/path/to/node_modules node tools/design/smoke_tutor_board.cjs
 ```
 
@@ -79,3 +81,10 @@ override. Với Chromium hệ thống hợp lệ không cần thư viện /tmp n
 Đọc `../TUTOR_TEACHING_BOARD.md`: UX, lớp board, safe TeachingPlan, sync cue với voice,
 context revision, safety/fallback và acceptance. Task `../coordination/tasks/PQD-003.md`.
 Không copy engine JS/subset evaluator vào Dart hoặc bỏ pipeline voice/transcript đã sửa.
+
+## Ngôn ngữ
+
+Cài đặt → Theo hệ thống / Tiếng Việt / English, đổi UI/Tutor script/board ngay, giữ
+bài đang làm. BCP47 regional matching, English fallback, lựa chọn lưu qua reload.
+Xem `../shared-l10n/README.md` và `../LANGUAGE_AND_LOCALIZATION.md`; production Flutter
+chưa triển khai, literal code/output của bài nguồn không bị dịch.

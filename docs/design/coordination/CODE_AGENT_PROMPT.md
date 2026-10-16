@@ -32,13 +32,18 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task ưu tiên hiện tại là **PQD-003 revision2, Tutor-first + bảng giảng trong thế giới sống**.
+Task ưu tiên hiện tại là **PQD-003 revision3, Tutor-first + bảng giảng + ngôn ngữ toàn app**.
 Đọc `docs/design/coordination/tasks/PQD-003.md`, `docs/design/TUTOR_TEACHING_BOARD.md`
 và `docs/design/tutor-board-prototype/README.md`. Xem thêm
 `docs/design/LIVING_WORLD_DIRECTION.md` / P04 nối world với bảng, không ưu tiên NPC
-trước board. Chạy mẫu để hiểu vì sao đây không
-phải chat reskin. PQC-009 vừa có bàn giao code8a8af34; giữ kết quả/test đã làm, không làm lại. Design
-đã đọc tóm tắt nhưng chưa full-review suite mới; trả evidence đúng SHA khi được hỏi.
+trước board. Đọc thêm `docs/design/LANGUAGE_AND_LOCALIZATION.md` và
+`docs/design/shared-l10n/README.md`: mặc định theo hệ thống, Settings override lưu lại,
+locale của UI/Tutor/board/voice thống nhất, giữ code/ink và loại stale reply. Đề xuất
+allowlist foundation locale/migration và coverage toàn app, không port DOM adapter
+hoặc coi cast/Tutor vi/en cũ là đã đa ngôn ngữ hoàn chỉnh. Chạy mẫu để hiểu vì sao đây không
+phải chat reskin. PQC-009 đã có bàn giao mới6e636b8/EV-ID-018; giữ kết quả/test đã làm,
+không làm lại. Design đã fetch/đọc tóm tắt, chưa audit độc lập CI38890785888@e546f9b;
+trả evidence đúng SHA khi được hỏi.
 
 Trong scope test/coordination: source-map, fixture/contract negative tests, đề xuất
 implementation allowlist nhỏ cho board trước/AI sau/audio cue sync sau. Không bật

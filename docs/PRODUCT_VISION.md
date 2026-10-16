@@ -32,6 +32,15 @@ Trẻ mở PyQuest vì thích chơi → ở lại vì tò mò → tự hỏi
 
 ---
 
+## Ngôn ngữ trải nghiệm
+
+PyQuest phải **đa ngôn ngữ**, mặc định theo ngôn ngữ hệ thống. Người dùng có thể chọn
+ngôn ngữ và lưu lựa chọn ở **Cài đặt**, hoặc trở về **Theo hệ thống**. Giao diện,
+nội dung bài, lời Tutor và bảng giảng phải nhất quán; không chỉ dịch các nút bấm.
+Không dịch âm thầm code/dữ liệu trẻ nhập hoặc đổi đáp án. VI/EN là gói ban đầu trong
+mẫu thiết kế; thêm ngôn ngữ qua gói nội dung được review. Chi tiết và giới hạn triển
+khai hiện tại: [Language contract](design/LANGUAGE_AND_LOCALIZATION.md).
+
 ## Thuật ngữ cốt lõi (dùng thống nhất toàn bộ tài liệu)
 
 Các khái niệm dưới đây **không** được dùng thay thế cho nhau. Khi một tài liệu

@@ -25,6 +25,14 @@ Mã nguồn ứng dụng nằm trong [`app/`](app/). Mô tả những gì đã c
 
 ---
 
+## Ngôn ngữ — yêu cầu toàn sản phẩm
+
+Mặc định **theo hệ thống**, đổi và lưu trong **Cài đặt → Ngôn ngữ**. UI, Tutor và
+bảng giảng dùng cùng lựa chọn; không dịch code/output hoặc xóa bài đang làm.
+Mẫu làng/bảng đã thử được VI/EN, **chưa phải Flutter đã đa ngôn ngữ toàn app**.
+Xem [contract và bàn giao](docs/design/LANGUAGE_AND_LOCALIZATION.md) và
+[mẫu tương tác + checks](docs/design/shared-l10n/README.md).
+
 ## PyQuest là gì?
 
 - **Thế giới game chung** với bản đồ, nhân vật, thú cưng, kho báu và nhiệm vụ.

@@ -195,3 +195,12 @@ thuyền và hải đồ nhiều đảo theo phản hồi người dùng. `LIVIN
 hướng kiến trúc/thẩm mỹ và `living-world-prototype/` có tương tác. Không dùng sự đông
 đúc của cảnh thay cho trải nghiệm học: bảng Tutor P03 vẫn là ưu tiên implementation.
 Quyền chọn/đưa asset đẹp vào không bỏ yêu cầu provenance/license/camera/palette nhất quán.
+
+## Yêu cầu xuyên suốt: ngôn ngữ
+
+PyQuest phải đa ngôn ngữ, mặc định theo hệ thống và cho đổi/lưu trong Cài đặt.
+Áp dụng cho UI, lời Tutor, bài học và bảng giảng; không dịch code, dữ liệu trẻ nhập
+hoặc expected output. Đổi locale không mất bài/nét/tiến trình và không phát lại
+voice/reply locale cũ. Xem [LANGUAGE_AND_LOCALIZATION.md](LANGUAGE_AND_LOCALIZATION.md)
+cho fallback, VI/EN ban đầu, kiến trúc mở rộng và nghiệm thu toàn app. P03/P04 đã có
+mẫu tương tác; đây chưa phải bằng chứng Flutter/AI/voice đã đa ngôn ngữ.

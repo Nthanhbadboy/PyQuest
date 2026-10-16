@@ -1,0 +1,13 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {resolveLanguage,normalizePreference,translate} from '../../docs/design/shared-l10n/locale-core.mjs';
+import {en} from '../../docs/design/shared-l10n/en.mjs';
+test('unset or corrupt preference means system, not hardcoded Vietnamese',()=>{for(const v of [null,undefined,'broken','fr','EN'])assert.equal(normalizePreference(v),'system');});
+test('match region variants and the first supported system language',()=>{assert.equal(resolveLanguage('system',['en-GB']).language,'en');assert.equal(resolveLanguage('system',['vi-VN']).language,'vi');assert.equal(resolveLanguage('system',['fr-FR','vi-VN','en-US']).language,'vi');assert.equal(resolveLanguage('system',['en-AU','vi']).language,'en');});
+test('manual choice overrides the system without changing the choice',()=>{const x=resolveLanguage('vi',['en-US']);assert.equal(x.language,'vi');assert.equal(x.preference,'vi');assert.equal(x.matched,null);assert.equal(resolveLanguage('en',['vi']).language,'en');});
+test('unsupported or empty system list falls back explicitly to English',()=>{for(const list of [[],['ja-JP'],['zh-Hant-TW','ko-KR']]){const x=resolveLanguage('system',list);assert.equal(x.language,'en');assert.equal(x.fallback,true);assert.equal(x.preference,'system');}});
+test('invalid OS values are skipped, not crashed or interpreted as a supported locale',()=>{assert.equal(resolveLanguage('system',[null,{},'not_a_tag','vi-VN']).language,'vi');assert.equal(resolveLanguage('system',['vi_NOT_VALID']).fallback,true);});
+test('return to system follows its new value rather than caching a resolved override',()=>{assert.equal(resolveLanguage('system',['en-US']).language,'en');assert.equal(resolveLanguage('system',['vi-VN']).language,'vi');assert.equal(resolveLanguage('vi',['en-US']).language,'vi');});
+test('dynamic names and numeric placeholders translate as one message',()=>{assert.equal(translate('Bước 3 / 4','en'),'Step 3 / 4');assert.equal(translate('Bạn đang ở Đảo Khởi Đầu. Chọn một bến để khám phá.','en'),'You are at Starter Island. Choose a dock to explore.');assert.equal(translate('Mây vừa vào xưởng Bitsy.','en'),'Mây just entered Bitsy’s workshop.');});
+test('catalog entries preserve their placeholder sets and have real values',()=>{for(const [vi,english] of Object.entries(en)){assert(english.trim(),vi);const slots=s=>[...s.matchAll(/\{\d+\}/g)].map(m=>m[0]).sort();assert.deepEqual(slots(vi),slots(english),vi);}});
+test('code, unknown text and names do not undergo partial word replacement',()=>{for(const x of ['print("Xin chào!")','Robo thông minh','Mây','my_value = 1'])assert.equal(translate(x,'en'),x);assert.equal(translate('Tháp Python','vi'),'Tháp Python');});

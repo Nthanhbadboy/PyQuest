@@ -1,3 +1,4 @@
+import {localize,t,applyExternalPreference} from '../shared-l10n/locale.mjs';
 import {boardAt,validatePlan,tryPrint} from './engine.mjs';
 const $ = s => document.querySelector(s);
 const embedded=new URLSearchParams(location.search).get('embedded')==='1';
@@ -28,10 +29,13 @@ function render(loadInput=false){
  $('#help-answer').hidden=true;$('#transcript-lines').innerHTML=p.beats.slice(0,book.beat+1).map(b=>`<li><strong>${escape(b.title)}</strong><br>${escape(b.say)}</li>`).join('');
  renderInk();renderOutput();
 }
-function renderOutput(){const out=current().output;$('#student-output').textContent=out?(out.ok?(out.output||'(dòng trống)'):'Mình sửa một chút nhé'):'Chưa chạy';$('#student-feedback').textContent=!out?'':!out.ok?out.message:topic==='print'?(out.output==='Robo thông minh'?'Đúng mục tiêu mẫu! Python in phần chữ, không in dấu ngoặc kép.':'Dòng mẫu đã in ra chữ. Để thử mục tiêu trong bài, đổi thành Robo thông minh.'):out.kind==='text'?'Có ngoặc kép → giữ nguyên phần chữ, không tính phép cộng.':'Không có ngoặc kép → cộng hai số rồi in kết quả.';$('.practice-output').classList.toggle('error',Boolean(out&&!out.ok));}
+function renderOutput(){const out=current().output;$('#student-output').textContent=out?(out.ok?(out.output||t('(dòng trống)')):t('Mình sửa một chút nhé')):t('Chưa chạy');$('#student-feedback').textContent=!out?'':!out.ok?out.message:topic==='print'?(out.output==='Robo thông minh'?'Đúng mục tiêu mẫu! Python in phần chữ, không in dấu ngoặc kép.':'Dòng mẫu đã in ra chữ. Để thử mục tiêu trong bài, đổi thành Robo thông minh.'):out.kind==='text'?'Có ngoặc kép → giữ nguyên phần chữ, không tính phép cộng.':'Không có ngoặc kép → cộng hai số rồi in kết quả.';$('.practice-output').classList.toggle('error',Boolean(out&&!out.ok));}
 function renderInk(){const svg=$('#student-ink');svg.replaceChildren();for(const points of ink()){const line=document.createElementNS('http://www.w3.org/2000/svg','polyline');line.setAttribute('points',points.map(p=>p.join(',')).join(' '));line.setAttribute('fill','none');line.setAttribute('stroke','#ffb69b');line.setAttribute('stroke-width','3');line.setAttribute('vector-effect','non-scaling-stroke');line.setAttribute('stroke-linecap','round');line.setAttribute('stroke-linejoin','round');svg.append(line);}$('#undo-ink').disabled=!ink().length;$('#clear-ink').disabled=!ink().length;}
 function advance(delta){stop();current().beat=Math.min(plan().beats.length-1,Math.max(0,current().beat+delta));render();}
 function tick(){if(!playing||document.hidden||screen!=='lesson'){stop();return;}if(current().beat>=plan().beats.length-1){stop();return;}current().beat++;render();timer=setTimeout(tick,3300);}
+const translated=fn=>(...args)=>{const result=fn(...args);localize();return result;};
+[render,renderOutput,stop]=[render,renderOutput,stop].map(translated);
+window.addEventListener('pyquest:languagechange',()=>{stop();if(plan())renderOutput();localize();});
 $('#play').onclick=()=>{if(playing){stop();return;}if(current().beat===plan().beats.length-1){current().beat=0;render();}playing=true;$('#play').textContent='Ⅱ Tạm dừng';$('#tutor-status').textContent='ĐANG TRÌNH BÀY · KHÔNG CÓ ÂM THANH';timer=setTimeout(tick,3300);};
 $('#previous').onclick=()=>advance(-1);$('#next').onclick=()=>advance(1);$('#replay').onclick=()=>{stop();current().beat=0;render();};
 $('#slower').onclick=()=>{stop();$('#help-answer').hidden=false;$('#help-answer').textContent='Mình dừng ở bước này nhé. Dùng mũi tên để đi từng bước; phần bạn viết và vẽ vẫn ở đây.';};
@@ -46,6 +50,6 @@ $('#student-ink').onpointerup=$('#student-ink').onpointercancel=()=>{stroke=null
 $('#undo-ink').onclick=()=>{stroke=null;ink().pop();renderInk();};$('#clear-ink').onclick=()=>{stroke=null;current().inks[current().beat]=[];renderInk();};
 for(const id of ['begin','skip','lesson-nav'])$('#'+id).onclick=()=>setScreen('lesson');$('#village-nav').onclick=()=>setScreen('village');$('.brand').onclick=e=>{e.preventDefault();setScreen('village');};
 for(const button of document.querySelectorAll('button[data-topic]'))button.onclick=()=>setTopic(button.dataset.topic);
-window.addEventListener('message',e=>{if(!embedded||e.origin!==location.origin||e.source!==window.parent)return;if(e.data?.type==='pyquest:pause'){stop();stroke=null;document.body.classList.add('sleeping');}else if(e.data?.type==='pyquest:resume'){document.body.classList.remove('sleeping');$('#calm').checked=Boolean(e.data.calm);calm();}});
+window.addEventListener('message',e=>{if(!embedded||e.origin!==location.origin||e.source!==window.parent)return;applyExternalPreference(e.data?.languagePreference);if(e.data?.type==='pyquest:pause'){stop();stroke=null;document.body.classList.add('sleeping');}else if(e.data?.type==='pyquest:resume'){document.body.classList.remove('sleeping');$('#calm').checked=Boolean(e.data.calm);calm();}});
 document.addEventListener('visibilitychange',()=>{document.body.classList.toggle('sleeping',document.hidden);if(document.hidden){stop();stroke=null;}});
 try{const response=await fetch('lessons.json');if(!response.ok)throw new Error('Không tải được bài mẫu');const data=await response.json();plans=data.plans.map(validatePlan);render(true);for(const id of ['begin','skip','lesson-nav'])$('#'+id).disabled=false;if(embedded){setScreen('lesson');parent.postMessage({type:'pyquest:ready'},location.origin);}}catch(e){$('#begin').disabled=true;$('#skip').disabled=true;$('#lesson-nav').disabled=true;$('.prototype-note').textContent='Không tải được bài mẫu. Mở qua HTTP theo README; chưa có AI kết nối.';console.error(e);}

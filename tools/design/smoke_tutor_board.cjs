@@ -5,9 +5,9 @@ const output=path.resolve(__dirname,'../../docs/design/tutor-board-prototype/evi
  const browser=await pw.launch({executablePath:process.env.BROWSER_EXECUTABLE_PATH||await chromium.executablePath(),args:chromium.args,headless:true});
  try{
   fs.mkdirSync(output,{recursive:true});
-  const page=await browser.newPage({viewport:{width:1440,height:1100},deviceScaleFactor:1});const errors=[];
+  const page=await browser.newPage({viewport:{width:1440,height:1100},deviceScaleFactor:1,locale:'vi-VN'});const errors=[];
   page.on('pageerror',e=>errors.push(String(e)));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
-  await page.goto(process.env.GALLERY_URL||'http://127.0.0.1:8000/',{waitUntil:'networkidle'});
+  await page.goto(process.env.GALLERY_URL||'http://127.0.0.1:8001/tutor-board-prototype/',{waitUntil:'networkidle'});
   await page.locator('#calm').check();await page.screenshot({path:path.join(output,'01-village.jpg'),fullPage:true,type:'jpeg',quality:86});
   await page.locator('#begin').click();assert(await page.locator('#classroom').isVisible());
   assert.equal(await page.locator('.code-block mark').innerText(),'print');
