@@ -32,27 +32,25 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision17: review7cbabb2, authorization r6 giữ nguyên**.
-Đọc task003, `reviews/PQD-003-r17.md`, receipt r17 và `PQC-010-r11/ci-report.md`.
+Task hiện tại là **PQD-003 revision18: review5bf44fa, authorization r6 giữ nguyên**.
+Đọc task003, `reviews/PQD-003-r18.md`, receipt r18 và SDK evidence trong PQC-010-r12.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
 **Làm ngay, không ACK-only:**
-1. Run38962609867/report117183209570: analyze sạch11.6s,342pass/8fail,10renderpass.
-   R00-D1-setup/R00-D1-scroll/R10-D1/R10-D1-sem xác nhận fail;4 tên bị cắt.
-2. Named setup failure đã rõ: case không scroll/setLocale/getSemantics. Lấy first
-   exception/actual, checkpoint cuối đạt và stack location, phân biệt body/cleanup.
-   Theo ensureSemantics → pump/apply → advance → keys → pending exception.
-   Không suy key thiếu hoặc cùng root cause; scroll case có thể fail ở setup.
-3. Điểm nghẽn là nội dung lỗi, không phải thiếu test names. Nếu không có full log,
-   dùng diagnostic test-host capture r14§2; ghi checkpoint + actual/exception,
-   catch để ghi thì phải rethrow/giữ fail. Không CI/publisher/runtime debug hoặc
-   skip assertions. Bàn giao tiếp cần nội dung lỗi, không chỉ SHA/count.
-4. D3 đã có roundtrip-ink assertions ở EN/VI: giữ lại, không cần thêm cùng marker.
-   Source coverage đã bổ sung, chưa chứng minh runtime pass. Giữ các fixes đã đóng;
-   chỉnh tên/comment visible tests đúng phạm vi khi sửa tiếp.
-5. Trả exact SHA/run/report và xác minh setup/scroll/visible/real semantics/roundtrip.
-   Scope010/014/015 giữ nguyên;014 độc lập,015 sau014CI xanh, dependency chỉ015.
-   Không mở LessonScreen/AI/voice/art/social/economy/P06/CI/publisher hay apply lại guard.
+1. Run38964109149/report117188237347: analyze sạch10.8s,349pass/3fail,10renderpass.
+   Chỉ D1-sem/D2-sem/D3-sem đỏ; visible/checkpoints và D3-visible ink roundtrip qua.
+2. SDK abaf9c5237 mặc định testWidgets semanticsEnabled:true: bỏ manual handle KHÔNG
+   tắt semantics. Đã đối chiếu source verifier chạy trước package:test teardown.
+   Ba -sem tests vẫn có extra ensureSemantics + addTearDown(handle.dispose), quá muộn.
+3. Bỏ cặp manual handle ở ba test, dùng framework-managed handle (explicit
+   semanticsEnabled:true nếu muốn rõ). Hoặc dispose handle riêng trong try/finally
+   trước callback return, không double dispose. Giữ getSemantics, expected VI/EN,
+   negative stale-locale assertions và hành trình; không false/skip/property-only.
+4. Không sửa runtime/renderer/scroll theo đoán. Source lifecycle finding không phải
+   full CI trace; chạy lại exact SHA, lấy actual first failure nếu vẫn đỏ. Giữ ink
+   roundtrip đã qua và groupX/scale/output/Tab/capture đã đóng. Không thêm test split.
+5. Trả exact SHA/run/report. Scope010/014/015 giữ nguyên;014 độc lập,015 sau014 xanh,
+   dependency chỉ015. Không LessonScreen/AI/voice/art/social/economy/P06/CI/publisher.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
