@@ -301,6 +301,9 @@ enum BoardIssueCode {
   unknownShape('unknownShape'),
   /// Highlight không khớp code nguồn: token không tồn tại, số lần ≠ tokenIds, dòng ngoài đoạn.
   badHighlightRange('badHighlightRange'),
+  /// Beat khai object mà không op nào trên bảng vẽ nó (rev 7 §R7-B): `objectIds` là danh sách
+  /// thứ **có thật trên bảng**, không phải chỗ để ghi chú tên cho đẹp.
+  unanchoredObject('unanchoredObject'),
   staleToken('staleToken'),
   wrongSession('wrongSession'),
   wrongTurn('wrongTurn'),

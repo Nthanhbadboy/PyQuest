@@ -108,6 +108,11 @@ void main() {
           null,
         ],
     ));
+    test('beat khai objectIds nhưng không op nào vẽ object đó (rev 7 §R7-B)', () {
+      // Bỏ đúng op `output` của b2: `out-box` không còn hộp nào trên bảng ở beat đó, dù altText
+      // vẫn kể về nó. Trước rev 7 ca này sạch — tức là validator không thấy bảng trống.
+      expectOnly(1, <Object>['beats', 1, 'ops', 2], removed(), BoardIssueCode.unanchoredObject);
+    });
     test('sai outputScope (hai dòng mà khai one line)', () => expectOnly(
         1, <Object>['beats', 2, 'outputScope'], 'singleStatement', BoardIssueCode.outputScopeMismatch));
     test('khóa chấm điểm/answer lọt vào plan', () => expectOnly(

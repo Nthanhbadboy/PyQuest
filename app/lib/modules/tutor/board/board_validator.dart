@@ -5,6 +5,7 @@
 /// **reject nguyên plan**, không cắt beat/connector rồi render nốt.
 library;
 
+import 'board_layout.dart';
 import 'board_models.dart';
 import 'board_plan_codec.dart';
 
@@ -105,6 +106,18 @@ BoardValidation validatePlan(
         'beat khai singleStatement nhưng statement có $statementLines dòng',
         beatIndex: b,
       ));
+    }
+
+    // Rev 7 §R7-B: chiều ngược của luật "không tham chiếu object lạ". Bảng là lớp tích lũy,
+    // nên object của beat có thể do op của beat trước vẽ (và vẫn còn nếu chưa lau); beat nào
+    // khai object mà tới hiện tại không op nào cấp hộp cho nó thì plan đang mô tả một thứ
+    // sẽ không bao giờ xuất hiện — reject, không vẽ thiếu rồi hy vọng không ai nhìn.
+    final Set<String> drawn = drawnObjectIds(visibleOpsThrough(plan, b));
+    for (final String id in beat.objectIds) {
+      if (!drawn.contains(id)) {
+        issues.add(BoardIssue(BoardIssueCode.unanchoredObject,
+            'beat ${beat.beatId} khai $id nhưng không op nào vẽ nó', beatIndex: b));
+      }
     }
 
     int outputs = 0;

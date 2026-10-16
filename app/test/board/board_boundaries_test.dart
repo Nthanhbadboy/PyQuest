@@ -16,6 +16,7 @@ const List<String> kBoardLibFiles = <String>[
   'lib/modules/tutor/board/board_plan_codec.dart',
   'lib/modules/tutor/board/board_validator.dart',
   'lib/modules/tutor/board/board_controller.dart',
+  'lib/modules/tutor/board/board_layout.dart',
   'lib/modules/tutor/board/board_view.dart',
 ];
 
@@ -76,7 +77,7 @@ List<String> _codeLines(String path) {
 }
 
 void main() {
-  test('năm file board tồn tại và có doc comment đầu file', () {
+  test('sáu file board tồn tại và có doc comment đầu file', () {
     for (final String path in kBoardLibFiles) {
       final File file = File(path);
       expect(file.existsSync(), isTrue, reason: 'thiếu $path');
@@ -149,7 +150,10 @@ void main() {
     for (final String needle in <String>[
       'Html',
       'flutter_svg',
-      'Text.rich',
+      'Uri.parse',
+      'dart:mirrors',
+      'Process.run',
+      'dart:developer',
       'GestureDetector(onTap',
       'Tween',
       'CurvedAnimation',
@@ -158,6 +162,10 @@ void main() {
     ]) {
       expect(lines.any((String l) => l.contains(needle)), isFalse, reason: 'view chứa $needle');
     }
+    // rev 7 §R7-B: `Text.rich`/`TextSpan` không còn bị cấm — tô đúng token cần span. Cái bị
+    // cấm là diễn giải nội dung của trẻ thành markup/URL hoặc chạy nó.
+    expect(lines.any((String l) => l.contains('RichText')), isTrue,
+        reason: 'highlight phải là span thật trên code, không phải chuỗi mô tả');
     // `AnimatedBuilder` chỉ là wrapper rebuild theo Listenable — không nội suy gì.
     final Iterable<String> animat = lines.where((String l) => l.contains('Animat'));
     for (final String line in animat) {

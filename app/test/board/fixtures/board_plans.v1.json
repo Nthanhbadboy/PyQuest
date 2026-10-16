@@ -108,7 +108,8 @@
               "altText": {
                 "vi": "Ô kết quả hiện \"Xin chào!\" và không còn dấu ngoặc kép",
                 "en": "The result box shows \"Xin chào!\" without the quote marks"
-              }
+              },
+              "objectId": "out-box"
             }
           ]
         },
@@ -188,7 +189,8 @@
               "altText": {
                 "vi": "Dòng đầu print(3 + 4) được tô; dòng hai có ngoặc kép nên in nguyên chữ",
                 "en": "Line one print(3 + 4) is highlighted; line two prints as text because of the quotes"
-              }
+              },
+              "objectId": "expr-add"
             },
             {
               "type": "tokenGroup",
@@ -222,7 +224,6 @@
           "sourceStatement": "print(3 + 4)",
           "outputScope": "singleStatement",
           "objectIds": [
-            "expr-add",
             "out-box",
             "stone-1",
             "stone-2",
@@ -264,7 +265,8 @@
               "altText": {
                 "vi": "Ô kết quả chỉ ghi dòng đầu: 7",
                 "en": "The result box shows only the first line: 7"
-              }
+              },
+              "objectId": "out-box"
             }
           ]
         },
@@ -285,7 +287,8 @@
               "altText": {
                 "vi": "Dòng hai in nguyên chữ 3 + 4 vì có ngoặc kép",
                 "en": "The second line prints 3 + 4 as text because of the quotes"
-              }
+              },
+              "objectId": "lit-text"
             },
             {
               "type": "output",
@@ -294,7 +297,8 @@
               "altText": {
                 "vi": "Ô kết quả có hai dòng: 7 rồi đến 3 + 4",
                 "en": "The result box has two lines: 7 then 3 + 4"
-              }
+              },
+              "objectId": "out-box"
             }
           ]
         },

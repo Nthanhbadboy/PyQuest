@@ -36,6 +36,28 @@ void setSurface(WidgetTester tester, Size surface) {
   addTearDown(tester.view.resetDevicePixelRatio);
 }
 
+/// Văn bản thật của một node vẽ (RichText duy nhất bên trong node đó).
+String nodeText(WidgetTester tester, String key) {
+  final Iterable<Element> found =
+      find.descendant(of: find.byKey(ValueKey<String>(key)), matching: find.byType(RichText)).evaluate();
+  expect(found, isNotEmpty, reason: '$key phải có chữ để đọc, không phải một hộp rỗng');
+  return found.map((Element e) => (e.widget as RichText).text.toPlainText()).join('\n');
+}
+
+/// Chuỗi đang được **tô sáng** trong một node: nghiệm thu R7-B là màu nền trên chữ, không phải
+/// một dòng mô tả "đã in đậm cái này".
+List<String> highlightedIn(WidgetTester tester, String key) {
+  final RichText rich = tester.widget<RichText>(
+    find.descendant(of: find.byKey(ValueKey<String>(key)), matching: find.byType(RichText)).first,
+  );
+  final List<String> out = <String>[];
+  rich.text.visitChildren((InlineSpan span) {
+    if (span is TextSpan && span.style?.backgroundColor != null) out.add(span.text ?? '');
+    return true;
+  });
+  return out;
+}
+
 /// Key của control đang nhận focus: đi ngược từ node focus tới widget mang `ValueKey` quen thuộc.
 String? focusedBoardControlKey() {
   final BuildContext? context = FocusManager.instance.primaryFocus?.context;
@@ -61,6 +83,7 @@ Future<BoardController> pumpBoard(
   double textScale = 1.0,
   String locale = 'vi',
   bool reduceMotion = false,
+  String codeText = '',
 }) async {
   final Map<String, dynamic> plan = composedPlan(planIndex);
   final BoardController controller = BoardController(
@@ -75,7 +98,7 @@ Future<BoardController> pumpBoard(
       controller.applyPlan(controller.currentToken, validateComposed(planIndex, locale: locale));
   expect(outcome, BoardApplyOutcome.applied, reason: 'host test phải nhận được plan đã duyệt');
   setSurface(tester, surface);
-  await tester.pumpWidget(boardHost(BoardView(controller: controller),
+  await tester.pumpWidget(boardHost(BoardView(controller: controller, codeText: codeText),
       textScale: textScale, surface: surface));
   return controller;
 }
@@ -147,6 +170,136 @@ void main() {
     expect(c.currentCopy!.caption, contains('print'));
     expect(find.textContaining('print'), findsWidgets);
     expect(tester.takeException(), isNull);
+  });
+
+  // rev 7 §R7-B: bảng phải **vẽ** từ op — code thật được tô, nhóm có đúng số vật, ô kết quả
+  // có nội dung, shape theo geometry, connector nối hai hộp. Bằng chứng ở đây là hình học và
+  // span màu của renderer, không phải một chuỗi "đã tô" in ra.
+  group('R7-B: layer vẽ từ op', () {
+    testWidgets('dòng code là node có key, tô sáng bằng màu trên đúng token', (WidgetTester tester) async {
+      await pumpBoard(tester, planIndex: 0, codeText: 'print("Xin chào!")');
+      expect(find.byKey(const ValueKey<String>('board_code_line_0')), findsOneWidget);
+      expect(nodeText(tester, 'board_code_line_0'), 'print("Xin chào!")',
+          reason: 'nội dung code phải nguyên văn, không rút gọn, không dịch');
+      expect(highlightedIn(tester, 'board_code_line_0'), <String>['print'],
+          reason: 'beat 1 nói về `print` -> đúng token đó có nền, không phải cả dòng');
+      expect(find.byKey(const ValueKey<String>('board_group_0_1')), findsNothing,
+          reason: 'beat này không có tokenGroup thì không được vẽ nhóm');
+    });
+
+    testWidgets('op text của beat vẽ thành hộp chữ riêng, không lẫn vào caption',
+        (WidgetTester tester) async {
+      final BoardController c = await pumpBoard(tester, planIndex: 1);
+      // beat 1 plan 1 chỉ có highlightLine + hai nhóm: không có op text nào được bịa thành hộp.
+      expect(find.byKey(const ValueKey<String>('board_prose_0_0')), findsNothing);
+      c.next();
+      await tester.pump();
+      c.next();
+      await tester.pump();
+      c.next();
+      await tester.pump();
+      expect(c.beatIndex, 3);
+      expect(find.byKey(const ValueKey<String>('board_prose_3_0')), findsOneWidget);
+      expect(nodeText(tester, 'board_prose_3_0'), contains('Quan sát trước khi kết luận'));
+      expect(nodeText(tester, 'board_caption'), isNotEmpty);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('hai tokenGroup: hộp nhóm 4 rộng hơn nhóm 3 đúng một ô', (WidgetTester tester) async {
+      await pumpBoard(tester, planIndex: 1, codeText: 'print(3 + 4)\nprint("3 + 4")');
+      expect(find.byKey(const ValueKey<String>('board_group_0_1')), findsOneWidget);
+      expect(find.byKey(const ValueKey<String>('board_group_0_2')), findsOneWidget);
+      final Rect left = tester.getRect(find.byKey(const ValueKey<String>('board_group_0_1')));
+      final Rect right = tester.getRect(find.byKey(const ValueKey<String>('board_group_0_2')));
+      expect(right.width - left.width, closeTo(24.0, 0.01),
+          reason: '(chipSize + chipGap) cho một vật thêm -> số vật thật đã điều khiển hình học');
+      expect(right.right, lessThanOrEqualTo(360));
+      //rev 7: trẻ không phải đọc object ID nội bộ để hiểu 3+4 — ID không được thành chữ.
+      expect(find.textContaining('stone-'), findsNothing);
+      expect(highlightedIn(tester, 'board_code_line_0'), <String>['print(3 + 4)']);
+      expect(highlightedIn(tester, 'board_code_line_1'), isEmpty,
+          reason: 'beat này chỉ tô dòng 1; dòng 2 chưa được nhắc tới');
+    });
+
+    testWidgets('vi và en: nhãn đổi, code và dấu tô không đổi', (WidgetTester tester) async {
+      await pumpBoard(tester, planIndex: 1, locale: 'vi', codeText: 'print(3 + 4)\nprint("3 + 4")');
+      expect(semanticLabels(tester, find.byKey(const ValueKey<String>('board_group_0_1'))),
+          contains('Ba viên đá ở nhóm bên trái'));
+      expect(nodeText(tester, 'board_code_line_0'), 'print(3 + 4)');
+      final List<String> viMarked = highlightedIn(tester, 'board_code_line_0');
+      await pumpBoard(tester, planIndex: 1, locale: 'en', codeText: 'print(3 + 4)\nprint("3 + 4")');
+      expect(semanticLabels(tester, find.byKey(const ValueKey<String>('board_group_0_1'))),
+          contains('Three stones in the left group'));
+      expect(nodeText(tester, 'board_code_line_0'), 'print(3 + 4)',
+          reason: 'code của trẻ không dịch — đổi ngôn ngữ chỉ đổi phần người');
+      expect(highlightedIn(tester, 'board_code_line_0'), viMarked);
+    });
+
+    testWidgets('clearTutorLayer: node beat trước biến mất, dấu tô cũng mất', (WidgetTester tester) async {
+      final BoardController c = await pumpBoard(tester,
+          planIndex: 1, codeText: 'print(3 + 4)\nprint("3 + 4")');
+      expect(find.byKey(const ValueKey<String>('board_group_0_1')), findsOneWidget);
+      c.next();
+      await tester.pump();
+      expect(c.currentBeat!.beatId, 'mq1_03_s2.b2');
+      expect(find.byKey(const ValueKey<String>('board_group_0_1')), findsNothing);
+      expect(highlightedIn(tester, 'board_code_line_0'), isEmpty,
+          reason: 'lau bảng là xóa cả dấu tô, không chỉ các ô nổi');
+      expect(find.byKey(const ValueKey<String>('board_group_1_1')), findsOneWidget);
+      expect(find.byKey(const ValueKey<String>('board_output_1_2')), findsOneWidget);
+      expect(nodeText(tester, 'board_output_1_2'), contains('7'));
+      expect(nodeText(tester, 'board_output_1_2'), isNot(contains('3 + 4')),
+          reason: 'ô kết quả onlyFirstLine không được chứa dòng thứ hai của code');
+    });
+
+    testWidgets('connector ở beat 3: một vùng vẽ trải từ dòng code tới ô kết quả',
+        (WidgetTester tester) async {
+      final BoardController c = await pumpBoard(tester, planIndex: 0, codeText: 'print("Xin chào!")');
+      c.next();
+      await tester.pump();
+      c.next();
+      await tester.pump();
+      expect(c.currentBeat!.beatId, 'mq1_01_s2.b3');
+      expect(find.byKey(const ValueKey<String>('board_output_2_1')), findsOneWidget);
+      expect(find.byKey(const ValueKey<String>('board_connector_2_0')), findsOneWidget);
+      final Rect link = tester.getRect(find.byKey(const ValueKey<String>('board_connector_2_0')));
+      final Rect line = tester.getRect(find.byKey(const ValueKey<String>('board_code_line_0')));
+      final Rect out = tester.getRect(find.byKey(const ValueKey<String>('board_output_2_1')));
+      expect(find.descendant(of: find.byKey(const ValueKey<String>('board_connector_2_0')),
+              matching: find.byType(RichText)), findsNothing,
+          reason: 'connector là nét vẽ, không phải dòng chữ kể tên hai id');
+      expect(find.textContaining('cmd-print'), findsNothing,
+          reason: 'mũi tên không được in id nội bộ thay vì nối hai hộp');
+      expect(link.top, lessThanOrEqualTo(line.top + 0.01), reason: 'mũi tên phải bắt đầu từ dòng code');
+      expect(link.bottom, greaterThanOrEqualTo(out.bottom - 0.01), reason: 'và kết thúc ở ô kết quả');
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('codeSnippet khác code trên bảng -> block code riêng có chữ thật',
+        (WidgetTester tester) async {
+      final BoardController c = await pumpBoard(tester, planIndex: 0, codeText: 'print("Xin chào!")');
+      expect(find.byKey(const ValueKey<String>('board_code_snippet_0_0')), findsNothing,
+          reason: 'beat 1 đọc lại đúng dòng code đang có thì không vẽ trùng');
+      c.next();
+      await tester.pump();
+      c.next();
+      await tester.pump();
+      c.next();
+      await tester.pump();
+      expect(c.beatIndex, 3);
+      expect(find.byKey(const ValueKey<String>('board_code_snippet_3_1')), findsOneWidget);
+      expect(nodeText(tester, 'board_code_snippet_3_1'), 'print("Robo thông minh")');
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('không có codeText thì bảng vẫn dựng được (chế độ caption-only của host thật)',
+        (WidgetTester tester) async {
+      await pumpBoard(tester, planIndex: 1);
+      expect(find.byKey(const ValueKey<String>('board_code_line_0')), findsOneWidget);
+      expect(find.byKey(const ValueKey<String>('board_code_line_1')), findsNothing,
+          reason: 'không có code thì panel một dòng rỗng, không được bịa thêm dòng');
+      expect(tester.takeException(), isNull);
+    });
   });
 
   testWidgets('clearTutorLayer không xóa nét của trẻ', (WidgetTester tester) async {

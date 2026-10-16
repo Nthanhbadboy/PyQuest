@@ -12,6 +12,7 @@ library;
 import 'package:flutter/material.dart';
 
 import 'board_controller.dart';
+import 'board_layout.dart';
 import 'board_models.dart';
 
 /// Nhãn của board. Host tương lai lấy từ pack của `PQC-016`; ở slice này board tự có nhãn
@@ -106,11 +107,16 @@ class BoardView extends StatelessWidget {
   const BoardView({
     required this.controller,
     this.labels,
+    this.codeText = '',
     super.key,
   });
 
   final BoardController controller;
   final BoardLabels? labels;
+
+  /// Code của bước đang học — host đưa vào để bảng **tô lên code thật** thay vì mô tả nó
+  /// (rev 7 §R7-B). Board không chạy code, không đọc file, không nhận URL/markup.
+  final String codeText;
 
   @override
   Widget build(BuildContext context) {
@@ -146,10 +152,12 @@ class BoardView extends StatelessWidget {
                 const SizedBox(height: 8)
               else
                 _TutorLayer(
-                  beat: beat,
                   copy: copy,
                   labels: labels,
                   locale: controller.locale,
+                  plan: controller.plan!,
+                  beatIndex: controller.beatIndex,
+                  codeText: codeText,
                 ),
               const SizedBox(height: 8),
               _LearnerLayerView(layer: controller.learner, labels: labels),
@@ -236,129 +244,292 @@ class _ScaffoldLayer extends StatelessWidget {
   }
 }
 
+/// Lớp Tutor — **vẽ** bảng, không kể lại bảng.
+///
+/// Rev 7 §R7-B: mọi thao tác của một bảng giảng thật phải hiện ra trên bảng, nên layer này
+/// dựng từ `BoardLayout` (số đo đã tính từ plan đã validate): dòng code có đoạn được tô sáng
+/// bằng `TextSpan`, nhóm vật được vẽ đúng số lượng, hình tôn trọng `x/y/width/height`, và
+/// connector là mũi tên nối hai hộp đang thật sự nằm trên bảng. Chuỗi mô tả của op **không**
+/// còn thế chỗ hình; nó xuống `Semantics` để reader đọc được.
 class _TutorLayer extends StatelessWidget {
   const _TutorLayer({
-    required this.beat,
     required this.copy,
     required this.labels,
     required this.locale,
+    required this.plan,
+    required this.beatIndex,
+    required this.codeText,
   });
 
-  final BoardBeat beat;
   final BoardBeatCopy? copy;
   final BoardLabels labels;
-
-  /// Locale đang hiển thị, do [BoardView] lấy từ controller trong builder đang rebuild.
   final String locale;
+  final TeachingPlan plan;
+  final int beatIndex;
+
+  /// Code của bước, do **host** đưa vào (board không tự chạy code, không tự bịa nội dung).
+  final String codeText;
+
+  static const double _copyFontSize = 15;
+  static const double _codeFontSize = 13;
 
   @override
   Widget build(BuildContext context) {
-    // `clearTutorLayer` chỉ có hiệu lực trong lớp Tutor, và bị cắt ngay tại chỗ nó xuất hiện:
-    // op nào đứng trước bị bỏ, op đứng sau còn nguyên. Không có đường nào chạm layer khác.
-    final List<Widget> children = <Widget>[];
-    final List<BoardOp> visible = <BoardOp>[];
-    for (final BoardOp op in beat.ops) {
-      if (op.kind == BoardOpKind.clearTutorLayer) {
-        visible.clear();
-        continue;
-      }
-      visible.add(op);
-    }
-    for (int i = 0; i < visible.length; i++) {
-      children.add(_opWidget(visible[i], i, locale));
-    }
+    final TextScaler scaler = MediaQuery.textScalerOf(context);
+    final double copySize = scaler.scale(_copyFontSize);
+    final double codeSize = scaler.scale(_codeFontSize);
+    // `lineHeight` là số nguyên duy nhất giữa layout và chữ: mỗi dòng code chiếm đúng
+    // `codeSize * 1.35`, nên hộp do layout tính và hộp do text chiếm không thể lệch nhau.
+    final double lineHeight = codeSize * 1.35;
+    final List<BoardVisibleOp> visible = visibleOpsThrough(plan, beatIndex);
+
     return Semantics(
       container: true,
       label: copy?.altText ?? '',
       child: Column(
+        key: const ValueKey<String>('board_tutor_layer'),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           if (copy != null) ...<Widget>[
-            Text(copy!.title, key: const ValueKey<String>('board_title')),
-            Text(copy!.say, key: const ValueKey<String>('board_say')),
-            Text(copy!.caption, key: const ValueKey<String>('board_caption')),
+            Text(copy!.title,
+                key: const ValueKey<String>('board_title'),
+                style: TextStyle(fontSize: copySize * 1.25, fontWeight: FontWeight.w800, height: 1.3)),
+            Text(copy!.say,
+                key: const ValueKey<String>('board_say'),
+                style: TextStyle(fontSize: copySize, height: 1.35)),
+            Text(copy!.caption,
+                key: const ValueKey<String>('board_caption'),
+                style: TextStyle(fontSize: copySize, fontWeight: FontWeight.w600, height: 1.35)),
           ],
-          ...children,
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints box) {
+              final double width = box.maxWidth.isFinite && box.maxWidth > 40
+                  ? box.maxWidth
+                  : _fallbackCanvasWidth;
+              final BoardLayout layout = BoardLayout.build(
+                visible: visible,
+                codeText: codeText,
+                width: width,
+                lineHeight: lineHeight,
+                altOf: (BoardOp op) => op.altFor(locale),
+                proseOf: (BoardOp op) => op.proseFor(locale),
+                outputHeader: labels.outputLabel,
+              );
+              return SizedBox(
+                key: const ValueKey<String>('board_canvas'),
+                width: width,
+                height: layout.height,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: <Widget>[
+                    Positioned.fill(
+                      child: CustomPaint(painter: _BoardCanvasPainter(layout: layout, codeSize: codeSize)),
+                    ),
+                    for (final BoardNode node in layout.nodes) _nodeWidget(node, codeSize),
+                    for (final BoardConnector link in layout.connectors)
+                      Positioned.fromRect(
+                        key: ValueKey<String>(link.key),
+                        rect: _toRect(link.rect),
+                        child: Semantics(label: link.altText, child: const SizedBox.shrink()),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget _opWidget(BoardOp op, int index, String locale) {
-    final Key key = ValueKey<String>('board_op_${op.kind.wire}_$index');
-    switch (op.kind) {
-      case BoardOpKind.text:
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Semantics(label: op.altFor(locale), child: Text(op.proseFor(locale), key: key)),
-        );
-      case BoardOpKind.codeSnippet:
-        return Semantics(
-          label: op.altFor(locale),
-          child: Container(
-            key: key,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: const Color(0x11000000),
-              border: Border.all(color: const Color(0x33000000)),
+  static const double _fallbackCanvasWidth = 320;
+
+  static Rect _toRect(BoardRect r) => Rect.fromLTWH(r.x, r.y, r.w, r.h);
+
+  /// Một node của layout -> một hộp widget ở **đúng** chỗ layout đã tính.
+  Widget _nodeWidget(BoardNode node, double codeSize) {
+    final Widget body;
+    switch (node.kind) {
+      case BoardNodeKind.codeLine:
+        body = FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: RichText(
+            text: TextSpan(
+              style: _codeStyle(codeSize),
+              children: <InlineSpan>[
+                for (final BoardRun run in node.runs)
+                  TextSpan(
+                    text: run.text,
+                    style: run.highlighted ? _highlightStyle(codeSize) : null,
+                  ),
+              ],
             ),
-            child: Text(op.proseFor(locale), style: const TextStyle(fontFamily: 'monospace')),
+            // Code luôn LTR; board không suy ra hướng đọc từ dữ liệu của trẻ.
+            textDirection: TextDirection.ltr,
+            softWrap: false,
+            overflow: TextOverflow.visible,
           ),
         );
-      case BoardOpKind.highlightToken:
-      case BoardOpKind.highlightLine:
-        return Semantics(
-          label: op.altFor(locale),
-          child: Text(
-            '→ ${op.statement.isEmpty ? op.proseFor(locale) : op.statement}',
-            key: key,
-            style: const TextStyle(fontStyle: FontStyle.italic),
+      case BoardNodeKind.sample:
+        body = Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0x33000000)),
+            color: const Color(0x05000000),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              for (final BoardRun run in node.runs)
+                Text(run.text,
+                    style: _codeStyle(codeSize), textDirection: TextDirection.ltr, softWrap: false),
+            ],
           ),
         );
-      case BoardOpKind.output:
-        return Semantics(
-          label: '${labels.outputLabel}: ${op.value}',
-          child: Container(
-            key: key,
-            padding: const EdgeInsets.all(8),
-            margin: const EdgeInsets.only(top: 4),
-            decoration: BoxDecoration(border: Border.all(color: const Color(0x66000000))),
-            child: Text('${labels.outputLabel}\n${op.value}'),
-          ),
-        );
-      case BoardOpKind.tokenGroup:
-        return Wrap(
-          key: key,
-          spacing: 4,
+      case BoardNodeKind.group:
+        body = Row(
+          textDirection: TextDirection.ltr,
           children: <Widget>[
-            for (final String token in op.tokenIds)
-              Semantics(label: op.altFor(locale), child: Text('[$token]')),
+            for (int k = 0; k < node.chips.length; k++)
+              Padding(
+                key: ValueKey<String>('${node.key}_chip_$k'),
+                padding: const EdgeInsets.only(right: BoardLayout.chipGap),
+                child: Container(
+                  width: BoardLayout.chipSize,
+                  height: BoardLayout.chipSize,
+                  decoration: BoxDecoration(
+                    color: const Color(0x1A000000),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: const Color(0x99000000), width: 1.5),
+                  ),
+                ),
+              ),
           ],
         );
-      case BoardOpKind.simpleShape:
-        return Semantics(
-          label: op.altFor(locale),
-          child: Container(
-            key: key,
-            width: 24,
-            height: 24,
-            margin: const EdgeInsets.only(top: 4),
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0x66000000)),
-              shape: op.shape == 'circle' ? BoxShape.circle : BoxShape.rectangle,
-            ),
+      case BoardNodeKind.shape:
+        body = Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xCC1B2A4A), width: 2),
+            shape: node.shape == 'circle' ? BoxShape.circle : BoxShape.rectangle,
+            borderRadius: node.shape == 'roundedRect' ? BorderRadius.circular(codeSize * 0.5) : null,
           ),
         );
-      case BoardOpKind.connector:
-        return Semantics(
-          label: op.altFor(locale),
-          child: Text('↔ ${op.fromId ?? ''} → ${op.toId ?? ''}', key: key),
+      case BoardNodeKind.prose:
+        body = Text(
+          node.lines.isEmpty ? '' : node.lines.first,
+          style: TextStyle(fontSize: codeSize, height: 1.35, color: const Color(0xE6000000)),
+          softWrap: true,
         );
-      case BoardOpKind.clearTutorLayer:
-      case BoardOpKind.unknown:
-        return const SizedBox.shrink();
+      case BoardNodeKind.output:
+        body = Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0x66000000)),
+            color: const Color(0x08000000),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                node.header,
+                style: TextStyle(
+                    fontSize: codeSize * 0.85,
+                    fontWeight: FontWeight.w700,
+                    height: 1.2,
+                    color: const Color(0x99000000)),
+              ),
+              for (final String line in node.lines)
+                Text(line,
+                    style: _codeStyle(codeSize),
+                    softWrap: false,
+                    overflow: TextOverflow.visible,
+                    textDirection: TextDirection.ltr),
+            ],
+          ),
+        );
+    }
+    return Positioned.fromRect(
+      key: ValueKey<String>(node.key),
+      rect: _toRect(node.rect),
+      child: node.altText.isEmpty ? body : Semantics(label: node.altText, child: body),
+    );
+  }
+
+  static TextStyle _codeStyle(double size) => TextStyle(
+        // `PQFonts.code` — board giữ biên giới import của mình nên nhắc tên font trực tiếp;
+        // font này đã có trong assets của app (pubspec), không phải dependency mới.
+        fontFamily: 'JetBrainsMono',
+        fontSize: size,
+        height: 1,
+        color: const Color(0xE6000000),
+        fontWeight: FontWeight.w500,
+      );
+
+  static TextStyle _highlightStyle(double size) => TextStyle(
+        backgroundColor: const Color(0x66FFC94D),
+        fontWeight: FontWeight.w800,
+        color: const Color(0xFF1B2A4A),
+        height: 1,
+        fontSize: size,
+      );
+}
+
+/// Vẽ những thứ không phải hộp widget: viền bảng code và các mũi tên connector.
+class _BoardCanvasPainter extends CustomPainter {
+  _BoardCanvasPainter({required this.layout, required this.codeSize});
+
+  final BoardLayout layout;
+  final double codeSize;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (layout.codeLines.isNotEmpty) {
+      final Paint panel = Paint()
+        ..color = const Color(0x22000000)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTRB(0, 0, size.width, layout.panelHeight + 6),
+          Radius.circular(codeSize * 0.45),
+        ),
+        panel,
+      );
+    }
+    for (final BoardConnector link in layout.connectors) {
+      final Color ink = const Color(0xCC1B2A4A);
+      final Paint stroke = Paint()
+        ..color = ink
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.2
+        ..strokeCap = StrokeCap.round;
+      final Offset from = Offset(link.start.x, link.start.y);
+      final Offset to = Offset(link.end.x, link.end.y);
+      final double midX = (from.dx + to.dx) / 2;
+      canvas.drawPath(
+        Path()
+          ..moveTo(from.dx, from.dy)
+          ..cubicTo(midX, from.dy, midX, to.dy, to.dx, to.dy),
+        stroke,
+      );
+      final double head = codeSize * 0.55;
+      canvas.drawPath(
+        Path()
+          ..moveTo(to.dx, to.dy)
+          ..lineTo(to.dx - head, to.dy - head * 0.6)
+          ..lineTo(to.dx - head, to.dy + head * 0.6)
+          ..close(),
+        Paint()
+          ..color = ink
+          ..style = PaintingStyle.fill,
+      );
     }
   }
+
+  @override
+  bool shouldRepaint(_BoardCanvasPainter oldDelegate) =>
+      oldDelegate.layout != layout || oldDelegate.codeSize != codeSize;
 }
 
 class _LearnerLayerView extends StatelessWidget {
