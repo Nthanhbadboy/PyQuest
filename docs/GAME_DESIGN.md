@@ -580,8 +580,8 @@ Kết quả thử nghiệm sẽ quyết định điều chỉnh cụ thể.
 - Main Quest mở khóa theo tiến trình học; không dùng XP/cấp độ toàn cục.
 - Energy hồi theo thời gian, quảng cáo thưởng có giới hạn và lưu trong database.
 - Daily quests, achievements, màn tổng kết và Adventure Recap dùng dữ liệu đã lưu.
-- AI Tutor voice trong bài học hiển thị transcript người học và trợ giảng, có xử lý lỗi.
+- AI Tutor trong bài học: câu hỏi gõ hoặc câu nói đều vào cùng một transcript, mỗi dòng mang vai rõ ràng (Bé / nhân vật trả lời), câu chào thuộc về trợ giảng, trạng thái loading – đang nghe – đang nói – lỗi – bị ngắt lời hiển thị đúng như phiên thật, và câu trả lời luôn kèm nhãn cho biết nó do AI soạn hay do trợ giảng ngoại tuyến.
 
 ### 16.2. UI Direction V2
 
-UI Direction V2 là định hướng thiết kế, chưa phải giao diện đang chạy. Ảnh tham khảo không có trong checkout hiện tại, nên không thể xác minh phong cách trực tiếp. Khi áp dụng, phải đánh giá màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime. Không mô tả mockup V2 như tính năng đã hoàn thành.
+UI Direction V2 là định hướng thiết kế, chưa phải giao diện đang chạy. 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/` đã có trong checkout và là chuẩn thị giác; V2 chỉ tinh chỉnh độ chín (phân cấp, khoảng cách, chữ, khả năng dùng) trên nền đó, không thay thế ảnh gốc. Khi áp dụng, phải đánh giá màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime. Không mô tả mockup V2 như tính năng đã hoàn thành.

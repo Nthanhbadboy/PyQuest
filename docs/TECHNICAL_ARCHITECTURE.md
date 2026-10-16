@@ -805,14 +805,34 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 
 - `activity_registry` và `MainMapScreen` cho bản đồ đảo và các địa điểm hoạt động.
 - Main Quest, mini-game, achievements, energy, daily quests và progress tracker.
-- AI Tutor voice qua Gemini Live, transcript và xử lý lỗi.
+- Trợ giảng (`lib/modules/tutor/`) tách theo trách nhiệm, mỗi tầng một file để test được độc lập:
+  `tutor_session.dart` (chọn AI/ngoại tuyến, hạn mức, lịch sử), `tutor_provider.dart`
+  (gọi relay OpenAI-compatible), `offline_tutor.dart` (soạn từ nội dung bài + thang
+  gợi ý), `tutor_transcript.dart` (mô hình tin nhắn có vai: trẻ / trợ giảng, partial
+  hay đã chốt, bị ngắt lời), `tutor_panel.dart` (UI dùng chung cho câu gõ và câu nói).
+- Giọng nói Gemini Live (`gemini_live_wire.dart` giao thức, `live_audio_output.dart`
+  vòng đời loa PCM + `PcmTurnPump`, `gemini_live_voice.dart` bắt lượt và micro
+  half-duplex). Ba tầng này không gọi `TutorSession`: phiên voice nói chuyện trực
+  tiếp với Live, còn câu hỏi gõ đi qua relay.
+- Relay mẫu `tools/ai_relay/relay.py` giữ key phía server (allowlist model, giới
+  hạn body/token, rate limit, không log nội dung) và có test chạy bằng Python thuần.
 - SQLite cục bộ với các bảng theo module; không có bảng XP/level toàn cục.
 
 ### 15.2. Asset và tài liệu thiết kế
 
 - Ảnh tham khảo và SVG V2 là tài liệu thiết kế, không phải asset runtime của app.
-- Trong checkout hiện tại không có `docs/PyQuest_Reffrence_Images`, nên không thể xác minh 21 ảnh gốc.
-- Không đưa API key, token hoặc thông tin bí mật vào tài liệu. AI Tutor key chỉ được cấu hình qua `--dart-define` và CI secret.
+- 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/`, `PYQUEST_UI_DIRECTION_V2.svg`,
+  `PYQUEST_VILLAGE_2_5D_CONCEPT.svg` và `docs/design/kai-lumi-character-reference.svg`
+  đã có trong checkout; đó là bằng chứng thị giác chuẩn khi đánh giá màn hình.
+- Không đưa API key, token hoặc thông tin bí mật vào tài liệu, log hay commit.
+  Đường chuẩn cho trợ giảng văn bản là **relay giữ key ở server**
+  (`tools/ai_relay/relay.py`, `RELAY_API_KEY`), app chỉ cấu hình endpoint
+  (`AI_TUTOR_ENDPOINT` hoặc `assets/config/ai_tutor_config.json`).
+- Giọng nói Gemini Live hiện chỉ có đường cấu hình `--dart-define=GEMINI_API_KEY=...`
+  cho **build thử nghiệm**: value nằm trong APK nên nó chỉ dành cho bản internal,
+  tuyệt đối không commit key, không in key vào log, và phải đổi sang token ngắn hạn
+  qua server trước khi phát hành. App đã gỡ bỏ key khỏi log bằng
+  `GeminiLiveWire.redactSecrets`.
 
 ### 15.3. UI Direction V2
 

@@ -481,7 +481,7 @@ Mở rộng PyQuest theo tầm nhìn sản phẩm mà không làm mất các vò
 - Tài liệu sản phẩm: **đã cập nhật** (`PRODUCT_VISION.md`, `GAME_DESIGN.md`) để phản ánh README và brief.
 - Tài liệu kỹ thuật: **đã cập nhật** (`TECHNICAL_ARCHITECTURE.md`) để phản ánh README và brief.
 - Roadmap: **đã cập nhật** (`ROADMAP.md`) để giữ tầm nhìn sản phẩm và chia giai đoạn.
-- Mã nguồn: **chưa bắt đầu**.
+- Mã nguồn: **đã có lát cắt dọc hoàn chỉnh cho v0.1 "Đảo Khởi Đầu"** — Main Map, Main Quest (12 bài/64 bước), ba mini-game, Xưởng Mê Cung, Nhà Thành Tích, năng lượng, nhắc nghỉ, Python mô phỏng, trợ giảng (ngoại tuyến + relay + giọng nói thử nghiệm), SQLite, bộ test chạy trong CI. Giai đoạn 7 (Side Maps & Pro) chưa bắt đầu.
 
 ### 14.2. Việc cần làm theo thứ tự ưu tiên
 
@@ -491,7 +491,7 @@ Mở rộng PyQuest theo tầm nhìn sản phẩm mà không làm mất các vò
 4. **Phân biệt Main Map và Main Quest** — đã chốt trong `PRODUCT_VISION.md`.
 5. **Chốt ranh giới dữ liệu giữa các module** — đã có trong `TECHNICAL_ARCHITECTURE.md`.
 6. **Tách tài liệu** — đã hoàn thành (README + 4 tài liệu trong `docs/`).
-7. **Bắt đầu lát cắt dọc đầu tiên** — giai đoạn 1 → 3.
+7. **Lát cắt dọc đầu tiên** — đã xong (mở app → chơi → lưu → mở lại vẫn còn kết quả, có test và hành trình emulator trong CI). Việc còn lại: đóng bằng chứng trên thiết bị cho AI Tutor (xem 16.3) và áp dụng UI Direction V2 theo từng màn hình.
 
 ### 14.3. Bước tiếp theo cụ thể
 
@@ -542,10 +542,11 @@ và đủ công cụ để trẻ tự tạo ra thế giới của riêng mình.
 
 ---
 
-**Bước tiếp theo:** bắt đầu **giai đoạn 1 — Foundation**: khởi tạo project Flutter
-và dựng cấu trúc thư mục theo `TECHNICAL_ARCHITECTURE.md`. Khi đạt tiêu chí nghiệm
-thu giai đoạn 1, chuyển sang giai đoạn 2 (Home Map), rồi giai đoạn 3
-(lát cắt dọc quan trọng nhất).
+**Bước tiếp theo:** lát cắt dọc và giai đoạn 1–6 đã nằm trong source. Việc kế tiếp
+theo thứ tự: (1) đóng bằng chứng thiết bị cho AI Tutor theo
+`docs/experimental/GEMINI_LIVE_VOICE_TEST.md`; (2) đưa giọng nói sang token ngắn hạn
+qua server thay cho key lúc build; (3) áp dụng UI Direction V2 cho từng màn hình học
+tập, mỗi lần một module, kèm test và ảnh render để so với ảnh tham khảo gốc.
 
 ---
 
@@ -554,15 +555,25 @@ thu giai đoạn 1, chuyển sang giai đoạn 2 (Home Map), rồi giai đoạn 
 ### 16.1. Đã có trong source
 
 - Main Map bản đồ đảo, Main Quest, mini-game, achievements, energy, daily quests.
-- AI Tutor voice trong bài học với transcript người học/trợ giảng và xử lý lỗi.
-- Kiểm thử hiện có trong CI; build Release APK đã thành công qua GitHub Actions.
+- Trợ giảng ba tầng (ngoại tuyến / relay AI / Gemini Live voice) với transcript
+  một mô hình tin nhắn có vai: trẻ và trợ giảng luôn hiện đúng tên, một lượt một
+  bong bóng, trạng thái "đang nói / đang nghe / bị ngắt lời" lấy từ phiên thật.
+- Kiểm thử hiện có trong CI (analyze + unit/widget + render preview); build Release
+  APK đã thành công qua GitHub Actions.
 
 ### 16.2. Chưa có hoặc cần xác minh
 
 - Arena, Creator Pro League, giải đồng đội.
 - Side Maps và Pro đầy đủ.
 - Cộng đồng, quà tặng và danh hiệu xã hội đầy đủ.
+- Quảng cáo thưởng (rewarded ads) chưa có trong source.
 - UI Direction V2 chưa được áp dụng vào source.
+- **Bằng chứng trên thiết bị cho giọng nói**: bản sửa lỗi âm thanh và vai người nói
+  đã có test tự động (giao thức Live, vòng đời loa PCM, mô hình transcript, danh
+  tính trong panel) và CI xanh, nhưng **chưa** có phiên Gemini Live thật được xác
+  nhận bằng tai trên máy. Tiêu chí đóng: làm theo bảng kiểm trong
+  `docs/experimental/GEMINI_LIVE_VOICE_TEST.md` trên Release APK dựng từ commit
+  cần kiểm tra (cần `GEMINI_API_KEY` của repo secret lúc build).
 
 ### 16.3. Hạng mục áp dụng UI Direction V2
 
@@ -572,4 +583,6 @@ thu giai đoạn 1, chuyển sang giai đoạn 2 (Home Map), rồi giai đoạn 
 4. Kiểm thử và xác nhận runtime.
 5. Cập nhật tài liệu sau khi có bằng chứng triển khai.
 
-Không đánh dấu hoàn thành chỉ vì tài liệu hoặc mockup tồn tại. Ảnh tham khảo không có trong checkout hiện tại, nên cần xác minh lại khi có đầy đủ asset.
+Không đánh dấu hoàn thành chỉ vì tài liệu hoặc mockup tồn tại. Ảnh tham khảo gốc
+(21 ảnh trong `docs/PyQuest_Reffrence_Images/`) đã có trong checkout và là chuẩn
+thị giác; mockup V2 và concept SVG chỉ là định hướng, không phải bằng chứng đã làm.

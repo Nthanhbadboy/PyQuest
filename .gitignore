@@ -1,0 +1,44 @@
+# Scratch files the CI helper scripts in ci/ write next to the repository root.
+# They are per-run diagnostics that the workflow publishes as artifacts and as
+# check-run reports, so nothing here belongs in a commit. They also appear when
+# a developer runs ci/emulator_journey.sh or ci/report.py locally.
+
+# Python bytecode from the CI helper scripts.
+__pycache__/
+*.pyc
+
+# Step bookkeeping and step logs (status.txt drives "Fail if any step failed").
+/status.txt
+/summary.txt
+/step-summary.md
+/previews.txt
+
+# Output of the `check` job's steps.
+/flutter_version.txt
+/pub_get.txt
+/analyze.txt
+/test.txt
+/render.txt
+
+# Output of the `apk` job's build steps.
+/apk_build.txt
+/apk_release.txt
+/shrink.txt
+
+# Output of the emulator journey (ci/emulator_journey.sh and its helpers).
+/journey.txt
+/relaunch.txt
+/emulator-progress.txt
+/emulator-sampler.txt
+/emulator-step.log
+/emulator-trap.txt
+/emulator-report.md
+/emulator-stop-reason.txt
+/emulator-log-analysis.txt
+/emulator-diagnostics/
+/runner-state.txt
+/runner-state-before.txt
+
+# APKs copied out of the Flutter build for upload.
+/pyquest-debug.apk
+/pyquest-release.apk

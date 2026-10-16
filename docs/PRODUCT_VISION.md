@@ -892,21 +892,23 @@ và một nhánh sáng tạo đủ thật để trẻ tin mình có thể tự l
 
 Source app hiện tại đã có:
 - Main Map dạng bản đồ đảo với các địa điểm hoạt động: Main Quest, Robot Maze, Dragon Jump, Catch the Stars, Bug Hunter và Nhà Thành Tích.
-- Main Quest là hoạt động học Python có lộ trình, mở khóa theo tiến trình.
-- Energy, daily quests, achievements, màn tổng kết và Adventure Recap theo dữ liệu đã lưu.
-- AI Tutor voice trong bài học: Gemini Live voice, transcript người học và trợ giảng, xử lý lỗi.
-- Mini-game Play Mode và một số Creator Mode có cấu trúc.
+- Main Quest là hoạt động học Python có lộ trình, mở khóa theo tiến trình (chặng 1 *Code Apprentice*: 12 bài, 64 bước).
+- Energy hồi theo thời gian, daily quests, achievements (15 huy hiệu, 3 bí mật), màn tổng kết và Adventure Recap theo dữ liệu đã lưu.
+- AI Tutor đủ ba tầng và luôn nói rõ câu trả lời đến từ tầng nào: trợ giảng ngoại tuyến soạn từ nội dung bài học, trợ giảng AI qua relay `/v1/chat/completions` (hạn mức câu hỏi/ngày, lịch sử trong bài, tự fallback khi lỗi), và giọng nói Gemini Live trong màn học.
+- Transcript trợ giảng dùng một mô hình tin nhắn chung: mỗi dòng mang **vai** của người nói (trẻ hay nhân vật nào trả lời), câu gõ và câu nói được xử lý như nhau, một lượt chỉ một bong bóng, và trạng thái "đang nói / đang nghe / bị ngắt lời" lấy từ chính phiên giọng nói.
 
 Chưa triển khai hoặc chưa có bằng chứng trong source hiện tại:
 - Arena nhiều bộ môn, Creator Pro League, giải đồng đội.
 - Side Maps trả phí, Pro đầy đủ, cộng đồng/quà tặng đầy đủ.
-- AI Tutor dạng chat văn bản đầy đủ theo relay; bản hiện tại tập trung vào voice.
+- Quảng cáo thưởng: năng lượng đã có, rewarded ads chưa có trong source.
+- Giọng nói ở trạng thái thử nghiệm cho bản dựng phát triển (key đưa lúc build), chưa phải đường production có token ngắn hạn qua server.
 
 ### 21.2. UI Direction V2
 
-`docs/PyQuest_Reffrence_Images/PYQUEST_UI_DIRECTION_V2.svg` là tài liệu định hướng thiết kế, không phải giao diện đang chạy. Trong checkout hiện tại không có thư mục ảnh tham khảo `docs/PyQuest_Reffrence_Images`, nên không thể kiểm tra 21 ảnh gốc; các kết luận về phong cách phải được xác minh lại khi có đầy đủ asset.
+`docs/PyQuest_Reffrence_Images/PYQUEST_UI_DIRECTION_V2.svg` là tài liệu định hướng thiết kế, **không phải** giao diện đang chạy. 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/` và `docs/design/kai-lumi-character-reference.svg` đã có trong checkout và là bằng chứng thiết kế chuẩn.
 
 Nguyên tắc áp dụng:
-- UI V2 chỉ là định hướng; không mô tả mockup V2 như giao diện đã triển khai.
+- **Ảnh tham khảo gốc là chuẩn thị giác.** UI Direction V2 chỉ là hướng tinh chỉnh trên nền đó: giao diện hiện tại bị đánh giá là quá "kindergarten", cần chín hơn về phân cấp, khoảng cách, chữ và khả năng dùng, nhưng vẫn giữ bản sắc giáo dục thân thiện với trẻ em. Không tự sinh một hướng nhìn thứ hai trái với ảnh gốc.
+- UI V2 chưa được triển khai vào source; không mô tả mockup V2 như tính năng đã hoàn thành.
 - Các asset ảnh tham khảo là tài liệu thiết kế, không phải asset runtime của app.
 - Khi áp dụng V2 vào source, phải đánh giá từng màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime.
