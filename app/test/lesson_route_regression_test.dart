@@ -339,8 +339,13 @@ void main() {
       await tester.pump();
       expect(find.byKey(const Key('sheet_go_lesson')), findsNothing,
           reason: 'Enter không mở sheet vì landmark chưa có Focus target, không phải vì Enter bị vô hiệu');
-      // ignore: avoid_print
-      print('PQC-008 keyboard baseline (mức widget CI, KHÔNG phải thiết bị): ${trace.join(' | ')}');
+      // Rev 4 §V1 xin "ghi sequence/baseline rõ". In ra log **không** đủ: `test.txt` trong
+      // báo cáo check-run bị cắt giữa (run 38897292836 xác nhận dòng print này không tồn tại
+      // trong report, dù test xanh). Nên sequence phải thành **assertion**, để CI `+N` và tên
+      // test là bằng chứng đọc được, không phụ thuộc vận may cắt log.
+      expect(trace, hasLength(6));
+      expect(trace, everyElement(contains('giu-nguyen')),
+          reason: 'mọi lần Tab phải để nguyên focus; nếu hàng nào DOI thì PQC-008 đã có target bàn phím ở landmark');
 
       await finishTest(tester, s);
     });
