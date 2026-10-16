@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="960" viewBox="0 0 1440 960" role="img" aria-labelledby="title desc">
+<title id="title">PyQuest Village — 2.5D concept</title>
+<desc id="desc">A polished isometric fantasy learning village with academy, coding workshop, market, forest trail and arena gate. A calm navy interface frames a large explorable map with animated-character placeholders.</desc>
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#DDEBFA"/><stop offset="1" stop-color="#F3F6F5"/></linearGradient>
+ <linearGradient id="grass" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#A8D7A2"/><stop offset="1" stop-color="#75B98D"/></linearGradient>
+ <linearGradient id="nav" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#14263F"/><stop offset="1" stop-color="#203D5A"/></linearGradient>
+ <linearGradient id="roof" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5A76F"/><stop offset="1" stop-color="#D96D52"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#25394B" flood-opacity=".18"/></filter>
+ <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#27475A" flood-opacity=".15"/></filter>
+ <g id="tree"><ellipse cx="0" cy="20" rx="28" ry="11" fill="#3E876C" opacity=".2"/><path d="M-5 9 L-2 -13 L6 -13 L9 10Z" fill="#8C674C"/><circle cx="-8" cy="-17" r="18" fill="#347D68"/><circle cx="10" cy="-22" r="22" fill="#4C9B76"/><circle cx="22" cy="-8" r="15" fill="#64B785"/><circle cx="-17" cy="-4" r="12" fill="#56A77C"/></g>
+ <g id="npc"><ellipse cx="0" cy="20" rx="12" ry="5" fill="#365C61" opacity=".2"/><path d="M-7 3 L-8 15 L-2 15 L1 5 L4 15 L10 15 L8 1Z" fill="#263D59"/><path d="M-10 -7 Q0 -15 10 -7 L8 5 Q0 12 -8 5Z" fill="#F3B36F"/><circle cx="0" cy="-14" r="9" fill="#E7B18D"/><path d="M-10 -15 Q-9 -27 2 -24 Q10 -22 10 -13 L5 -17 L-5 -18Z" fill="#3A4D61"/><circle cx="3" cy="-14" r="1.2" fill="#26394A"/></g>
+ <g id="pin"><circle r="17" fill="#FFFFFF" opacity=".95"/><circle r="13" fill="#243D5A"/><path d="M-4 -1 L0 -6 L4 -1 L0 5Z" fill="#D8F3E2"/></g>
+</defs>
+<!-- canvas -->
+<rect width="1440" height="960" rx="24" fill="#F3F6FA"/>
+<rect x="0" y="0" width="1440" height="92" rx="24" fill="url(#nav)"/><rect x="0" y="68" width="1440" height="24" fill="url(#nav)"/>
+<g transform="translate(34 23)"><rect width="46" height="46" rx="14" fill="#5FD1AE"/><path d="M12 25 L22 12 L34 25 L27 25 L27 35 L19 35 L19 25Z" fill="#17324C"/><circle cx="34" cy="12" r="4" fill="#F8C96B"/></g>
+<text x="94" y="43" font-family="Inter,Arial,sans-serif" font-size="23" font-weight="800" fill="#FFFFFF">PyQuest</text><text x="94" y="64" font-family="Inter,Arial,sans-serif" font-size="11" letter-spacing="2" fill="#A9C4D8">LEARN • BUILD • EXPLORE</text>
+<g font-family="Inter,Arial,sans-serif"><rect x="1094" y="26" width="125" height="40" rx="13" fill="#294760"/><circle cx="1115" cy="46" r="7" fill="#FFD36F"/><text x="1130" y="50" font-size="13" font-weight="700" fill="#EAF3FA">1,250 gems</text><rect x="1232" y="26" width="174" height="40" rx="13" fill="#E6F6EF"/><circle cx="1255" cy="46" r="12" fill="#55B99A"/><path d="M1249 46 L1254 51 L1262 40" stroke="#FFFFFF" stroke-width="2.5" fill="none"/><text x="1275" y="50" font-size="13" font-weight="700" fill="#234C49">Level 08</text></g>
+<!-- sidebar -->
+<rect x="24" y="112" width="242" height="820" rx="22" fill="#FFFFFF" filter="url(#soft)"/>
+<text x="48" y="151" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="800" letter-spacing="1.6" fill="#8293A5">YOUR WORLD</text>
+<rect x="40" y="169" width="210" height="70" rx="16" fill="#E9F7F1"/><circle cx="72" cy="204" r="19" fill="#C3EBD9"/><path d="M60 206 L72 192 L84 206 L78 206 L78 217 L67 217 L67 206Z" fill="#338B70"/><text x="102" y="199" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="800" fill="#254B49">Village Map</text><text x="102" y="217" font-family="Inter,Arial,sans-serif" font-size="11" fill="#64857E">Explore freely</text>
+<g font-family="Inter,Arial,sans-serif" font-size="13" fill="#52667B">
+ <circle cx="62" cy="278" r="16" fill="#EEF2F8"/><path d="M53 279 L62 270 L71 279 L66 279 L66 287 L58 287 L58 279Z" fill="#627F9A"/><text x="89" y="282" font-weight="700">Learning Path</text>
+ <circle cx="62" cy="331" r="16" fill="#EEF2F8"/><path d="M54 324 H70 V338 H54Z M58 320 V327 M66 320 V327" fill="none" stroke="#627F9A" stroke-width="2"/><text x="89" y="335" font-weight="700">My Projects</text>
+ <circle cx="62" cy="384" r="16" fill="#EEF2F8"/><path d="M53 380 L62 374 L71 380 L62 390Z" fill="#627F9A"/><text x="89" y="388" font-weight="700">Arena</text>
+ <circle cx="62" cy="437" r="16" fill="#EEF2F8"/><path d="M62 425 L65 434 L74 434 L67 440 L70 449 L62 443 L54 449 L57 440 L50 434 L59 434Z" fill="#627F9A"/><text x="89" y="441" font-weight="700">Achievements</text>
+</g>
+<rect x="40" y="494" width="210" height="1" fill="#E8EDF3"/>
+<text x="48" y="524" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="800" letter-spacing="1.3" fill="#8293A5">TODAY'S QUEST</text>
+<rect x="40" y="540" width="210" height="148" rx="16" fill="#F7F9FC" stroke="#E8EDF3"/>
+<circle cx="69" cy="571" r="15" fill="#D7F3E8"/><path d="M62 571 L67 576 L77 565" fill="none" stroke="#2B9879" stroke-width="2.5"/>
+<text x="93" y="568" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="800" fill="#2C4358">Build a loop</text><text x="93" y="585" font-family="Inter,Arial,sans-serif" font-size="10" fill="#8293A5">Python basics · 5 min</text>
+<rect x="56" y="609" width="177" height="7" rx="3.5" fill="#E1E8EF"/><rect x="56" y="609" width="108" height="7" rx="3.5" fill="#55B99A"/><text x="56" y="637" font-family="Inter,Arial,sans-serif" font-size="10" fill="#6B8194">3 of 5 steps complete</text>
+<rect x="40" y="714" width="210" height="190" rx="18" fill="url(#nav)"/><circle cx="209" cy="744" r="32" fill="#315774"/><circle cx="209" cy="744" r="22" fill="#4E7A94"/><path d="M193 748 L209 729 L225 748 L216 748 L216 760 L202 760 L202 748Z" fill="#D5F1E5"/><text x="57" y="750" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="800" fill="#FFFFFF">Your next</text><text x="57" y="768" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="800" fill="#FFFFFF">destination</text><text x="57" y="800" font-family="Inter,Arial,sans-serif" font-size="11" fill="#BCD2E1">Unlock the Workshop</text><text x="57" y="816" font-family="Inter,Arial,sans-serif" font-size="11" fill="#BCD2E1">by finishing one lesson.</text><rect x="56" y="842" width="177" height="38" rx="12" fill="#5FD1AE"/><text x="144" y="866" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="800" fill="#173A4B">Continue learning  →</text>
+<!-- world viewport -->
+<rect x="286" y="112" width="1130" height="820" rx="24" fill="url(#sky)" filter="url(#soft)"/>
+<circle cx="1310" cy="174" r="40" fill="#FFF0C3" opacity=".9"/><path d="M300 280 Q430 202 545 264 T790 249 T1045 253 T1410 217 L1410 340 L300 340Z" fill="#B8D7D7" opacity=".6"/>
+<path d="M286 350 Q450 275 600 344 T910 320 T1160 339 T1416 292 L1416 932 L286 932Z" fill="#A9D4B1"/>
+<path d="M286 410 Q450 350 600 409 T910 390 T1160 405 T1416 360 L1416 932 L286 932Z" fill="url(#grass)"/>
+<!-- isometric paths -->
+<path d="M485 935 L682 790 L830 693 L1028 598 L1192 478 L1416 411 L1416 463 L1222 529 L1052 648 L852 742 L704 835 L557 935Z" fill="#E8D9B8"/>
+<path d="M490 933 L690 790 L825 689 L817 643 L679 749 L467 901Z" fill="#F5E9D0" opacity=".85"/>
+<path d="M700 802 L644 687 L613 570 L642 561 L683 679 L742 767Z" fill="#E8D9B8"/>
+<path d="M846 742 L887 632 L1004 548 L1024 570 L916 655 L883 760Z" fill="#E8D9B8"/>
+<path d="M1080 626 L1085 507 L1118 490 L1114 612Z" fill="#E8D9B8"/>
+<!-- pond -->
+<path d="M1190 734 Q1234 691 1292 715 Q1350 734 1330 776 Q1300 816 1236 799 Q1181 786 1190 734Z" fill="#77C8D4" stroke="#D5F2F0" stroke-width="7"/>
+<path d="M1210 746 Q1244 725 1272 741" fill="none" stroke="#BDEBF0" stroke-width="4" stroke-linecap="round"/>
+<!-- trees -->
+<g transform="translate(353 373) scale(1.05)"><use href="#tree"/></g><g transform="translate(407 345) scale(.85)"><use href="#tree"/></g><g transform="translate(1327 355) scale(1.1)"><use href="#tree"/></g><g transform="translate(1370 388) scale(.8)"><use href="#tree"/></g><g transform="translate(1282 843) scale(.9)"><use href="#tree"/></g><g transform="translate(350 780) scale(1.2)"><use href="#tree"/></g><g transform="translate(400 814) scale(.8)"><use href="#tree"/></g><g transform="translate(1130 350) scale(.75)"><use href="#tree"/></g>
+<!-- Academy building -->
+<g filter="url(#shadow)" transform="translate(480 402)">
+ <path d="M0 80 L102 20 L208 80 L105 137Z" fill="#9AB9C7"/><path d="M0 80 L105 137 L105 245 L0 187Z" fill="#F2D6AD"/><path d="M105 137 L208 80 L208 188 L105 245Z" fill="#D9B78D"/>
+ <path d="M-10 80 L103 7 L219 78 L207 91 L103 31 L0 93Z" fill="#3B6B83"/><path d="M20 70 L103 20 L187 69 L103 118Z" fill="#E98F62"/>
+ <path d="M80 42 L103 27 L126 42 L126 76 L103 90 L80 76Z" fill="#FFF0D8"/><path d="M88 48 L103 38 L118 48 L118 71 L103 80 L88 71Z" fill="#3C7288"/>
+ <path d="M25 112 L48 125 L48 159 L25 146Z" fill="#75AEB8"/><path d="M61 133 L83 145 L83 179 L61 167Z" fill="#75AEB8"/><path d="M129 153 L153 140 L153 173 L129 186Z" fill="#75AEB8"/><path d="M165 132 L188 119 L188 153 L165 166Z" fill="#75AEB8"/>
+ <path d="M75 190 L105 207 L135 190 L135 242 L75 242Z" fill="#A56B52"/><path d="M88 204 L105 214 L122 204 L122 242 L88 242Z" fill="#694C4B"/>
+</g>
+<!-- Workshop -->
+<g filter="url(#shadow)" transform="translate(800 520)">
+ <path d="M0 62 L95 12 L191 62 L96 116Z" fill="#7EADAC"/><path d="M0 62 L96 116 L96 211 L0 159Z" fill="#D7E6D7"/><path d="M96 116 L191 62 L191 157 L96 211Z" fill="#B4CEC2"/>
+ <path d="M-9 62 L95 0 L202 59 L190 72 L95 19 L2 75Z" fill="#3F7F83"/><path d="M20 57 L95 13 L171 56 L95 99Z" fill="#D6A66E"/>
+ <path d="M26 87 L48 99 L48 130 L26 118Z" fill="#508D9C"/><path d="M60 107 L81 119 L81 151 L60 139Z" fill="#508D9C"/><path d="M117 130 L139 117 L139 149 L117 162Z" fill="#508D9C"/><path d="M153 110 L174 98 L174 130 L153 142Z" fill="#508D9C"/>
+ <path d="M76 161 L96 173 L116 161 L116 207 L76 207Z" fill="#9A7556"/><path d="M86 174 L96 180 L106 174 L106 207 L86 207Z" fill="#534C49"/>
+</g>
+<!-- Market stall -->
+<g filter="url(#shadow)" transform="translate(1114 416)">
+ <path d="M0 50 L67 12 L139 50 L72 88Z" fill="#D3B27E"/><path d="M0 50 L72 88 L72 158 L0 120Z" fill="#EEDBB7"/><path d="M72 88 L139 50 L139 120 L72 158Z" fill="#D6B98F"/>
+ <path d="M-6 50 L67 4 L145 48 L138 58 L67 18 L0 60Z" fill="#527C78"/>
+ <path d="M8 56 L67 22 L130 56 L72 90Z" fill="#F2C66F"/><path d="M20 49 L34 41 L48 49 L48 70 L34 78 L20 70Z" fill="#F8F1DB"/><path d="M57 70 L71 62 L85 70 L85 91 L71 99 L57 91Z" fill="#F8F1DB"/><path d="M94 49 L108 41 L122 49 L122 70 L108 78 L94 70Z" fill="#F8F1DB"/>
+</g>
+<!-- Arena gate -->
+<g filter="url(#shadow)" transform="translate(1043 290)">
+ <path d="M0 70 L75 28 L150 70 L75 112Z" fill="#879CB5"/><path d="M0 70 L75 112 L75 199 L0 157Z" fill="#C6D1E0"/><path d="M75 112 L150 70 L150 157 L75 199Z" fill="#9FAFC5"/><path d="M-8 70 L75 19 L158 69 L148 80 L75 37 L1 82Z" fill="#425879"/>
+ <path d="M42 96 L75 77 L108 96 L108 151 L75 170 L42 151Z" fill="#3C506E"/><path d="M52 101 L75 88 L98 101 L98 146 L75 159 L52 146Z" fill="#F4D18A"/><path d="M65 112 L75 104 L85 112 L85 135 L75 142 L65 135Z" fill="#4E7E9B"/>
+</g>
+<!-- district labels -->
+<g font-family="Inter,Arial,sans-serif" filter="url(#soft)">
+ <g transform="translate(455 365)"><rect width="170" height="33" rx="11" fill="#FFFFFF" fill-opacity=".96"/><circle cx="17" cy="16" r="5" fill="#E98F62"/><text x="31" y="21" font-size="12" font-weight="800" fill="#304B5E">PYTHON ACADEMY</text></g>
+ <g transform="translate(794 480)"><rect width="166" height="33" rx="11" fill="#FFFFFF" fill-opacity=".96"/><circle cx="17" cy="16" r="5" fill="#4E9996"/><text x="31" y="21" font-size="12" font-weight="800" fill="#304B5E">CODE WORKSHOP</text></g>
+ <g transform="translate(1090 379)"><rect width="110" height="33" rx="11" fill="#FFFFFF" fill-opacity=".96"/><circle cx="17" cy="16" r="5" fill="#E7B957"/><text x="31" y="21" font-size="12" font-weight="800" fill="#304B5E">MARKET</text></g>
+ <g transform="translate(1037 252)"><rect width="123" height="33" rx="11" fill="#FFFFFF" fill-opacity=".96"/><circle cx="17" cy="16" r="5" fill="#657DA1"/><text x="31" y="21" font-size="12" font-weight="800" fill="#304B5E">ARENA GATE</text></g>
+</g>
+<!-- NPCs and player -->
+<g transform="translate(700 730)"><use href="#npc"/><path d="M-12 -2 L-20 5 L-14 9 L-6 3Z" fill="#55B99A"/></g>
+<g transform="translate(753 666) scale(.86)"><use href="#npc"/><path d="M-9 -3 L-17 2 L-12 7 L-5 2Z" fill="#8C83D8"/></g>
+<g transform="translate(1013 694) scale(.95)"><use href="#npc"/><path d="M-9 -4 L-16 3 L-10 7 L-4 2Z" fill="#D98C62"/></g>
+<g transform="translate(1162 634) scale(.85)"><use href="#npc"/><path d="M-9 -4 L-16 3 L-10 7 L-4 2Z" fill="#5A9EB6"/></g>
+<g transform="translate(914 570) scale(.75)"><use href="#npc"/><path d="M-8 -4 L-14 2 L-9 6 L-3 1Z" fill="#D3A34F"/></g>
+<!-- map pins -->
+<g transform="translate(624 613)"><use href="#pin"/><path d="M-4 0 L-1 3 L5 -4" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/></g>
+<g transform="translate(1271 671)"><use href="#pin"/><path d="M-4 0 L-1 3 L5 -4" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/></g>
+<!-- floating guide card -->
+<g filter="url(#shadow)" transform="translate(311 137)">
+ <rect width="284" height="95" rx="17" fill="#FFFFFF" fill-opacity=".96"/>
+ <circle cx="37" cy="36" r="21" fill="#DDF4E9"/><path d="M26 38 L37 26 L48 38 L42 38 L42 49 L32 49 L32 38Z" fill="#398E73"/>
+ <text x="70" y="31" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="800" letter-spacing="1.1" fill="#8193A5">WELCOME BACK</text><text x="70" y="50" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="800" fill="#2C4358">Ready to explore?</text><text x="22" y="77" font-family="Inter,Arial,sans-serif" font-size="11" fill="#70869A">3 places to discover · 1 quest waiting</text>
+</g>
+<!-- map controls -->
+<g transform="translate(1351 818)" filter="url(#soft)"><rect x="-25" y="-62" width="50" height="112" rx="15" fill="#FFFFFF"/><path d="M-7 -42 L0 -49 L7 -42 M0 -49 V-32" stroke="#536B7E" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M-7 -12 L0 -5 L7 -12 M0 -5 V-22" stroke="#536B7E" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M-7 17 H7 M0 10 V24" stroke="#536B7E" stroke-width="2.4" fill="none" stroke-linecap="round"/></g>
+<g transform="translate(313 880)"><rect width="245" height="34" rx="12" fill="#FFFFFF" fill-opacity=".9"/><circle cx="17" cy="17" r="5" fill="#5AB99B"/><text x="30" y="21" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="700" fill="#536B7E">5 residents exploring the village</text></g>
+<!-- footer note -->
+<text x="1395" y="948" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="10" fill="#91A2B1">CONCEPT ART • NOT IMPLEMENTED UI</text>
+</svg>
