@@ -311,14 +311,18 @@ void main() {
       // bố Android/TalkBack đạt hay không đạt, và không được dùng để đóng PQC-008.
       final FocusNode? before = FocusManager.instance.primaryFocus;
       for (var i = 0; i < 6; i++) {
-        // `WidgetTester.sendKeyDownEvent` của SDK này nhận **physical int** vị trí,
-        // không có named `logicalKey` (4 error analyze ở run 38889441962 là bằng chứng).
-        await tester.sendKeyDownEvent(PhysicalKeyboardKey.tab.usbHidUsage);
-        // Nếu engine không map physical 0x2B sang Tab thì phép thử này vô nghĩa —
-        // kiểm thẳng vào HardwareKeyboard thay vì giả định.
+        // Ba vòng CI mới dạy đủ chữ ký thật (Flutter 3.47): `sendKeyDownEvent` nhận
+        // **một positional `LogicalKeyboardKey`** — không có named `logicalKey`
+        // (run 38889441962), và `usbHidUsage` là của `PhysicalKeyboardKey` chứ không phải
+        // `LogicalKeyboardKey` (run 38889939855 + 38890358736). Bài học ghi luôn ở đây:
+        // trong test, hoặc API có source/analyze xác nhận, hoặc không viết.
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.tab);
+        // Nếu sự kiện không thực sự được ghi nhận là Tab thì kết luận keyboard vô nghĩa
+        // → kiểm thẳng vào HardwareKeyboard thay vì giả định.
+        
         expect(HardwareKeyboard.instance.isLogicalKeyPressed(LogicalKeyboardKey.tab), isTrue,
             reason: 'sự kiện phải được hiểu là Tab, nếu không kết luận keyboard là rỗng');
-        await tester.sendKeyUpEvent(PhysicalKeyboardKey.tab.usbHidUsage);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.tab);
         await tester.pump();
       }
       expect(tester.takeException(), isNull);
