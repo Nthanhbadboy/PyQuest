@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import '../../shared/theme/palette.dart';
 import '../../shared/widgets/chunky_button.dart';
 import '../../shared/widgets/code_widgets.dart';
 import '../../shared/widgets/common.dart';
+import 'gemini_live_voice.dart';
 import 'tutor_models.dart';
 import 'tutor_session.dart';
 
@@ -69,6 +71,12 @@ class _TutorPanelState extends State<TutorPanel> {
   final List<_Line> _lines = [];
   bool _asking = false;
   bool _opened = false;
+  GeminiLiveVoice? _voice;
+  bool _voiceBusy = false;
+  CharacterId _voiceCharacter = CharacterId.kai;
+  String _voiceStatus = '';
+  String _voiceError = '';
+  final List<String> _voiceTranscript = <String>[];
 
   /// Last question sent, so «Thử lại» resends it through the AI provider
   /// instead of leaving the child with the offline answer.
@@ -111,10 +119,204 @@ class _TutorPanelState extends State<TutorPanel> {
 
   @override
   void dispose() {
+    unawaited(_voice?.dispose());
+    unawaited(widget.services.audio.setTutorVoiceMode(false));
     _input.dispose();
     _focus.dispose();
     _scroll.dispose();
     super.dispose();
+  }
+
+  Future<void> _toggleVoice() async {
+    final voice = _voice ??= GeminiLiveVoice(
+      onStatus: (status) {
+        if (!mounted) return;
+        setState(() {
+          _voiceStatus = status;
+          if (status == 'Đã dừng trò chuyện' || status == 'Voice chưa kết nối') {
+            _voiceBusy = false;
+          }
+        });
+        if (status == 'Đã dừng trò chuyện' || status == 'Voice chưa kết nối') {
+          unawaited(widget.services.audio.setTutorVoiceMode(false));
+        }
+      },
+      onTranscript: (text, {required fromUser}) {
+        if (!mounted) return;
+        setState(() {
+          // Show both sides so we can tell whether Gemini Live is actually
+          // receiving the child's speech or only playing its opening greeting.
+          final speaker = fromUser ? (_lang == PqLang.vi ? 'Bé' : 'You') : _voiceCharacter.displayName;
+          _voiceTranscript.add('$speaker: $text');
+          if (_voiceTranscript.length > 10) _voiceTranscript.removeAt(0);
+        });
+      },
+      onError: (message) {
+        if (!mounted) return;
+        setState(() {
+          _voiceError = message;
+          _voiceBusy = false;
+        });
+      },
+    );
+    if (voice.isRecording) {
+      setState(() {
+        _voiceBusy = true;
+        _voiceError = '';
+      });
+      await voice.stopListening();
+      return;
+    }
+    if (_voiceBusy) return;
+    setState(() {
+      _voiceBusy = true;
+      _voiceError = '';
+      _voiceStatus = 'Đang bắt đầu…';
+    });
+    await widget.services.audio.setTutorVoiceMode(true);
+    await voice.startListening(
+      characterName: _voiceCharacter.displayName,
+      language: _lang == PqLang.vi ? 'vi' : 'en',
+    );
+  }
+
+  Widget _voiceControls({bool compact = false}) {
+    final recording = _voice?.isRecording ?? false;
+    final waiting = _voiceBusy && !recording;
+
+    // The regular tutor sheet also contains the transcript, quick actions,
+    // composer, and privacy notes. Keep idle voice controls compact on shorter
+    // phones; expand them only after voice mode starts.
+    if (compact) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: PQColors.parchment,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: PQColors.sea.withValues(alpha: 0.25)),
+        ),
+        child: Row(
+          children: [
+            ChoiceChip(
+              label: const Text('Kai'),
+              selected: _voiceCharacter == CharacterId.kai,
+              onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.kai),
+              visualDensity: VisualDensity.compact,
+            ),
+            const SizedBox(width: 4),
+            ChoiceChip(
+              label: const Text('Lumi'),
+              selected: _voiceCharacter == CharacterId.lumi,
+              onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.lumi),
+              visualDensity: VisualDensity.compact,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: FilledButton.icon(
+                key: const ValueKey('tutor_gemini_live_voice'),
+                onPressed: waiting ? null : _toggleVoice,
+                icon: Icon(recording ? Icons.stop_circle_rounded : Icons.mic_rounded),
+                label: Text(_lang == PqLang.vi ? 'Trò chuyện' : 'Voice'),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: PQColors.parchment,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: PQColors.sea.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CharacterView(
+                id: CharacterId.kai,
+                size: 42,
+                mood: _voiceCharacter == CharacterId.kai
+                    ? (recording ? Mood.surprised : (_voiceStatus.contains('đang nói') ? Mood.happy : Mood.neutral))
+                    : Mood.neutral,
+              ),
+              const SizedBox(width: 8),
+              ChoiceChip(
+                label: const Text('Kai'),
+                selected: _voiceCharacter == CharacterId.kai,
+                onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.kai),
+              ),
+              const SizedBox(width: 8),
+              ChoiceChip(
+                label: const Text('Lumi'),
+                selected: _voiceCharacter == CharacterId.lumi,
+                onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.lumi),
+              ),
+              const SizedBox(width: 8),
+              CharacterView(
+                id: CharacterId.lumi,
+                size: 42,
+                mood: _voiceCharacter == CharacterId.lumi
+                    ? (recording ? Mood.surprised : (_voiceStatus.contains('đang nói') ? Mood.happy : Mood.neutral))
+                    : Mood.neutral,
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Icon(
+                recording ? Icons.graphic_eq_rounded : Icons.mic_rounded,
+                color: recording ? PQColors.coralDeep : PQColors.seaDeep,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _voiceStatus.isEmpty
+                      ? (_lang == PqLang.vi ? 'Chạm để bắt đầu trò chuyện rảnh tay' : 'Tap to start a hands-free conversation')
+                      : _voiceStatus,
+                  style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w700, color: PQColors.ink),
+                ),
+              ),
+              if (waiting)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          FilledButton.icon(
+            key: const ValueKey('tutor_gemini_live_voice'),
+            onPressed: waiting ? null : _toggleVoice,
+            icon: Icon(recording ? Icons.stop_circle_rounded : Icons.mic_rounded),
+            label: Text(
+              recording
+                  ? (_lang == PqLang.vi ? 'Dừng trò chuyện' : 'Stop conversation')
+                  : (_lang == PqLang.vi ? 'Bắt đầu trò chuyện với ${_voiceCharacter.displayName}' : 'Start talking with ${_voiceCharacter.displayName}'),
+            ),
+          ),
+          if (_voiceError.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(_voiceError, style: const TextStyle(color: PQColors.coralDeep, fontSize: 12)),
+          ],
+          const SizedBox(height: 4),
+          Text(
+            _lang == PqLang.vi
+                ? 'Trò chuyện rảnh tay: sau khi bắt đầu, tutor nghe và trả lời bằng giọng nói. Chạm Dừng để kết thúc.'
+                : 'Hands-free conversation: the tutor listens and replies aloud. Tap Stop to end.',
+            style: const TextStyle(fontSize: 10, color: PQColors.inkSoft),
+          ),
+        ],
+      ),
+    );
   }
 
   TutorRequest _request(String question, {TutorQuickAction? action}) => TutorRequest(
@@ -184,7 +386,9 @@ class _TutorPanelState extends State<TutorPanel> {
   }
 
   Mood get _mood {
-    if (_asking || widget.services.tutor.busy) return Mood.thinking;
+    if (_voice?.isRecording ?? false) return Mood.surprised;
+    if (_voiceStatus.contains('đang nói')) return Mood.happy;
+    if (_asking || widget.services.tutor.busy || (_voiceBusy && !(_voice?.isRecording ?? false))) return Mood.thinking;
     final last = _lines.isEmpty ? null : _lines.last.reply;
     if (last == null) return Mood.happy;
     if (last.hintLevel == TutorHintLevel.full) return Mood.surprised;
@@ -199,13 +403,19 @@ class _TutorPanelState extends State<TutorPanel> {
       builder: (context, _) {
         final session = widget.services.tutor;
         final busy = _asking || session.busy;
+        final voiceMode = _voiceStatus.isNotEmpty &&
+            _voiceStatus != 'Đã dừng trò chuyện' &&
+            _voiceStatus != 'Voice chưa kết nối';
         return Padding(
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               _header(session),
-              if (!widget.services.tutor.hasAi) ...[
+              // The regular text tutor may be offline while Gemini Live voice
+              // is connected directly. Don't show the unrelated text-provider
+              // warning over the active voice conversation.
+              if (!voiceMode && !widget.services.tutor.hasAi) ...[
                 const SizedBox(height: 8),
                 _FallbackNotice(
                   key: const ValueKey('tutor_no_ai_banner'),
@@ -216,15 +426,48 @@ class _TutorPanelState extends State<TutorPanel> {
                 ),
               ],
               const SizedBox(height: 10),
-              Flexible(
-                child: _transcript(busy),
-              ),
-              const SizedBox(height: 10),
-              _quickActions(),
+              if (!voiceMode) ...[
+                Flexible(child: _transcript(busy)),
+                const SizedBox(height: 10),
+                _quickActions(),
+              ] else ...[
+                Flexible(
+                  child: _voiceTranscript.isEmpty
+                      ? Center(
+                          child: Text(
+                            _lang == PqLang.vi ? 'Kai/Lumi sẽ nói ở đây…' : 'Kai/Lumi will speak here…',
+                            style: const TextStyle(fontFamily: 'Nunito', color: PQColors.inkSoft),
+                          ),
+                        )
+                      : ListView(
+                          shrinkWrap: true,
+                          children: _voiceTranscript.map((line) => Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 8, right: 28),
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: PQColors.cream,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(16), topRight: Radius.circular(16),
+                                  bottomRight: Radius.circular(16), bottomLeft: Radius.circular(4),
+                                ),
+                                border: Border.all(color: PQColors.parchmentEdge, width: 1.5),
+                              ),
+                              child: Text(line, style: const TextStyle(fontFamily: 'Nunito', fontSize: 14, color: PQColors.ink)),
+                            ),
+                          )).toList(),
+                        ),
+                ),
+              ],
               const SizedBox(height: 8),
-              _composer(busy),
-              const SizedBox(height: 8),
-              _footer(session),
+              _voiceControls(compact: !voiceMode),
+              if (!voiceMode) ...[
+                const SizedBox(height: 8),
+                _composer(busy),
+                const SizedBox(height: 8),
+                _footer(session),
+              ],
             ],
           ),
         );
