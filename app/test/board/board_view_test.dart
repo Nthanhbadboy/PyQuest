@@ -120,173 +120,182 @@ void main() {
     expect(sampled, 200.0);
   });
 
-  // rev 7 §R8-C: 2 plan × 4 beat × 2 locale × 2 khổ × 3 fontScale = 96 ca, **mỗi beat một lần
-  // dựng thật** (bảng tích lũy nên beat sau có hộp của beat trước; chụp một beat rồi nhân bản
-  // không phải coverage). Số đo lấy từ renderer: `getRect`/`getSize` của widget đang vẽ, cộng
-  // `RichText.textScaleFactor` của cây thật — không phải đọc lại con số trong model.
-  for (final Size surface in kViewportSizes) {
-    final String sizeName = '${surface.width.round()}x${surface.height.round()}';
-    for (final double scale in kTextScales) {
-      for (final String locale in kBoardLocales) {
-        for (int planIndex = 0; planIndex < 2; planIndex++) {
-          for (int beat = 0; beat < 4; beat++) {
-            final String tag = '${stepOf(planIndex)} b$beat · $locale · $sizeName · font ${scale.toStringAsFixed(1)}';
-            testWidgets('$tag — hộp đúng chỗ, chữ đúng cỡ, không tràn', (WidgetTester tester) async {
-              final String code = kExampleSteps[stepOf(planIndex)]!;
-              final BoardController controller = await pumpBoard(tester,
-                  planIndex: planIndex,
-                  surface: surface,
-                  textScale: scale,
-                  locale: locale,
-                  reduceMotion: true,
-                  codeText: code);
-              for (int i = 0; i < beat; i++) {
-                // Beat nào đang chờ trẻ thì luật R7-D cấm board tự nhảy: đường hợp lệ để tới
-                // beat sau là Ý ĐỊNH CỦA TRẺ (`learnerAdvance`), không phải `next()` nội bộ.
-                final bool moved = controller.next() || controller.learnerAdvance();
-                expect(moved, isTrue, reason: '$tag: không tới được beat $beat (dừng ở ${controller.beatIndex})');
-              }
-              await tester.pumpAndSettle();
-              expect(controller.beatIndex, beat);
-              expect(tester.takeException(), isNull, reason: '$tag: board nổ khi dựng/cỡ chữ');
+  // rev 8 §R8-C: ma trận 96 combo (2 plan × 4 beat × 2 locale × 2 khổ 360x640/390x844 ×
+  // fontScale {1.0, 1.3, 2.0}). MỖI NHÓM KIỂM TRA LÀ MỘT declaration, và mỗi declaration dựng lại
+  // TẤT CẢ 96 combo. Trước đây mỗi combo một declaration: khi cả 96 cùng đỏ thì báo cáo CI (giữ
+  // đầu + đuôi, cắt giữa) chỉ hiện bốn tên và không ai biết nhóm kiểm tra nào sai — thông tin
+  // duy nhất còn lại là "96 đỏ". Gộp theo nhóm thì tên declaration chính là chẩn đoán, còn
+  // coverage không giảm: vẫn đi từng combo bằng pumpWidget + next()/learnerAdvance() thật.
+  //
+  // Mọi số đo lấy từ renderer (`getRect`/`getSize`/cây `RichText` thật), không so với công thức
+  // chữ trong model — ngoại lệ duy nhất là nhóm (7), nơi so TỶ SỐ giữa hai lần dựng thật.
+  testWidgets('ma trận 96 ca · (1) khung chrome, đủ control, không nổ khi dựng', (WidgetTester tester) async {
+    final List<String> bad = await forEachMatrixCombo(tester, (MatrixProbe p) {
+      for (final String key in <String>[
+        'board_scaffold', 'board_title', 'board_say', 'board_caption', 'board_ink', 'board_canvas',
+        ...kBoardControlKeys,
+      ]) {
+        expect(p.box(key), findsOneWidget, reason: '${p.tag}: thiếu $key');
+      }
+      for (final String key in kBoardControlKeys) {
+        final Size s = p.sizeOf(key);
+        expect(s.width, greaterThanOrEqualTo(48), reason: '${p.tag}: $key rộng ${s.width}');
+        expect(s.height, greaterThanOrEqualTo(48), reason: '${p.tag}: $key cao ${s.height}');
+      }
+      expect(tester.takeException(), isNull, reason: '${p.tag}: board nổ khi dựng/cỡ chữ');
+    });
+    expect(bad, isEmpty, reason: '${bad.length}/96 combo hỏng:\n${bad.join('\n')}');
+  });
 
-              // (1) Khung chrome bắt buộc + đủ control, mỗi control >= 48 logical px.
-              for (final String key in <String>[
-                'board_scaffold',
-                'board_title',
-                'board_say',
-                'board_caption',
-                'board_ink',
-                'board_canvas',
-                ...kBoardControlKeys,
-              ]) {
-                expect(find.byKey(ValueKey<String>(key)), findsOneWidget, reason: '$tag: thiếu $key');
-              }
-              for (final String key in kBoardControlKeys) {
-                final Size box = tester.getSize(find.byKey(ValueKey<String>(key)));
-                expect(box.width, greaterThanOrEqualTo(48), reason: '$tag: $key rộng ${box.width}');
-                expect(box.height, greaterThanOrEqualTo(48), reason: '$tag: $key cao ${box.height}');
-              }
-
-              // (2) Hệ số co chữ chỉ được áp **một lần**: `Text` tự đọc textScaler từ MediaQuery
-              // trong khi RichText/layout thì không, nên scale 2.0 có thể thành 15 -> 30 -> 60 ở
-              // nhãn mà vẫn 26 ở dòng code. Không so `textScaleFactor` (property có thể luôn là 1.0
-              // trên SDK mới — thành tautology): đo paragraph mà renderer đã xếp chữ.
-              // Nhãn dài thì tự xuống dòng nên không được ép "đúng một dòng" — nhưng một dòng ở
-              // cỡ đã scale phải cao bằng `fontSize * height`, và không được nhỏ hơn cỡ trẻ yêu
-              // cầu. Chặn hai phía: nhân đôi scale làm phình lên (bị tràn), kẹp scale làm nhỏ lại.
-              for (final MapEntry<String, double> label in <String, double>{
-                'board_title': 15 * scale * 1.25 * 1.3,
-                'board_say': 15 * scale * 1.35,
-                'board_caption': 15 * scale * 1.35,
-              }.entries) {
-                final double h = tester
-                    .getSize(find.descendant(
-                        of: find.byKey(ValueKey<String>(label.key)), matching: find.byType(RichText))
-                        .first)
-                    .height;
-                expect(h, inInclusiveRange(label.value - 0.5, label.value * 4 + 1.5),
-                    reason: '$tag: ${label.key} cao $h, một dòng ở scale ${scale.toStringAsFixed(1)} '
-                        'phải là ${label.value} (± làm tròn), 4 dòng là trần của ô này');
-                // Cùng một hàng chữ thì không được co lại dưới cỡ đã yêu cầu.
-                expect(h, greaterThanOrEqualTo(label.value - 0.5),
-                    reason: '$tag: ${label.key} bị nhỏ hơn cỡ đã scale -> FittedBox/clamp đang ăn chữ');
-              }
-
-              // (3) Mỗi op đang thấy phải có hộp; op của beat tương lai thì chưa.
-              final TeachingPlan plan = validateComposed(planIndex, locale: locale).plan!;
-              final List<BoardVisibleOp> visible = visibleOpsThrough(plan, beat);
-              final Rect canvas = tester.getRect(find.byKey(const ValueKey<String>('board_canvas')));
-              for (final BoardVisibleOp entry in visible) {
-                final List<String> keys = boardNodeKeys(entry);
-                for (final String key in keys) {
-                  final Finder box = find.byKey(ValueKey<String>(key));
-                  expect(box, findsOneWidget, reason: '$tag: op ${entry.op.kind.wire} không có hộp $key');
-                  final Rect r = tester.getRect(box);
-                  expect(r.right, lessThanOrEqualTo(canvas.right + 0.5), reason: '$tag: $key tràn phải');
-                  expect(r.bottom, lessThanOrEqualTo(canvas.bottom + 0.5), reason: '$tag: $key tràn dưới');
-                  expect(r.left, greaterThanOrEqualTo(canvas.left - 0.5), reason: '$tag: $key tràn trái');
-                  expect(r.top, greaterThanOrEqualTo(canvas.top - 0.5), reason: '$tag: $key tràn trên');
-                  if (entry.op.kind == BoardOpKind.tokenGroup) {
-                    // Rộng của nhóm = số vật × (ô + khe). Đo từ hộp đã vẽ, không đọc lại layout.
-                    final double step = BoardLayout.chipSize + BoardLayout.chipGap;
-                    expect(r.width, closeTo(entry.op.tokenIds.length * step, 0.51),
-                        reason: '$tag: $key có ${entry.op.tokenIds.length} vật, rộng ${r.width}');
-                    // Từng vật phải là một hộp thật, cách đều nhau — "nhóm 7" mà vẽ 3 ô thì
-                    // phép đếm ở trên vẫn đúng nếu chỉ so tổng bề rộng.
-                    double previousRight = r.left;
-                    for (int k = 0; k < entry.op.tokenIds.length; k++) {
-                      final Rect chip =
-                          tester.getRect(find.byKey(ValueKey<String>('${key}_chip_$k')));
-                      expect(chip.width, closeTo(step, 0.51), reason: '$tag: vật $k rộng ${chip.width}');
-                      expect(chip.left, closeTo(previousRight, 0.51),
-                          reason: '$tag: vật $k lệch nhịp: ${chip.left} vs $previousRight');
-                      previousRight = chip.right;
-                    }
-                  }
-                  if (entry.op.kind == BoardOpKind.simpleShape) {
-                    expect(r.width, closeTo(entry.op.width * canvas.width, 0.51), reason: '$tag: $key sai width');
-                    expect(r.height, closeTo(entry.op.height * canvas.height, 0.51), reason: '$tag: $key sai height');
-                    expect(r.left, closeTo(canvas.left + entry.op.x * canvas.width, 0.51), reason: '$tag: $key sai x');
-                    expect(r.top, closeTo(canvas.top + entry.op.y * canvas.height, 0.51), reason: '$tag: $key sai y');
-                  }
-                  if (entry.op.kind == BoardOpKind.output ||
-                      entry.op.kind == BoardOpKind.text ||
-                      entry.op.kind == BoardOpKind.codeSnippet) {
-                    // Hộp phải chứa chữ của nó KÈM viền/padding: cao hơn chữ tối đa 12px (padding
-                    // 2+2, border 1+1, dung sai làm tròn) và không được thấp hơn chữ.
-                    final double text = textHeightIn(tester, box);
-                    expect(r.height - text, inInclusiveRange(-0.5, 12),
-                        reason: '$tag: $key cao ${r.height}, chữ $text -> hộp không theo nội dung');
-                  }
-                  if (entry.op.kind == BoardOpKind.output) {
-                    // Một `Text` cho mỗi dòng + một nhãn: đếm từ cây thật, không tin chuỗi gộp.
-                    final int boxes =
-                        find.descendant(of: box, matching: find.byType(RichText)).evaluate().length;
-                    expect(boxes, entry.op.value.split('\n').length + 1,
-                        reason: '$tag: $key phải có ${entry.op.value.split('\n').length + 1} dòng chữ, thấy $boxes');
-                  }
-                }
-              }
-              for (final BoardVisibleOp future in boardOpsAfter(plan, beat)) {
-                for (final String key in boardNodeKeys(future)) {
-                  expect(find.byKey(ValueKey<String>(key)), findsNothing,
-                      reason: '$tag: $key là của beat ${future.beatIndex}, chưa tới mà đã vẽ');
-                }
-              }
-              // Dòng code của beat đang thấy phải mang đúng chữ của code ví dụ.
-              for (final BoardNode node in BoardLayout.build(
-                      visible: visible,
-                      codeText: code,
-                      width: canvas.width,
-                      lineHeight: 13 * scale * 1.35,
-                      altOf: (BoardOp op) => op.altFor(locale),
-                      proseOf: (BoardOp op) => op.proseFor(locale),
-                      outputHeader: 'out')
-                  .nodes) {
-                if (node.kind != BoardNodeKind.codeLine) continue;
-                final Finder box = find.byKey(ValueKey<String>(node.key));
-                expect(box, findsOneWidget, reason: '$tag: thiếu ${node.key}');
-                expect(
-                    nodeText(tester, node.key),
-                    node.runs.map((BoardRun r) => r.text).join(),
-                    reason: '$tag: ${node.key} không nguyên văn code của bước học');
-                // Dòng code là `RichText` trong `FittedBox(scaleDown)`: nếu chữ bị co để vừa hộp
-                // thì "không overflow" chỉ có nghĩa là chữ đã nhỏ lại. Chiều cao paragraph thật
-                // phải bằng đúng `lineHeight` mà layout dùng để đặt hộp, ở mọi scale.
-                final Size natural = tester.getSize(
-                    find.descendant(of: box, matching: find.byType(RichText)).first);
-                expect(natural.height, closeTo(13 * scale * 1.35, 1.5),
-                    reason: '$tag: ${node.key} xếp chữ cao ${natural.height} '
-                        'so với lineHeight ${13 * scale * 1.35}');
-                expect(natural.width, lessThanOrEqualTo(tester.getSize(box).width + 0.5),
-                    reason: '$tag: ${node.key} phải co chữ để vừa hộp '
-                        '(${natural.width} > ${tester.getSize(box).width})');
-              }
-            });
-          }
+  testWidgets('ma trận 96 ca · (2) hộp của mỗi op đang thấy nằm trong canvas', (WidgetTester tester) async {
+    final List<String> bad = await forEachMatrixCombo(tester, (MatrixProbe p) {
+      for (final BoardVisibleOp entry in p.visible) {
+        for (final String key in boardNodeKeys(entry)) {
+          expect(p.box(key), findsOneWidget,
+              reason: '${p.tag}: op ${entry.op.kind.wire} không có hộp $key');
+          final Rect r = p.rectOf(key);
+          expect(r.right, lessThanOrEqualTo(p.canvas.right + 0.5),
+              reason: '${p.tag}: $key tràn phải (${r.right} > ${p.canvas.right})');
+          expect(r.bottom, lessThanOrEqualTo(p.canvas.bottom + 0.5),
+              reason: '${p.tag}: $key tràn dưới (${r.bottom} > ${p.canvas.bottom})');
+          expect(r.left, greaterThanOrEqualTo(p.canvas.left - 0.5), reason: '${p.tag}: $key tràn trái');
+          expect(r.top, greaterThanOrEqualTo(p.canvas.top - 0.5), reason: '${p.tag}: $key tràn trên');
         }
       }
+    });
+    expect(bad, isEmpty, reason: '${bad.length}/96 combo hỏng:\n${bad.join('\n')}');
+  });
+
+  testWidgets('ma trận 96 ca · (3) hộp của beat sau chưa được vẽ', (WidgetTester tester) async {
+    final List<String> bad = await forEachMatrixCombo(tester, (MatrixProbe p) {
+      for (final BoardVisibleOp future in boardOpsAfter(p.plan, p.beat)) {
+        for (final String key in boardNodeKeys(future)) {
+          expect(p.box(key), findsNothing,
+              reason: '${p.tag}: $key là của beat ${future.beatIndex}, chưa tới mà đã vẽ');
+        }
+      }
+    });
+    expect(bad, isEmpty, reason: '${bad.length}/96 combo hỏng:\n${bad.join('\n')}');
+  });
+
+  testWidgets('ma trận 96 ca · (4) nhóm vật = số ô × (18+6), đo từng ô một', (WidgetTester tester) async {
+    final List<String> bad = await forEachMatrixCombo(tester, (MatrixProbe p) {
+      final double step = BoardLayout.chipSize + BoardLayout.chipGap;
+      for (final BoardVisibleOp entry in p.visible) {
+        if (entry.op.kind != BoardOpKind.tokenGroup) continue;
+        // Key mang beat của CHÍNH op (bảng tích luỹ: hộp của beat trước vẫn còn trên bảng).
+        final String key = 'board_group_${entry.beatIndex}_${entry.opIndex}';
+        final Rect r = p.rectOf(key);
+        expect(r.width, closeTo(entry.op.tokenIds.length * step, 0.51),
+            reason: '${p.tag}: $key có ${entry.op.tokenIds.length} vật, rộng ${r.width}');
+        double previousRight = r.left;
+        for (int k = 0; k < entry.op.tokenIds.length; k++) {
+          final Rect chip = p.rectOf('${key}_chip_$k');
+          expect(chip.width, closeTo(step, 0.51), reason: '${p.tag}: vật $k rộng ${chip.width}');
+          expect(chip.left, closeTo(previousRight, 0.51),
+              reason: '${p.tag}: vật $k lệch nhịp: ${chip.left} vs $previousRight');
+          previousRight = chip.right;
+        }
+      }
+    });
+    expect(bad, isEmpty, reason: '${bad.length}/96 combo hỏng:\n${bad.join('\n')}');
+  });
+
+  testWidgets('ma trận 96 ca · (5) hộp chữ: cao độ hộp ôm đúng chữ đã xếp, kể chrome', (WidgetTester tester) async {
+    final List<String> bad = await forEachMatrixCombo(tester, (MatrixProbe p) {
+      for (final BoardVisibleOp entry in p.visible) {
+        final BoardOpKind kind = entry.op.kind;
+        if (kind != BoardOpKind.text && kind != BoardOpKind.output && kind != BoardOpKind.codeSnippet) {
+          continue;
+        }
+        final List<String> keys = boardNodeKeys(entry);
+        if (keys.isEmpty) continue; // `codeSnippet` trùng code thì không có hộp riêng
+        final String key = keys.single;
+        final Rect r = p.rectOf(key);
+        final double text = p.textHeight(key);
+        expect(r.height - text, inInclusiveRange(-0.5, 12),
+            reason: '${p.tag}: $key cao ${r.height}, chữ đã xếp $text -> hộp không theo nội dung');
+        if (kind == BoardOpKind.output) {
+          final int lines = entry.op.value.split('\n').length;
+          final int rich =
+              find.descendant(of: p.box(key), matching: find.byType(RichText)).evaluate().length;
+          expect(rich, lines + 1,
+              reason: '${p.tag}: $key phải có ${lines + 1} dòng chữ (kể nhãn), thấy $rich');
+        }
+      }
+    });
+    expect(bad, isEmpty, reason: '${bad.length}/96 combo hỏng:\n${bad.join('\n')}');
+  });
+
+  testWidgets('ma trận 96 ca · (6) dòng code: nguyên văn code của bước, không bị co chữ', (WidgetTester tester) async {
+    final List<String> bad = await forEachMatrixCombo(tester, (MatrixProbe p) {
+      for (final BoardNode node in p.layout.nodes) {
+        if (node.kind != BoardNodeKind.codeLine) continue;
+        expect(p.box(node.key), findsOneWidget, reason: '${p.tag}: thiếu ${node.key}');
+        expect(p.text(node.key), node.runs.map((BoardRun r) => r.text).join(),
+            reason: '${p.tag}: ${node.key} không nguyên văn code của bước học');
+        // `FittedBox(scaleDown)` cho phép co chữ để vừa hộp; "không tràn" lúc đó chỉ có nghĩa là
+        // chữ đã nhỏ lại. So chữ với CHÍNH hộp đang dựng (không dùng công thức cỡ chữ): cao hơn
+        // hộp = tràn, thấp hơn hộp = chữ đang bị co hoặc layout và widget dùng hai số khác nhau.
+        final Size natural = tester
+            .getSize(find.descendant(of: p.box(node.key), matching: find.byType(RichText)).first);
+        final double boxHeight = p.sizeOf(node.key).height;
+        expect(natural.height, lessThanOrEqualTo(boxHeight + 0.5),
+            reason: '${p.tag}: ${node.key} cao hơn hộp của nó ($natural > $boxHeight)');
+        expect(boxHeight - natural.height, lessThanOrEqualTo(1.0),
+            reason: '${p.tag}: ${node.key} có hộp cao hơn chữ ${(boxHeight - natural.height).toStringAsFixed(2)}px '
+                '-> `lineHeight` của layout và cỡ chữ đã vẽ không còn cùng một số');
+        expect(natural.width, lessThanOrEqualTo(p.sizeOf(node.key).width + 0.5),
+            reason: '${p.tag}: ${node.key} phải co chữ để vừa hộp '
+                '(${natural.width} > ${p.sizeOf(node.key).width})');
+      }
+    });
+    expect(bad, isEmpty, reason: '${bad.length}/96 combo hỏng:\n${bad.join('\n')}');
+  });
+
+  // (7) §R8-C đúng nghĩa: hệ số co chữ chỉ được áp **một lần**. Không đọc `textScaleFactor`
+  // (property có thể luôn là 1.0 trên SDK mới -> tautology) và cũng không so với công thức: dựng
+  // cùng một board ở scale 1.0 rồi 2.0 và đo TỶ SỐ chiều cao chữ mà renderer đã xếp. Nhân đôi hệ
+  // số (15 -> 30 -> 60) cho tỷ số 4; host kẹp 1.2 của app cho tỷ số 1.2; layer bỏ qua scale cho tỷ
+  // số 1.0. Cả ba đều đỏ, và không có con số nào trong test là dự đoán cỡ chữ.
+  for (final Size surface in kViewportSizes) {
+    final String sizeName = '${surface.width.round()}x${surface.height.round()}';
+    for (final String locale in kBoardLocales) {
+      testWidgets(
+        '§R8-C: scale 1.0 -> 2.0 làm chữ cao gấp đôi, không gấp bốn, ở $sizeName/$locale',
+        (WidgetTester tester) async {
+          Future<Map<String, double>> measureAt(double scale) async {
+            await pumpBoard(tester,
+                planIndex: 0,
+                surface: surface,
+                textScale: scale,
+                locale: locale,
+                codeText: kExampleSteps['mq1_01_s2']!);
+            await tester.pumpAndSettle();
+            double h(String key) => tester
+                .getSize(find
+                    .descendant(of: find.byKey(ValueKey<String>(key)), matching: find.byType(RichText))
+                    .first)
+                .height;
+            return <String, double>{
+              'board_title': h('board_title'),
+              'board_say': h('board_say'),
+              'board_caption': h('board_caption'),
+              'board_code_line_0': h('board_code_line_0'),
+            };
+          }
+
+          final Map<String, double> one = await measureAt(1.0);
+          final Map<String, double> two = await measureAt(2.0);
+          for (final String key in one.keys) {
+            final double ratio = two[key]! / one[key]!;
+            expect(ratio, closeTo(2.0, 0.08),
+                reason: '$sizeName/$locale $key: ${one[key]} -> ${two[key]} (tỷ số $ratio). '
+                    'Gần 4 = scale bị áp hai lần; gần 1 = layer nuốt scale; '
+                    'gần 1.2 = host mượn clamp 1.2 của app.');
+          }
+        },
+      );
     }
   }
 
@@ -805,3 +814,106 @@ List<String> semanticLabels(WidgetTester tester, Finder subtree) => find
     })
     .where((String s) => s.isNotEmpty)
     .toList();
+
+/// Một combo đã dựng của ma trận: widget đang nằm trên cây + những thứ nhóm kiểm tra cần đo.
+class MatrixProbe {
+  MatrixProbe({
+    required this.tester,
+    required this.tag,
+    required this.beat,
+    required this.plan,
+    required this.visible,
+    required this.layout,
+    required this.canvas,
+  });
+
+  final WidgetTester tester;
+  final String tag;
+  final int beat;
+  final TeachingPlan plan;
+  final List<BoardVisibleOp> visible;
+
+  /// Layout dựng lại với ĐÚNG số đo canvas đang thấy. Chỉ dùng để lấy danh sách node/chuỗi kỳ vọng;
+  /// mọi assertion về kích thước vẫn so giữavới hộp đã vẽ, không so với số ở đây.
+  final BoardLayout layout;
+  final Rect canvas;
+
+  Finder box(String key) => find.byKey(ValueKey<String>(key));
+  Size sizeOf(String key) => tester.getSize(box(key));
+  Rect rectOf(String key) => tester.getRect(box(key));
+  double textHeight(String key) => textHeightIn(tester, box(key));
+  String text(String key) => nodeText(tester, key);
+}
+
+/// Dựng lại từng combo trong 96 combo và gom lỗi của [body] về cho declaration gọi nó.
+///
+/// Lý do gom lỗi: `flutter analyze` và `flutter test --reporter expanded` đều bị cắt giữa trong
+/// báo cáo CI, nên 96 failure rải ở 96 declaration chỉ còn lại bốn cái tên. Ở đây một declaration
+/// trả về danh sách `tag → dòng lỗi đầu tiên`, đủ để biết nhóm nào sai và sai ở combo nào khi đọc
+/// log đầy đủ, mà không làm mất ca nào.
+Future<List<String>> forEachMatrixCombo(
+  WidgetTester tester,
+  void Function(MatrixProbe p) body,
+) async {
+  final List<String> bad = <String>[];
+  int seen = 0;
+  for (final Size surface in kViewportSizes) {
+    final String sizeName = '${surface.width.round()}x${surface.height.round()}';
+    for (final double scale in kTextScales) {
+      for (final String locale in kBoardLocales) {
+        for (int planIndex = 0; planIndex < 2; planIndex++) {
+          final String code = kExampleSteps[stepOf(planIndex)]!;
+          for (int beat = 0; beat < 4; beat++) {
+            seen++;
+            final String tag =
+                '${stepOf(planIndex)} b$beat · $locale · $sizeName · font ${scale.toStringAsFixed(1)}';
+            try {
+              final BoardController controller = await pumpBoard(tester,
+                  planIndex: planIndex,
+                  surface: surface,
+                  textScale: scale,
+                  locale: locale,
+                  reduceMotion: true,
+                  codeText: code);
+              for (int i = 0; i < beat; i++) {
+                // Beat nào đang chờ trẻ thì luật R7-D cấm board tự nhảy: đường hợp lệ để tới beat
+                // sau là Ý ĐỊNH CỦA TRẺ (`learnerAdvance`), không phải `next()` nội bộ.
+                if (!controller.next() && !controller.learnerAdvance()) {
+                  throw StateError('không tới được beat $beat (dừng ở ${controller.beatIndex})');
+                }
+              }
+              await tester.pumpAndSettle();
+              expect(controller.beatIndex, beat);
+              final TeachingPlan plan = validateComposed(planIndex, locale: locale).plan!;
+              final Rect canvas =
+                  tester.getRect(find.byKey(const ValueKey<String>('board_canvas')));
+              final List<BoardVisibleOp> visible = visibleOpsThrough(plan, beat);
+              body(MatrixProbe(
+                tester: tester,
+                tag: tag,
+                beat: beat,
+                plan: plan,
+                visible: visible,
+                canvas: canvas,
+                layout: BoardLayout.build(
+                  visible: visible,
+                  codeText: code,
+                  width: canvas.width,
+                  lineHeight: 13 * scale * 1.35,
+                  altOf: (BoardOp op) => op.altFor(locale),
+                  proseOf: (BoardOp op) => op.proseFor(locale),
+                  outputHeader: locale == 'en' ? 'Run output' : 'Kết quả chạy',
+                ),
+              ));
+            } on Object catch (e) {
+              // Bắt mọi loại: một combo hỏng không được xoá thông tin của 95 combo còn lại.
+              bad.add('$tag → ${e.toString().split('\n').first}');
+            }
+          }
+        }
+      }
+    }
+  }
+  expect(seen, 96, reason: 'ma trận phải đúng 96 combo (2 plan × 4 beat × 2 locale × 2 khổ × 3 scale)');
+  return bad;
+}

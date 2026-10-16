@@ -29,7 +29,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/modules/tutor/board/board_controller.dart';
-import 'package:pyquest/modules/tutor/board/board_layout.dart';
 import 'package:pyquest/modules/tutor/board/board_models.dart';
 import 'package:pyquest/modules/tutor/board/board_view.dart';
 import 'package:pyquest/shared/theme/app_theme.dart';
@@ -45,22 +44,26 @@ const Size kSmallSurface = Size(360, 640);
 /// Beat cần ảnh: `[planIndex, beatIndex, mô tả]` — phủ code + highlight, nhóm 3/4, connector +
 /// output một dòng, output hai dòng của cả đoạn, wait, và hình theo `x/y/width/height`.
 const List<List<Object>> kPrimaryCaptures = <List<Object>>[
-  <Object>[0, 0, 'code-highlight'],
-  <Object>[0, 1, 'quote-tokens'],
-  <Object>[0, 2, 'connector-single-output'],
-  <Object>[0, 3, 'wait-task'],
-  <Object>[1, 0, 'groups-3-4-line-highlight'],
-  <Object>[1, 1, 'cleared-group-7-first-line'],
-  <Object>[1, 2, 'whole-run-two-lines'],
-  <Object>[1, 3, 'shape-wait'],
+  <Object>[0, 0, 'code-highlight', '', ''],
+  <Object>[0, 1, 'quote-tokens', '', ''],
+  <Object>[
+      0, 2, 'connector-single-output', 'board_code_line_0', 'board_output_2_',
+    ],
+  <Object>[0, 3, 'wait-task', '', ''],
+  <Object>[1, 0, 'groups-3-4-line-highlight', '', ''],
+  <Object>[1, 1, 'cleared-group-7-first-line', '', ''],
+  <Object>[1, 2, 'whole-run-two-lines', '', ''],
+  <Object>[1, 3, 'shape-wait', '', ''],
 ];
 
 /// Bốn khung hẹp nhất (360×640, font 2.0) — nơi dễ tràn chữ nhất, chụp cả vi và en.
 const List<List<Object>> kSmallCaptures = <List<Object>>[
-  <Object>[0, 2, 'connector-single-output'],
-  <Object>[0, 3, 'wait-task'],
-  <Object>[1, 0, 'groups-3-4-line-highlight'],
-  <Object>[1, 2, 'whole-run-two-lines'],
+  <Object>[
+      0, 2, 'connector-single-output', 'board_code_line_0', 'board_output_2_',
+    ],
+  <Object>[0, 3, 'wait-task', '', ''],
+  <Object>[1, 0, 'groups-3-4-line-highlight', '', ''],
+  <Object>[1, 2, 'whole-run-two-lines', '', ''],
 ];
 
 String stepName(int planIndex) => planIndex == 0 ? 'mq1_01_s2' : 'mq1_03_s2';
@@ -76,6 +79,8 @@ class _Shot {
     required this.path,
     required this.inkRows,
     required this.inkSpan,
+    required this.boxesMissing,
+    required this.gapNote,
   });
 
   final int bytes;
@@ -89,10 +94,15 @@ class _Shot {
   /// "trên ảnh có một nét nào đó".
   final int inkRows;
   final int inkSpan;
+  /// Một trong hai hộp mà mũi tên phải nối **không có** trên cây widget.
+  final bool boxesMissing;
+  /// Hai prefix đã dùng để tra hộp, để dòng manifest tự giải thích phép đo.
+  final String gapNote;
 
   String describe(String name) => '$name | ${width}x$height | $bytes B | $levels mức sáng | '
       'góc RGBA ${corner.join(',')}'
       '${inkRows >= 0 ? ' | mực dải nối $inkRows/$inkSpan hàng' : ''}'
+      '${boxesMissing ? ' | THIẾU HỘP NỐI ($gapNote)' : ''}'
       ' | commit ${_commit()}';
 }
 
@@ -127,6 +137,8 @@ void main() {
       final int beatIndex = job[1] as int;
       final String why = job[2] as String;
       final Size surface = job[3] as Size;
+      final String fromPrefix = job[4] as String;
+      final String toPrefix = job[5] as String;
       final bool small = surface == kSmallSurface;
       for (final String locale in kPreviewLocales) {
         for (final double scale in kPreviewScales) {
@@ -135,9 +147,16 @@ void main() {
           final String name = 'board-${stepName(planIndex)}-b${beatIndex + 1}-$why-'
               '${surface.width.round()}x${surface.height.round()}'
               '-font${scale.toStringAsFixed(1)}-$locale';
-          final _Shot shot = await _captureBoard(
-              tester, outDir, name, planIndex, beatIndex, surface, scale, locale);
-          manifest.add(shot.describe(name));
+          try {
+            final _Shot shot = await _captureBoard(tester, outDir, name, planIndex, beatIndex,
+                surface, scale, locale, fromPrefix, toPrefix);
+            manifest.add(shot.describe(name));
+          } on Object catch (e) {
+            // Một phép đo hỏng không được khai tử cả bộ ảnh: CI chỉ thấy những file đã ghi ra đĩa,
+            // và vòng trước 32 ảnh đã biến mất chỉ vì ca đo đầu tiên abort giữa vòng lặp. Lỗi vẫn
+            // làm đỏ test (dòng check bên dưới), nhưng design còn đủ 40 ảnh để mở.
+            manifest.add('$name → ĐO HỎNG: $e'); // giữ nguyên message, kể cả nhiều dòng
+          }
         }
       }
     }
@@ -145,6 +164,8 @@ void main() {
         reason: 'bộ ảnh phải phủ từng beat ở vi/en và font 2.0: ${manifest.length}');
     expect(manifest.where((String n) => n.contains('-b1-')), isNotEmpty,
         reason: 'tên ảnh phải chứa beat, không chỉ plan');
+    expect(manifest.where((String n) => n.contains('ĐO HỎNG')).toList(), isEmpty,
+        reason: 'có combo đo ảnh hỏng; danh sách nằm ở cuối log của file này');
     // `render.txt`/`test.txt` là kênh CI in đủ; MANIFEST đi cùng ảnh để ảnh tự giải thích nó là
     // gì, chụp từ commit nào, và đã được đo ra sao.
     File('${outDir.path}/MANIFEST.txt').writeAsStringSync('${manifest.join('\n')}\n');
@@ -196,8 +217,10 @@ Future<_Shot> _captureBoard(
   int beatIndex,
   Size surface,
   double scale,
-  String locale,
-) async {
+  String locale, [
+  String fromPrefix = '',
+  String toPrefix = '',
+]) async {
   final GlobalKey boundary = GlobalKey(debugLabel: name);
   final Map<String, dynamic> plan = composedPlan(planIndex);
   final String stepId = plan['stepId']! as String;
@@ -255,41 +278,34 @@ Future<_Shot> _captureBoard(
   expect(controller.currentCopy!.caption, isNotEmpty, reason: '$name: beat không có caption');
 
   // rev 8 §R8-B1: với beat có `connector`, phải thấy **mực vẽ băng qua khoảng trống** giữa hai hộp.
-  // Tiêu chuẩn là số HÀNG ảnh có điểm tối trong dải [đáy hộp nguồn, đỉnh hộp đích]: nét dọc hoặc
-  // S-curve nối hai hộp thì gần như mọi hàng đều có mực, còn nét ngang kiểu cũ (hai điểm cùng ở độ
-  // cao trung bình) chỉ để lại 1-3 hàng. Cách đo này không phụ thuộc số đo font hay làm tròn một điểm
-  // ảnh, nên đỏ = mũi tên thật sự không nối, không phải = tôi lấy mẫu hụt.
-  int bandTop = -1, bandBottom = -1, bandLeft = 0, bandRight = 0;
-  if (name.contains('connector')) {
-    final Size canvasSize = tester.getSize(find.byKey(const ValueKey<String>('board_canvas')));
-    final Offset canvasTopLeft = tester.getTopLeft(find.byKey(const ValueKey<String>('board_canvas')));
-    // Gốc của boundary trong toạ độ màn hình: `toImage` trả ảnh tính từ đây, không phải từ canvas.
-    final Offset boundaryTopLeft = tester.getTopLeft(find.byKey(boundary));
-    final Offset origin = canvasTopLeft - boundaryTopLeft;
-    final TeachingPlan model = validateComposed(planIndex).plan!;
-    final BoardLayout geometry = BoardLayout.build(
-      visible: visibleOpsThrough(model, beatIndex),
-      codeText: kExampleSteps[stepId]!,
-      width: canvasSize.width,
-      // `13 * scale * 1.35`: cùng công thức `_codeFontSize`/`lineHeight` mà `_TutorLayer` dùng.
-      lineHeight: 13 * scale * 1.35,
-      altOf: (BoardOp op) => op.altFor(locale),
-      proseOf: (BoardOp op) => op.proseFor(locale),
-      outputHeader: locale == 'en' ? 'Run output' : 'Kết quả chạy',
-    );
-    expect(geometry.connectors, hasLength(1), reason: '$name: beat này phải có đúng một mũi tên');
-    final BoardConnector link = geometry.connectors.single;
-    bandTop = ((origin.dy + link.start.y) * 1.5).round();
-    bandBottom = ((origin.dy + link.end.y) * 1.5).round();
-    final double left = link.fromRect.x < link.toRect.x ? link.fromRect.x : link.toRect.x;
-    final double right =
-        link.fromRect.right > link.toRect.right ? link.fromRect.right : link.toRect.right;
-    bandLeft = ((origin.dx + left) * 1.5).round();
-    bandRight = ((origin.dx + right) * 1.5).round();
+  // Hai hộp lấy từ CHÍNH cây widget đang dựng — key của hộp nguồn và hộp đích do bảng capture khai
+  // — chứ không dựng lại `BoardLayout` trong test: vòng trước tôi rebuild layout bằng số đo tự đưa
+  // (`13 * scale * 1.35`, thiếu measurer mà view bơm vào) rồi lấy mẫu ở chỗ model *tưởng* là mũi
+  // tên, tức là đo trí tưởng tượng của mình chứ không đo thứ máy đã vẽ.
+  // Tiêu chuẩn: số HÀNG ảnh có điểm tối trong dải giữa đáy hộp cao hơn và đỉnh hộp thấp hơn. Nét
+  // nối thật phủ gần hết dải; một nét ngang lơ lửng (lỗi cũ: hai điểm cùng ở độ cao trung bình) chỉ
+  // để lại 1-3 hàng. Cách này không phụ thuộc số đo font hay làm tròn một điểm ảnh.
+  int bandTop = -1, bandBottom = -1;
+  bool boxesMissing = false;
+  if (fromPrefix.isNotEmpty && toPrefix.isNotEmpty) {
+    final Offset origin = tester.getTopLeft(find.byKey(boundary));
+    final Rect? from = boxRectForPrefix(tester, fromPrefix);
+    final Rect? to = boxRectForPrefix(tester, toPrefix);
+    // Không `expect` ở đây: mọi thứ trước cú `toImage` đều có thể làm mất cả ảnh, mà ảnh là bằng
+    // chứng design cần mở. Thiếu hộp thì chỉ đánh dấu, và kiểm tra sẽ chạy SAU khi ảnh đã ghi.
+    boxesMissing = from == null || to == null;
+    final double gapTop = from == null ? 0 : (to == null ? 0 : (from.bottom < to.bottom ? from.bottom : to.bottom));
+    final double gapBottom = from == null ? 0 : (to == null ? 0 : (from.top > to.top ? from.top : to.top));
+    bandTop = ((gapTop - origin.dy) * 1.5).round();
+    bandBottom = ((gapBottom - origin.dy) * 1.5).round();
     if (bandBottom < bandTop) {
       final int t = bandTop;
       bandTop = bandBottom;
       bandBottom = t;
+    }
+    if (boxesMissing) {
+      bandTop = -1;
+      bandBottom = -1;
     }
   }
 
@@ -309,12 +325,12 @@ Future<_Shot> _captureBoard(
     final List<int> size = _pngSize(file.readAsBytesSync());
     int inkRows = -1;
     if (bandBottom >= 0) {
-      final int x0 = bandLeft < 0 ? 0 : bandLeft;
-      final int x1 = bandRight > image.width ? image.width : bandRight;
       final int y1 = bandBottom > image.height ? image.height : bandBottom;
       int rows = 0;
+      // Quét hết bề rộng: dải này nằm GIỮA hai hộp, nơi không có chữ nào khác của beat được vẽ,
+      // nên mọi điểm tối trong đó đều là của mũi tên.
       for (int y = bandTop < 0 ? 0 : bandTop; y <= y1; y++) {
-        for (int x = x0; x < x1; x++) {
+        for (int x = 0; x < image.width; x++) {
           final int at = (y * image.width + x) * 4;
           if (at + 3 >= pixels.length) break;
           if (pixels[at + 3] != 255) continue; // chỉ tính điểm opaque; transparent là lỗi khác
@@ -336,6 +352,8 @@ Future<_Shot> _captureBoard(
       path: file.path,
       inkRows: inkRows,
       inkSpan: bandBottom - bandTop + 1,
+      boxesMissing: boxesMissing,
+      gapNote: '$fromPrefix|$toPrefix',
     );
     image.dispose();
     return measured;
@@ -343,7 +361,7 @@ Future<_Shot> _captureBoard(
   expect(shot, isNotNull, reason: '$name: runAsync không trả số đo');
   // Assert đặt NGOÀI `runAsync`: trong zone fake-async của `testWidgets`, một exception từ
   // `runAsync` có thể bị nuốt; số liệu đưa ra ngoài rồi kiểm vẫn rõ ràng khi đọc log CI.
-  expect(shot!.bytes, greaterThan(4000), reason: '$name: ảnh quá nhỏ, nhiều khả năng chỉ có nền');
+  expect(shot.bytes, greaterThan(4000), reason: '$name: ảnh quá nhỏ, nhiều khả năng chỉ có nền');
   expect(shot.levels, greaterThanOrEqualTo(8),
       reason: '$name: chỉ ${shot.levels} mức sáng = một dải màu đặc, không phải chữ đọc được');
   expect(shot.corner[3], 255, reason: '$name: góc trên-trái trong suốt -> publisher ra nền đen');
@@ -352,6 +370,9 @@ Future<_Shot> _captureBoard(
   // file, và chặn trường hợp chụp nhằm một node rỗng 1x1.
   expect(shot.width, (surface.width * 1.5).round(), reason: '$name: bề rộng ảnh không khớp surface');
   expect(shot.height, (surface.height * 1.5).round(), reason: '$name: chiều cao ảnh không khớp surface');
+  expect(shot!.boxesMissing, isFalse,
+      reason: '$name: mũi tên phải nối hai hộp thật, nhưng không tìm thấy hộp nào có key khớp '
+          '${shot.gapNote} -> ảnh này không có gì để đối chiếu');
   if (shot.inkRows >= 0) {
     final int span = shot.inkSpan;
     expect(span, greaterThan(1), reason: '$name: dải nối rỗng ($span hàng) — không có chỗ nào để vẽ');
@@ -383,4 +404,15 @@ int _distinctLuminanceLevels(Uint8List rgba) {
     if (levels.length >= 64) break;
   }
   return levels.length;
+}
+
+/// Rect của hộp đầu tiên trong cây có key `ValueKey<String>` bắt đầu bằng [prefix].
+///
+/// Trả null khi không có hộp nào như vậy — đó là phát hiện thật về bảng (mũi tên trỏ vào một hộp
+/// không được vẽ), không phải lỗi của phép đo, nên người gọi kiểm bằng `expect(isNotNull)`.
+Rect? boxRectForPrefix(WidgetTester tester, String prefix) {
+  final Finder boxes = find.byWidgetPredicate((Widget w) =>
+      w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith(prefix));
+  if (boxes.evaluate().isEmpty) return null;
+  return tester.getRect(boxes.first);
 }
