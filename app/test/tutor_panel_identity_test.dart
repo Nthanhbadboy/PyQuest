@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,6 +40,24 @@ void main() {
       .widgetList<RichText>(find.byType(RichText))
       .map((RichText w) => w.text.toPlainText())
       .toList();
+
+  /// Temporary CI diagnostic: the published report trims the middle of the test
+  /// log, so the strings on screen are appended to the end of that same file,
+  /// where they survive the trim.
+  void dumpOnScreen(WidgetTester tester, String label) {
+    if (Platform.environment.containsKey('FLUTTER_TEST') &&
+        Platform.environment.containsKey('CI')) {
+      try {
+        final File log = File('../test.txt');
+        if (!log.existsSync()) return;
+        final RandomAccessFile handle = log.openSync(mode: FileMode.append);
+        handle.writeStringSync('\n[identity-diagnostic:$label] ${onScreen(tester).join(' | ')}\n');
+        handle.closeSync();
+      } catch (_) {
+        // Diagnostics must never be the reason a test fails.
+      }
+    }
+  }
 
   /// Sends through the composer. The keyboard action is the primary path and
   /// the button is pressed as well; `_send` clears the field, so the second
@@ -139,10 +159,13 @@ void main() {
     await typeAndSend(tester, 'Biến là gì?');
 
     final said = onScreen(tester);
-    expect(said.any((String t) => t.contains(PqStrings.vi.labelOffline)), isTrue);
+    dumpOnScreen(tester, 'offline');
+    expect(said.any((String t) => t.contains(PqStrings.vi.labelOffline)), isTrue,
+        reason: 'the panel must say the answer came from the offline tutor');
     expect(said.any((String t) => t.contains(PqStrings.vi.labelAiWritten)), isFalse);
     // The learner is still the only one named «Bé», and still has one line.
-    expect(said.where((String t) => t == PqStrings.vi.childLabel), hasLength(1));
+    expect(said.where((String t) => t == PqStrings.vi.childLabel), hasLength(1),
+        reason: 'the typed question is one line by the child');
   });
 
   testWidgets('the sheet offers a voice persona without inventing a speaker', (tester) async {
