@@ -49,18 +49,28 @@ class GeminiLiveVoice {
     }
     try {
       onStatus('Đang kết nối Gemini Live…');
-      final uri = Uri.https(
-        'generativelanguage.googleapis.com',
-        '/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent',
-        <String, String>{'key': _apiKey},
+      // WebSocketChannel.connect only accepts ws:// or wss:// URIs.
+      // Uri.https() creates an https:// URI and fails before the Live session
+      // can be established.
+      final uri = Uri(
+        scheme: 'wss',
+        host: 'generativelanguage.googleapis.com',
+        path: '/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent',
+        queryParameters: <String, String>{'key': _apiKey},
       );
       _setupComplete = Completer<void>();
       final channel = WebSocketChannel.connect(uri);
       _channel = channel;
       _socketSubscription = channel.stream.listen(
         _handleServerMessage,
-        onError: (Object error) => onError('Kết nối voice lỗi: $error'),
+        onError: (Object error) {
+          if (!_setupComplete.isCompleted) _setupComplete.completeError(error);
+          onError('Kết nối voice lỗi: $error');
+        },
         onDone: () {
+          if (!_setupComplete.isCompleted) {
+            _setupComplete.completeError(StateError('Gemini Live đã đóng kết nối trước khi setup hoàn tất.'));
+          }
           if (!_disposed && _recording) {
             _recording = false;
             onStatus('Đã ngắt kết nối');
