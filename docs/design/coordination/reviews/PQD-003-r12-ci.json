@@ -1,0 +1,37 @@
+{
+  "review": "PQD-003-r12",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "tested_code_commit": "470d4d948081d9d24c87b1080667b962f0935020",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "run_id": 38946941055,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38946941055",
+  "custom_report_check_id": 117130444954,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 9.3,
+  "ordinary": {
+    "passed": 341,
+    "failed": 2
+  },
+  "render_passed": 10,
+  "remaining_failures": [
+    "ma trận 96 ca · (2) hộp của mỗi op đang thấy nằm trong canvas",
+    "rev 8 §R8-D: đổi locale trên cùng controller — prose nhìn thấy, semantics thật, output theo thứ tự"
+  ],
+  "missing_failure_names": 0,
+  "full_failure_stack_traces_retrieved": false,
+  "runtime_identical_to": "582377567005105b574704dd299a4aec2aa12117",
+  "changed_paths": [
+    "app/test/board/board_view_test.dart"
+  ],
+  "source_sha256": {
+    "app/test/board/board_view_test.dart": "6fe26711a46d881b9f99d04949a15342ae81605eec3abd3b6bc5127067a11345"
+  },
+  "new_preview_images_inspected": 0,
+  "local_flutter_tests_run": false
+}

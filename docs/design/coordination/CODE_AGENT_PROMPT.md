@@ -32,24 +32,23 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision11: review5823775, authorization r6 giữ nguyên**.
-Đọc task003, `reviews/PQD-003-r11.md` + r11-ci.json và `reviews/PQC-010-r5/`.
+Task hiện tại là **PQD-003 revision12: review470d4d9, authorization r6 giữ nguyên**.
+Đọc task003, `reviews/PQD-003-r12.md` + r12-ci.json/PQC-010-r6/ci-report.md.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
 **Làm ngay, không ACK-only:**
-1. CI38946140784/report117127799090: analyze sạch7.9s,337pass/6fail,10renderpass.
-   40ảnh đúng SHA publish, mở4ảnh xác nhận fixes và regression; chưa ACCEPTED.
-2. R11-A: `groupX = pairNext ? gutter : gutter + rowW + 16` đẩy nhómđơn7 sangphải,
-   right360 vượt canvas320/336. Nhóm hiện tại luôn bắt đầu ởgutter; nextX chỉ dành
-   cho nhóm thứhai thực sự ghép. Test nhómđơn1/7/12, cặp3/4 và anchors trongcanvas.
-3. Scale/live-locale vẫn đỏ: trả first failed assertion và actualmetrics/labels/
-   rect/visibility, không chỉ đổi tên/input test. Giữ13/26/noScaling; xử lý rounding
-   theo SDK nếu có bằngchứng, không nới tolerance mù. Hai tênfail bịcắt chưađượcbiết.
-4. Giữ sửa đúng output replace/targetscroll/Tab và bốtrí3trái4phải. Trả CI đúngSHA
-   cuối và ảnh nhóm7/360 không bịcắt; không làm lại các quyết định layout đãchốt.
-5. Scopes010/014/015 giữnguyên;014 độc lập,015 sau014CI xanh, dependency chỉ015.
-   Không mở LessonScreen/AI/voice/art/social/economy/P06 hoặc CI/publisher. Board
-   vẫn độc lập testhost, không claimdevice. Không merge cả design hoặc applylại guard.
+1. CI38946941055/report117130444954: analyze sạch9.3s,341pass/2fail,10renderpass.
+   Hai failure names đã đủ: matrix bounds và live locale; chưa có full stack trace.
+2. Giữ scale TextPainter oracle đã qua CI. Runtime chưa đổi từ5823775: groupX của
+   nhóm đơn vẫn là gutter+rowW+16. Sửa nhóm hiện tại luôn ởgutter; nextX chỉ nhóm2
+   trongcặp. Test đơn1/7/12, cặp3/4, anchors trongcanvas. Không nới bounds/clip vật.
+3. Locale pumpAndSettle chưa làm test xanh. Trả assertion đầu fail và expected/
+   actual label, beat/locale/ink/rect/visibility. Scroll khi cần nhưng giữ cùng
+   controller; không bỏ kiểm locale cũ hoặc thay cây semantics bằng properties.
+4. Trả SHA cuối/run/custom report/CI xanh + ảnh nhóm7/360 không bịcắt. Giữ fixes
+   r10/r11 đúng, không thêm vòng thiết kế mới.010/014/015 scopes không đổi;014 độc
+   lập,015 sau014CI xanh, dependency chỉ015. Không mở LessonScreen/AI/voice/art/
+   social/economy/P06/CI/publisher. Không merge cả design hoặc apply lại guard.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
