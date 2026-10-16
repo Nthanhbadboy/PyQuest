@@ -1,0 +1,80 @@
+{
+  "review": "PQD-003-r11",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "582377567005105b574704dd299a4aec2aa12117",
+  "run_id": 38946140784,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38946140784",
+  "custom_report_check_id": 117127799090,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 7.9,
+  "ordinary": {
+    "passed": 337,
+    "failed": 6
+  },
+  "render_passed": 10,
+  "published_board_images": 40,
+  "images_inspected": [
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r5/board-mq1_03_s2-b2-cleared-group-7-first-line-390x844-font1.0-en.jpg",
+      "sha256": "844590499e1adc86f400a91cc9752257818e19fcd52b8b785417ff93a36814a6",
+      "bytes": 28147,
+      "check_ids": [
+        117127185489
+      ],
+      "head_sha": "582377567005105b574704dd299a4aec2aa12117",
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r5/board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font1.0-vi.jpg",
+      "sha256": "043358b61255d0ff2f095a8ca50acce998d27ceb2c96c5ea9b80f111f2ad1d2b",
+      "bytes": 29743,
+      "check_ids": [
+        117127158013
+      ],
+      "head_sha": "582377567005105b574704dd299a4aec2aa12117",
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r5/board-mq1_03_s2-b3-whole-run-two-lines-360x640-font2.0-vi.jpg",
+      "sha256": "bd7fb5006a40dc3f01c7107c0afc63df484f8c72345971d65fafeae814f999e3",
+      "bytes": 38401,
+      "check_ids": [
+        117127224045
+      ],
+      "head_sha": "582377567005105b574704dd299a4aec2aa12117",
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r5/board-mq1_01_s2-b3-connector-single-output-360x640-font2.0-en.jpg",
+      "sha256": "fed1693d291817557c1203245070c488c4e367078c2c11f300ba016a53adb477",
+      "bytes": 48024,
+      "check_ids": [
+        117127036345,
+        117127041294
+      ],
+      "head_sha": "582377567005105b574704dd299a4aec2aa12117",
+      "visually_inspected": true
+    }
+  ],
+  "known_failure_names": 4,
+  "unavailable_failure_names": 2,
+  "full_test_log_retrieved": false,
+  "local_flutter_tests_run": false,
+  "changed_paths": [
+    "app/lib/modules/tutor/board/board_layout.dart",
+    "app/test/board/board_previews_test.dart",
+    "app/test/board/board_view_test.dart"
+  ],
+  "source_sha256": {
+    "app/lib/modules/tutor/board/board_layout.dart": "78966da96474dd2317ce505ee3690048b3ab09352c6667b3a6614e987742ba45",
+    "app/test/board/board_previews_test.dart": "1ae4da79d32728123f8c749415b513f8c20bf7dd40d68fb4a21abb3afb6274ad",
+    "app/test/board/board_view_test.dart": "964915547a88332a0b0932f2441a3c2f94170100f06d912dcbd1163ef7f51151"
+  }
+}

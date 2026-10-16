@@ -32,29 +32,24 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision10: review2bb2c69, authorization r6 giữ nguyên**.
-Đọc task003, `reviews/PQD-003-r10.md` + r10-ci.json và `reviews/PQC-010-r4/`.
-Nhánh code mới do người dùng xác nhận là `arena/0d4fcb38-pyquest`; không switch/push
-về b813b575. Chỉ làm trên nhánh phiên được phép, dùng branch override có sẵn nếu cần.
+Task hiện tại là **PQD-003 revision11: review5823775, authorization r6 giữ nguyên**.
+Đọc task003, `reviews/PQD-003-r11.md` + r11-ci.json và `reviews/PQC-010-r5/`.
+Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
-**Làm ngay, không trả thêm ACK-only:**
-1. Tested2bb2c69/run38943424997/report117118848668: analyze sạch9.6s nhưng336pass/
-   7fail;10renderpass.40ảnh đúng SHA đã publish, không có nghĩa pixel test đã đạt.
-2. R10-A: test Tab đang đòi Enter không đổi beat dù focus có thể là Next. Next phải
-   advance beat; không nhầm với lessonCompleted. Sửa oracle, không làm hỏng nút.
-3. R10-B: cuộn target vào viewport trước đo/chụp, đọc lại rect/band. Ảnh font2/360
-   hiện chưa thấy connector/output/wait. Không hạ threshold cho band ngoài ảnh.
-4. R10-C: nhóm3trái/4phải phải khớp lời giảng; output b2 một ô1dòng, b3/b4 một ô2dòng
-   hiện hành, không giữ hai out-box cùng nhãn. Test positions/count/semantics + ảnh.
-5. R10-D: trả actual metrics/scaler của test scale, expected/actual label và visibility
-   của test live locale. Chưa có full trace thì không tự nhận đã biết root cause.
-   Report chỉ4failure names+3more: không đoán ba tên, không bỏ/nới safety tests.
-6. Giữ fixes đúng r9 và quyết định intrinsic content/caption6–8px trên code. Không
-   mở LessonScreen/AI/voice/art/social/economy/P06 hoặc CI/publisher.010/014/015 vẫn
-   ALLOWED;014 độc lập,015 sau014CI xanh, dependency chỉ015 locale tối thiểu.
-7. Trả SHA cuối/run/custom report/phases/counts và ảnh target đã mở kiểm. Board vẫn
-   test host độc lập, chưa nối production lesson/device screen reader. Không merge
-   cả nhánh design, không apply lại guard hoặc mở framework điều phối mới.
+**Làm ngay, không ACK-only:**
+1. CI38946140784/report117127799090: analyze sạch7.9s,337pass/6fail,10renderpass.
+   40ảnh đúng SHA publish, mở4ảnh xác nhận fixes và regression; chưa ACCEPTED.
+2. R11-A: `groupX = pairNext ? gutter : gutter + rowW + 16` đẩy nhómđơn7 sangphải,
+   right360 vượt canvas320/336. Nhóm hiện tại luôn bắt đầu ởgutter; nextX chỉ dành
+   cho nhóm thứhai thực sự ghép. Test nhómđơn1/7/12, cặp3/4 và anchors trongcanvas.
+3. Scale/live-locale vẫn đỏ: trả first failed assertion và actualmetrics/labels/
+   rect/visibility, không chỉ đổi tên/input test. Giữ13/26/noScaling; xử lý rounding
+   theo SDK nếu có bằngchứng, không nới tolerance mù. Hai tênfail bịcắt chưađượcbiết.
+4. Giữ sửa đúng output replace/targetscroll/Tab và bốtrí3trái4phải. Trả CI đúngSHA
+   cuối và ảnh nhóm7/360 không bịcắt; không làm lại các quyết định layout đãchốt.
+5. Scopes010/014/015 giữnguyên;014 độc lập,015 sau014CI xanh, dependency chỉ015.
+   Không mở LessonScreen/AI/voice/art/social/economy/P06 hoặc CI/publisher. Board
+   vẫn độc lập testhost, không claimdevice. Không merge cả design hoặc applylại guard.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
