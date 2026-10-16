@@ -109,6 +109,7 @@ class BoardLabels {
   final String noteHint;
   final String outputLabel;
   final String fallbackPrefix;
+  final String codeMismatch;
 }
 
 class BoardView extends StatelessWidget {
