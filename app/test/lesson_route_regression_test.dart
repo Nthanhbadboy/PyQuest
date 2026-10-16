@@ -14,6 +14,11 @@
 // cuối file ghi đúng những gì code hiện có/thiếu, không suy ra hành vi thiết bị.
 library;
 
+// `avoid_dynamic_calls`: `SemanticsProperties` không được export từ material.dart của
+// SDK mà CI dùng (run 38886724385 cháy analyze vì đoán tên type) → helper dưới đọc
+// `properties` qua `dynamic`; mọi kết luận vẫn nằm trong expect.
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -125,6 +130,19 @@ Future<void> tapKey(WidgetTester tester, String key, {int ms = 1200, bool warnIf
   await pumpFor(tester, Duration(milliseconds: ms));
 }
 
+/// `Semantics.properties` của mọi node `Semantics` trong `subtree`.
+///
+/// Không nêu tên type `SemanticsProperties`: SDK của CI không export nó (đã trả giá
+/// bằng một run đỏ), và `Semantics` mới là type test này cần để tìm đúng node.
+List<dynamic> semanticsProps(WidgetTester tester, Finder subtree) => find
+    .descendant(of: subtree, matching: find.byType(Semantics))
+    .evaluate()
+    .map((Element e) {
+      final dynamic w = e.widget;
+      return w.properties;
+    })
+    .toList();
+
 /// Màu viền card bài học: `highlighted` (khớp `openLessonId`) vẽ viền berry, card
 /// thường vẽ ink — bằng chứng trực tiếp rằng `openLessonId` đã tới screen.
 Color cardBorderColor(WidgetTester tester, String lessonId) {
@@ -132,7 +150,7 @@ Color cardBorderColor(WidgetTester tester, String lessonId) {
     find.descendant(of: find.byKey(ValueKey<String>('lesson_card_$lessonId')), matching: find.byType(Container)).first,
   );
   final Border border = (box.decoration! as BoxDecoration).border! as Border;
-  return border.top.color!;
+  return border.top.color; // Color (không nullable ở SDK của CI — warning `!` đã bị ghi nhận)
 }
 
 bool cardShowsLockedHint(WidgetTester tester, String lessonId) {
@@ -252,11 +270,8 @@ void main() {
 
       // ChunkyButton tự bọc Semantics(button:true, label:..., excludeSemantics:true)
       // → CTA trong sheet đã có role + tên. Ghi lại thành regression.
-      final Iterable<SemanticsProperties> ctaProps = find
-          .descendant(of: find.byKey(const Key('sheet_go_lesson')), matching: find.byType(Semantics))
-          .evaluate()
-          .map((Element e) => (e.widget as Semantics).properties);
-      expect(ctaProps.where((SemanticsProperties p) => p.button == true), isNotEmpty,
+      expect(semanticsProps(tester, find.byKey(const Key('sheet_go_lesson'))).where((dynamic p) => p.button == true),
+          isNotEmpty,
           reason: 'CTA chính phải còn khai báo là nút trong semantics');
       // Tên đọc được lấy từ chính nhãn nhìn thấy (Semantics của ChunkyButton dùng
       // lại widget.label), nên kiểm cả hai phía thay vì đoán API cây semantics.
@@ -274,11 +289,7 @@ void main() {
       for (final String id in <String>['bug_hunter', 'robot_maze', 'main_quest', 'catch_stars']) {
         final Finder hit = find.byKey(ValueKey<String>('map_hit_$id'));
         expect(hit, findsOneWidget, reason: 'landmark $id phải còn trên map');
-        final Iterable<SemanticsProperties> declared = find
-            .descendant(of: hit, matching: find.byType(Semantics))
-            .evaluate()
-            .map((Element e) => (e.widget as Semantics).properties);
-        expect(declared.where((SemanticsProperties p) => p.button == true), isEmpty,
+        expect(semanticsProps(tester, hit).where((dynamic p) => p.button == true), isEmpty,
             reason: 'map_hit_$id bất ngờ khai báo button — PQC-008 đã được làm, phải cập nhật tài liệu');
         // Nhãn nổi trên map vẫn là Text thường (map:347–400) nên vẫn có khả năng
         // được đọc; đó là lý do KHÔNG được kết luận "TalkBack không tới được".

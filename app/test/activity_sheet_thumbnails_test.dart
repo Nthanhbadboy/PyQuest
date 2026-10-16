@@ -20,6 +20,11 @@
 // Bằng chứng "không có chữ bake trong bitmap" KHÔNG nằm ở đây: đó là visual
 // review trên ảnh render, ghi trong docs/implementation/coordination/EVIDENCE.md.
 
+// `avoid_dynamic_calls`: xem helper `semanticsProps` — type `SemanticsProperties`
+// KHÔNG được export từ material.dart của SDK mà CI dùng (đã cháy analyze ở run
+// 38886724385 khi nêu tên nó), nên buộc phải đọc `properties` qua `dynamic`.
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
@@ -461,7 +466,7 @@ void main() {
           final ImageInfo info = await done.future.timeout(const Duration(seconds: 30));
           expect(info.image.width, info.image.height, reason: '${e.key}: thumbnail kit phải là ảnh vuông');
           expect(info.image.width, inInclusiveRange(kMinSourceEdge.toDouble(), kMaxSourceEdge.toDouble()),
-              reason: '${e.key}: cạnh ${info.image.width}px ngoài khoảng ${kMinSourceEdge}..${kMaxSourceEdge} của kit');
+              reason: '${e.key}: cạnh ${info.image.width}px ngoài khoảng $kMinSourceEdge..$kMaxSourceEdge của kit');
         }
         entries = cache.currentSize;
         bytes = cache.currentSizeBytes;
@@ -498,10 +503,17 @@ void main() {
       return tester.getSize(find.byKey(kProbeKey));
     }
 
-    SemanticsProperties semanticsOf(WidgetTester tester, String key) => tester
-        .widget<Semantics>(
-            find.descendant(of: find.byKey(ValueKey<String>(key)), matching: find.byType(Semantics)).first)
-        .properties;
+    // `Semantics` là type thật và đã compile; `SemanticsProperties` thì SDK của CI
+    // không export → không được nêu tên nó (bài học từ run 38886724385). Đọc properties
+    // qua `dynamic` rồi mới so sánh trong expect, nên kết luận vẫn do test quyết định.
+    List<dynamic> semanticsProps(WidgetTester tester, String key) => find
+        .descendant(of: find.byKey(ValueKey<String>(key)), matching: find.byType(Semantics))
+        .evaluate()
+        .map((Element e) {
+          final dynamic w = e.widget;
+          return w.properties;
+        })
+        .toList();
 
     testWidgets('ChunkyButton.small = mặt 44 + depth 4 theo chiều dọc; textScale 2 không làm nhỏ hơn',
         (WidgetTester tester) async {
@@ -537,11 +549,14 @@ void main() {
         ),
       ))));
       await tester.pumpAndSettle();
-      expect(semanticsOf(tester, 'probe_untitled').button, isTrue,
+      expect(semanticsProps(tester, 'probe_untitled').where((dynamic p) => p.button == true), isNotEmpty,
           reason: 'role button vẫn được khai báo — không được suy thành screen reader không tới được');
-      expect(semanticsOf(tester, 'probe_titled').label, isNot(semanticsOf(tester, 'probe_untitled').label),
-          reason: 'RoundIconButton chỉ có tên khi có tooltip; các nút không tooltip đang thiếu accessible name '
-              '=> việc của PQC-008, chưa phải kết luận trên thiết bị');
+      expect(
+        semanticsProps(tester, 'probe_titled').map((dynamic p) => p.label).toList(),
+        isNot(semanticsProps(tester, 'probe_untitled').map((dynamic p) => p.label).toList()),
+        reason: 'RoundIconButton chỉ có tên khi có tooltip; các nút không tooltip đang thiếu accessible name '
+            '=> việc của PQC-008, chưa phải kết luận trên thiết bị',
+      );
     });
   });
 
