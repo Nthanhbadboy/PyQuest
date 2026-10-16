@@ -98,7 +98,7 @@ class GeminiLiveVoice {
           'outputAudioTranscription': <String, Object>{},
         },
       }));
-      await _setupComplete.future.timeout(const Duration(seconds: 12));
+      await _setupComplete.future.timeout(const Duration(seconds: 25));
       if (!await _recorder.hasPermission()) {
         throw StateError('Chưa được cấp quyền micro cho PyQuest.');
       }
