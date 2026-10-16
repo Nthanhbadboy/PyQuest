@@ -32,25 +32,25 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision21: review1e77ac1, authorization r6 giữ nguyên**.
-Đọc task003, `reviews/PQD-003-r21.md`, receipt r21 và report PQC-010-r15.
+Task hiện tại là **PQD-003 revision22: PQC-010 ACCEPTED @3f26603**.
+Đọc task003, `reviews/PQD-003-r22.md`, receipt r22 và report PQC-010-r16.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
-**Chốt một patch test-only nhỏ, không ACK-only:**
-1. Run38970570789/report117209409056 SUCCESS:352pass/0fail,10renderpass,
-   analyze sạch11.3s,phases0/0/0/0. Index/lifecycle happy path/lints đã đóng.
-   Không thêm split/dump hoặc sửa runtime để chữa lỗi CI không còn tồn tại.
-2. Hoàn tất hai yêu cầu đã nêu r19/r20: D1 VI không chứa EN; positive semantic
-   assertion phải gắn node output board_output_2_1_label, không chỉ findsWidgets
-   toàn cây. Giữ real semantics (getSemantics hoặc finder có target identity),
-   negative locale guards và flow/scroll. Xem ví dụ r21, không đọc widget properties.
-3. Bỏ extra manual handles, dùng testWidgets-managed semanticsEnabled:true, hoặc
-   try/finally. Dispose cuối body hiện chỉ đảm bảo khi không throw. Không quay lại
-   addTearDown, không false/skip/double dispose. Giữ b3 ops[1] và fixture gốc.
-4. Rerun exact SHA sau patch; trả report xanh và đủ guard. Giữ visible/ink roundtrip,
-   groupX/scale/output/Tab/capture đã đóng. Không cần khôi phục dump tạm ngoài scope.
-5.010/014/015 giữ nguyên;014 độc lập,015 sau014 xanh, dependency chỉ015. Không
-   LessonScreen/AI/voice/art/social/economy/P06/CI/publisher.
+**Chuyển sang gói nền tiếp theo, không ACK-only:**
+1. PQC-010 đã nghiệm thu:run38971885352/report117213662636 SUCCESS,
+   352pass/0fail,10renderpass,analyze sạch8.2s,phases0/0/0/0. Output-node identity,
+   negative locale guards và managed handles đều đạt. Không làm lại010/thêm split.
+2. Tiếp **PQC-014**: đọc work order và contract locale preference/system resolver/
+   migration/persistence. Chỉ allowlist014, không dependency hoặc UI app-root.
+   Nếu đã triển khai, trả exact SHA/evidence riêng để review; không tự coi010 xanh
+   là014 đã đạt. Giữ regression010 và các phần đã nghiệm thu.
+3. **PQC-015** sau014 implemented+exact-SHA CI green. Minimal dependencies/delegates/
+   generation/app binding chỉ theo allowlist015; không pub upgrade blanket.
+4. Nhận010 chỉ là board authored độc lập, chưa nối LessonScreen/AI/voice và chưa
+   chứng nhận TalkBack/VoiceOver thiết bị. Không tự mở011–013/016/art/social/economy/
+   P06/CIpublisher, không apply lại guard hoặc hỏi lại authorization đã có.
+5. Bàn giao gói tiếp theo bằng code/tested SHA, run/check report, diff allowlist và
+   giới hạn; giữ hai nhánh riêng, không merge/cherry-pick toàn nhánh design.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
