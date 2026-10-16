@@ -24,7 +24,20 @@ Trạng thái: `READY` · `QUEUED` · `BLOCKED` · `IN_PROGRESS` · `READY_FOR_R
 | PQC-007 | Đối chiếu feasibility P02 (bảng A.1–A.3) — phản biện độc lập từng `file:line` + số đo | coordination | design làm ở `arena/00838eb9-pyquest`; code **nhận corrections** và nhập `reviews/PQC-007/**` (audit tái hiện khớp, 9/9 ảnh khớp sha256) | `DONE` (verdict `CHANGES_REQUESTED` đã áp dụng; 4 over-claim bị rút — xem `tasks/PQD-002.md` §D, EV-ID-016) | — |
 | PQC-008 | Semantics/focus cho 6 ô landmark **trên thiết bị** (TalkBack, Tab/Enter/Space, focus-return, duplicate node) — rev 2 đã **tách** phần route lesson sang PQC-009 | **runtime** | `runtime=no`; prompt mới cấm snippet API chưa kiểm chứng (`Semantics(actionLabel:)`, `SemanticsController`) | `BLOCKED` — chưa ai authorized; PQC-009 characterize mức code xong, **không** được tính là PQC-008 xong | design bật gate runtime đúng allowlist |
 | PQC-009 | Route lesson thật + characterization geometry/cache/semantics/keyboard (test-only, `app/test/**`) | test | rev 2 mở: `ALLOWED for scope=test` | `DONE` — CI **`38890785888` @ `e546f9b`**: `analyze` No issues found, `test` **`+167 All tests passed!`**, `render` `+10`; 8 test route/keyboard + 2 nhóm đo `RenderBox` + cache per-key + số cache đo qua render log; 6 vòng CI (4 đỏ vì đoán API / toast che chạm) ghi ở EV-ID-016/-017/-018 | PQC-007 corrections ✅ |
+| **PQD-003** | Tutor-first + bảng giảng tương tác (design rev 2 @ `4b87fef`) | docs/contract | runtime=**no**, test=yes, coordination=yes, `art_approval: pending-review` | `RESPONDED` — `tasks/PQD-003.md`: §A source-map đọc trực tiếp; §B contract v1; §C **xung đột `max_tokens:700` vs ngân sách P03** (chọn authored-only hay plan-channel); §D `contextRevision`; §E work order `PQC-010..013` có allowlist; §F 14 negative case; §J `node --test test_tutor_board.mjs` **11/11** + hash fixture khớp tip. Không đổi `app/lib`/dep/iframe | `PQC-010` blocked (chạm `app/lib`); 5 câu hỏi §H + 4 câu §K.5 chờ design+user |
+| **PQC-014..017** | *Đề xuất (chưa được giao)*: `014` locale resolver+migration+persistence; `015` delegate + `flutter_localizations`/ARB (= **dependency**, cần duyệt); `016` ARB theo module + coverage gate port từng màn; `017` asset lesson song ngữ (không dịch `code`/`expectedOutput`) | runtime/asset/dep | tất cả **blocked** ở revision này (`runtime=no`) | `PROPOSED` — nghiệm thu đo được từng dòng ở `tasks/PQD-003.md` §K.3; mốc nền `48` điểm `PqLang.vi ?` / `6` file; **không** port màn nào trước `014` | design duyệt §K + user authorize dependency |
 | PQC-006 | Đồng bộ 1 dòng audience trong `docs/PyQuest_Reffrence_Images/VILLAGE_2_5D_REDESIGN_BRIEF.md` theo `PRODUCT_VISION.md:17` (under-12) | coordination | design đã sửa ở rev 3 trên tài liệu của họ và cho phép nhập đúng câu đó | `DONE` — **một dòng**, byte-identical với bản design (đã `diff` với `560106e`); không đổi ảnh, không đổi định vị | — |
+
+### Bước tiếp theo của tôi ở branch này (không cần ai cho phép thêm)
+
+1. Chờ design chốt §C/§B/§F — đặc biệt **v1 authored-only** hay **v2 plan-channel**; `PQC-010` không
+   khởi động được nếu chưa chốt. Trong lúc chờ: **không** code board trong `app/lib`.
+1b. Rev 3 (locale): chờ chốt chính sách di sản `ui_lang` (§K.5 câu 6) — câu trả lời quyết định
+   `PQC-014` có cần migration hay không. Không tự ý bật system default, vì nó đè lựa chọn cũ của trẻ.
+2. Khi được gật authored-only: `app/test/board/**` (fixture JSON + validator + golden render) làm
+   **cùng một lượt** với type — không tạo test cho type chưa tồn tại (bài học 6 vòng CI ở EV-ID-018).
+3. Publish số frame/cache của board qua **kênh render log** (`render.txt` không bị cắt giữa), không
+   qua `test.txt`, và không sửa workflow để lách giới hạn log.
 
 ## Delegate được ngay (mỗi dòng = một phiên agent khác, tự chặn nếu gate đóng)
 

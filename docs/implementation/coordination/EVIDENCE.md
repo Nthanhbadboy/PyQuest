@@ -502,3 +502,85 @@ RAM/GPU thiết bị): j00=7entries/11501568B -> j01=7entries/11501568B -> ... -
 - Giới hạn còn nguyên: `currentLiveImages` không tồn tại ở engine CI → số “live” vẫn
   **missing**; không sửa workflow/CI config để lách giới hạn log (work order cấm).
 
+## EV-ID-019 — PQD-003 rev 2: source-map bảng giảng, contract v1, và **đã chạy** mẫu P03
+
+Design push `4b87fef` = **PQD-003 revision 2** (53 files / 1394 insertions, `CHANGES_REQUESTED`,
+gate `runtime=no / test=yes / coordination=yes`, `art_approval: pending-review`). Phản hồi ở
+`tasks/PQD-003.md`, làm đúng 5 việc được giao, **không** sửa `app/lib`, không thêm dependency,
+không port iframe/waypoint, không mở lại PQD-001/002.
+
+**§A source map — đọc trực tiếp, mỗi dòng là một file:line đã mở:**
+`lesson_screen.dart:59-99` `_tutorContext()` (14 trường, không tên/tuổi/id trẻ); `:103-113`
+`_openTutor()` → `showTutorPanel()` → `showPQSheet<void>` (`tutor_panel.dart:23-36`) →
+`showModalBottomSheet`
+(`shared/widgets/common.dart:309-311`, keyboard inset `:317-319`); `CastRegistry.tutorForSkill`
+quyết định identity theo skill của **bài** (nên "không hardcode Robo" đã đúng ở production);
+`TutorContext`/`TutorReply` **không** có `planId/turnId/contextRevision/beats`;
+`TutorProvider.complete` trả **`Future<String>`** và `TutorChatRequest.toJson` hardcode
+`'max_tokens': 700` (`tutor_provider.dart:31`); `tutor_prompt.dart:60` là chỗ **duy nhất** code của
+trẻ được làm mới; `tutor_session.dart:47,116,163` chỉ có cờ `_busy`, **không có request id**;
+`tutor_transcript.dart:63,125` đã có `isFinal`/`interrupted` thật; `LiveAudioOutput` **không** có
+`cancel()` — surface thật là `stopStreaming()`/`release()` (`live_audio_output.dart:122,133`),
+teardown mic/socket ở `gemini_live_voice.dart:592-616`.
+
+**Phát hiện chặn thiết kế (§C):** ngân sách P03 (≤12 beats × ≤8 ops × caption ≤600 ký tự) **không vừa**
+`max_tokens: 700` của transport hiện tại → phải chọn trước: **v1 authored-only** (fixture đóng gói,
+không đụng provider/quota — khuyến nghị) hay **v2 plan-channel riêng** (chạm provider/relay/config →
+cần authorize riêng). Không có lựa chọn thứ ba "để AI viết vào `TutorReply.text`": text answer hiện tại
+**không** điều khiển được canvas, và nhét JSON vào `text` sẽ đi vòng qua mọi lớp validate.
+
+**§D** định nghĩa `contextRevision` + bảng chỗ bump thật; **§E** 4 work order nhỏ có allowlist
+(`PQC-010..013`) — `PQC-010` vẫn **blocked** vì chạm `app/lib` (runtime=no); **§F** ma trận 14 negative
+case kèm nơi chặn; **§G** nói rõ việc không làm và vì sao; **§H** 5 câu hỏi cho design/người dùng.
+
+**§J đã chạy mẫu, không chỉ đọc:** `node --test tools/design/test_tutor_board.mjs` trên extract của
+`4b87fef` → **11/11 pass**; run đầu fail 1/11 là do tôi extract thiếu `main_quest_ch1.json` (ghi nguyên
+trạng). `source_sha256` của fixture P03 = `bead251d9f290db0…`, **khớp** cả tip tôi / `4b87fef` / `bb8cced`
+→ authored plans không lệch dataset. Browser smoke **không** chạy vì nó ghi ảnh vào
+`docs/design/tutor-board-prototype/evidence/` (vùng bằng chứng của design) + cần chromium; thay bằng
+serve prototype cho người dùng bấm thật. Hai hở của prototype (không `contextRevision`; learner-ink
+chưa có đường tấn công thật) nêu thành câu hỏi, **không** tự sửa hộ.
+
+Không đổi gate nào của PQC-002/P02/PQC-004/PQC-005/PQC-008. Một ACK duy nhất cho `4b87fef`.
+
+## EV-ID-020 — PQD-003 rev 3 (`9172ecd`): hiện trạng đa ngôn ngữ đo trên nguồn, không phải tuyên bố
+
+Design rev 3 thêm yêu cầu của người dùng: **đa ngôn ngữ, mặc định theo hệ thống, đổi trong Settings**.
+Phản hồi ở `tasks/PQD-003.md` §K. Toàn bộ dưới đây là grep/read trực tiếp trên `app/lib` tại tip tôi
+(`6e636b8`), không suy từ tài liệu:
+
+- `pq_l10n.dart:1-7` doc của chính file tự khai phạm vi: *"The rest of the island still speaks Vietnamese
+  (its strings are written inline across the UI)"* → cast + tutor **không** phải bằng chứng toàn app.
+- `PqLang.fromCode(null)` → `orElse: () => PqLang.vi` (`:23-24`) và `settings_service.dart:42,44` lưu đúng
+  một khóa `ui_lang` → **`unset` và `explicit vi` không phân biệt được sau khi đọc**. Resolver 3 mức
+  (explicit > system > fallback) không biểu diễn được trên schema này, nên bật "theo hệ thống" sau này sẽ
+  **âm thầm đè** lựa chọn của người chơi cũ — bug migration, không bug UI. Đề xuất chính sách ở §K.5 câu 6.
+- `pyquest_app.dart:57,66`: hai `MaterialApp` **không** `locale:`, **không** `localizationsDelegates:` →
+  chuỗi của framework (toolbar chọn text, dismiss của sheet, thông báo semantics) luôn theo
+  `MaterialLocalizations` mặc định. `pubspec.yaml`: `flutter_localizations`/`intl`/`generate:` = **0 kết quả**
+  → thêm delegate là **dependency + build config**, cùng loại gate đang blocked (`PQC-005`).
+- `platformDispatcher`/`systemLocale`/`Window.locale`: **0 kết quả trong `app/lib`** → app chưa bao giờ hỏi
+  hệ thống; "mặc định theo hệ thống" chưa tồn tại ở mức nào. `settings_sheet.dart:78` đã có picker
+  (`setLang`) nhưng chỉ đủ cho cast/tutor, và `auto` **không** encode được bằng enum 2 giá trị.
+- Voice đi cùng nguồn: `gemini_live_voice.dart:287` → `GeminiLiveWire.languageCode(language)` với
+  `language == 'vi' ? 'vi-VN' : 'en-US'` (`gemini_live_wire.dart:284`, nhét vào setup config `:46,55`)
+  → resolve **một lần upstream**, nếu mỗi call-site tự suy thì UI/voice/board nói khác ngôn ngữ trong
+  cùng một lượt.
+- `main_quest_ch1.json`: lesson keys `challenge/id/number/py_line/skill/summary/steps/title`, step keys
+  `code/id/text/type` → **không** có cặp `*_vi/*_en`: nội dung bài đang đơn ngữ, nên "toàn app" cần đổi
+  **schema asset** (gate asset+runtime). `code`/`expectedOutput` phải **không** bị dịch; đề xuất: bản dịch
+  của `expectedOutput` là **lỗi build** (chặn bằng test, `PQC-017`).
+- Số nền cho coverage gate (đo bằng `grep -rn`, **không** phải test): **48** điểm `PqLang.vi ?` inline trên
+  **6** file `app/lib`. Không có ý nghĩa "đã xong"; chỉ là mốc để gate `PQC-016` giảm dần theo file.
+
+**Work order đề xuất:** `PQC-014` resolver+migration+persistence (test 3 case `unset`/`vi`/`en` + migration
+trên dữ liệu cũ) → `PQC-016` ARB theo module + coverage gate port từng màn → `PQC-017` asset lesson song
+ngữ; `PQC-015` delegate/pubspec ngay khi dependency được duyệt. **Không port màn nào trước `PQC-014`** —
+đó chính là cách biến `default vi` thành explicit override. Board `PQC-010` không chờ chuỗi này; contract
+board nhận thêm `locale` + quy tắc invalidate (đổi locale bump `contextRevision`, giữ code/note/ink/beat,
+không dịch literal/engine output, không đổi grader) — §K.2.
+
+Không audit hộ số liệu của design (`9 locale unit + 27 regression + 3 browser suites PASS` ở
+`shared-l10n/evidence` là counterpart-reported, tôi chưa chạy); không tạo fixture `app/test/l10n/**` cho
+type chưa tồn tại (§K.4). Gate PQC-002/P02/PQC-004/PQC-005/PQC-008 giữ nguyên. Một ACK cho `9172ecd`.
+
