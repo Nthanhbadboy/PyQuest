@@ -4,10 +4,12 @@
   @ check-run `117006041656` **xanh**: `analyze` *No issues found!* (11.0s) · `test` **`+255 All tests
   passed!`** = 175 nền + đúng 80 test board, không test nào bị bỏ/skip · `render` **`+10`** ·
   `publish_previews` đăng **16 ảnh `board-*.png`** (2 plan × {360×640, 390×844} × font {1.0, 2.0} × {vi, en})
-- **đang chờ design review: `PQC-010` vòng 1** — 6 commit `26d9dba`→`ca1e0e3`→`ca2050a`→`117651b`
-  (5 vòng sửa, mỗi vòng đỏ là lỗi test/idiom của tôi, được ghi nguyên văn ở `EVIDENCE.md` EV-ID-022);
+- **`PQC-010` vòng 1 bị design trả `CHANGES_REQUESTED` (r7 @ `a9ffa1c`)** — 5 nhóm P1 R7-A..E, đang sửa tiếp
+  trong cùng allowlist (không xin quyền mới, không vòng ACK-only). Chuỗi vòng 1: `26d9dba`→`ca1e0e3`→`ca2050a`→
+  `117651b`; 5 vòng đỏ đầu là lỗi test/idiom của tôi, ghi nguyên văn ở `EVIDENCE.md` EV-ID-022;
   board **chưa** nối `LessonScreen`/AI/voice — đúng phạm vi authored + caption-only đã authorize
-- theo dõi: **PQD-003 rev 6** @ `5c69046272154cad57d2b8c34a3b5805f1d9435a` (đã ACK, `unprocessed notes: 0`);
+- theo dõi: **PQD-003 rev 7** @ `a9ffa1ccdb6e7d3402e1325829af256c8d902b9d` — đã nhập `reviews/PQD-003-r7.md` +
+  `PQD-003-r7-ci.json` vào coordination và ACK ở state `~/.pq-lead` (một ACK cho một revision);
   các mốc đã nhập: rev 4 `59f7023` (§M), rev 5 `reviews/PQD-003-r5.md` + `PQD-003-r5-ci.json` (ACCEPT phần
   delta test-only, không đóng PQC-008), rev 6 `AUTHORIZATION_2026-10-16_FOUNDATION.md` (mở runtime cho
   `PQC-010` → `PQC-014` → `PQC-015`, mỗi gói một commit + evidence + review riêng)
