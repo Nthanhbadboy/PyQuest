@@ -359,30 +359,35 @@ Future<_Shot> _captureBoard(
     return measured;
   });
   expect(shot, isNotNull, reason: '$name: runAsync không trả số đo');
+  // `expect(isNotNull)` không tạo promotion, còn `shot!` chỉ ảnh hưởng các dòng SAU nó: bind một
+  // biến không-nullable để mọi phép kiểm tra bên dưới dùng chung (bảy lỗi
+  // `unchecked_use_of_nullable_value` ở run `1b91482` là do tôi tin `shot!` đứng cuối thay vì đầu).
+  final _Shot s = shot!;
   // Assert đặt NGOÀI `runAsync`: trong zone fake-async của `testWidgets`, một exception từ
   // `runAsync` có thể bị nuốt; số liệu đưa ra ngoài rồi kiểm vẫn rõ ràng khi đọc log CI.
-  expect(shot.bytes, greaterThan(4000), reason: '$name: ảnh quá nhỏ, nhiều khả năng chỉ có nền');
-  expect(shot.levels, greaterThanOrEqualTo(8),
-      reason: '$name: chỉ ${shot.levels} mức sáng = một dải màu đặc, không phải chữ đọc được');
-  expect(shot.corner[3], 255, reason: '$name: góc trên-trái trong suốt -> publisher ra nền đen');
-  expect(shot.corner[0], greaterThan(200), reason: '$name: nền capture không sáng như đã khai');
+  expect(s.bytes, greaterThan(4000), reason: '$name: ảnh quá nhỏ, nhiều khả năng chỉ có nền');
+  expect(s.levels, greaterThanOrEqualTo(8),
+      reason: '$name: chỉ ${s.levels} mức sáng = một dải màu đặc, không phải chữ đọc được');
+  expect(s.corner[3], 255, reason: '$name: góc trên-trái trong suốt -> publisher ra nền đen');
+  expect(s.corner[0], greaterThan(200), reason: '$name: nền capture không sáng như đã khai');
   // Ảnh phải đúng khổ boundary nhân pixelRatio: đây là bằng chứng "đo trên ảnh", không phải on
   // file, và chặn trường hợp chụp nhằm một node rỗng 1x1.
-  expect(shot.width, (surface.width * 1.5).round(), reason: '$name: bề rộng ảnh không khớp surface');
-  expect(shot.height, (surface.height * 1.5).round(), reason: '$name: chiều cao ảnh không khớp surface');
-  expect(shot!.boxesMissing, isFalse,
+  expect(s.width, (surface.width * 1.5).round(), reason: '$name: bề rộng ảnh không khớp surface');
+  expect(s.height, (surface.height * 1.5).round(), reason: '$name: chiều cao ảnh không khớp surface');
+  expect(s.boxesMissing, isFalse,
       reason: '$name: mũi tên phải nối hai hộp thật, nhưng không tìm thấy hộp nào có key khớp '
-          '${shot.gapNote} -> ảnh này không có gì để đối chiếu');
-  if (shot.inkRows >= 0) {
-    final int span = shot.inkSpan;
+          '${s.gapNote} -> ảnh này không có gì để đối chiếu');
+  if (s.inkRows >= 0) {
+    final int span = s.inkSpan;
     expect(span, greaterThan(1), reason: '$name: dải nối rỗng ($span hàng) — không có chỗ nào để vẽ');
     // Ít nhất nửa dải phải có mực: nét nối thật thì liên tục từ hộp nguồn xuống hộp đích.
-    expect(shot.inkRows * 2 >= span, isTrue,
-        reason: '$name: mũi tên chỉ phủ ${shot.inkRows}/$span hàng của khoảng nối -> nó không nối '
+    expect(s.inkRows * 2 >= span, isTrue,
+        reason: '$name: mũi tên chỉ phủ ${s.inkRows}/$span hàng của khoảng nối -> nó không nối '
             'hai hộp (một nét ngang ở độ cao trung bình sẽ trượt kiểm tra này)');
-    expect(shot.inkRows, lessThanOrEqualTo(span), reason: '$name: đếm hàng vô lý ${shot.inkRows}>$span');
+    expect(s.inkRows, lessThanOrEqualTo(span), reason: '$name: đếm hàng vô lý ${s.inkRows}>$span');
   }
-  return shot;
+
+  return s;
 }
 
 /// Rộng và cao đọc từ header IHDR của PNG — không cần giải mã toàn ảnh.
