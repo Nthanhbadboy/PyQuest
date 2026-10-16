@@ -127,37 +127,52 @@ class _TutorPanelState extends State<TutorPanel> {
     super.dispose();
   }
 
+  String _voiceSpeakerName(bool fromUser) =>
+      fromUser ? (_lang == PqLang.vi ? 'Bé' : 'You') : _voiceCharacter.displayName;
+
+  /// One line per turn, for each speaker.
+  ///
+  /// A transcription that only grows (a partial of the same utterance) updates
+  /// its own line instead of adding a duplicate; a different answer from the
+  /// same speaker is kept as its own line, so nothing the child or the tutor
+  /// said disappears from the chat.
+  void _rememberVoiceLine(String text, {required bool fromUser}) {
+    final speaker = _voiceSpeakerName(fromUser);
+    final prefix = '$speaker: ';
+    final line = '$prefix$text';
+    if (_voiceTranscript.isNotEmpty) {
+      final last = _voiceTranscript.last;
+      if (last.startsWith(prefix)) {
+        final said = last.substring(prefix.length);
+        if (text.startsWith(said) || said.startsWith(text)) {
+          _voiceTranscript[_voiceTranscript.length - 1] = line;
+          return;
+        }
+      }
+    }
+    _voiceTranscript.add(line);
+    if (_voiceTranscript.length > 12) _voiceTranscript.removeAt(0);
+  }
+
+  /// Statuses that mean the voice session is over and the text tutor is back.
+  static bool _voiceIsIdle(String status) =>
+      status == 'Đã dừng trò chuyện' || status == 'Voice chưa kết nối' || status == 'Đã ngắt kết nối';
+
   Future<void> _toggleVoice() async {
     final voice = _voice ??= GeminiLiveVoice(
       onStatus: (status) {
         if (!mounted) return;
         setState(() {
           _voiceStatus = status;
-          if (status == 'Đã dừng trò chuyện' || status == 'Voice chưa kết nối') {
-            _voiceBusy = false;
-          }
+          if (_voiceIsIdle(status)) _voiceBusy = false;
         });
-        if (status == 'Đã dừng trò chuyện' || status == 'Voice chưa kết nối') {
+        if (_voiceIsIdle(status)) {
           unawaited(widget.services.audio.setTutorVoiceMode(false));
         }
       },
       onTranscript: (text, {required fromUser}) {
         if (!mounted) return;
-        setState(() {
-          final speaker = fromUser
-              ? (_lang == PqLang.vi ? 'Bé' : 'You')
-              : _voiceCharacter.displayName;
-          final line = '$speaker: $text';
-          // Keep one updating line per speaker turn instead of duplicating
-          // partial transcription callbacks.
-          if (_voiceTranscript.isNotEmpty &&
-              _voiceTranscript.last.startsWith('${fromUser ? (_lang == PqLang.vi ? 'Bé' : 'You') : _voiceCharacter.displayName}:')) {
-            _voiceTranscript[_voiceTranscript.length - 1] = line;
-          } else {
-            _voiceTranscript.add(line);
-            if (_voiceTranscript.length > 10) _voiceTranscript.removeAt(0);
-          }
-        });
+        setState(() => _rememberVoiceLine(text, fromUser: fromUser));
       },
       onError: (message) {
         if (!mounted) return;
@@ -411,9 +426,10 @@ class _TutorPanelState extends State<TutorPanel> {
       builder: (context, _) {
         final session = widget.services.tutor;
         final busy = _asking || session.busy;
-        final voiceMode = _voiceStatus.isNotEmpty &&
-            _voiceStatus != 'Đã dừng trò chuyện' &&
-            _voiceStatus != 'Voice chưa kết nối';
+        // Driven by the session itself: when the socket drops or the child
+        // stops, the text tutor must come back instead of leaving the sheet
+        // waiting on a conversation that is over.
+        final voiceMode = _voice?.isRecording ?? false;
         return Padding(
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
           child: Column(
