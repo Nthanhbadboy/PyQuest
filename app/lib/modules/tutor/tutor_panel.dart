@@ -412,7 +412,10 @@ class _TutorPanelState extends State<TutorPanel> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _header(session),
-              if (!widget.services.tutor.hasAi) ...[
+              // The regular text tutor may be offline while Gemini Live voice
+              // is connected directly. Don't show the unrelated text-provider
+              // warning over the active voice conversation.
+              if (!voiceMode && !widget.services.tutor.hasAi) ...[
                 const SizedBox(height: 8),
                 _FallbackNotice(
                   key: const ValueKey('tutor_no_ai_banner'),
