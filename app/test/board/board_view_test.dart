@@ -581,6 +581,24 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('R10-diag: beat 2 materializes output widget and localized semantics key',
+      (WidgetTester tester) async {
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    while (controller.beatIndex < 2) {
+      expect(controller.next() || controller.learnerAdvance(), isTrue);
+      await tester.pump();
+    }
+    expect(controller.beatIndex, 2);
+    expect(find.byKey(const ValueKey<String>('board_output_2_1')), findsOneWidget,
+        reason: 'current output op key missing at beat=${controller.beatIndex}');
+    expect(find.byKey(const ValueKey<String>('board_output_2_1_label')), findsOneWidget,
+        reason: 'localized semantics wrapper key missing at beat=${controller.beatIndex}');
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('R10-D1-sem: semantic output ở beat 2 mang nhãn VI đã author',
       (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
