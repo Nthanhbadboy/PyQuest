@@ -201,7 +201,7 @@ void main() {
       });
     }
 
-    testWidgets('sáu asset giải mã được bằng image codec thật, vuông, cạnh ${kMinSourceEdge}..${kMaxSourceEdge}', (WidgetTester tester) async {
+    testWidgets('sáu asset giải mã được bằng image codec thật, vuông, cạnh $kMinSourceEdge..$kMaxSourceEdge', (WidgetTester tester) async {
       for (final MapEntry<String, String> entry in kPinnedThumb.entries) {
         late Size size;
         await tester.runAsync(() async {
@@ -302,9 +302,9 @@ void main() {
       required String activityId,
       required ActivityStatus status,
       required String ctaKey,
-      double textScale,
-      Size viewport,
-      double dpr,
+      required double textScale,
+      required Size viewport,
+      required double dpr,
     }) async {
       Object? popped = routeNotPopped;
       useViewport(tester, logical: viewport, dpr: dpr);
@@ -394,7 +394,6 @@ void main() {
           : box.height / image.height;
       final double w = image.width * scale;
       final double h = image.height * scale;
-      final Offset origin = Offset((box.width - w) / 2, (box.height - h) / 2);
       final List<String> tooSmall = <String>[];
       for (final ActivityModule m in activityRegistry) {
         final Rect r = m.def.hitBox;
@@ -430,8 +429,7 @@ void main() {
       expect(cache.currentSize, greaterThanOrEqualTo(1), reason: 'cache phải nhận ảnh đã nạp');
       expect(cache.currentSizeBytes, lessThan(64 * 1024 * 1024));
       // ignore: avoid_print
-      print('PQC-003 imageCache: entries=${cache.currentSize} bytes=${cache.currentSizeBytes} '
-          'live=${cache.currentLiveImages}');
+      print('PQC-003 imageCache: entries=${cache.currentSize} bytes=${cache.currentSizeBytes}');
     });
   });
 
