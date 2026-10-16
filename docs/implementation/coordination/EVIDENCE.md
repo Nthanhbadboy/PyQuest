@@ -208,7 +208,7 @@ callback khi dispose, chỉ dựa vào guard `mounted`. Trong app thật vô h�
 `_finish` ghi DB/sau animation thì sẽ có callback chạy sau khi màn chơi đã đóng. Đề xuất
 nhỏ cho gói UI/game riêng: lưu `Timer` và `cancel()` trong `dispose()`.
 
-## EV-ID-011 — PQD-002 §B: test route thật + ngân sách byte — `written ở 83cd3b9+`, CI đang chạy
+## EV-ID-011 — PQD-002 §B: test route thật + ngân sách byte — `verified trên CI của e98f826`
 
 File: `app/test/activity_sheet_thumbnails_test.dart` (443 dòng). Thêm/thay so với bản r3:
 
@@ -235,8 +235,19 @@ File: `app/test/activity_sheet_thumbnails_test.dart` (443 dòng). Thêm/thay so 
   `main_map_screen.dart:138` để tính `hitBox` ra px ở 360×640, assert mọi ô ≥ 48 px và
   nằm trong 0..1.
 
-Trạng thái: chờ `check` job của commit chứa file này (`test=0 analyze=0 render=0`) rồi mới
-ghi là verified. Không đổi workflow, không nới assert để được xanh.
+Kết quả CI thật (`PyQuest CI` run `38881345619` @ `e98f826`): `pub_get=0 analyze=0 test=0
+render=0`, `No issues found! (ran in 11.0s)`, `flutter test` → **`+157: All tests passed!`**
+(trước đó `+147`, tức 10 ca mới chạy và pass), render → **`+10: All tests passed!`**.
+
+Không đổi workflow, không nới assert để được xanh. Lần chạy đầu của cùng thay đổi này
+(`f8ff40c`) **đỏ** vì chính code mới: `analyze=1, test=1` — 3 lỗi compile (tham số named
+không default, getter `ImageCache.currentLiveImages` không tồn tại) + 1 warning biến không
+dùng; giữ nguyên trong lịch sử làm bằng chứng, sửa ở `e98f826`.
+
+Số đo `imageCache` mà test in ra nằm trong log đầy đủ của job `check`; report của check-run
+bị cắt giữa (`... [trimmed] ...`) và endpoint `actions/jobs/<id>/logs` redirect sang blob
+storage ngoài danh sách host sandbox được phép → **lead không trích được con số ở đây** và
+không nêu số nào cả. Muốn số: mở run `38881345619` → job `check` → dòng `PQC-003 imageCache:`.
 
 ## EV-ID-012 — Số đo hình học cho feasibility (PQD-002 §A.2)
 
@@ -275,8 +286,17 @@ CID=$(gh api "repos/Nthanhbadboy/PyQuest/commits/<sha>/check-runs?per_page=100" 
 # ghép chunk base64 theo <state> rồi decode — xem recipe đầy đủ ở LEAD_RUNBOOK.md §6
 ```
 
-Số liệu run chứa `render J` (test + render + preview): `pending` ở mục này — lead ghi vào
-delta khi đọc được report của **đúng SHA** đã push.
+Đã có thật: `render J: activity sheet before-set (six + locked)` chạy trong run
+`38880849377` @ `f8ff40c` (render phase = 0, dù test phase đỏ vì lỗi compile nói ở
+EV-ID-011) và `previews.txt` của run đó liệt kê **đủ 9 file**:
+`j00_sheet_main_quest`, `j01_sheet_robot_maze`, `j02_sheet_dragon_jump`,
+`j03_sheet_catch_stars`, `j04_sheet_bug_hunter`, `j05_sheet_achievement_house`,
+`j06_sheet_bug_hunter_locked`, `j07_small_sheet_robot_maze`,
+`j08_small_sheet_bug_hunter_locked` (mỗi file 2 chunk base64), cộng `a02_sheet_locked`
+và `b01_sheet_maze` của harness cũ. Run xanh cuối `38881345619` @ `e98f826` giữ `+10` render.
+
+Chưa làm (để không nói quá): **chưa** so pixel cặp before/after, vì asset after chưa tồn tại
+(PQC-002 chờ duyệt art). Bộ ảnh này là "before" đúng nghĩa: ảnh của app hiện tại.
 
 ## EV-ID-014 — `pq_lead.py` thôi cứng PQD-001, theo con trỏ task một chiều
 
