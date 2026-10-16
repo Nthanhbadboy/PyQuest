@@ -1,7 +1,7 @@
 # Prompt cho agent code — copy phần dưới
 
 Bạn là agent CODE của PyQuest. Agent DESIGN làm ở nhánh `arena/00838eb9-pyquest`;
-nhánh code dự kiến là `arena/b813b575-pyquest`. Hai agent giữ hai nhánh riêng,
+nhánh code hiện tại là `arena/0d4fcb38-pyquest`. Hai agent giữ hai nhánh riêng,
 phối hợp bằng commit và file bàn giao. Chỉ làm trên nhánh mà phiên của bạn được
 phép; nếu khác nhánh dự kiến, báo lại tên nhánh thật, không tự chuyển nhánh.
 
@@ -32,30 +32,29 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision9: review010 vòng3, authorization r6 giữ nguyên**.
-Đọc `docs/design/coordination/tasks/PQD-003.md`, review `PQD-003-r9.md` + r9-ci.json
-và `reviews/PQC-010-r3/`; r7/r8 vẫn là requirements. Đọc orders010/014/015.
+Task hiện tại là **PQD-003 revision10: review2bb2c69, authorization r6 giữ nguyên**.
+Đọc task003, `reviews/PQD-003-r10.md` + r10-ci.json và `reviews/PQC-010-r4/`.
+Nhánh code mới do người dùng xác nhận là `arena/0d4fcb38-pyquest`; không switch/push
+về b813b575. Chỉ làm trên nhánh phiên được phép, dùng branch override có sẵn nếu cần.
 
 **Làm ngay, không trả thêm ACK-only:**
-1. Fetch refspec tường minh/pin SHA.8647916 đã review, app tree bằng0661523:
-   CI38937509150/report117099178577 analyze sạch10.7s nhưng319pass/19fail,
-   render10pass,0board preview hiện tại. Verdict CHANGES_REQUESTED, không ACCEPTED.
-2. Sửa R9-A trước: capture jobs đang4field nhưng đọc[4]/[5] ngoài try; giữ đủfield,
-   ghi/in manifest trước assert lỗi tổng. Chụp1combo/mở ảnh rồi toàn bộ40ảnh.
-3. R9-B/C: font thật trong widget matrix; effective style đo/vẽ khớp; không đo
-   scale bằng tỷ số chiều cao paragraph thay đổi số dòng; không skip mọi snippet
-   trong96combo. Cây semantics rõ; Tab đủ3control ởbeat giữa, disabled Previous ở
-   beat0 phải được bỏ qua. Không làm UI sai để hợp assertion hoặc bỏ safety tests.
-4. R9-D: multiline highlight match toànstatement, không chỉ dòngđầu; xử lý
-   codeText/source mismatch có nhãn thay vì im lặng mất op. Giữ fixes đúng r7/r8.
-5. Hai câu hỏi design đã chốt ởreview§5: content intrinsic/outer viewport ổnđịnh;
-   một caption ngay trên code, gap6–8px, không connector trangtrí ởb1. Không chờ ACK.
-6. Trả testedSHA/run/custom report/counts/combo diagnostics/ảnh mới đã mở. Report
-   hiện chỉ4tênfail+15more; lấyfull log nếu được, báo rõ nếu bịchặn, không đoán tên.
-   8ảnh dc2fd3e là lịch sử, không chứng minh harness ở8647916 đã chụp thànhcông.
-7. Scope giữnguyên010/014/015, dependency chỉ015;014 tiếp độc lập,015 sau014CI xanh.
-   Không apply lại guard; không sửa CI/publisher/assets/LessonScreen/AI/voice/
-   gameplay/economy/social hoặc port P05/P06. Board vẫn độc lập trongtesthost.
+1. Tested2bb2c69/run38943424997/report117118848668: analyze sạch9.6s nhưng336pass/
+   7fail;10renderpass.40ảnh đúng SHA đã publish, không có nghĩa pixel test đã đạt.
+2. R10-A: test Tab đang đòi Enter không đổi beat dù focus có thể là Next. Next phải
+   advance beat; không nhầm với lessonCompleted. Sửa oracle, không làm hỏng nút.
+3. R10-B: cuộn target vào viewport trước đo/chụp, đọc lại rect/band. Ảnh font2/360
+   hiện chưa thấy connector/output/wait. Không hạ threshold cho band ngoài ảnh.
+4. R10-C: nhóm3trái/4phải phải khớp lời giảng; output b2 một ô1dòng, b3/b4 một ô2dòng
+   hiện hành, không giữ hai out-box cùng nhãn. Test positions/count/semantics + ảnh.
+5. R10-D: trả actual metrics/scaler của test scale, expected/actual label và visibility
+   của test live locale. Chưa có full trace thì không tự nhận đã biết root cause.
+   Report chỉ4failure names+3more: không đoán ba tên, không bỏ/nới safety tests.
+6. Giữ fixes đúng r9 và quyết định intrinsic content/caption6–8px trên code. Không
+   mở LessonScreen/AI/voice/art/social/economy/P06 hoặc CI/publisher.010/014/015 vẫn
+   ALLOWED;014 độc lập,015 sau014CI xanh, dependency chỉ015 locale tối thiểu.
+7. Trả SHA cuối/run/custom report/phases/counts và ảnh target đã mở kiểm. Board vẫn
+   test host độc lập, chưa nối production lesson/device screen reader. Không merge
+   cả nhánh design, không apply lại guard hoặc mở framework điều phối mới.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders

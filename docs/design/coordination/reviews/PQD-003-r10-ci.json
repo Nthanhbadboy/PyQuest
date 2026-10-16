@@ -1,0 +1,518 @@
+{
+  "review": "PQD-003-r10",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4",
+  "run_id": 38943424997,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38943424997",
+  "custom_report_check_id": 117118848668,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 9.6,
+  "ordinary_tests": {
+    "passed": 336,
+    "failed": 7
+  },
+  "render_tests_passed": 10,
+  "flutter": "3.47.7",
+  "dart": "3.13.5",
+  "full_test_log_retrieved": false,
+  "full_log_note": "Code agent reports EOF; independent review uses truncated custom report only; four failure names available, three unavailable.",
+  "current_board_image_count": 40,
+  "board_check_chunk_count": 64,
+  "images_inspected_and_saved": 8,
+  "images": [
+    {
+      "name": "board-mq1_01_s2-b1-code-highlight-390x844-font1.0-en",
+      "path": null,
+      "check_ids": [
+        117117932784
+      ],
+      "sha256": "2fc94159c110039ef4e279da85491291cdb15abb63720c3dc977525bfd3bee79",
+      "bytes": 25445,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b1-code-highlight-390x844-font1.0-vi",
+      "path": null,
+      "check_ids": [
+        117117937904
+      ],
+      "sha256": "4b4c12ab0dd06d41983e22fb2b19b9a2cc27f88106ebc3422aa15b1df9523c75",
+      "bytes": 25212,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b1-code-highlight-390x844-font2.0-en",
+      "path": null,
+      "check_ids": [
+        117117944667,
+        117117950687
+      ],
+      "sha256": "2083099d2cdc1095e3db4932b3e34a17711e1ce3045c9fb6d091e13902a2ded5",
+      "bytes": 51070,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b1-code-highlight-390x844-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117117956058,
+        117117962238
+      ],
+      "sha256": "7265205a40150e7ee7fcf316d74a63166bd01ece8be61c95c42196c573b349a9",
+      "bytes": 50886,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b2-quote-tokens-390x844-font1.0-en",
+      "path": null,
+      "check_ids": [
+        117117967140
+      ],
+      "sha256": "997b3f15ea68a973bf5d75062e3ef884b9e429fc3fcdc704098d96b9e6b6ec86",
+      "bytes": 27765,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b2-quote-tokens-390x844-font1.0-vi",
+      "path": null,
+      "check_ids": [
+        117117972512
+      ],
+      "sha256": "6a938b6d42e5b1d05fe0af3d8919255edd11b1e2f8613d1de3dcc3296fd9182b",
+      "bytes": 28968,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b2-quote-tokens-390x844-font2.0-en",
+      "path": null,
+      "check_ids": [
+        117117978387,
+        117117984130
+      ],
+      "sha256": "7b5b0870cb97f515a3dd081d42feb678ac2503429008edec41fc017f936dab3a",
+      "bytes": 58199,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b2-quote-tokens-390x844-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117117990252,
+        117117995366
+      ],
+      "sha256": "f6f32d7bd8be7309ce9949c62c4112b933dadee97841120be735c938cc1bfd83",
+      "bytes": 60553,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b3-connector-single-output-360x640-font2.0-en",
+      "path": "docs/design/coordination/reviews/PQC-010-r4/board-mq1_01_s2-b3-connector-single-output-360x640-font2.0-en.jpg",
+      "check_ids": [
+        117118000535,
+        117118005667
+      ],
+      "sha256": "17650848c6ead3307baf99c540bfdfec56d0fe1a7e531fa26d75b697bbdb960b",
+      "bytes": 62768,
+      "visually_inspected": true,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b3-connector-single-output-360x640-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117118010690,
+        117118016132
+      ],
+      "sha256": "00a0ca082235e24fc699e2785e24e00b97bd73348b0662f68d658d3a6d8372bc",
+      "bytes": 56505,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b3-connector-single-output-390x844-font1.0-en",
+      "path": null,
+      "check_ids": [
+        117118022629
+      ],
+      "sha256": "574a838dd872fc66f9a233874d311f45a26029b141158f4b2484764aeddac83f",
+      "bytes": 34191,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b3-connector-single-output-390x844-font1.0-vi",
+      "path": "docs/design/coordination/reviews/PQC-010-r4/board-mq1_01_s2-b3-connector-single-output-390x844-font1.0-vi.jpg",
+      "check_ids": [
+        117118028549
+      ],
+      "sha256": "2ed09d9785b073d3862c201f29cb92688b358cc0434d782a29d6afcb9f4e8f07",
+      "bytes": 30115,
+      "visually_inspected": true,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b3-connector-single-output-390x844-font2.0-en",
+      "path": null,
+      "check_ids": [
+        117118033940,
+        117118039719
+      ],
+      "sha256": "fe107fcfe115429f2f07e553796acb442b005af7f065071763dc31f48047b099",
+      "bytes": 67433,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b3-connector-single-output-390x844-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117118045424,
+        117118050318
+      ],
+      "sha256": "f1fa49d371c4646915f932553abf537eefd70f38d91ecd43ec408aa639ab0aae",
+      "bytes": 60558,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b4-wait-task-360x640-font2.0-en",
+      "path": "docs/design/coordination/reviews/PQC-010-r4/board-mq1_01_s2-b4-wait-task-360x640-font2.0-en.jpg",
+      "check_ids": [
+        117118056044,
+        117118062319
+      ],
+      "sha256": "89aa904b643b6e7357fe76e369eae98f6b9c1be2c8c0653a81e7dc11545c88f8",
+      "bytes": 56776,
+      "visually_inspected": true,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b4-wait-task-360x640-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117118068906,
+        117118073549
+      ],
+      "sha256": "94322917b115f3ca6f4b30d622d98f78c60b07059df74b204c921d83cb197701",
+      "bytes": 58635,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b4-wait-task-390x844-font1.0-en",
+      "path": null,
+      "check_ids": [
+        117118078062
+      ],
+      "sha256": "16f2bcab64c4cbb9a423d821d1e3c7f269d2e96731d56a599f5e52e4c058391e",
+      "bytes": 40204,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b4-wait-task-390x844-font1.0-vi",
+      "path": null,
+      "check_ids": [
+        117118083958
+      ],
+      "sha256": "7687d4f6c3fdd6af5ff5a4b9fbf1f1790578e9197ff87bc8d93239243a2a78d7",
+      "bytes": 41279,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b4-wait-task-390x844-font2.0-en",
+      "path": null,
+      "check_ids": [
+        117118092169,
+        117118099019
+      ],
+      "sha256": "a280b455784dd85e52e2bd5160e220e09bd97680884647c9b9632b7d411ce3a5",
+      "bytes": 73565,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_01_s2-b4-wait-task-390x844-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117118105505,
+        117118112813
+      ],
+      "sha256": "361fdb2a636c12cdb7bc9c83a72676fafbc3e14dbf6bd18b817192b4bbd53e93",
+      "bytes": 72585,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b1-groups-3-4-line-highlight-360x640-font2.0-en",
+      "path": null,
+      "check_ids": [
+        117118118752,
+        117118124340
+      ],
+      "sha256": "4b5d51bd6334b62f464ab10304e5e68cd44c22f974ca9297d012b9bec6f0d5d4",
+      "bytes": 53976,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b1-groups-3-4-line-highlight-360x640-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117118130007,
+        117118135671
+      ],
+      "sha256": "711be27716a626bf52ca8b5751231278987de8873e033f9c81f3a0e5989f4106",
+      "bytes": 54401,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font1.0-en",
+      "path": null,
+      "check_ids": [
+        117118140564
+      ],
+      "sha256": "7721c020cba4df0bd091e5c7b1736db7fc2d73f1dab8d479c846f7a63ad58478",
+      "bytes": 29169,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font1.0-vi",
+      "path": "docs/design/coordination/reviews/PQC-010-r4/board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font1.0-vi.jpg",
+      "check_ids": [
+        117118146684
+      ],
+      "sha256": "b3580ba2f302e0d33557c9d73d5f0941b79a8d98d5e9bc354a3869de1983e31f",
+      "bytes": 29696,
+      "visually_inspected": true,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font2.0-en",
+      "path": null,
+      "check_ids": [
+        117118151939,
+        117118157187
+      ],
+      "sha256": "cb216ae3cfb5a92e1829f322a7e82670fb5f384789cdf3196725a9759d8a78d4",
+      "bytes": 58441,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117118162641,
+        117118167703
+      ],
+      "sha256": "5a1e7cfd14bedc9aad394e3ae387b2544c7f8e1a1c7129aa6c495f2016bc188f",
+      "bytes": 59571,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b2-cleared-group-7-first-line-390x844-font1.0-en",
+      "path": "docs/design/coordination/reviews/PQC-010-r4/board-mq1_03_s2-b2-cleared-group-7-first-line-390x844-font1.0-en.jpg",
+      "check_ids": [
+        117118172654
+      ],
+      "sha256": "8b0b081302e40950045b50847b91b02b4b84c52c2117153e9c8ad14b0b591ed9",
+      "bytes": 28131,
+      "visually_inspected": true,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b2-cleared-group-7-first-line-390x844-font1.0-vi",
+      "path": null,
+      "check_ids": [
+        117118182098
+      ],
+      "sha256": "28524df49c4e781d9fcb5ff6cc4b7547c46da090e8a3d43790be73d82c9bb497",
+      "bytes": 27634,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b2-cleared-group-7-first-line-390x844-font2.0-en",
+      "path": null,
+      "check_ids": [
+        117118189585,
+        117118195532
+      ],
+      "sha256": "c33fb1b53275d07aad9c4bedeb3193063d0310cee8e6357d598aad1ca20cdb02",
+      "bytes": 53950,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b2-cleared-group-7-first-line-390x844-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117118202057,
+        117118207721
+      ],
+      "sha256": "f899529f9c0ad41a7f5ee8c76e232c4a60fbd8449ce0cd61040366a84a8eab82",
+      "bytes": 53722,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b3-whole-run-two-lines-360x640-font2.0-en",
+      "path": null,
+      "check_ids": [
+        117118218458,
+        117118223835
+      ],
+      "sha256": "e5ff3a3695829731b7161e04c3c9ba8a9ed099e003c506d6c3c2e0e82ede5d26",
+      "bytes": 61074,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b3-whole-run-two-lines-360x640-font2.0-vi",
+      "path": "docs/design/coordination/reviews/PQC-010-r4/board-mq1_03_s2-b3-whole-run-two-lines-360x640-font2.0-vi.jpg",
+      "check_ids": [
+        117118229234,
+        117118235642
+      ],
+      "sha256": "b20918bc2c8b57f29bbb073acbf2cb97a2beeb01f5aa98cd7fb472d72f05d7cc",
+      "bytes": 56064,
+      "visually_inspected": true,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b3-whole-run-two-lines-390x844-font1.0-en",
+      "path": null,
+      "check_ids": [
+        117118241905
+      ],
+      "sha256": "8a8597b3a2b93011e072fc83b42ff9a83f4cba6d8666715a8a1001c29dd1c5b3",
+      "bytes": 36721,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b3-whole-run-two-lines-390x844-font1.0-vi",
+      "path": "docs/design/coordination/reviews/PQC-010-r4/board-mq1_03_s2-b3-whole-run-two-lines-390x844-font1.0-vi.jpg",
+      "check_ids": [
+        117118249002
+      ],
+      "sha256": "842195016251f31f34fc82581191135e52f593ca5030461e3e1358e18b455a92",
+      "bytes": 33724,
+      "visually_inspected": true,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b3-whole-run-two-lines-390x844-font2.0-en",
+      "path": null,
+      "check_ids": [
+        117118256774,
+        117118267402
+      ],
+      "sha256": "54e340dd075f6e43cbad3815996ea094f8651a80d8afaa2abf80e8b082fbcd1d",
+      "bytes": 63454,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b3-whole-run-two-lines-390x844-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117118276077,
+        117118285478
+      ],
+      "sha256": "55e2fa5562d7731188506e88b20c5ad826912016734109d88b3160ad3c23bd03",
+      "bytes": 59916,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b4-shape-wait-390x844-font1.0-en",
+      "path": "docs/design/coordination/reviews/PQC-010-r4/board-mq1_03_s2-b4-shape-wait-390x844-font1.0-en.jpg",
+      "check_ids": [
+        117118294459
+      ],
+      "sha256": "633354f7495957b88e4136e062a6b9e52f52c75f1fcf0c4e492db80c449348b2",
+      "bytes": 40533,
+      "visually_inspected": true,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b4-shape-wait-390x844-font1.0-vi",
+      "path": null,
+      "check_ids": [
+        117118301740
+      ],
+      "sha256": "7648f477117db0f7c9ec5d43b4f232b1023ad19f568ea1009d5ff2633a545ce2",
+      "bytes": 41438,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b4-shape-wait-390x844-font2.0-en",
+      "path": null,
+      "check_ids": [
+        117118308670,
+        117118314696
+      ],
+      "sha256": "34191f91debc68adb09a486b92ab87bdd173846393781d3c2b4c1bd0598e989b",
+      "bytes": 65881,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    },
+    {
+      "name": "board-mq1_03_s2-b4-shape-wait-390x844-font2.0-vi",
+      "path": null,
+      "check_ids": [
+        117118322104,
+        117118327553
+      ],
+      "sha256": "c68e83b001fca6b9869faad3a676f36818e6ea4278a1d669918c9daac0f30bcd",
+      "bytes": 67565,
+      "visually_inspected": false,
+      "head_sha": "2bb2c697820e8689e44e4471c50c9a5b79dd3dd4"
+    }
+  ],
+  "changed_paths": [
+    "app/lib/modules/tutor/board/board_layout.dart",
+    "app/lib/modules/tutor/board/board_view.dart",
+    "app/test/board/board_layout_test.dart",
+    "app/test/board/board_previews_test.dart",
+    "app/test/board/board_view_test.dart",
+    "docs/implementation/coordination/EVIDENCE.md",
+    "docs/implementation/coordination/HANDOFF_TO_DESIGN.md",
+    "docs/implementation/coordination/TASK_BOARD.md",
+    "docs/implementation/coordination/reviews/PQC-010-r3/README.md",
+    "docs/implementation/coordination/reviews/PQC-010-r3/ci-report.md",
+    "docs/implementation/coordination/reviews/PQD-003-r9-ci.json",
+    "docs/implementation/coordination/reviews/PQD-003-r9.md",
+    "docs/implementation/coordination/tasks/PQC-010.md"
+  ],
+  "source_sha256": {
+    "app/lib/modules/tutor/board/board_layout.dart": "a03a49cbdd6e9f19c7cf659bb6f7750ebdc2ae0768572add51d43c48cb69268a",
+    "app/lib/modules/tutor/board/board_view.dart": "f0c9f225984b0132032cab8467612d0e14e23b0c70b334a80f2c980841ea3c29",
+    "app/test/board/board_layout_test.dart": "ab0e05e4cd921b707d037759a7a86f988a65ba600c55696a1384db8778005017",
+    "app/test/board/board_previews_test.dart": "4efa5cd88d97236d0d6b50f7fbb5dfd0f50a54df54af496718c4526892f0a794",
+    "app/test/board/board_view_test.dart": "3477f01714e69374feeed908cbb149480d8984dd543a3c7db769130617efe0f8"
+  },
+  "local_flutter_tests_run": false
+}
