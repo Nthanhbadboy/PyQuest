@@ -218,6 +218,12 @@ List<BoardVisibleOp> visibleOpsThrough(TeachingPlan plan, int beatIndex) {
         out.clear();
         continue;
       }
+      // Output is a stateful slot keyed by objectId: a later execution replaces the current
+      // display instead of stacking another indistinguishable "Run output" box underneath it.
+      if (op.kind == BoardOpKind.output && op.objectId != null) {
+        out.removeWhere((BoardVisibleOp previous) =>
+            previous.op.kind == BoardOpKind.output && previous.op.objectId == op.objectId);
+      }
       out.add(BoardVisibleOp(beatIndex: b, opIndex: i, op: op));
     }
   }
@@ -380,7 +386,10 @@ class BoardLayout {
 
     // 3) Nhóm vật / hình / chữ / ô kết quả, xếp dưới bảng code.
     double cursor = panelHeight + 10;
-    for (final BoardVisibleOp entry in visible) {
+    final Set<int> consumedGroupIndexes = <int>{};
+    for (int visibleIndex = 0; visibleIndex < visible.length; visibleIndex++) {
+      if (consumedGroupIndexes.contains(visibleIndex)) continue;
+      final BoardVisibleOp entry = visible[visibleIndex];
       final BoardOp op = entry.op;
       final String suffix = '${entry.beatIndex}_${entry.opIndex}';
       switch (op.kind) {
@@ -388,20 +397,45 @@ class BoardLayout {
           const double chip = chipSize;
           const double gap = chipGap;
           final double rowW = op.tokenIds.length * (chip + gap);
+          // The authored comparison says "left" and "right", not "first" and "second".
+          // Pair consecutive groups in the same beat on one row with a visible gutter between
+          // their chips, so their spatial relationship matches the spoken explanation on narrow
+          // phones as well as the desktop-sized test host.
+          final int nextIndex = visibleIndex + 1;
+          final bool pairNext = nextIndex < visible.length &&
+              visible[nextIndex].beatIndex == entry.beatIndex &&
+              visible[nextIndex].op.kind == BoardOpKind.tokenGroup;
+          final double groupX = pairNext ? gutter : gutter + rowW + 16;
           nodes.add(BoardNode(
             key: 'board_group_$suffix',
             kind: BoardNodeKind.group,
             beatIndex: entry.beatIndex,
             opIndex: entry.opIndex,
             altText: altOf(op),
-            // Không kẹp `rowW` vào `inner`: làm vậy là để hộp widget và số đo anchor lệch nhau.
-            // 12 vật (trần hợp đồng) luôn nhỏ hơn bảng hẹp nhất mà test dựng, và `Stack` ở đây
-            // `clipBehavior: Clip.none` nên thậm chí vẽ tràn cũng không cắt mất nội dung.
-            rect: BoardRect(gutter, cursor, rowW, chip),
+            rect: BoardRect(groupX, cursor, rowW, chip),
             chips: op.tokenIds,
           ));
           for (int k = 0; k < op.tokenIds.length; k++) {
-            anchors[op.tokenIds[k]] = BoardRect(gutter + k * (chip + gap), cursor, chip, chip);
+            anchors[op.tokenIds[k]] = BoardRect(groupX + k * (chip + gap), cursor, chip, chip);
+          }
+          if (pairNext) {
+            final BoardVisibleOp next = visible[nextIndex];
+            final BoardOp nextOp = next.op;
+            final double nextW = nextOp.tokenIds.length * (chip + gap);
+            final double nextX = gutter + rowW + 16;
+            nodes.add(BoardNode(
+              key: 'board_group_${next.beatIndex}_${next.opIndex}',
+              kind: BoardNodeKind.group,
+              beatIndex: next.beatIndex,
+              opIndex: next.opIndex,
+              altText: altOf(nextOp),
+              rect: BoardRect(nextX, cursor, nextW, chip),
+              chips: nextOp.tokenIds,
+            ));
+            for (int k = 0; k < nextOp.tokenIds.length; k++) {
+              anchors[nextOp.tokenIds[k]] = BoardRect(nextX + k * (chip + gap), cursor, chip, chip);
+            }
+            consumedGroupIndexes.add(nextIndex);
           }
           cursor += chip + 10;
         case BoardOpKind.simpleShape:

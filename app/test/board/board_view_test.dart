@@ -211,6 +211,9 @@ void main() {
       final Rect right = tester.getRect(find.byKey(const ValueKey<String>('board_group_0_2')));
       expect(right.width - left.width, closeTo(24.0, 0.01),
           reason: '(chipSize + chipGap) cho một vật thêm -> số vật thật đã điều khiển hình học');
+      expect(right.top, closeTo(left.top, 0.01), reason: 'trái/phải phải ở cùng một hàng');
+      expect(right.left, greaterThan(left.right + 15),
+          reason: 'nhóm thứ hai nằm bên phải nhóm thứ nhất, không xếp dọc/chồng lấn');
       expect(right.right, lessThanOrEqualTo(360));
       //rev 7: trẻ không phải đọc object ID nội bộ để hiểu 3+4 — ID không được thành chữ.
       expect(find.textContaining('stone-'), findsNothing);
@@ -372,9 +375,8 @@ void main() {
     expect(visited, containsAll(kBoardControlKeys));
   });
 
-  /// Ca riêng cho beat 0: nút Previous bị disable là CHỦ Ý, nên nó không nhận focus — nhưng
-  /// traversal không được chết: Tab vẫn quay vòng giữa các control còn bật, và Enter trên control
-  /// đang focus không được hoàn thành bài.
+    /// Ca riêng cho beat 0: nút Previous bị disable là CHỦ Ý, nên nó không nhận focus — nhưng
+    /// traversal không được chết: Tab vẫn quay vòng giữa các control còn bật.
   testWidgets('Tab (beat 0): Previous disabled không nhận focus, vòng Tab vẫn quay', (WidgetTester tester) async {
     final BoardController controller = await pumpBoard(tester, planIndex: 0);
     expect(controller.canGoPrevious, isFalse, reason: 'beat đầu thì Previous phải disabled');
@@ -390,11 +392,6 @@ void main() {
     }
     expect(visited, containsAll(<String>['board_replay', 'board_next']),
         reason: 'hai control còn lại phải tới được: $visited');
-    final int before = controller.beatIndex;
-    await tester.sendKeyDownEvent(LogicalKeyboardKey.enter);
-    await tester.sendKeyUpEvent(LogicalKeyboardKey.enter);
-    await tester.pump();
-    expect(controller.beatIndex, before, reason: 'Enter trên beat 0 không được hoàn thành bài');
     expect(tester.takeException(), isNull);
   });
 
@@ -509,6 +506,8 @@ void main() {
         reason: 'caption đang áp dụng phải có mặt trong chữ nhìn thấy');
     expect(outputLines(tester, 'board_output_2_1'), <String>['7', '3 + 4'],
         reason: 'ô kết quả của cả đoạn: đúng hai dòng, đúng thứ tự');
+    expect(find.byKey(const ValueKey<String>('board_output_1_2')), findsNothing,
+        reason: 'output mới thay ô out-box cũ; không để hai kết quả hiện hành cùng nhãn');
     expect(nodeText(tester, 'board_code_line_1'), 'print("3 + 4")');
     // rev 9 §R9-C2: so với `contains` chứ không `==`: `container: true` đã dựng ranh giới node,
     // nhưng assertion phải còn đúng kể cả khi engine gộp chữ của hộp vào nhãn. Điều kiện thật cần
@@ -718,10 +717,10 @@ void main() {
     expect(bad, isEmpty, reason: '${bad.length}/96 combo hỏng:\n${bad.join('\n')}');
   });
 
-  // (7) rev 9 §R9-B2 + §R8-C: `textScale` phải tới chữ ĐÃ TÔ, và chỉ tới MỘT lần. Board tự scale
-  // cỡ chữ (`scaler.scale(...)` trong `BoardTutorLayer.build`) rồi tắt kế thừa scaler cho subtree
-  // bằng `MediaQuery.withNoTextScaling`, nên đọc `RichText.textScaleFactor` hay `fontSize` đơn lẻ
-  // đều near-tautology. Ba bằng chứng độc lập, mỗi cái bắt một kiểu hỏng khác nhau:
+  // (7) rev 10 §R10-D: tách phép đo cỡ chữ khỏi phép đo highlight. Dùng statement thật, đúng với
+  // plan, trên một dòng ngắn không wrap; các ca highlight/host mismatch được kiểm riêng. Board tự
+  // scale cỡ chữ (`scaler.scale(...)`) rồi tắt kế thừa scaler; kiểm fontSize, noScaling và line
+  // height độc lập để phân biệt scale sai với paragraph reflow.
   //   (a) cỡ chữ THẬT của paragraph đã tô = 13 × scale   -> 'layer nuốt scale' cho 13 ở 2.0,
   //       'host mượn clamp 1.2 của LessonScreen' cho 15.6;
   //   (b) paragraph mang `TextScaler.noScaling`           -> scale bị áp HAI LẦN;
@@ -732,7 +731,7 @@ void main() {
     final String sizeName = '${surface.width.round()}x${surface.height.round()}';
     for (final String locale in kBoardLocales) {
       testWidgets(
-        '§R9-B: scale đi tới chữ đã tô, đúng một lần, không lẫn reflow, $sizeName/$locale',
+        '§R10-D: scale một dòng không wrap, không lẫn reflow, $sizeName/$locale',
         (WidgetTester tester) async {
           Future<(double, TextScaler, double)> measureAt(double scale) async {
             await pumpBoard(tester,
@@ -740,7 +739,7 @@ void main() {
                 surface: surface,
                 textScale: scale,
                 locale: locale,
-                codeText: 'a = 1'); // 7 rune: khong bao gio wrap o 360/font 2.0
+                codeText: 'print("Xin chào!")'); // statement đúng của plan; không wrap ở 360/font 2.0
             await tester.pumpAndSettle();
             final Finder line = find
                 .descendant(

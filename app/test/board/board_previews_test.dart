@@ -313,7 +313,10 @@ Future<_Shot> _captureBoard(
                 height: surface.height,
                 child: Padding(
                   padding: const EdgeInsets.all(8),
-                  child: BoardView(controller: controller, codeText: kExampleSteps[stepId]!),
+                  child: SingleChildScrollView(
+                    key: const ValueKey<String>('board_preview_scroll'),
+                    child: BoardView(controller: controller, codeText: kExampleSteps[stepId]!),
+                  ),
                 ),
               ),
             ),
@@ -324,6 +327,21 @@ Future<_Shot> _captureBoard(
   ));
   expect(tester.takeException(), isNull, reason: '$name: board nổ khi dựng');
   await tester.pump(const Duration(milliseconds: 50));
+  // Capture the authored teaching target in the viewport before reading any geometry. The old
+  // run measured off-screen RenderBoxes against the fixed viewport and cropped the meaningful
+  // lower half from its screenshots. For connector beats, bring the destination output into view;
+  // for wait/snippet beats, prefer the snippet/example box when present.
+  final Finder target = fromPrefix.isNotEmpty
+      ? find.byWidgetPredicate((Widget w) =>
+          w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith(toPrefix))
+      : find.byWidgetPredicate((Widget w) => w.key is ValueKey<String> &&
+          ((w.key! as ValueKey<String>).value.startsWith('board_code_snippet_') ||
+              (w.key! as ValueKey<String>).value.startsWith('board_output_') ||
+              (beatIndex == 0 && (w.key! as ValueKey<String>).value.startsWith('board_group_'))));
+  if (target.evaluate().isNotEmpty) {
+    await tester.ensureVisible(target.first);
+    await tester.pumpAndSettle();
+  }
   expect(controller.beatIndex, beatIndex);
   expect(controller.currentCopy!.caption, isNotEmpty, reason: '$name: beat không có caption');
 
@@ -337,10 +355,14 @@ Future<_Shot> _captureBoard(
   // để lại 1-3 hàng. Cách này không phụ thuộc số đo font hay làm tròn một điểm ảnh.
   int bandTop = -1, bandBottom = -1;
   bool boxesMissing = false;
+  Rect? fromRectMeasured;
+  Rect? toRectMeasured;
   if (fromPrefix.isNotEmpty && toPrefix.isNotEmpty) {
     final Offset origin = tester.getTopLeft(find.byKey(boundary));
     final Rect? from = boxRectForPrefix(tester, fromPrefix);
     final Rect? to = boxRectForPrefix(tester, toPrefix);
+    fromRectMeasured = from;
+    toRectMeasured = to;
     // Không `expect` ở đây: mọi thứ trước cú `toImage` đều có thể làm mất cả ảnh, mà ảnh là bằng
     // chứng design cần mở. Thiếu hộp thì chỉ đánh dấu, và kiểm tra sẽ chạy SAU khi ảnh đã ghi.
     boxesMissing = from == null || to == null;
@@ -403,7 +425,8 @@ Future<_Shot> _captureBoard(
       inkRows: inkRows,
       inkSpan: bandBottom - bandTop + 1,
       boxesMissing: boxesMissing,
-      gapNote: '$fromPrefix|$toPrefix',
+      gapNote: '$fromPrefix|$toPrefix from=$fromRectMeasured to=$toRectMeasured '
+          'band=$bandTop..$bandBottom viewport=${surface.width}x${surface.height}',
     );
     image.dispose();
     return measured;
@@ -428,6 +451,10 @@ Future<_Shot> _captureBoard(
       reason: '$name: mũi tên phải nối hai hộp thật, nhưng không tìm thấy hộp nào có key khớp '
           '${s.gapNote} -> ảnh này không có gì để đối chiếu');
   if (s.inkRows >= 0) {
+    expect(bandTop, greaterThanOrEqualTo(0),
+        reason: '$name source-to-destination band starts above the captured viewport: ${s.gapNote}');
+    expect(bandBottom, lessThan(s.height),
+        reason: '$name source-to-destination band ends below the captured viewport: ${s.gapNote}');
     final int span = s.inkSpan;
     expect(span, greaterThan(1), reason: '$name: dải nối rỗng ($span hàng) — không có chỗ nào để vẽ');
     // Ít nhất nửa dải phải có mực: nét nối thật thì liên tục từ hộp nguồn xuống hộp đích.
