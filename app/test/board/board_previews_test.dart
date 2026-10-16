@@ -130,7 +130,7 @@ void main() {
           final String name = 'board-${stepName(planIndex)}-b${beatIndex + 1}-$why-'
               '${surface.width.round()}x${surface.height.round()}'
               '-font${scale.toStringAsFixed(1)}-$locale';
-          final _Shot shot = await captureBoard(
+          final _Shot shot = await _captureBoard(
               tester, outDir, name, planIndex, beatIndex, surface, scale, locale);
           manifest.add(shot.describe(name));
         }
@@ -163,7 +163,7 @@ void main() {
     // được gì. Nó giữ đúng điều nó tên: mở ảnh ra, đếm số cấp độ sáng và kiểm màu nền.
     final Directory outDir =
         Directory('${Directory('build/previews').path}/probe-${DateTime.now().microsecondsSinceEpoch}');
-    final _Shot shot = await captureBoard(tester, outDir, 'probe-single-band', 0, 0, kPrimarySurface, 1.0, 'vi');
+    final _Shot shot = await _captureBoard(tester, outDir, 'probe-single-band', 0, 0, kPrimarySurface, 1.0, 'vi');
     final File file = File(shot.path);
     expect(file.existsSync(), isTrue, reason: 'ảnh phải được chính ca này ghi ra: ${file.path}');
     final Uint8List bytes = file.readAsBytesSync();
@@ -181,7 +181,9 @@ void main() {
 }
 
 /// Dựng board ở beat cần chụp, boundary là node **ngoài cùng**, và trả số đo của ảnh vừa render.
-Future<_Shot> captureBoard(
+/// Riêng tư theo kiểu trả về: `_Shot` là loại tư, để hàm công khai trả nó sẽ dính
+/// `library_private_types_in_public_api` (CI bật analyze và coi đó là vết bẩn trong báo cáo).
+Future<_Shot> _captureBoard(
   WidgetTester tester,
   Directory outDir,
   String name,

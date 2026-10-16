@@ -236,10 +236,10 @@ void main() {
                     // Hộp phải chứa chữ của nó KÈM viền/padding: cao hơn chữ tối đa 12px (padding
                     // 2+2, border 1+1, dung sai làm tròn) và không được thấp hơn chữ.
                     final double text = tester
-                        .getAllSizes(find.descendant(of: box, matching: find.byType(RichText)))
+                        .getAllSize(find.descendant(of: box, matching: find.byType(RichText)))
                         .fold<double>(0, (double sum, Size s) => sum + s.height);
                     expect(r.height - text, inInclusiveRange(-0.5, 12),
-                        reason: '$tag: $key cao ${r.height}, chữ ${text} -> hộp không theo nội dung');
+                        reason: '$tag: $key cao ${r.height}, chữ $text -> hộp không theo nội dung');
                   }
                   if (entry.op.kind == BoardOpKind.output) {
                     // Một `Text` cho mỗi dòng + một nhãn: đếm từ cây thật, không tin chuỗi gộp.
@@ -447,7 +447,7 @@ void main() {
       // `takeException`. Số đo ở đây là của renderer, nên log CI tự giải thích được lệch bao nhiêu.
       final double box = tester.getSize(find.byKey(snippetKey)).height;
       final double text = tester
-          .getAllSizes(find.descendant(of: find.byKey(snippetKey), matching: find.byType(RichText)))
+          .getAllSize(find.descendant(of: find.byKey(snippetKey), matching: find.byType(RichText)))
           .fold<double>(0, (double sum, Size size) => sum + size.height);
       expect(text, greaterThan(0), reason: 'block mẫu không có chữ để đo');
       expect(box - text, inInclusiveRange(-0.5, 12),
@@ -723,6 +723,7 @@ List<String> boardNodeKeys(BoardVisibleOp entry) {
     case BoardOpKind.highlightToken:
     case BoardOpKind.highlightLine:
     case BoardOpKind.clearTutorLayer:
+    case BoardOpKind.unknown:
       return const <String>[];
   }
 }
