@@ -27,23 +27,31 @@
 #   PROGRESS_TIMEOUT    stall limit while the tests run              (300)
 #   WATCHDOG_KILL_AFTER SIGKILL for a drive that ignores SIGTERM    (20)
 #   RELAUNCH_WAIT       idle wait after the regular-app relaunch    (20)
+#   SCREENSHOT_ATTEMPTS how often the relaunch frame is captured     (12)
+#   SCREENSHOT_RETRY_WAIT  seconds between those attempts             (5)
 #
 # ci/check_test_progress.py watches each drive and stops it when the app
 # restarts mid-test or stops making progress; the reason lands in
 # ../emulator-stop-reason.txt (also uploaded with the diagnostics).
 #
-# Phase 2 is the only screenshot taken while nothing is touching the screen,
-# and 34_relaunch_real_app.png - the one screenshot that has to show the app
-# after a normal (non-test-harness) launch - came out as an all-black frame in
-# run 38820683465 while adb exited 0 and the app process was alive. The app
-# cannot paint that: LaunchTheme/NormalTheme and every Flutter screen are sky
-# and parchment colours. A screencap of a display that has gone to sleep is an
-# all-black frame, and the ~22s idle wait here is long enough for Android's
-# screen timeout, so the display is kept awake from phase 2 onwards and woken
-# right before the published screenshot. What the display/window was doing and
-# how black each frame was now lands in ../emulator-relaunch-evidence.txt, so
-# the next run either confirms the sleep or rules it out - and a frame that
-# cannot show the app is a failed phase key, not a silent success.
+# Phase 2 is the one screenshot taken outside the test harness, and it is the
+# one that keeps going wrong: run 38820683465 published 34_relaunch_real_app.png
+# as a 100% black 4 KB frame while adb exited 0 and every journey test passed.
+# Run 38824894610 recorded the display as Awake/ON with
+# com.pyquest.pyquest/.MainActivity focused and the app process alive both before
+# and after that capture, so the app was not asleep and it cannot paint black
+# either (LaunchTheme/NormalTheme and every Flutter screen are sky/parchment).
+# What those captures show is a frame with no app content while the app is alive
+# and focused; whether that is the capture racing the app's first frame on a
+# software-rendered emulator or something else is not established from the logs.
+# In run 38824894610 the raw frame measured directly after the published PNG was
+# 99.8% black while that PNG itself held a real main map, so two captures taken
+# seconds apart disagreed. This phase therefore no longer trusts a second
+# capture: it measures every frame it takes, captures again (bounded) until the
+# frame really can show the app, publishes exactly the pixels it measured, and
+# records the display/window/frame state in ../emulator-relaunch-evidence.txt.
+# A frame that never shows the app is a failed phase key (relaunch_screen_blank=1)
+# instead of a silent success.
 #
 # Exit status: 0 when every phase ran - test failures are recorded in
 # ../status.txt and reported by ci/report.py, as before. 1 when the emulator
@@ -69,6 +77,8 @@ LOGCAT_DUMP_TIMEOUT=${LOGCAT_DUMP_TIMEOUT:-90}
 POLL_INTERVAL=${POLL_INTERVAL:-3}
 WATCH_INTERVAL=${WATCH_INTERVAL:-10}
 RELAUNCH_WAIT=${RELAUNCH_WAIT:-20}
+SCREENSHOT_ATTEMPTS=${SCREENSHOT_ATTEMPTS:-12}
+SCREENSHOT_RETRY_WAIT=${SCREENSHOT_RETRY_WAIT:-5}
 SAMPLE_INTERVAL=${SAMPLE_INTERVAL:-20}   # seconds between resource samples
 
 OUT=..                                   # repository root (cwd is app/)
@@ -79,8 +89,7 @@ STOP_REASON=$OUT/emulator-stop-reason.txt
 SAMPLER=$OUT/emulator-sampler.txt          # host resources during the drive
 TRAP_STATE=$OUT/emulator-trap.txt          # phase + exit code on any exit
 EVIDENCE=$OUT/emulator-relaunch-evidence.txt   # display/window/frame state (phase 2)
-RAW_BEFORE=$OUT/emulator-relaunch-before-wake.raw   # measured, then deleted
-RAW_FRAME=$OUT/emulator-relaunch-frame.raw          # measured, then deleted
+UNUSABLE=$OUT/emulator-relaunch-unusable.png   # frames that cannot show the app (artifact only)
 PHASE="startup (before the first phase marker)"
 DIAG_COLLECTED=""
 OFFLINE_FLAG=${TMPDIR:-/tmp}/pyquest-emulator-offline.$$
@@ -351,6 +360,7 @@ collect_diagnostics() {
   timeout -k 2 30 adb -s "$SERIAL" shell getprop > "$d/getprop.txt" 2>&1
 
   cp "$STATUS" "$OUT/journey.txt" "$OUT/relaunch.txt" "$EVIDENCE" "$d/" 2>/dev/null
+  cp "$UNUSABLE" "$d/" 2>/dev/null       # only exists when no frame could show the app
   cp "$STOP_REASON" "$d/" 2>/dev/null   # progress-watchdog reason, if any
   write_summary "$reason"
 }
@@ -521,7 +531,7 @@ dump_screen_state() {
 measure_frame() {
   local file=$1 out rc
   if [ ! -s "$file" ]; then
-    printf 'unmeasurable: %s is empty (screencap produced no frame)\n' "$(basename "$file")"
+    printf 'unmeasurable: %s is empty (screencap wrote no image)\n' "$(basename "$file")"
     return 2
   fi
   out=$(python3 ../ci/screenshot_blankness.py "$file" 2>&1)
@@ -573,52 +583,64 @@ run_adb - "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" shell am fo
 run_adb install_regular_apk "$INSTALL_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" install -r "$OUT/pyquest-debug.apk"
 run_adb - "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" logcat -c
 run_adb - "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1
+RELAUNCH_START=$SECONDS      # the attempt timings below are relative to this
 log "   waiting ${RELAUNCH_WAIT}s for the relaunched app"
 sleep "$RELAUNCH_WAIT"
 run_adb - "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS
 sleep 2
 
-# Nothing has touched the screen since the journey ended, and a screencap of a
-# display that has gone to sleep is an all-black frame (run 38820683465
-# published exactly that as proof that the app renders after a normal launch,
-# with adb exiting 0 and the app process alive). Record what the display is
-# doing and how black that frame is, then keep the display awake and wake it
-# before the screenshot that gets published.
-dump_screen_state "before the display was woken"
-rm -f "$RAW_BEFORE"
-run_adb - "$ADB_CMD_TIMEOUT" "$RAW_BEFORE" "$OUT/relaunch.txt" exec-out screencap
-verdict=$(measure_frame "$RAW_BEFORE")
-log "   frame before the display was woken: $verdict"
-echo "frame before the display was woken: $verdict" >> "$EVIDENCE"
-rm -f "$RAW_BEFORE"
-
+# Record what the display, the window manager and the app were doing, then
+# capture the frame that gets published: capture again while the frame cannot
+# show the app (a frame without the app is black or holds only a splash icon or a
+# status bar), and publish exactly the pixels that were measured. Keeping the
+# display awake and waking it first is a precaution of the same kind: a sleeping
+# display returns black frames, and this phase should neither publish one nor
+# report a sleeping display as an app that never painted.
 run_adb - "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" shell svc power stayon true
 run_adb - "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" shell input keyevent KEYCODE_WAKEUP
 run_adb - "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" shell wm dismiss-keyguard
-log "   display kept awake (svc power stayon true) and woken before the screenshot"
-sleep 3
-dump_screen_state "after the display was woken"
-
+dump_screen_state "at the relaunch capture"
 shot=$OUT/docs/screenshots/34_relaunch_real_app.png
-rm -f "$shot.part"
-run_adb relaunch_screencap "$ADB_CMD_TIMEOUT" "$shot.part" "$OUT/relaunch.txt" exec-out screencap -p
-if [ -s "$shot.part" ]; then mv "$shot.part" "$shot"; else rm -f "$shot.part"; log "   screencap returned no image"; fi
-# The published screenshot must be able to show the app: measure the frame
-# that was on screen when it was taken. `relaunch_screen_blank=1` fails the
-# check run (ci/report.py) instead of letting a black capture pass as proof.
-rm -f "$RAW_FRAME"
-run_adb - "$ADB_CMD_TIMEOUT" "$RAW_FRAME" "$OUT/relaunch.txt" exec-out screencap
-verdict=$(measure_frame "$RAW_FRAME")
-case "${verdict%%:*}" in
-  content) echo "relaunch_screen_blank=0" >> "$STATUS" ;;
-  *)
-    echo "relaunch_screen_blank=1" >> "$STATUS"
-    echo "::warning title=Android emulator journey::the published relaunch screenshot is not usable evidence ($verdict) - see emulator-relaunch-evidence.txt"
-    ;;
-esac
-log "   frame of the published screenshot: $verdict"
-echo "frame of the published screenshot ($(basename "$shot")): $verdict" >> "$EVIDENCE"
-rm -f "$RAW_FRAME"
+rm -f "$shot" "$shot.part" "$UNUSABLE"
+attempt=1
+capture_rc=1
+verdict="unmeasurable: no capture ran"
+while :; do
+  # The published file is the file that gets measured: `screencap -p` writes the
+  # PNG straight to disk, screenshot_blankness.py decodes that exact file, and
+  # only a measured frame is ever published.
+  rm -f "$shot.part"
+  # run_adb sends the command's stdout to the third argument, so the PNG goes
+  # straight to disk and adb's own chatter stays in relaunch.txt.
+  run_adb - "$ADB_CMD_TIMEOUT" "$shot.part" "$OUT/relaunch.txt" exec-out screencap -p
+  capture_rc=$?
+  verdict=$(measure_frame "$shot.part")
+  log "   relaunch frame attempt $attempt/$SCREENSHOT_ATTEMPTS at +$((SECONDS - RELAUNCH_START))s: $verdict"
+  echo "attempt $attempt/$SCREENSHOT_ATTEMPTS at +$((SECONDS - RELAUNCH_START))s after the launch: $verdict" >> "$EVIDENCE"
+  case "${verdict%%:*}" in content) break ;; esac
+  if [ "$attempt" -ge "$SCREENSHOT_ATTEMPTS" ]; then break; fi
+  attempt=$((attempt + 1))
+  sleep "$SCREENSHOT_RETRY_WAIT"
+done
+echo "relaunch_screencap=$capture_rc" >> "$STATUS"
+if [ "${verdict%%:*}" = content ]; then
+  mv "$shot.part" "$shot"
+  echo "relaunch_screen_blank=0" >> "$STATUS"
+  echo "published $(basename "$shot") from attempt $attempt: $verdict" >> "$EVIDENCE"
+else
+  echo "relaunch_screen_blank=1" >> "$STATUS"
+  echo "::warning title=Android emulator journey::none of the $SCREENSHOT_ATTEMPTS relaunch frames could show the app (last: $verdict); no screenshot was published and emulator-relaunch-evidence.txt has the recorded state"
+  # A frame that cannot show the app must not end up in docs/screenshots (that
+  # is how an all-black capture became "proof" before); it stays with the
+  # artifact as evidence of what the capture returned instead.
+  if [ -s "$shot.part" ]; then
+    mv "$shot.part" "$UNUSABLE"
+    echo "no frame could show the app; the last capture is kept as $(basename "$UNUSABLE") and NOT published: $verdict" >> "$EVIDENCE"
+  else
+    echo "no frame could show the app; the last capture wrote no image: $verdict" >> "$EVIDENCE"
+  fi
+  dump_screen_state "after the last failed attempt (was the display still on?)"
+fi
 run_adb app_alive_after_relaunch "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" shell pidof "$PKG"
 run_adb - "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" logcat -d -t 300 flutter:V AndroidRuntime:E '*:S'
 run_adb - "$ADB_CMD_TIMEOUT" "$OUT/relaunch.txt" "$OUT/relaunch.txt" shell am force-stop "$PKG"

@@ -83,14 +83,22 @@ def relaunch_evidence(root, limit=45):
     """The display/window/frame lines that explain the phase-2 screenshot.
 
     ci/emulator_journey.sh writes them while it captures
-    `34_relaunch_real_app.png`; the file is small on purpose, so the report can
-    print it in full and a black capture is explainable from the check page.
+    `34_relaunch_real_app.png`: the recorded display/window/app state first,
+    then one line per capture attempt. The report keeps the head (which state
+    the capture saw) and the tail (what every attempt returned), so a blank
+    capture is explainable from the check page without the artifact.
     """
     lines = read_lines(os.path.join(root, "emulator-relaunch-evidence.txt"))
     if not lines:
         return None
     if len(lines) > limit:
-        lines = lines[:limit] + ["… [truncated - full file in the artifact]"]
+        head = limit // 2
+        tail = limit - head
+        elided = len(lines) - head - tail
+        lines = (lines[:head]
+                 + ["… [%d lines elided - the whole file is in the artifact]"
+                    % elided]
+                 + lines[-tail:])
     return lines
 
 
@@ -231,12 +239,14 @@ def root_cause(failed_steps, not_run, bad_keys, keys, trap, script_ran,
         if any(name == "relaunch_screen_blank" and value != "0"
                for name, value in bad_keys):
             lines.append(
-                "The screenshot that is published as proof that the app renders "
-                "after a normal launch "
-                "(`docs/screenshots/34_relaunch_real_app.png`) is an all-black "
-                "frame, so that proof is missing. The display, window and frame "
-                "state recorded while it was captured is in `Screen and frame "
-                "state at the relaunch capture` below.")
+                "No relaunch frame could show the app: every capture attempt "
+                "in `ci/emulator_journey.sh` came back black (each attempt is "
+                "listed below), so the screenshot published as proof that the "
+                "app renders after a normal launch "
+                "(`docs/screenshots/34_relaunch_real_app.png`) does not show "
+                "it. The display, window and frame state recorded while those "
+                "frames were captured is in `Screen and frame state at the "
+                "relaunch capture` below.")
         return lines, None
     if not_run:
         return [

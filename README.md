@@ -233,21 +233,31 @@ Hai tệp này đủ để trả lời câu hỏi "emulator biến mất vì h�
 đọc log của runner.
 
 Giai đoạn 2 (khởi động lại app "thật" rồi chụp màn hình) là lần chụp duy nhất
-không có thao tác chạm nào trong lúc chờ. Run 38820683465 đã đăng
-`docs/screenshots/34_relaunch_real_app.png` là một khung hình **đen tuyền**
-(4 KB) trong khi adb thoát 0, tiến trình app vẫn sống (`pidof`) và toàn bộ hành
-trình đều đạt — tức là mất bằng chứng app vẽ được sau khi mở bình thường. Bản
-thân app không thể vẽ ra khung hình đen đó (`LaunchTheme`/`NormalTheme` và mọi
-màn hình Flutter đều là màu trời/giấy da), còn `screencap` khi màn hình đã ngủ
-thì trả về ảnh đen. Vì vậy giai đoạn 2 giờ ghi lại trạng thái màn hình/cửa sổ/
-frame vào `emulator-relaunch-evidence.txt` (in thẳng trong báo cáo ở mục *Screen
-and frame state at the relaunch capture*), giữ màn hình luôn thức
-(`svc power stayon true`), đánh thức trước khi chụp (`KEYCODE_WAKEUP` +
-`wm dismiss-keyguard`) và đo độ đen của khung hình bằng
-`ci/screenshot_blankness.py` (chỉ dùng thư viện chuẩn, không cần PIL). Khung
-hình đen ⇒ key `relaunch_screen_blank=1` ⇒ check run *PyQuest emulator* thất
-bại, thay vì báo thành công mà không có bằng chứng; lần chạy kế tiếp sẽ xác
-nhận hoặc loại trừ nguyên nhân màn hình ngủ.
+không có harness test. Run 38820683465 đã đăng
+`docs/screenshots/34_relaunch_real_app.png` là khung **đen tuyền 100%** (4 KB)
+trong khi adb thoát 0, `pidof` vẫn thấy tiến trình và mọi test hành trình đều
+đạt. Run 38824894610 ghi lại trạng thái ngay lúc chụp: `mWakefulness=Awake`,
+`mScreenState=ON`, `mCurrentFocus=...com.pyquest.pyquest.MainActivity`, tiến
+trình 7296 còn sống, `screen_off_timeout=2147483647` — nên app **không** bị ngủ
+màn hình và cũng **không** thể vẽ ra màu đen (`LaunchTheme`/`NormalTheme` và mọi
+màn hình Flutter đều là màu trời/giấy da). Bằng chứng cho thấy điều duy nhất còn lại
+là **khung hình chụp được không có nội dung của app**, dù app đang sống và đang
+được focus; log hiện có chưa đủ để kết luận đó là do chụp quá sớm so với frame
+đầu tiên trên emulator chạy phần mềm hay do nguyên nhân khác.
+Điểm mấu chốt: trong run 38824894610, khung `raw` đo **ngay sau** tấm PNG đã đăng
+là 99,8% đen trong khi chính tấm PNG đó là bản đồ thật — hai lần chụp cách nhau vài
+giây mâu thuẫn nhau, nên không thể tin một phép đo phụ. Vì vậy giai đoạn 2 giờ **đo
+đúng tệp sẽ được đăng**: `screencap -p` ghi PNG thẳng xuống đĩa,
+`ci/screenshot_blankness.py` (chỉ thư viện chuẩn, không cần PIL) tự giải mã PNG đó
+— đã kiểm chứng từng pixel trùng khớp với ImageMagick cho cả 5 kiểu filter và các
+colour type — rồi mới quyết định. Nếu khung hình không cho thấy app thì chụp lại có
+giới hạn (`SCREENSHOT_ATTEMPTS=12`, cách nhau `SCREENSHOT_RETRY_WAIT=5` giây). Chỉ
+khung đã đo là `content` mới được đăng; khung không dùng được **không** vào
+`docs/screenshots/` mà nằm trong artifact (`emulator-relaunch-unusable.png`), kèm
+key `relaunch_screen_blank=1` ⇒ check run *PyQuest emulator* thất bại, thay vì báo
+thành công mà không có bằng chứng. Trạng thái màn hình/cửa sổ/app và verdict của
+từng lần chụp được ghi vào `emulator-relaunch-evidence.txt` (in thẳng trong báo cáo
+ở mục *Screen and frame state at the relaunch capture*).
 
 **Báo cáo đọc ngay trên trang job:** bước *Report to step summary* chạy
 `ci/job_summary.py` và ghi `emulator-report.md` vào GitHub Step Summary của job

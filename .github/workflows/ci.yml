@@ -264,6 +264,7 @@ jobs:
             journey.txt
             relaunch.txt
             emulator-relaunch-evidence.txt
+            emulator-relaunch-unusable.png
             apk_build.txt
           if-no-files-found: warn
           retention-days: 14
