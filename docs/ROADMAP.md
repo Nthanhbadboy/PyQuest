@@ -44,6 +44,12 @@ Khi lát cắt đó chạy ổn, phần còn lại chủ yếu là **mở rộng
 - Test cuối theo chuyến phiêu lưu hoàn chỉnh.
 - Chi tiết xem mục 10.
 
+### 1.5. Tầm nhìn sản phẩm không đồng nghĩa roadmap phiên bản đầu
+
+- Có thể triển khai từng phần, nhưng phải ghi rõ phần nào được giữ cho giai đoạn sau thay vì làm biến mất khỏi tài liệu.
+- "Chưa triển khai" không đồng nghĩa với "bị loại bỏ" hoặc "phụ thuộc vào nhánh khác".
+- Các tính năng cộng đồng, Arena mở rộng, AI Tutor nâng cao và quà tặng được giữ trong tầm nhìn và triển khai theo giai đoạn khi sản phẩm sẵn sàng.
+
 ---
 
 ## 2. Tổng quan các giai đoạn
@@ -58,6 +64,7 @@ Khi lát cắt đó chạy ổn, phần còn lại chủ yếu là **mở rộng
 | 6 | **Main Quest** | Bài học Python, bài tập, lưu tiến trình | Dài |
 | 7 | **Side Maps & Pro** | Nội dung mở rộng và mua hàng | Trung bình |
 | 8 | **Hoàn thiện** | Localization, accessibility, kiểm thử, build, phát hành | Dài |
+| 9 | **Mở rộng tầm nhìn (sau phát hành)** | Arena mở rộng, AI Tutor nâng cao, cộng đồng, quà tặng, Side Maps mới | Dài |
 
 **Lưu ý:** thời lượng chỉ là ước lượng tương đối — quan trọng là **thứ tự** và **tiêu chí nghiệm thu**, không phải deadline cứng.
 
@@ -113,6 +120,7 @@ chứ không phải màn hình danh sách bài học.
 - Âm thanh tương tác phản hồi mỗi lần chạm.
 - Bật/tắt âm thanh, nhạc nền trong settings.
 - Khám phá không theo thứ tự: trẻ có thể chạm vào địa điểm bất kỳ.
+- Thế giới có thể được trình bày như ngôi làng với các ngôi nhà/công trình/cổng là điểm vào module gameplay; không yêu cầu mọi công trình phải có ngay trong phiên bản đầu.
 
 ### 4.3. Không làm trong giai đoạn này
 
@@ -263,7 +271,7 @@ Main Quest chạy code và Creator Mode mở code (xem `TECHNICAL_ARCHITECTURE.m
 
 - Thử nghiệm `chaquopy`, `python-for-android`, hoặc RustPython/WASM.
 - So sánh với mô phỏng về: hiệu năng, độ ổn định, trải nghiệm trẻ.
-- **Chỉ chuyển** nếu mô phỏng đã chứng minh giá trị sư phạm và Python thật mang
+- **Chỉ chuyển** nếu mô phỏng đã chứng minh được giá trị sư phạm và Python thật mang
   lại lợi ích rõ ràng. Không đưa vào tiêu chí nghiệm thu giai đoạn này.
 
 ---
@@ -377,6 +385,7 @@ Mở rộng thế giới và mô hình kinh doanh, nhưng không khóa Main Ques
 - **Build release:** ký, cấu hình ProGuard/R8.
 - **Chuẩn bị store listing:** mô tả, ảnh, video, phân loại độ tuổi.
 - **Kiểm tra chính sách:** Google Play Families, quyền riêng tư trẻ em.
+- **AI Tutor mẫu đầu tiên:** cảnh mở đầu, một nhân vật mặc định hoàn chỉnh, gợi ý theo nấc, an toàn và kiểm soát chi phí (xem `PRODUCT_VISION.md` mục 14).
 
 ### 10.3. Tiêu chí nghiệm thu
 
@@ -388,6 +397,7 @@ Mở rộng thế giới và mô hình kinh doanh, nhưng không khóa Main Ques
 - [ ] Tất cả kịch bản kiểm thử cuối (mục 11) đạt.
 - [ ] Build release cài được trên thiết bị thật.
 - [ ] Đã kiểm tra chính sách trước khi submit.
+- [ ] AI Tutor mẫu đầu tiên đạt tiêu chí nghiệm thu trong `PRODUCT_VISION.md` mục 14.6.
 
 ---
 
@@ -420,33 +430,60 @@ Bốn lỗi nghiêm trọng **phải** được kiểm tra ở mọi giai đoạ
 
 ---
 
-## 12. Điều **không** làm trong roadmap này
+## 12. Điều **không** làm trong phiên bản đầu (nhưng thuộc tầm nhìn sản phẩm)
 
-Để giữ dự án tập trung, roadmap **chủ động không** bao gồm:
+Để giữ dự án tập trung, roadmap **chủ động không** bao gồm trong phiên bản đầu:
 
 - Subscription định kỳ.
 - Cloud sync ở giai đoạn đầu.
-- Multiplayer.
-- Social features (chat, bạn bè).
+- Multiplayer trực tuyến đầy đủ.
+- Social features đầy đủ (chat, bạn bè) — **thuộc tầm nhìn sản phẩm**, triển khai theo giai đoạn khi sản phẩm sẵn sàng.
 - Backend server phức tạp.
 - Nhiều mini-game cùng lúc ở giai đoạn 3.
 - iOS ở giai đoạn đầu.
 - Analytics framework nặng.
 - Framework test cồng kềnh.
+- Arena mở rộng (giải theo mùa, thi đấu trực tuyến, đánh giá AI có kiểm soát) — **thuộc tầm nhìn sản phẩm**, triển khai sau khi các chế độ đơn người ổn định.
+- Cộng đồng/quà tặng đầy đủ — **thuộc tầm nhìn sản phẩm**, triển khai theo giai đoạn.
 
-Những mục này có thể được đánh giá lại sau khi PyQuest phát hành và có phản hồi thực tế.
+Những mục này có thể được đánh giá lại sau khi PyQuest phát hành và có phản hồi thực tế. "Không làm trong phiên bản đầu" không đồng nghĩa với "bị loại bỏ khỏi tầm nhìn".
 
 ---
 
-## 13. Trạng thái hiện tại & việc cần làm ngay
+## 13. Giai đoạn 9 — Mở rộng tầm nhìn (sau phát hành)
 
-### 13.1. Trạng thái
+### 13.1. Mục tiêu
 
-- Tài liệu sản phẩm: **đã tách xong** (`PRODUCT_VISION.md`, `GAME_DESIGN.md`).
-- Tài liệu kỹ thuật: **đã chốt quyết định chính** (`TECHNICAL_ARCHITECTURE.md`).
+Mở rộng PyQuest theo tầm nhìn sản phẩm mà không làm mất các vòng lặp gameplay đã có.
+
+### 13.2. Phạm vi
+
+- **Arena mở rộng:** giải theo mùa, bài thi sáng tạo phong phú, đánh giá AI có kiểm soát, chia sẻ tác phẩm và thi đấu trực tuyến khi sản phẩm sẵn sàng.
+- **AI Tutor nâng cao:** thêm nhân vật Tutor (cún, mèo, rồng, búp bê), voice chat có kiểm soát, hội thoại theo ngữ cảnh trong toàn game.
+- **Cộng đồng:** kết bạn, đội nhóm, quà tặng, danh hiệu xã hội, an toàn trẻ em.
+- **Sáng tạo xã hội:** tranh, thiệp, quà do người chơi tự tạo.
+- **Side Maps mới:** bộ môn, chủ đề, vật phẩm, danh hiệu và trải nghiệm nâng cao.
+- **Danh hiệu độc quyền:** Side Maps, Tutor, nhiều bảng xếp hạng và tổng sắp chung.
+
+### 13.3. Tiêu chí nghiệm thu (cao cấp)
+
+- [ ] Các tính năng mở rộng được thêm theo module, không viết lại nền tảng.
+- [ ] Dữ liệu luyện tập và thi đấu thật được phân biệt rõ.
+- [ ] Không có XP/cấp độ toàn cục được thêm vào.
+- [ ] Cộng đồng/quà tặng tuân thủ an toàn trẻ em và quyền riêng tư.
+
+---
+
+## 14. Trạng thái hiện tại & việc cần làm ngay
+
+### 14.1. Trạng thái
+
+- Tài liệu sản phẩm: **đã cập nhật** (`PRODUCT_VISION.md`, `GAME_DESIGN.md`) để phản ánh README và brief.
+- Tài liệu kỹ thuật: **đã cập nhật** (`TECHNICAL_ARCHITECTURE.md`) để phản ánh README và brief.
+- Roadmap: **đã cập nhật** (`ROADMAP.md`) để giữ tầm nhìn sản phẩm và chia giai đoạn.
 - Mã nguồn: **chưa bắt đầu**.
 
-### 13.2. Việc cần làm theo thứ tự ưu tiên
+### 14.2. Việc cần làm theo thứ tự ưu tiên
 
 1. **Chốt phạm vi Python runtime** — đã chốt: mô phỏng giai đoạn đầu, đánh giá lại sau.
 2. **Định lượng hóa Game Design** — đã có trong `GAME_DESIGN.md`.
@@ -456,7 +493,7 @@ Những mục này có thể được đánh giá lại sau khi PyQuest phát h�
 6. **Tách tài liệu** — đã hoàn thành (README + 4 tài liệu trong `docs/`).
 7. **Bắt đầu lát cắt dọc đầu tiên** — giai đoạn 1 → 3.
 
-### 13.3. Bước tiếp theo cụ thể
+### 14.3. Bước tiếp theo cụ thể
 
 Bắt đầu **giai đoạn 1 — Foundation**:
 
@@ -469,20 +506,20 @@ Bắt đầu **giai đoạn 1 — Foundation**:
 
 Khi giai đoạn 1 đạt tiêu chí nghiệm thu → chuyển sang giai đoạn 2.
 
-### 13.4. Quyết định còn mở (TBD)
+### 14.4. Quyết định còn mở (TBD)
 
 Các điểm sau **chưa chốt** và **không** được tự ý đặt số liệu:
 
 | Điểm mở | Câu hỏi cần quyết định | Nguồn |
 |---|---|---|
 | Nhóm quảng cáo thưởng cho Pro | Người dùng Pro vẫn được tự nguyện xem quảng cáo thưởng, hay có cách công bố rõ khác để nhận năng lượng? | `PRODUCT_VISION.md` 3.3, `TECHNICAL_ARCHITECTURE.md` 6.4 |
-
-
 | Giá trị kiểm soát interpreter | Ngân sách bước, trần collection, mục tiêu bộ nhớ cụ thể | `TECHNICAL_ARCHITECTURE.md` 2.3 |
+| Nhà cung cấp/model AI Tutor | Chất lượng tiếng Việt, độ trễ, chi phí, phương án lỗi | `TECHNICAL_ARCHITECTURE.md` 9.1 |
+| Cơ chế kiểm duyệt nội dung do người chơi tạo | Báo cáo/kiểm duyệt phù hợp trẻ em | `PRODUCT_VISION.md` 16.5 |
 
 ---
 
-## 14. Nguyên tắc cuối cùng
+## 15. Nguyên tắc cuối cùng
 
 > Trẻ mở PyQuest vì thích chơi, ở lại vì tò mò, rồi tự hỏi:
 > **"Mình có thể tự làm một game như thế này không?"**
@@ -501,6 +538,7 @@ và đủ công cụ để trẻ tự tạo ra thế giới của riêng mình.
 - [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, mở khóa hoạt động và cân bằng độ khó.
 - [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — interpreter, module, lưu dữ liệu.
 - [`../README.md`](../README.md) — điểm vào dự án.
+- [`ARENA_CREATOR_COMPETITION_BRIEF.md`](ARENA_CREATOR_COMPETITION_BRIEF.md) — nguồn bổ sung về Arena, Creator League và trải nghiệm thi đấu.
 
 ---
 

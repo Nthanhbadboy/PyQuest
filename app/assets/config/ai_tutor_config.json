@@ -1,0 +1,15 @@
+{
+  "_comment": "AI tutor for PyQuest. 'endpoint' MUST be a relay that holds the API key: the app never ships a key. Leave it empty and the app honestly falls back to the offline rule-based tutor. Override per build with --dart-define=AI_TUTOR_ENDPOINT=https://your-relay.example.com",
+  "enabled": true,
+  "endpoint": "",
+  "model": "gpt-4o-mini",
+  "request_timeout_seconds": 20,
+  "max_retries": 2,
+  "daily_question_limit": 10,
+  "max_lesson_context_chars": 12000,
+  "max_question_chars": 500,
+  "max_answer_chars": 900,
+  "min_step_for_direct_answer": 5,
+  "history_max_turns": 40,
+  "temperature": 0.4
+}

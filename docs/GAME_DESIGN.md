@@ -6,8 +6,8 @@
 > và **không** đi vào quyết định kỹ thuật (xem `TECHNICAL_ARCHITECTURE.md`).
 >
 > Thuật ngữ (**Home Map**, **Main Map**, **Main Quest**, **Mini-game Play Mode**,
-> **Mini-game Creator Mode**, **Side Maps**, **Nhà Thành Tích**, **Adventure Recap**)
-> dùng theo định nghĩa tại `PRODUCT_VISION.md`.
+> **Mini-game Creator Mode**, **Side Maps**, **Nhà Thành Tích**, **Adventure Recap**,
+> **Arena**, **Creator Pro League**, **Tutor**) dùng theo định nghĩa tại `PRODUCT_VISION.md`.
 
 **Nguyên tắc quan trọng:** mọi con số trong tài liệu này là **giá trị khởi điểm**,
 được đặt trong file cấu hình (không rải rác trong code) để có thể tinh chỉnh
@@ -40,6 +40,13 @@ Bảy nguyên tắc chi phối mọi con số trong tài liệu này:
 
 7. **Bạn bè và cộng đồng là lựa chọn, không bắt buộc.** Chơi cùng nhau để vui hơn,
    không phải điều kiện để tiến bộ hay mở khóa nội dung.
+
+8. **Luật chơi đơn giản; trải nghiệm là trọng tâm.** Không đánh đồng game hay với
+   logic phức tạp. Nếu vòng lặp đủ vui, phản hồi tốt và tiến trình hấp dẫn thì logic
+   đơn giản là ưu điểm.
+
+9. **Không biến XP thành hệ thống rườm rà.** Chỉ dùng điểm/đóng góp khi có mục
+   đích cụ thể; không tạo nhiều chỉ số cùng làm một việc.
 
 ---
 
@@ -116,6 +123,15 @@ Chọn nhiệm vụ → Học/Chơi → Nhận thưởng → Năng lượng gi�
 - Không khóa Nhà Thành Tích, bộ sưu tập, truyện.
 - Không hiển thị popup gây áp lực mua Pro.
 
+### 3.6. Năng lượng, quảng cáo theo từng hạng mục và quyền lợi nhỏ khi mua Side Map
+
+- Các hạng mục của PyQuest có thể tích hợp quảng cáo theo chính sách sản phẩm, nhưng mỗi hạng mục phải có hạn mức riêng, dễ hiểu: lượt miễn phí, số lượt có thể nhận thêm qua quảng cáo, khoảng thời gian áp dụng và thời điểm làm mới hạn mức.
+- Quy tắc này áp dụng theo từng hạng mục, chẳng hạn Main Quest, Arena/thi đấu, sáng tạo, sưu tập, Side Maps và mini-game. Không mặc định tất cả phải có cùng số lượt hoặc cùng cách hiển thị quảng cáo; phải xác định hạn mức phù hợp với vai trò của từng hạng mục.
+- Muốn chơi thêm sau khi dùng hết lượt miễn phí, người chơi có thể tự nguyện xem quảng cáo nếu hạng mục đó còn lượt thưởng quảng cáo; nếu hết hạn mức thì dừng và chờ lượt/năng lượng hồi lại hoặc quay sang hoạt động phù hợp khác.
+- Quảng cáo phải xuất hiện ở điểm dừng tự nhiên, không ép xem giữa màn chơi, không chặn việc học kiến thức cốt lõi của Main Quest và không bắt trẻ xem quảng cáo để bảo vệ tiến độ đã đạt được.
+- Năng lượng và lượt quảng cáo là hai giới hạn có liên quan nhưng không đồng nhất: xem quảng cáo không mặc nhiên xóa bỏ mọi giới hạn năng lượng hoặc cấp quyền chơi vô hạn. Luật kết hợp giữa chúng phải được công bố rõ.
+- Khi người chơi mua/mở khóa một Side Map bằng tiền, có thể tặng kèm một lượng nhỏ năng lượng bổ sung hoặc một ít lượt chơi thêm như quyền lợi phụ, có giới hạn rõ ràng, nhỏ và cân bằng. Quyền lợi phụ này không thay thế điều kiện kiến thức, không tự động trao danh hiệu thành tích và không mua trực tiếp điểm/thứ hạng.
+
 ---
 
 ## 4. Mở hoạt động, điểm và thành tích — không có XP/cấp độ toàn cục
@@ -138,7 +154,7 @@ Chọn nhiệm vụ → Học/Chơi → Nhận thưởng → Năng lượng gi�
 | **Kỷ lục/điểm riêng của game** | Thuộc game đó, dùng cho nâng cấp, so kỷ lục hoặc luật chơi của game. Không tự động chuyển thành điểm toàn cục. |
 | **Mở khóa hoạt động** | Dựa trên điều kiện thực sự cần: hoạt động trước đã hoàn thành, kiến thức tiên quyết, mốc thành tích cụ thể hoặc quyền sở hữu. |
 | **Thành tích/huy hiệu** | Ghi nhận một việc đã làm hoặc cột mốc đã đạt; chỉ cấp một lần theo điều kiện rõ ràng. |
-| **Danh hiệu** | Thể hiện một thành tựu hoặc vai trò cụ thể. Danh hiệu kỹ năng phải dựa trên bằng chứng năng lực, không phải mua hoặc nhận quà. |
+| **Danh hiệu** | Thể hiện một thành tích hoặc vai trò cụ thể. Danh hiệu kỹ năng phải dựa trên bằng chứng năng lực, không phải mua hoặc nhận quà. |
 | **Quà tặng/vật phẩm** | Thuộc sở hữu và giao lưu xã hội; không tự động cấp thành tích hay quyền thắng trong thi đấu. |
 | **XP/cấp độ toàn cục** | **Không sử dụng trong thiết kế hiện tại.** Không tạo công thức XP, bảng cấp hay rào chắn cấp để điều hướng người chơi qua Main Map. Chỉ xem xét lại nếu sau này có nhu cầu sản phẩm cụ thể chứng minh được giá trị. |
 
@@ -149,6 +165,21 @@ Chọn nhiệm vụ → Học/Chơi → Nhận thưởng → Năng lượng gi�
 - Nhiệm vụ ngày có thể lặp lại theo ngày địa phương nhưng không bắt buộc, không có hình phạt khi bỏ lỡ và không dùng streak gây áp lực.
 - Chỉ ghi nhận phần thưởng sau khi xác minh điều kiện hoàn thành; thất bại không làm mất thành tích đã có.
 - Quy tắc chống trùng chỉ bảo vệ phần thưởng/thành tích thực sự tồn tại; **không tạo XP chỉ để có thứ chống cộng trùng**.
+
+### 4.4. Main Quest mở khóa hoạt động theo kiến thức đã học
+
+- Mỗi hoạt động xác định trước những kiến thức cần thiết, sau đó ánh xạ đến các map Main Quest dạy và kiểm tra các kiến thức đó.
+- Người chơi phải hoàn thành đủ những map tương ứng mới được mở khóa hoạt động. Khi chưa đủ điều kiện, giao diện phải nói rõ còn thiếu map nào hoặc cần học năng lực gì, đồng thời cho phép đi thẳng đến map liên quan.
+- Không bắt người chơi hoàn thành toàn bộ Main Quest để mở mọi thứ. Điều kiện chỉ cần bao phủ kiến thức thực sự cần cho hoạt động cụ thể.
+- Ngọc, mua Side Map hoặc quảng cáo không thay thế điều kiện kiến thức của hoạt động yêu cầu kỹ năng đó.
+
+### 4.5. Mọi thành tích quy về điểm tổng sắp (không phải XP)
+
+- Các nhánh vẫn độc lập về gameplay, nhưng thành tích của chúng có thể quy đổi theo quy tắc tương ứng thành điểm đóng góp cho hệ thống tổng sắp chung.
+- Bảng tuần, tháng, thi đấu, hoạt động, chuyên môn và đồng đội là các bảng/góc xếp hạng khác nhau; không phải các hệ thống điểm hoàn toàn tách rời. Cần quy định rõ loại điểm và kỳ tính của từng bảng.
+- Danh hiệu vẫn giữ ý nghĩa sưu tầm và thể hiện thành tích; những danh hiệu được quy định có điểm thưởng có thể đóng góp vào tổng sắp. Không mặc định mọi danh hiệu đều cho điểm như nhau.
+- Không để một nhánh có thể cày lặp vô hạn rồi chiếm toàn bộ bảng tổng sắp. Điểm, hệ số và giới hạn đóng góp cần phù hợp với từng loại hoạt động.
+- Điểm tuần/tháng phải tách kỳ và quy tắc reset khỏi điểm thành tích lâu dài trong hồ sơ. Danh hiệu vĩnh viễn đã kiếm được không bị xóa chỉ vì kỳ xếp hạng kết thúc.
 
 ---
 
@@ -262,9 +293,72 @@ Game không có Creator Mode bỏ qua mục này.
 
 ---
 
-## 7. Nhà Thành Tích — điều kiện mở khóa
+## 7. Arena — luật chơi, điểm và danh hiệu
 
-### 7.1. Huy hiệu học tập
+### 7.1. Nguyên tắc chung
+
+- Arena là trung tâm nhiều bộ môn; mỗi bộ môn có cách chơi, điều kiện thắng và cách tính điểm phù hợp.
+- Không bắt mọi bộ môn dùng chung một công thức. Mỗi giải có luật chấm riêng, đủ rõ để người chơi hiểu cách thắng/thua.
+- Điểm/thanh tiến độ trực tiếp giúp trẻ thấy diễn biến: đang dẫn, bị vượt hay sắp hoàn thành mục tiêu. Không biến thành bài toán chứng minh công bằng tuyệt đối.
+- Không cần ép tất cả người chơi hoặc sản phẩm giống hệt nhau. Sự khác biệt trong sáng tạo là một phần của gameplay.
+
+### 7.2. Điểm và thanh tiến độ realtime theo bộ môn
+
+- Mê cung/đua tốc độ: tiến độ dựa trên quãng đường, mục tiêu, vật phẩm hoặc checkpoint thực sự hoàn thành.
+- Đấu thú/robot: có thể dùng máu, năng lượng, điểm kỹ năng hoặc mục tiêu đạt được.
+- Thử thách theo lượt: điểm thay đổi sau hành động hoặc câu trả lời có kết quả.
+- Giải sáng tạo được chấm: có thể hiển thị điểm tạm tính/tiến độ đánh giá; kết quả cuối cùng chỉ chốt sau khi mô phỏng và chấm xong.
+
+### 7.3. Chấm điểm Creator Pro League
+
+Không cần giả định có công bằng tuyệt đối giữa các tác phẩm khác nhau. Cần có luật và tiêu chí đủ rõ để người chơi biết mình được đánh giá dựa trên điều gì.
+
+Có thể kết hợp:
+- **Chỉ số khách quan từ mô phỏng:** hoàn thành nhiệm vụ hay không, thời gian, đường đi, số lỗi va chạm, vật phẩm thu thập, tài nguyên sử dụng, độ ổn định và các số liệu phù hợp với từng đề.
+- **Đánh giá theo tiêu chí:** độ sáng tạo, thiết kế, cách giải quyết vấn đề, chất lượng logic/code và mức đáp ứng đề bài.
+- AI có thể hỗ trợ đánh giá các tiêu chí sáng tạo/chất lượng; không nên thay thế những dữ kiện có thể đo trực tiếp bằng kết quả mô phỏng.
+- Trọng số phụ thuộc bộ môn và có thể khác giữa các giải. Công bố tiêu chí và trọng số đủ để người chơi hiểu cách tính.
+- Điểm realtime có thể là điểm tạm tính; điểm chính thức được chốt khi đánh giá hoàn tất.
+- Không âm thầm thay đổi điểm để ép một kết quả thắng/thua cụ thể.
+
+### 7.4. Danh hiệu, điểm tuần và thành tích lâu dài
+
+Arena phải tạo ra động lực theo nhiều cấp:
+- Điểm của trận/thử thách.
+- Thứ hạng trong từng bộ môn.
+- Điểm đóng góp vào bảng xếp hạng tuần.
+- Giải theo mùa và danh hiệu lưu trong hồ sơ.
+- Danh hiệu hiếm gắn với thành tích thực sự hoặc thử thách đặc biệt.
+
+Ví dụ tên danh hiệu (tên có thể được bản địa hóa): Maze Master, Master Creator, AI Beast Tamer, Weekly Champion, Legendary Inventor.
+
+Không nhất thiết mọi danh hiệu dùng cùng điều kiện. Có thể trao danh hiệu vì tốc độ, sáng tạo, chiến thuật, hoàn thành bộ sưu tập hoặc thành tích theo mùa. Cần tránh để một loại điểm duy nhất khiến các bộ môn khác mất ý nghĩa.
+
+**Danh hiệu độc quyền của Side Maps:**
+- Mở khóa hoặc mua quyền truy cập map chỉ mở cơ hội tham gia; không tự động trao danh hiệu vốn đại diện cho thành tích. Người chơi phải đạt mốc, hoàn thành thử thách hoặc thỏa điều kiện được công bố.
+- Danh hiệu độc quyền phải giữ được ý nghĩa riêng của map và được lưu trong hồ sơ/bộ sưu tập danh hiệu.
+
+**Danh hiệu riêng do Tutor trao tặng:**
+- Tutor có thể trao danh hiệu riêng khi người chơi đạt mốc quan hệ hoặc hoàn thành một nhiệm vụ/cột mốc đặc biệt. Điều kiện nên gắn với tính cách, lĩnh vực và câu chuyện của nhân vật.
+
+**Nhiều bảng xếp hạng, một hồ sơ thành tích:**
+- Bảng tuần, bảng tháng, bảng thi đấu, bảng hoạt động, bảng chuyên môn, bảng đội và tổng sắp chung.
+- Mỗi loại hoạt động có thể có điểm gốc, hệ số hoặc giới hạn đóng góp riêng; công thức cần được công bố đủ rõ và tránh để một hoạt động lặp vô hạn thống trị mọi bảng.
+- Bảng xếp hạng người thật chỉ hiển thị dữ liệu thi đấu thật. Bảng luyện tập với nhân vật hư cấu phải được trình bày đúng bản chất, không giả làm bảng xếp hạng người thật.
+- Vì PyQuest hướng tới trẻ em, cần tránh thiết kế bảng xếp hạng gây áp lực quá mức; có thể cung cấp bảng bạn bè/đội hoặc mục tiêu cá nhân bên cạnh bảng cạnh tranh rộng hơn.
+
+### 7.5. Anti-grind và giới hạn cày lặp
+
+- Không để một nhánh có thể cày lặp vô hạn rồi chiếm toàn bộ bảng tổng sắp. Điểm, hệ số và giới hạn đóng góp cần phù hợp với từng loại hoạt động.
+- Mini-game giải trí có số lượt chơi miễn phí trong một khoảng thời gian xác định. Khi hết lượt miễn phí, người chơi có thể dừng lại hoặc tự nguyện xem quảng cáo để nhận thêm lượt, với giới hạn rõ ràng.
+- Điểm từ mini-game phải có mức trần/hạn mức phù hợp để không thể cày lặp rồi thống trị bảng tổng sắp.
+- Quảng cáo không được dùng để bán điểm, danh hiệu, thứ hạng hoặc thay thế kỹ năng.
+
+---
+
+## 8. Nhà Thành Tích — điều kiện mở khóa
+
+### 8.1. Huy hiệu học tập
 
 | Huy hiệu | Điều kiện | Ghi chú |
 |---|---|---|
@@ -278,7 +372,7 @@ Game không có Creator Mode bỏ qua mục này.
 | **Different Path** | Giải một màn Robot Maze bằng cách khác | Bí mật |
 | **Perfectionist** | Đạt 3 sao tất cả màn của 1 mini-game | |
 
-### 7.2. Điều kiện mở rộng Nhà Thành Tích
+### 8.2. Điều kiện mở rộng Nhà Thành Tích
 
 | Thành phần | Mở khóa khi |
 |---|---|
@@ -288,7 +382,7 @@ Game không có Creator Mode bỏ qua mục này.
 | Góc sáng tạo | Sau khi tạo game đầu tiên chạy được |
 | Huy hiệu bí mật | Bí mật — không công bố điều kiện |
 
-### 7.3. Nguyên tắc thưởng huy hiệu
+### 8.3. Nguyên tắc thưởng huy hiệu
 
 - Huy hiệu **không** bị mất khi trẻ nghỉ chơi.
 - Huy hiệu **không** gắn với việc xem quảng cáo.
@@ -298,14 +392,14 @@ Game không có Creator Mode bỏ qua mục này.
 
 ---
 
-## 8. Nhiệm vụ ngày
+## 9. Nhiệm vụ ngày
 
-### 8.1. Số lượng và thời điểm
+### 9.1. Số lượng và thời điểm
 
 - **3 nhiệm vụ/ngày**, reset vào 00:00 giờ địa phương.
 - Không bắt buộc hoàn thành. Không phạt khi bỏ lỡ.
 
-### 8.2. Loại nhiệm vụ
+### 9.2. Loại nhiệm vụ
 
 | Loại | Ví dụ | Phần thưởng/ghi nhận | Năng lượng |
 |---|---|---|---|
@@ -317,7 +411,7 @@ Game không có Creator Mode bỏ qua mục này.
 **Lưu ý:** nhiệm vụ ngày **không** tiêu hao năng lượng riêng —
 năng lượng đã tiêu hao theo hoạt động chính.
 
-### 8.3. Điều **không** làm với nhiệm vụ ngày
+### 9.3. Điều **không** làm với nhiệm vụ ngày
 
 - Không dùng streak để gây áp lực.
 - Không có nhiệm vụ "xem quảng cáo".
@@ -325,9 +419,9 @@ năng lượng đã tiêu hao theo hoạt động chính.
 
 ---
 
-## 9. Màn tổng kết & Adventure Recap
+## 10. Màn tổng kết & Adventure Recap
 
-### 9.1. Cấu trúc màn tổng kết sau mỗi màn
+### 10.1. Cấu trúc màn tổng kết sau mỗi màn
 
 | Thành phần | Bắt buộc | Ghi chú |
 |---|---|---|
@@ -338,7 +432,7 @@ năng lượng đã tiêu hao theo hoạt động chính.
 | Nút "Chơi tiếp" | Có | |
 | Nút "Về bản đồ" | Có | |
 
-### 9.2. Cấu trúc Adventure Recap
+### 10.2. Cấu trúc Adventure Recap
 
 Xuất hiện khi hoàn thành một chặng.
 
@@ -354,9 +448,9 @@ Xuất hiện khi hoàn thành một chặng.
 
 ---
 
-## 10. Cân bằng độ khó
+## 11. Cân bằng độ khó
 
-### 10.1. Đường cong độ khó chung
+### 11.1. Đường cong độ khó chung
 
 - **Màn 1–3:** hướng dẫn, gần như không thể thất bại.
 - **Màn 4–6:** thử thách nhẹ, có gợi ý nếu thất bại 2 lần.
@@ -364,7 +458,7 @@ Xuất hiện khi hoàn thành một chặng.
 - **Màn 9:** thử thách cao, không gợi ý mặc định.
 - **Màn 10:** thử thách đỉnh, có thể cần chơi lại vài lần.
 
-### 10.2. Hệ thống gợi ý
+### 11.2. Hệ thống gợi ý
 
 | Số lần thất bại liên tiếp | Hành động |
 |---|---|
@@ -373,7 +467,7 @@ Xuất hiện khi hoàn thành một chặng.
 | 3 | Hiển thị gợi ý rõ hơn |
 | 4+ | Đề xuất chơi lại màn trước hoặc luyện mini-game liên quan |
 
-### 10.3. Không bao giờ
+### 11.3. Không bao giờ
 
 - Không hiển thị đáp án trực tiếp.
 - Không tự động hoàn thành màn cho trẻ.
@@ -382,32 +476,34 @@ Xuất hiện khi hoàn thành một chặng.
 
 ---
 
-## 11. Phần thưởng & vật phẩm
+## 12. Phần thưởng & vật phẩm
 
-### 11.1. Loại phần thưởng
+### 12.1. Loại phần thưởng
 
 | Loại | Nguồn | Ghi chú |
 |---|---|---|
-
 | Năng lượng | Hồi theo thời gian, quảng cáo thưởng hợp lệ hoặc mốc gameplay được công bố | |
 | Huy hiệu | Cột mốc, khám phá | |
 | Trang phục nhân vật | Cột mốc, sự kiện | |
 | Phụ kiện thú cưng | Nhiệm vụ, mini-game | |
-| Danh hiệu | Chặng lớn | |
+| Danh hiệu | Chặng lớn, Arena, Tutor, Side Maps | |
 | Vật phẩm trang trí Nhà Thành Tích | Nhiệm vụ đặc biệt | |
+| Quà tặng/vật phẩm xã hội | Mua hoặc bạn bè tặng | Không tự động cấp thành tích/thi đấu |
 
-### 11.2. Quy tắc phân phối
+### 12.2. Quy tắc phân phối
 
 - Phần thưởng **không** ngẫu nhiên gây nghiện (không loot box).
 - Phần thưởng **không** gắn với quảng cáo ngoài năng lượng.
 - Phần thưởng **không** mất khi trẻ nghỉ chơi.
 - Phần thưởng trả phí **đã công bố rõ** trước khi mua.
+- Danh hiệu thành tích phải kiếm được bằng điều kiện tương ứng. Danh hiệu mang tính xã hội được tặng có thể hiển thị riêng, không giả làm chứng nhận người nhận đã hoàn thành thử thách mà họ chưa đạt.
+- Mọi điểm cộng vào tổng sắp cần có luật chống cày lặp, giới hạn/hệ số phù hợp và không để một hoạt động duy nhất lấn át mọi chuyên môn.
 
 ---
 
-## 12. Phiên chơi & nhịp nghỉ
+## 13. Phiên chơi & nhịp nghỉ
 
-### 12.1. Cảnh báo phiên dài
+### 13.1. Cảnh báo phiên dài
 
 | Thời gian chơi liên tục | Hành động |
 |---|---|
@@ -417,7 +513,7 @@ Xuất hiện khi hoàn thành một chặng.
 
 **Không** chặn cứng. Chỉ gợi ý.
 
-### 12.2. Hoạt ảnh nghỉ ngơi
+### 13.2. Hoạt ảnh nghỉ ngơi
 
 - Nhân vật ngồi nghỉ, uống nước, nhìn ra xa.
 - Gợi ý vận động mắt: "Nhìn ra xa 20 giây nhé!"
@@ -426,7 +522,7 @@ Xuất hiện khi hoàn thành một chặng.
 
 ---
 
-## 13. Bảng cấu hình đề xuất
+## 14. Bảng cấu hình đề xuất
 
 Toàn bộ thông số trên nên được đặt trong file cấu hình JSON,
 không hard-code. Ví dụ cấu trúc (không có XP/cấp độ toàn cục):
@@ -450,7 +546,7 @@ không hard-code. Ví dụ cấu trúc (không có XP/cấp độ toàn cục):
 
 ---
 
-## 14. Điều cần kiểm tra khi thử nghiệm thực tế
+## 15. Điều cần kiểm tra khi thử nghiệm thực tế
 
 Các con số trên là **điểm khởi đầu**. Cần tinh chỉnh dựa trên:
 
@@ -459,6 +555,8 @@ Các con số trên là **điểm khởi đầu**. Cần tinh chỉnh dựa trê
 3. **Tần suất xem quảng cáo thưởng** — có bị lạm dụng không?
 4. **Điểm dừng tự nhiên** — trẻ có dừng đúng lúc không?
 5. **Phản ứng với màn tổng kết** — có đọc không, có hứng thú không?
+6. **Cân bằng Arena** — các bộ môn có bị một loại điểm lấn át không?
+7. **Giới hạn lượt mini-game** — có gây áp lực hoặc cày lặp không?
 
 Kết quả thử nghiệm sẽ quyết định điều chỉnh cụ thể.
 
@@ -470,3 +568,4 @@ Kết quả thử nghiệm sẽ quyết định điều chỉnh cụ thể.
 - [`TECHNICAL_ARCHITECTURE.md`](TECHNICAL_ARCHITECTURE.md) — interpreter, module, lưu dữ liệu.
 - [`ROADMAP.md`](ROADMAP.md) — giai đoạn triển khai và tiêu chí nghiệm thu.
 - [`../README.md`](../README.md) — điểm vào dự án.
+- [`ARENA_CREATOR_COMPETITION_BRIEF.md`](ARENA_CREATOR_COMPETITION_BRIEF.md) — nguồn bổ sung về Arena, Creator League và trải nghiệm thi đấu.

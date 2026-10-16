@@ -1,0 +1,115 @@
+{
+  "game_id": "robot_maze",
+  "levels": [
+    {
+      "id": "rm_01",
+      "title": "Bước đi đầu tiên",
+      "story": "Rương báu ở ngay phía trước! Hãy xếp các mũi tên để Robo đi tới rương.",
+      "tip": "Mỗi mũi tên là một bước. Đếm số ô từ Robo tới rương nhé.",
+      "skill": "Thứ tự lệnh: máy tính làm đúng từng bước bạn viết.",
+      "rows": ["#####", "S...C", "#####"],
+      "command_limit": 4,
+      "allow_loops": false,
+      "solution": "R R R R"
+    },
+    {
+      "id": "rm_02",
+      "title": "Rẽ ở góc đường",
+      "story": "Đường đi có một khúc rẽ. Nhặt viên đá quý trên đường nữa nhé!",
+      "tip": "Đi sang phải trước, rồi mới đi xuống.",
+      "skill": "Lệnh chạy lần lượt từ trái sang phải.",
+      "rows": ["S.*.", "###.", "###.", "###C"],
+      "command_limit": 6,
+      "allow_loops": false,
+      "solution": "R R R D D D"
+    },
+    {
+      "id": "rm_03",
+      "title": "Lối đi quanh co",
+      "story": "Bụi cây chắn đường rồi! Tìm lối đi vòng qua chúng.",
+      "tip": "Thử đi xuống trước để vòng qua hàng bụi cây ở giữa.",
+      "skill": "Lập kế hoạch trước khi chạy chương trình.",
+      "rows": ["S.#..", ".*#.#", "..#.C", "#...#"],
+      "command_limit": 8,
+      "allow_loops": false,
+      "solution": "D R D D R R U R"
+    },
+    {
+      "id": "rm_04",
+      "title": "Cẩn thận có nước!",
+      "story": "Robo không biết bơi! Đường ngắn thì dễ, nhưng đá quý lại nằm ở đường xa hơn.",
+      "tip": "Đi dọc mép trái xuống tận dưới cùng sẽ gặp đá quý.",
+      "skill": "Một bài toán có thể có nhiều cách giải.",
+      "rows": ["S..~..", ".#.~.#", ".#...C", ".#~~.#", "..*..."],
+      "command_limit": 11,
+      "allow_loops": false,
+      "solution": "D D D D R R R R U U R"
+    },
+    {
+      "id": "rm_05",
+      "title": "Hai viên ngọc",
+      "story": "Có hai viên ngọc trong khu vườn. Bạn lấy được cả hai không?",
+      "tip": "Đường đi qua cả hai viên ngọc dài đúng 10 bước.",
+      "skill": "Kiểm tra lại chương trình để tìm bước sai (debug).",
+      "rows": ["S.#.C", ".*#..", "..#*.", "#...."],
+      "command_limit": 10,
+      "allow_loops": false,
+      "solution": "D R D D R R U U U R"
+    },
+    {
+      "id": "rm_06",
+      "title": "Lặp lại cho nhanh",
+      "story": "Đường dài quá! Khối Lặp lại giúp Robo làm một việc nhiều lần mà bạn chỉ cần viết một lần.",
+      "tip": "Bấm khối Lặp lại, đặt một mũi tên vào trong và chỉnh số lần lặp.",
+      "skill": "Vòng lặp: lặp lại một lệnh nhiều lần (for i in range(5)).",
+      "rows": ["######", "S*...C", "######"],
+      "command_limit": 2,
+      "allow_loops": true,
+      "solution": "5[R]"
+    },
+    {
+      "id": "rm_07",
+      "title": "Cầu thang",
+      "story": "Những bậc thang giống hệt nhau... Có mẫu nào lặp lại không nhỉ?",
+      "tip": "Một bậc thang = sang phải 1 bước rồi xuống 1 bước.",
+      "skill": "Tìm mẫu lặp lại rồi đặt nó vào vòng lặp.",
+      "rows": ["S.###", "#..##", "##.*#", "###..", "####C"],
+      "command_limit": 3,
+      "allow_loops": true,
+      "solution": "4[R D]"
+    },
+    {
+      "id": "rm_08",
+      "title": "Vòng quanh hồ",
+      "story": "Có hai con đường quanh hồ nước. Chỉ một đường có đá quý thôi!",
+      "tip": "Hai vòng lặp nối tiếp nhau: một cho đường ngang, một cho đường dọc.",
+      "skill": "Nhiều vòng lặp nối tiếp nhau.",
+      "rows": ["S....*", ".~~~~.", ".~~~~.", ".~~~~.", ".~~~~.", ".....C"],
+      "command_limit": 4,
+      "allow_loops": true,
+      "solution": "5[R] 5[D]"
+    },
+    {
+      "id": "rm_09",
+      "title": "Bậc thang đôi",
+      "story": "Lần này mỗi bậc thang rộng gấp đôi. Mẫu lặp lại là gì?",
+      "tip": "Mỗi bậc: phải, phải, xuống, xuống. Sau vòng lặp còn một bước nữa!",
+      "skill": "Vòng lặp chứa nhiều lệnh bên trong.",
+      "rows": ["S..###", "##.###", "##.*.#", "#~##.#", "####.C"],
+      "command_limit": 6,
+      "allow_loops": true,
+      "solution": "2[R R D D] R"
+    },
+    {
+      "id": "rm_10",
+      "title": "Đường rắn Py",
+      "story": "Con đường uốn lượn như thầy Py! Đây là thử thách lớn nhất của khu vườn.",
+      "tip": "Chia con đường thành từng đoạn thẳng, mỗi đoạn là một vòng lặp.",
+      "skill": "Chia bài toán lớn thành nhiều phần nhỏ.",
+      "rows": ["S....*", "#####.", "..*...", ".#####", "....*.", "#####C"],
+      "command_limit": 11,
+      "allow_loops": true,
+      "solution": "5[R] 2[D] 5[L] 2[D] 5[R] D"
+    }
+  ]
+}

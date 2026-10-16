@@ -1,0 +1,389 @@
+{
+ "game_id": "bug_hunter",
+ "packs": [
+  {
+   "number": 1,
+   "title": "Gói 1: Chữ và số",
+   "requires_lesson": "mq1_03"
+  },
+  {
+   "number": 2,
+   "title": "Gói 2: Biến",
+   "requires_lesson": "mq1_06"
+  },
+  {
+   "number": 3,
+   "title": "Gói 3: Điều kiện",
+   "requires_lesson": "mq1_09"
+  }
+ ],
+ "puzzles": [
+  {
+   "id": "bh_01",
+   "pack": 1,
+   "title": "Lời chào của Bitsy",
+   "story": "Tớ muốn máy tính chào mọi người, nhưng nó lại báo lỗi!",
+   "code": [
+    "print(\"Xin chào!\")",
+    "print(\"Tớ là Bitsy)"
+   ],
+   "bugs": [
+    {
+     "line": 2,
+     "options": [
+      "print(\"Tớ là Bitsy\")",
+      "print(Tớ là Bitsy)",
+      "print(\"Tớ là Bitsy\"))"
+     ],
+     "explain": "Chuỗi chữ phải có dấu ngoặc kép ở cả hai đầu."
+    }
+   ],
+   "expected_output": "Xin chào!\nTớ là Bitsy",
+   "skill": "Chuỗi chữ cần đủ dấu ngoặc kép"
+  },
+  {
+   "id": "bh_02",
+   "pack": 1,
+   "title": "Đếm chân mèo",
+   "story": "Mèo có 4 chân. Tớ muốn máy tính tính 2 + 2 nhưng nó chỉ in nguyên phép tính.",
+   "code": [
+    "print(\"2 + 2\")"
+   ],
+   "bugs": [
+    {
+     "line": 1,
+     "options": [
+      "print(2 + 2)",
+      "print(\"4 + 0\")",
+      "print(2 + \"2\")"
+     ],
+     "explain": "Có dấu ngoặc kép thì máy chỉ in chữ, không tính toán."
+    }
+   ],
+   "expected_output": "4",
+   "skill": "Số và chữ khác nhau"
+  },
+  {
+   "id": "bh_03",
+   "pack": 1,
+   "title": "Bánh quy chia đều",
+   "story": "Tớ có 12 chiếc bánh chia cho các bạn. Chương trình có tới 2 con bọ!",
+   "code": [
+    "print(\"Có \" + \"12\" + \" bánh)",
+    "print(\"Mỗi bạn\" + \"3\" + \" bánh\")"
+   ],
+   "bugs": [
+    {
+     "line": 1,
+     "options": [
+      "print(\"Có \" + \"12\" + \" bánh\")",
+      "print(\"Có \" + 12 + \" bánh\")",
+      "print(\"Có \" + \"12\" + bánh)"
+     ],
+     "explain": "Thiếu dấu ngoặc kép đóng sau chữ bánh."
+    },
+    {
+     "line": 2,
+     "options": [
+      "print(\"Mỗi bạn \" + \"3\" + \" bánh\")",
+      "print(\"Mỗi bạn\" + 3 + \" bánh\")",
+      "print(\"Mỗi bạn\" - \"3\" + \" bánh\")"
+     ],
+     "explain": "Thiếu dấu cách sau chữ bạn nên chữ bị dính vào nhau."
+    }
+   ],
+   "expected_output": "Có 12 bánh\nMỗi bạn 3 bánh",
+   "skill": "Dấu cách cũng là một ký tự"
+  },
+  {
+   "id": "bh_04",
+   "pack": 1,
+   "title": "Bảng nhân chia",
+   "story": "Tớ đang ôn bảng nhân chia, nhưng máy tính tính sai và còn báo lỗi nữa.",
+   "code": [
+    "print(\"3 x 4 =\")",
+    "print(3 + 4)",
+    "print(\"10 : 2 =\")",
+    "print(10 / 2"
+   ],
+   "bugs": [
+    {
+     "line": 2,
+     "options": [
+      "print(3 * 4)",
+      "print(3 x 4)",
+      "print(\"3 * 4\")"
+     ],
+     "explain": "Trong Python, phép nhân dùng dấu *."
+    },
+    {
+     "line": 4,
+     "options": [
+      "print(10 / 2)",
+      "print(10 : 2)",
+      "print(10 / 2))"
+     ],
+     "explain": "Mở ngoặc ( thì phải đóng ngoặc )."
+    }
+   ],
+   "expected_output": "3 x 4 =\n12\n10 : 2 =\n5.0",
+   "skill": "Phép tính trong Python"
+  },
+  {
+   "id": "bh_05",
+   "pack": 2,
+   "title": "Hộp điểm số",
+   "story": "Điểm của tớ là 10, nhưng máy tính bảo không biết Diem là gì!",
+   "code": [
+    "diem = 0",
+    "diem = diem + 10",
+    "print(Diem)"
+   ],
+   "bugs": [
+    {
+     "line": 3,
+     "options": [
+      "print(diem)",
+      "print(\"diem\")",
+      "print(Diem + 10)"
+     ],
+     "explain": "Python phân biệt chữ hoa và chữ thường: diem và Diem là hai tên khác nhau."
+    }
+   ],
+   "expected_output": "10",
+   "skill": "Tên biến phân biệt hoa/thường"
+  },
+  {
+   "id": "bh_06",
+   "pack": 2,
+   "title": "Xu của Pip",
+   "story": "Pip có 5 xu và nhặt thêm 3 xu. Phải in ra 8 chứ!",
+   "code": [
+    "xu = 5",
+    "xu + 3",
+    "print(x)"
+   ],
+   "bugs": [
+    {
+     "line": 2,
+     "options": [
+      "xu = xu + 3",
+      "xu = 3",
+      "xu + 3 = xu"
+     ],
+     "explain": "Tính xu + 3 xong phải cất lại vào biến: xu = xu + 3."
+    },
+    {
+     "line": 3,
+     "options": [
+      "print(xu)",
+      "print(\"xu\")",
+      "print(xu + x)"
+     ],
+     "explain": "Biến tên là xu, không phải x."
+    }
+   ],
+   "expected_output": "8",
+   "skill": "Cập nhật biến"
+  },
+  {
+   "id": "bh_07",
+   "pack": 2,
+   "title": "Thẻ tên thám tử",
+   "story": "Tớ làm thẻ tên cho mình mà máy tính cứ báo lỗi.",
+   "code": [
+    "ten = \"Bitsy\"",
+    "tuoi = 9",
+    "print(\"Tên: \" + Ten)",
+    "print(\"Tuổi: \" + tuoi)"
+   ],
+   "bugs": [
+    {
+     "line": 3,
+     "options": [
+      "print(\"Tên: \" + ten)",
+      "print(\"Tên: \" + \"ten\")",
+      "print(Tên: + ten)"
+     ],
+     "explain": "Biến tên là ten viết thường."
+    },
+    {
+     "line": 4,
+     "options": [
+      "print(\"Tuổi: \" + str(tuoi))",
+      "print(\"Tuổi: \" + \"tuoi\")",
+      "print(\"Tuổi: \" - tuoi)"
+     ],
+     "explain": "Muốn nối số với chữ phải đổi số thành chữ bằng str()."
+    }
+   ],
+   "expected_output": "Tên: Bitsy\nTuổi: 9",
+   "skill": "Nối chuỗi và str()"
+  },
+  {
+   "id": "bh_08",
+   "pack": 2,
+   "title": "Đếm bước Robo",
+   "story": "Robo đi 3 bước rồi đi thêm 2 bước. Nhưng máy tính lại trừ đi!",
+   "code": [
+    "buoc = 3",
+    "print(\"Robo đi \" + str(buoc) + \" bước\")",
+    "buoc = buoc - 2",
+    "print(\"Robo đi \" + str(buoc) + \"bước\")"
+   ],
+   "bugs": [
+    {
+     "line": 3,
+     "options": [
+      "buoc = buoc + 2",
+      "buoc = 2",
+      "buoc == buoc + 2"
+     ],
+     "explain": "Đi thêm thì phải cộng: buoc = buoc + 2."
+    },
+    {
+     "line": 4,
+     "options": [
+      "print(\"Robo đi \" + str(buoc) + \" bước\")",
+      "print(\"Robo đi \" + buoc + \" bước\")",
+      "print(\"Robo đi \" + str(buoc) + bước)"
+     ],
+     "explain": "Thiếu dấu cách trước chữ bước."
+    }
+   ],
+   "expected_output": "Robo đi 3 bước\nRobo đi 5 bước",
+   "skill": "Kiểm tra từng dòng một"
+  },
+  {
+   "id": "bh_09",
+   "pack": 3,
+   "title": "Cửa bí mật",
+   "story": "Mật khẩu đúng là meo, vậy mà cửa không chịu mở!",
+   "code": [
+    "mat_khau = \"meo\"",
+    "if mat_khau = \"meo\":",
+    "    print(\"Mở cửa!\")"
+   ],
+   "bugs": [
+    {
+     "line": 2,
+     "options": [
+      "if mat_khau == \"meo\":",
+      "if mat_khau = meo:",
+      "if mat_khau == \"Meo\":"
+     ],
+     "explain": "So sánh dùng ==. Một dấu = là để cất giá trị."
+    }
+   ],
+   "expected_output": "Mở cửa!",
+   "skill": "== để so sánh"
+  },
+  {
+   "id": "bh_10",
+   "pack": 3,
+   "title": "Pip có bay được không?",
+   "story": "Pip còn năng lượng mà không bay lên được. Có 2 con bọ trốn ở đây!",
+   "code": [
+    "nang_luong = 5",
+    "if nang_luong > 0",
+    "print(\"Bay lên!\")"
+   ],
+   "bugs": [
+    {
+     "line": 2,
+     "options": [
+      "if nang_luong > 0:",
+      "if nang_luong > 0;",
+      "if (nang_luong > 0)"
+     ],
+     "explain": "Câu lệnh if phải kết thúc bằng dấu hai chấm :"
+    },
+    {
+     "line": 3,
+     "options": [
+      "    print(\"Bay lên!\")",
+      "print \"Bay lên!\"",
+      "    print(Bay lên!)"
+     ],
+     "explain": "Dòng bên trong if phải thụt vào 4 dấu cách."
+    }
+   ],
+   "expected_output": "Bay lên!",
+   "skill": "Dấu : và thụt lề"
+  },
+  {
+   "id": "bh_11",
+   "pack": 3,
+   "title": "Máy chấm sao",
+   "story": "70 điểm phải được 2 sao, nhưng máy chấm sai và còn báo lỗi.",
+   "code": [
+    "diem = 70",
+    "if diem >= 90:",
+    "    print(\"3 sao\")",
+    "elif diem <= 50:",
+    "    print(\"2 sao\")",
+    "else:",
+    "    print(\"1 sao\""
+   ],
+   "bugs": [
+    {
+     "line": 4,
+     "options": [
+      "elif diem >= 50:",
+      "elif diem = 50:",
+      "else diem >= 50:"
+     ],
+     "explain": "2 sao là khi điểm từ 50 trở lên: diem >= 50."
+    },
+    {
+     "line": 7,
+     "options": [
+      "    print(\"1 sao\")",
+      "    print(1 sao)",
+      "print(\"1 sao\")"
+     ],
+     "explain": "Thiếu dấu ) đóng ngoặc."
+    }
+   ],
+   "expected_output": "2 sao",
+   "skill": "elif và dấu so sánh"
+  },
+  {
+   "id": "bh_12",
+   "pack": 3,
+   "title": "Ô hay mũ?",
+   "story": "Hôm nay trời nắng. Tớ muốn máy tính khuyên tớ đội mũ.",
+   "code": [
+    "troi_mua = Flase",
+    "if troi_mua == True:",
+    "    print(\"Trời mưa\")",
+    "    print(\"Mang ô\")",
+    "else",
+    "    print(\"Trời nắng\")",
+    "print(\"Đội mũ\")"
+   ],
+   "bugs": [
+    {
+     "line": 1,
+     "options": [
+      "troi_mua = False",
+      "troi_mua = True",
+      "troi_mua = false"
+     ],
+     "explain": "Viết đúng chính tả: False, chữ F viết hoa."
+    },
+    {
+     "line": 5,
+     "options": [
+      "else:",
+      "else;",
+      "elif:"
+     ],
+     "explain": "else cũng cần dấu hai chấm :"
+    }
+   ],
+   "expected_output": "Trời nắng\nĐội mũ",
+   "skill": "Đọc kỹ từng chữ"
+  }
+ ]
+}

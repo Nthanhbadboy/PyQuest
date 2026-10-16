@@ -1,0 +1,339 @@
+name: PyQuest CI
+
+on:
+  push:
+    branches:
+      - 'arena/**'
+      - 'docs/deep-culi-split'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  checks: write
+
+concurrency:
+  # Emulator runs ([emulator] in the commit message) only cancel each other,
+  # so a quick follow-up push never kills a long device run.
+  group: pyquest-ci-${{ github.ref }}-${{ contains(github.event.head_commit.message, '[emulator]') }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.47.7'
+
+jobs:
+  # One-time: generate the Android/iOS platform folders with `flutter create`
+  # and commit them back, so the repository can be opened with plain
+  # `flutter run` afterwards.
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Need platform folders?
+        id: need
+        run: |
+          if [ -d app/android ]; then echo "need=false" >> "$GITHUB_OUTPUT"; else echo "need=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: subosito/flutter-action@v2
+        if: steps.need.outputs.need == 'true'
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - name: flutter create + commit
+        if: steps.need.outputs.need == 'true'
+        working-directory: app
+        run: |
+          flutter create --org com.pyquest --project-name pyquest --platforms android,ios .
+          # flutter create adds a counter-app widget test when none exists; we ship our own tests.
+          if git status --porcelain test/widget_test.dart | grep -q '^??'; then rm test/widget_test.dart; fi
+          flutter pub get
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A .
+          git commit -m "chore(app): generate Android/iOS platform folders via flutter create [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - name: Analyze and test
+        working-directory: app
+        shell: bash
+        run: |
+          set +e
+          flutter --version > ../flutter_version.txt 2>&1
+          flutter pub get > ../pub_get.txt 2>&1; echo "pub_get=$?" >> ../status.txt
+          flutter analyze --no-fatal-infos > ../analyze.txt 2>&1; echo "analyze=$?" >> ../status.txt
+          flutter test --reporter expanded --exclude-tags render > ../test.txt 2>&1; echo "test=$?" >> ../status.txt
+          flutter test --reporter expanded --tags render test/render > ../render.txt 2>&1; echo "render=$?" >> ../status.txt
+          cat ../status.txt
+      - name: Publish previews
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pip install --quiet pillow || true
+          python3 ci/publish_previews.py app/build/previews > previews.txt 2>&1 || true
+          cat previews.txt
+      - name: Publish report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 ci/report.py "PyQuest check" status.txt flutter_version.txt pub_get.txt analyze.txt test.txt render.txt previews.txt
+      - name: Fail if any step failed
+        run: "! grep -v '=0$' status.txt"
+
+  apk:
+    # Live Gemini PCM streaming, tutor music ducking, AI-only bubbles; keep audioplayers for game SFX/music [apk].
+    # APK-only test builds can run on [apk] commits without waiting for the
+    # unrelated render-test gate. Emulator runs remain opt-in via [emulator].
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[emulator]') || contains(github.event.head_commit.message, '[apk]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/share/swift || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - name: Build release APK
+        working-directory: app
+        shell: bash
+        env:
+          # Add GEMINI_API_KEY under repository Settings > Secrets and variables > Actions.
+          # If unset, the APK still builds, but Gemini Live voice will not authenticate.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set +e
+          flutter pub get > ../apk_release.txt 2>&1
+          flutter build apk --release --dart-define="GEMINI_API_KEY=${GEMINI_API_KEY}" >> ../apk_release.txt 2>&1; echo "build_apk_release=$?" >> ../status.txt
+          cp build/app/outputs/flutter-apk/app-release.apk ../pyquest-release.apk
+          ls -la ../pyquest-release.apk >> ../apk_release.txt 2>&1
+          tail -25 ../apk_release.txt
+      - name: Upload release APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyquest-release-apk
+          path: pyquest-release.apk
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Publish report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 ci/report.py "PyQuest release APK" status.txt apk_release.txt
+
+  android:
+    needs: check
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[emulator]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - name: Free disk space
+        id: free_disk
+        run: |
+          df -h / | tail -1
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/share/swift \
+            /usr/local/share/powershell /usr/local/share/chromium /opt/microsoft /opt/google "$AGENT_TOOLSDIRECTORY" || true
+          if [ -d /usr/local/lib/android/sdk/ndk ]; then
+            cd /usr/local/lib/android/sdk/ndk && sudo find . -maxdepth 1 -mindepth 1 ! -name '28.2*' -exec rm -rf {} + || true
+          fi
+          sudo docker image prune --all --force > /dev/null 2>&1 || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - name: Enable KVM
+        id: enable_kvm
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -la /dev/kvm || true
+      - name: Snapshot runner state (before)
+        id: runner_state_before
+        shell: bash
+        run: bash ci/runner_state.sh runner-state-before.txt "before the emulator step"
+      - name: Build debug APK
+        id: build_apk
+        working-directory: app
+        shell: bash
+        run: |
+          set +e
+          flutter pub get > ../apk_build.txt 2>&1
+          flutter build apk --debug >> ../apk_build.txt 2>&1; echo "build_apk_debug=$?" >> ../status.txt
+          cp build/app/outputs/flutter-apk/app-debug.apk ../pyquest-debug.apk
+          ls -la ../pyquest-debug.apk >> ../apk_build.txt 2>&1
+          (cd android && ./gradlew --stop) >/dev/null 2>&1
+          df -h / >> ../apk_build.txt
+          free -m >> ../apk_build.txt
+          tail -20 ../apk_build.txt
+      - name: Emulator journey
+        id: emulator_journey
+        uses: reactivecircus/android-emulator-runner@v2
+        # Backstop only: every wait inside ci/emulator_journey.sh is bounded
+        # and fails with diagnostics well before this.
+        timeout-minutes: 65
+        env:
+          ADB_ONLINE_TIMEOUT: '90'    # adb must list the emulator as 'device'
+          BOOT_TIMEOUT: '120'         # sys.boot_completed must be 1
+          JOURNEY_TIMEOUT: '1500'     # fresh-install flutter drive
+          RETURNING_TIMEOUT: '900'    # returning-player flutter drive
+          STARTUP_GRACE: '240'        # ignore "no progress" right after a test starts
+          PRE_TEST_TIMEOUT: '900'     # stall limit while flutter drive still builds
+          PROGRESS_TIMEOUT: '300'     # stall limit while the tests run
+          WATCHDOG_KILL_AFTER: '20'   # SIGKILL for a drive that ignores SIGTERM
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          ram-size: 3072M
+          disk-size: 2048M
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          disable-animations: true
+          working-directory: app
+          script: bash -c 'set -o pipefail; bash ../ci/emulator_journey.sh 2>&1 | tee ../emulator-step.log'
+      - name: Record runner state
+        id: runner_state
+        if: always()
+        shell: bash
+        run: |
+          # The emulator action can fail before or after the journey script runs
+          # (for example when the emulator itself does not start). Its own output
+          # is only in the job log, so record what the runner can see here: this
+          # file is published in the check report and the artifact.
+          bash ci/runner_state.sh runner-state.txt "after the emulator step"
+      - name: Analyse emulator logs
+        id: analyse_logs
+        if: always()
+        run: |
+          # Activity relaunch, configuration-change and ANR evidence lives in the
+          # system/events logcat buffers; pull those lines out where they can be
+          # read (the raw dump stays in the artifact).
+          if [ -f emulator-diagnostics/logcat_all.txt ]; then
+            python3 ci/analyze_logcat.py emulator-diagnostics/logcat_all.txt \
+              > emulator-log-analysis.txt 2>&1 || true
+          else
+            echo "no logcat dump in emulator-diagnostics/ (the journey produced none)" \
+              > emulator-log-analysis.txt
+          fi
+          head -n 60 emulator-log-analysis.txt
+      - name: Shrink screenshots
+        id: shrink_screenshots
+        if: always()
+        run: |
+          df -h / | tail -1
+          pip install --quiet pillow || true
+          python3 ci/shrink_screenshots.py > shrink.txt 2>&1 || true
+          cat shrink.txt
+      - name: Upload emulator logs and diagnostics
+        if: always()
+        id: upload_logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulator-logs-attempt-${{ github.run_attempt }}
+          path: |
+            emulator-progress.txt
+            emulator-trap.txt
+            emulator-sampler.txt
+            emulator-step.log
+            runner-state.txt
+            runner-state-before.txt
+            emulator-stop-reason.txt
+            emulator-log-analysis.txt
+            emulator-diagnostics/
+            status.txt
+            shrink.txt
+            journey.txt
+            relaunch.txt
+            apk_build.txt
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Report to step summary
+        # Independent of everything else on purpose: if the emulator action fails
+        # before our journey script runs (or the script is killed), this step still
+        # writes the report to the job page. It never assumes an earlier step ran.
+        if: always()
+        run: |
+          # The step outcomes come from the workflow itself, so a failure that
+          # never reached ci/emulator_journey.sh (and therefore never wrote a
+          # phase key into status.txt) cannot be reported as a success.
+          python3 ci/job_summary.py \
+            --step "Free disk space=${{ steps.free_disk.outcome }}" \
+            --step "Enable KVM=${{ steps.enable_kvm.outcome }}" \
+            --step "Snapshot runner state (before)=${{ steps.runner_state_before.outcome }}" \
+            --step "Build debug APK=${{ steps.build_apk.outcome }}" \
+            --step "Emulator journey=${{ steps.emulator_journey.outcome }}" \
+            --step "Record runner state=${{ steps.runner_state.outcome }}" \
+            --step "Analyse emulator logs=${{ steps.analyse_logs.outcome }}" \
+            --step "Shrink screenshots=${{ steps.shrink_screenshots.outcome }}" \
+            --step "Upload emulator logs and diagnostics=${{ steps.upload_logs.outcome }}" \
+            --optional-step "Analyse emulator logs" \
+            --optional-step "Shrink screenshots" \
+            --upload-outcome "${{ steps.upload_logs.outcome }}" \
+            --artifact-name "emulator-logs-attempt-${{ github.run_attempt }}" \
+            --out emulator-report.md
+      - name: Publish report
+        if: always()
+        id: publish_report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          diag=""
+          if [ -f emulator-diagnostics/summary.txt ]; then diag=emulator-diagnostics/summary.txt; fi
+          reason=""
+          if [ -f emulator-stop-reason.txt ]; then reason=emulator-stop-reason.txt; fi
+          report=""
+          if [ -f emulator-report.md ]; then report=emulator-report.md; else report=emulator-progress.txt; fi
+          python3 ci/report.py "PyQuest emulator" status.txt \
+            $report $reason $diag emulator-progress.txt emulator-trap.txt \
+            runner-state-before.txt runner-state.txt emulator-sampler.txt \
+            emulator-step.log journey.txt relaunch.txt emulator-log-analysis.txt \
+            --step "Free disk space=${{ steps.free_disk.outcome }}" \
+            --step "Enable KVM=${{ steps.enable_kvm.outcome }}" \
+            --step "Snapshot runner state (before)=${{ steps.runner_state_before.outcome }}" \
+            --step "Build debug APK=${{ steps.build_apk.outcome }}" \
+            --step "Emulator journey=${{ steps.emulator_journey.outcome }}" \
+            --step "Record runner state=${{ steps.runner_state.outcome }}" \
+            --step "Analyse emulator logs=${{ steps.analyse_logs.outcome }}" \
+            --step "Shrink screenshots=${{ steps.shrink_screenshots.outcome }}" \
+            --step "Upload emulator logs and diagnostics=${{ steps.upload_logs.outcome }}" \
+            --optional-step "Analyse emulator logs" \
+            --optional-step "Shrink screenshots"
+      - name: Commit emulator screenshots
+        if: always()
+        shell: bash
+        run: |
+          if [ -d docs/screenshots ] && [ -n "$(git status --porcelain docs/screenshots)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/screenshots
+            git commit -m "docs: Android emulator screenshots from CI run ${GITHUB_RUN_ID} [skip ci]"
+            for i in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+              sleep 5
+            done
+          fi
