@@ -293,14 +293,29 @@ Future<_Shot> captureBoard(
     final List<int> size = _pngSize(file.readAsBytesSync());
     final List<int> ink = <int>[];
     for (final Offset point in inkPoints) {
-      final int x = ((canvasOrigin.dx + point.dx) * 1.5).round();
-      final int y = ((canvasOrigin.dy + point.dy) * 1.5).round();
-      if (x < 0 || y < 0 || x >= image.width || y >= image.height) {
-        ink.addAll(<int>[-1, -1, -1, -1]);
-        continue;
+      final int cx = ((canvasOrigin.dx + point.dx) * 1.5).round();
+      final int cy = ((canvasOrigin.dy + point.dy) * 1.5).round();
+      // Ô 3×3 quanh điểm giữa nét: nét 2.2px và một điểm duy nhất thì phụ thuộc làm tròn. 3×3
+      // vẫn là "đúng chỗ mũi tên phải đi qua", không phải "gần gần chỗ đó".
+      int bestLum = -1;
+      List<int> bestRgba = const <int>[];
+      for (int dy = -1; dy <= 1; dy++) {
+        for (int dx = -1; dx <= 1; dx++) {
+          final int sx = cx + dx;
+          final int sy = cy + dy;
+          if (sx < 0 || sy < 0 || sx >= image.width || sy >= image.height) continue;
+          final int at = (sy * image.width + sx) * 4;
+          final List<int> rgba =
+              <int>[pixels[at], pixels[at + 1], pixels[at + 2], pixels[at + 3]];
+          final int lum = (rgba[0] * 299 + rgba[1] * 587 + rgba[2] * 114) ~/ 1000;
+          if (bestLum < 0 || lum < bestLum) {
+            bestLum = lum;
+            bestRgba = rgba;
+          }
+        }
       }
-      final int at = (y * image.width + x) * 4;
-      ink.addAll(<int>[pixels[at], pixels[at + 1], pixels[at + 2], pixels[at + 3]]);
+      ink.add(bestLum);
+      ink.addAll(bestLum < 0 ? <int>[-1, -1, -1, -1] : bestRgba);
     }
     final _Shot measured = _Shot(
       bytes: file.lengthSync(),
@@ -327,14 +342,15 @@ Future<_Shot> captureBoard(
   expect(shot.width, (surface.width * 1.5).round(), reason: '$name: bề rộng ảnh không khớp surface');
   expect(shot.height, (surface.height * 1.5).round(), reason: '$name: chiều cao ảnh không khớp surface');
   if (inkPoints.isNotEmpty) {
-    expect(shot.ink, hasLength(inkPoints.length * 4), reason: '$name: không lấy được mẫu mực vẽ');
-    for (int k = 0; k + 3 < shot.ink.length; k += 4) {
-      final List<int> rgba = shot.ink.sublist(k, k + 4);
-      expect(rgba[0], greaterThanOrEqualTo(0), reason: '$name: điểm lấy mẫu rơi ngoài ảnh: $rgba');
-      final int luminance = (rgba[0] * 299 + rgba[1] * 587 + rgba[2] * 114) ~/ 1000;
-      expect(luminance, lessThan(150),
-          reason: '$name: giữa khoảng nối không có mực (RGBA $rgba) -> mũi tên không nối hai hộp');
-      expect(rgba[3], 255, reason: '$name: nét vẽ có alpha $rgba: transparent sẽ thành nền đen khi publish');
+    // Mỗi điểm 5 số: [độ sáng nhỏ nhất, R, G, B, A] — đủ để log CI tự giải thích mà không phải đoán.
+    expect(shot.ink, hasLength(inkPoints.length * 5), reason: '$name: không lấy được mẫu mực vẽ');
+    for (int k = 0; k + 4 < shot.ink.length; k += 5) {
+      final List<int> sample = shot.ink.sublist(k, k + 5);
+      expect(sample[0], greaterThanOrEqualTo(0), reason: '$name: điểm lấy mẫu rơi ngoài ảnh: $sample');
+      expect(sample[0], lessThan(150),
+          reason: '$name: giữa khoảng nối không có mực (tối nhất $sample) -> mũi tên không nối hai hộp');
+      expect(sample[4], 255,
+          reason: '$name: nét vẽ RGBA $sample: transparent sẽ thành nền đen khi publish');
     }
   }
   return shot;
