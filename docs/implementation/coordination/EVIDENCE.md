@@ -110,22 +110,24 @@ thumb_house.webp       27340 B  (288, 288) WEBP
 → mọi file đang vuông, cạnh ≥256 px nên **test PQC-003 không cần đổi khi swap sang 512**
 (khoảng trống giữa 256 và 512 là chủ ý để lát cắt art không kéo theo test khác).
 
-## EV-ID-006 — PQC-003: `app/test/activity_sheet_thumbnails_test.dart` — `written, CI pending`
+## EV-ID-006 — PQC-003: `app/test/activity_sheet_thumbnails_test.dart` — `verified trên CI của commit c39a86f`
 
-Đã viết theo đúng 6 điểm ở review r3 §3:
+**Lệnh thật đã chạy (runner = `PyQuest CI` / check job, Flutter 3.47.7):**
 
-| Yêu cầu của review | Nằm ở đâu trong test |
-|---|---|
-| thumbnail là `BoxDecoration.image`, không mặc định có `RenderImage` | `thumbSlot` finder soi `Container.decoration.image.image is AssetImage`; `thumbImageOf(tester).assetName == asset đã pin`; `getSize == Size(104,104)` |
-| giải mã bytes bằng image codec thật, dispose sau test | `decodeAsset()` gọi `rootBundle.load` + `ui.instantiateImageCodec` + `getNextFrame`, `frame.image.dispose()`, `codec.dispose()`; chạy trong `tester.runAsync` |
-| sáu activity, thêm locked Bug Hunter | vòng lặp theo `kPinnedThumb` (6 id) + test riêng `bug_hunter` với `kLocked` deterministic |
-| viewport / textScale | `useViewport` 390×844@3 và 360×640@2 (khớp harness render hiện có); ma trận textScale 1.0/1.3/2.0 × 6 module × 2 state, assert `takeException()` null |
-| negative test, không sửa asset thật | `_BrokenThumbBundle extends CachingAssetBundle` chỉ trả bytes rác cho đúng key thumbnail, các key khác delegate `rootBundle`; kèm `expectLater(ui.instantiateImageCodec(garbage), throwsA(anything))` |
-| không chỉ "widget tồn tại" | slot + key + decode + no-exception, và test chốt "asset thật không phải placeholder" (`> 8 KiB`) |
+| run | commit | kết quả |
+|---|---|---|
+| `38871660306` | `c39a86f` (commit chứa test) | `pub_get=0`, **`test=0`**, **`render=0`**, `analyze=1` với đúng 2 lint ở file mới |
+| (commit sửa lint, xem dưới) | `c39a86f` + 2 dòng fix | cập nhật ở EV-ID-008 |
 
-**Chưa `verified`:** sandbox lead không có Flutter SDK. Chứng chỉ có khi `check` job của
-commit chứa file này báo `analyze=0 test=0 render=0`, và mục này được cập nhật số liệu
-của đúng run đó. Không đổi workflow, không nới assertion cho xanh.
+Số liệu nguyên văn từ report: `flutter test --exclude-tags render` →
+`00:26 +147: All tests passed!` (baseline trước đó là `+124` → **23 test của file mới đều chạy và pass**);
+`flutter test --tags render test/render` → `00:08 +9: All tests passed!`.
+Hai lỗi analyze đã sửa, không nới assertion:
+`unnecessary_import` (bỏ `dart:typed_data` vì `services.dart` đã cung cấp) và
+`unnecessary_non_null_assertion` (`DecorationImage.image` không null → bỏ `!` thứ hai).
+
+**Không có Flutter SDK ở sandbox lead** → mọi khẳng định về Dart ở đây chỉ dựa trên CI của
+đúng commit, không dựa trên "chạy local".
 
 State mà test mô tả (tên để đối chiếu với render): `sheet_unlocked`, `sheet_locked_bug_hunter`.
 Dữ liệu deterministic: status dựng trực tiếp, không mở `AppServices`/DB → không phụ thuộc
@@ -161,9 +163,22 @@ Visual review (loại bằng chứng **khác** assert — review r3 §3.4):
 * Đo khách quan trên vùng lõi thumbnail của hai ảnh: stddev kênh
   `[43.9, 40.3, 31.7]` (maze) và `[63.0, 60.6, 59.1]` (locked) → không phải ô phẳng/placeholder.
 
+## EV-ID-008 — Cách tái hiện test của PQC-003 (máy có SDK)
+
+```sh
+cd app
+flutter pub get
+flutter analyze --no-fatal-infos                       # phải ra "No issues found!"
+flutter test test/activity_sheet_thumbnails_test.dart  # 23 test
+```
+
+Không cần thiết bị, không cần key; test không mở DB và không gọi mạng.
+Nếu chạy trên máy có font khác, phần đo layout ở textScale 2.0 vẫn dùng font thật của app
+(`loadAppFonts()`), nên số đo sát với bản build.
+
 ## Chưa kiểm tra được — không được suy ra từ các mục trên
 
-1. **PQC-003 chưa chạy** cho tới khi CI của commit chứa nó xanh (EV-ID-006).
+1. Render "after" của PQC-003 chưa tồn tại vì chưa có asset mới — xem mục 2.
 2. Render "after" của bộ 512: phụ thuộc PQC-002, mà PQC-002 cần `runtime=yes` + người
    dùng duyệt art. Không tự thay asset để "có số liệu".
 3. Bộ đếm `ImageCache`/bộ nhớ decode khi mở nhiều sheet (review §1 mục 512-vs-384 yêu cầu

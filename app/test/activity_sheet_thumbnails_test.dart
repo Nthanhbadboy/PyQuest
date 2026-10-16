@@ -15,7 +15,6 @@
 // review trên ảnh render, ghi trong docs/implementation/coordination/EVIDENCE.md.
 
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -103,7 +102,7 @@ Finder get thumbSlot => find.byWidgetPredicate(
 
 AssetImage thumbImageOf(WidgetTester tester) {
   final Container box = tester.widget<Container>(thumbSlot);
-  return (box.decoration! as BoxDecoration).image!.image! as AssetImage;
+  return (box.decoration! as BoxDecoration).image!.image as AssetImage;
 }
 
 /// Nạp và giải mã asset thật — bắt buộc chạy trong `runAsync` vì flutter_test

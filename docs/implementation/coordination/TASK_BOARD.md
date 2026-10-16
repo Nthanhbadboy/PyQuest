@@ -13,15 +13,16 @@ Trạng thái: `READY` · `QUEUED` · `BLOCKED` · `IN_PROGRESS` · `READY_FOR_R
 |---|---|---|---|---|---|
 | PQC-001 | Vô hiệu hoá exporter ghi đè baseline + tách test baseline | coordination | design đã tự vá ở rev 3; code branch chỉ xác minh | `DONE` (xác minh tại `560106e`, EV-ID-002: 11/11 test của design PASS) | — |
 | PQC-002 | Thay 6 thumbnail bằng `exports/*_512.webp` | **runtime** | cần `READY_FOR_CODE` + `runtime=yes` **và** người dùng duyệt art ở 104 px | `BLOCKED` | PQC-001 ✅, PQC-003 (harness để có before/after) |
-| PQC-003 | Test mở đủ 6 ActivitySheet + evidence trước/sau (chỉ `app/test`) | test | rev 3 cho làm ngay | `READY_FOR_REVIEW` — test + evidence đã viết tại commit này; **chưa được coi là xong** tới khi CI của đúng commit báo `analyze=0 test=0 render=0` | EV-ID-006/007 |
+| PQC-003 | Test mở đủ 6 ActivitySheet + evidence trước/sau (chỉ `app/test`) | test | rev 3 cho làm ngay | `DONE` — CI run `38871660306` @ `c39a86f`: `test=0` với `+147` (23 test mới pass), `render=0` `+9`; lint đã sửa, bằng chứng ở EV-ID-006/-007/-008 | EV-ID-006/007/008 |
 | PQC-004 | Đóng gate thiết bị cho Gemini Live trên Release APK | coordination (blocked_on: thiết bị) | cần phiên có emulator/thiết bị + nghe bằng tai | `BLOCKED` | `pyquest-release-apk` (run 93) |
 | PQC-005 | Regenerate `app/pubspec.lock` cho nhóm dependency audio | runtime (dependency) | sandbox không có SDK; `pub get` của CI tự resolve 14 gói → cần quyết định có commit lock hay không | `BLOCKED` | — |
 | PQC-006 | Đồng bộ 1 dòng audience trong `docs/PyQuest_Reffrence_Images/VILLAGE_2_5D_REDESIGN_BRIEF.md` theo `PRODUCT_VISION.md:17` (under-12) | coordination | design đã sửa ở rev 3 trên tài liệu của họ; trên nhánh code thư mục này **không được git theo dõi** (ảnh reference của người dùng) | `DONE-working-tree` — đã sửa đúng 1 câu cho khớp design, **không commit** file reference; cần người dùng quyết có muốn theo dõi file này không | — |
 
 ## Delegate được ngay (mỗi dòng = một phiên agent khác, tự chặn nếu gate đóng)
 
-1. **Đọc CI của commit chứa PQC-003 và ghi số liệu vào EV-ID-006** — recipe ở
-   `LEAD_RUNBOOK.md` §6; kết quả phải dán nguyên văn, nếu đỏ thì sửa test chứ không sửa gate.
+1. **Chạy lại `brief` + đọc EV-ID và tìm chỗ nói quá** — delegate đối chiếu từng mục trong
+   `EVIDENCE.md` với lệnh thật (recipe CI ở `LEAD_RUNBOOK.md` §6); mục nào không tái hiện
+   được thì hạ xuống `not run`, nếu CI đỏ thì sửa test chứ không sửa gate.
 2. **Rà soát bằng chứng** — đối chiếu từng EV-ID trong `EVIDENCE.md` với lệnh thật;
    mục nào không tái hiện được thì hạ xuống `not run`.
 3. **Việc KHÔNG giao**: bất kỳ sửa nào trong `app/lib/**`, `app/assets/**`, Android,
