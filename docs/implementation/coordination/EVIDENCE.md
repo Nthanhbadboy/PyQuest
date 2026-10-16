@@ -117,7 +117,7 @@ thumb_house.webp       27340 B  (288, 288) WEBP
 | run | commit | kết quả |
 |---|---|---|
 | `38871660306` | `c39a86f` (commit chứa test) | `pub_get=0`, **`test=0`**, **`render=0`**, `analyze=1` với đúng 2 lint ở file mới |
-| (commit sửa lint, xem dưới) | `c39a86f` + 2 dòng fix | cập nhật ở EV-ID-008 |
+| `38872131871` | `8e2111b` (chỉ sửa 2 lint) | **All steps passed** — `pub_get=0 analyze=0 test=0 render=0` |
 
 Số liệu nguyên văn từ report: `flutter test --exclude-tags render` →
 `00:26 +147: All tests passed!` (baseline trước đó là `+124` → **23 test của file mới đều chạy và pass**);
@@ -163,7 +163,7 @@ Visual review (loại bằng chứng **khác** assert — review r3 §3.4):
 * Đo khách quan trên vùng lõi thumbnail của hai ảnh: stddev kênh
   `[43.9, 40.3, 31.7]` (maze) và `[63.0, 60.6, 59.1]` (locked) → không phải ô phẳng/placeholder.
 
-## EV-ID-008 — Cách tái hiện test của PQC-003 (máy có SDK)
+## EV-ID-008 — Cách tái hiện test của PQC-003 (máy có SDK; đây cũng là cách lead xác nhận CI)
 
 ```sh
 cd app
@@ -175,6 +175,8 @@ flutter test test/activity_sheet_thumbnails_test.dart  # 23 test
 Không cần thiết bị, không cần key; test không mở DB và không gọi mạng.
 Nếu chạy trên máy có font khác, phần đo layout ở textScale 2.0 vẫn dùng font thật của app
 (`loadAppFonts()`), nên số đo sát với bản build.
+Đọc CI của một SHA cụ thể: `LEAD_RUNBOOK.md` §6 (dùng `gh api …/commits/<sha>/check-runs`,
+không lấy "run gần nhất" của nhánh).
 
 ## Chưa kiểm tra được — không được suy ra từ các mục trên
 
