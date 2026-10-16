@@ -41,21 +41,21 @@ void main() {
       .map((RichText w) => w.text.toPlainText())
       .toList();
 
-  /// Temporary CI diagnostic: the published report trims the middle of the test
-  /// log, so the strings on screen are appended to the end of that same file,
-  /// where they survive the trim.
+  /// Temporary CI diagnostic. The published report trims the middle of the
+  /// test log, so what the panel painted is appended to a section that is small
+  /// enough to survive: analyze.txt, which the analyze step finished writing
+  /// before this step started.
   void dumpOnScreen(WidgetTester tester, String label) {
-    if (Platform.environment.containsKey('FLUTTER_TEST') &&
-        Platform.environment.containsKey('CI')) {
-      try {
-        final File log = File('../test.txt');
-        if (!log.existsSync()) return;
-        final RandomAccessFile handle = log.openSync(mode: FileMode.append);
-        handle.writeStringSync('\n[identity-diagnostic:$label] ${onScreen(tester).join(' | ')}\n');
-        handle.closeSync();
-      } catch (_) {
-        // Diagnostics must never be the reason a test fails.
-      }
+    if (!Platform.environment.containsKey('CI')) return;
+    try {
+      final File log = File('../analyze.txt');
+      if (!log.existsSync()) return;
+      final RandomAccessFile handle = log.openSync(mode: FileMode.append);
+      final String said = onScreen(tester).join(' | ').replaceAll(RegExp('\s+'), ' ');
+      handle.writeStringSync('\n[identity:$label] ${said.substring(0, said.length > 700 ? 700 : said.length)}');
+      handle.closeSync();
+    } catch (_) {
+      // A diagnostic must never be the reason a test fails.
     }
   }
 
@@ -123,6 +123,7 @@ void main() {
 
     final greeting = CastDialogue.line(CharacterId.nova, DialogueMoment.greet, PqLang.vi);
     final said = onScreen(tester);
+    dumpOnScreen(tester, 'greeting');
     expect(said.where((String t) => t == greeting), hasLength(1), reason: 'the tutor greets the learner once');
     expect(said.contains(PqStrings.vi.childLabel), isFalse, reason: 'nobody has spoken yet');
     expect(said.any((String t) => t.contains('Nova')), isTrue, reason: 'the greeting is labelled with the speaker');
@@ -135,6 +136,7 @@ void main() {
     await typeAndSend(tester, 'Vì sao cần biến?');
 
     final said = onScreen(tester);
+    dumpOnScreen(tester, 'typed');
     // Exactly one line wears the learner's name, and it is the question.
     expect(said.where((String t) => t == PqStrings.vi.childLabel), hasLength(1));
     expect(said.any((String t) => t.contains('Vì sao cần biến?')), isTrue);
@@ -159,7 +161,7 @@ void main() {
     await typeAndSend(tester, 'Biến là gì?');
 
     final said = onScreen(tester);
-    dumpOnScreen(tester, 'offline');
+    dumpOnScreen(tester, 'offline-answer');
     expect(said.any((String t) => t.contains(PqStrings.vi.labelOffline)), isTrue,
         reason: 'the panel must say the answer came from the offline tutor');
     expect(said.any((String t) => t.contains(PqStrings.vi.labelAiWritten)), isFalse);
@@ -173,6 +175,7 @@ void main() {
     await openPanel(tester, services, speakingAs: CharacterId.kai);
 
     final said = onScreen(tester);
+    dumpOnScreen(tester, 'voice-sheet');
     expect(said.any((String t) => t.contains('Kai')), isTrue, reason: 'the tutor that will speak is the one named');
     expect(said.any((String t) => t.contains('Lumi')), isTrue, reason: 'the persona can be chosen before speaking');
     expect(find.byKey(const ValueKey('tutor_gemini_live_voice')), findsOneWidget);
