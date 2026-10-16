@@ -332,6 +332,9 @@ class _TutorLayer extends StatelessWidget {
   ) {
     return Semantics(
       container: true,
+      // Keep each authored op's semantics container (notably localized output labels) as an
+      // independently queryable descendant instead of merging it into the tutor-copy node.
+      explicitChildNodes: true,
       label: copy?.altText ?? '',
       child: Column(
         key: const ValueKey<String>('board_tutor_layer'),
