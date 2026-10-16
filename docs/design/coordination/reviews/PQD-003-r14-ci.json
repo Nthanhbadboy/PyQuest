@@ -1,0 +1,38 @@
+{
+  "review": "PQD-003-r14",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "0dfb01e6b9ebb6cef47db8ec8ebdd67219028ffe",
+  "run_id": 38954357993,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38954357993",
+  "custom_report_check_id": 117155376969,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 9.0,
+  "ordinary": {
+    "passed": 342,
+    "failed": 3
+  },
+  "render_passed": 10,
+  "remaining_failures": [
+    "R10-D1: output VI ban đầu có prose, thứ tự và semantics thật",
+    "R10-D2: đổi locale VI→EN cập nhật chữ và semantics trên cùng controller",
+    "R10-D3: VI→EN→VI giữ beat, dịch prose và semantics về VI"
+  ],
+  "missing_failure_names": 0,
+  "full_failure_stack_traces_retrieved": false,
+  "runtime_and_preview_identical_to": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+  "changed_paths": [
+    "app/test/board/board_view_test.dart"
+  ],
+  "source_sha256": {
+    "app/test/board/board_view_test.dart": "ebf1452ec6a508556ae0387e5dbce49af1e6115eca884232055df0ef546a9660"
+  },
+  "new_images_inspected": 0,
+  "local_flutter_tests_run": false
+}

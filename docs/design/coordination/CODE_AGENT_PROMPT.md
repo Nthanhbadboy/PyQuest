@@ -32,27 +32,25 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision13: reviewd18b3d4, authorization r6 giữ nguyên**.
-Đọc task003, `reviews/PQD-003-r13.md` + r13-ci.json/PQC-010-r7.
+Task hiện tại là **PQD-003 revision14: review0dfb01e, authorization r6 giữ nguyên**.
+Đọc task003, `reviews/PQD-003-r14.md` + r14-ci.json/PQC-010-r8/ci-report.md.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
 **Làm ngay, không ACK-only:**
-1. CI38953510594/report117152891204: analyze sạch11.0s,342pass/1fail,10renderpass.
-   Failure duy nhất: live locale trên cùng controller. Không còn thiếu failure names,
-   nhưng chưa có first assertion/expected/actual trace. Toàn gói CHANGES_REQUESTED.
-2. GroupX đã sửa đúng và ảnh nhóm7/360 đã mở kiểm khôngcắt. Giữ scale/capture/Tab/
-   output/3trái4phải đã đúng; không làm lại. Nên thêm boundary cases nhóm1/12 riêng.
-3. Tập trung live locale: ghi mốc initialVI/EN/beat4EN/returnVI, expected/actual label,
-   state và visibility. Scroll đúng target sau reflow nếu cần, dùng scroll của board
-   và cùng controller; không thêm wrapper toànhost/reset ink hoặc bỏ assertions.
-4. Nếu full log bịchặn, thêm diagnostic cases tên rõ theo mốc trong board tests,
-   giữ scenario same-controller hiện tại. Không tiếp tục đoán bằng đổi pump/wrapper.
-   Lưu ý: cuối review đã thấy0dfb01e tách D1/D2/D3, CI38954357993 đang chạy;
-   không làm lại bước tách đã có, đọc phase failure rồi sửa. Chưa nghiệm thu0dfb01e.
-5. Trả testedSHA cuối/run/custom report/phases/counts xanh và ảnh không regression;
-   count có thể tăng khi thêmdiagnostics, giải thích rõ.010/014/015 scopes không đổi;
-   014 độc lập,015 sau014CI xanh, dependency chỉ015. Không mở LessonScreen/AI/voice/
-   art/social/economy/P06/CI/publisher. Không merge cảdesign/applylại guard.
+1. CI38954357993/report117155376969: analyze sạch9.0s,342pass/3fail,10renderpass.
+   CảD1/D2/D3 đều đỏ.1declaration→3, không có bằngchứng3runtime regression mới.
+2. D1 không gọi setLocale: ưu tiên first failed assertion của VI ban đầu. Trả actual/
+   expected, outcome/beat/locale, target count/rect/viewport, visible output và node
+   semantics. Không tiếp tục đoán bằng pump/wrapper hoặc sửa controller.locale trước.
+3. Full log bịchặn thì thêm diagnostic checkpoint cases tênrõ hoặc ảnh diagnostic
+   test-host nhỏ qua kênh capture sẵncó theo review§2; không bỏ D1–D3, không sửa CI/
+   publisher hay đưa debug text vào runtime. Không coi diagnostic là ảnh nghiệmthu.
+4. D3 roundtrip cần marker ink/note và assertions giữstate trên cùngcontroller,
+   cùng code/output/prose/semantics đúng. Không reset controller giữa các mốc.
+5. Runtime/capture không đổi từd18b3d4: giữ groupX/scale/capture/Tab/output đã đóng.
+   Trả testedSHA/run/custom report/CI xanh, giải thích count nếu thêmtests. Scope
+   010/014/015 giữ nguyên;014 độc lập,015 sau014CI xanh, dependency chỉ015. Không mở
+   LessonScreen/AI/voice/art/social/economy/P06/CI/publisher hoặc apply lại guard.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
