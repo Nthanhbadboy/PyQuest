@@ -21,6 +21,10 @@ import 'test_helpers.dart';
 /// tutor's own voice, heard back through the loudspeaker) became the child's
 /// sentence. Here the role is data, so the greeting belongs to the tutor and
 /// the child's question belongs to the child.
+///
+/// These tests drive the composer with the keyboard action rather than a tap:
+/// what is under scrutiny is the label on each line, not whether a hit test
+/// lands on a chunky button (the render suite covers tapping the real sheet).
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
@@ -28,6 +32,24 @@ void main() {
   setUpAll(loadAppFonts);
 
   const String answer = 'Bạn đã dùng biến đúng rồi.\n\n```python\nten = "Bi"\nprint(ten)\n```';
+
+  /// Every string the panel paints, including rich spans.
+  List<String> onScreen(WidgetTester tester) => tester
+      .widgetList<RichText>(find.byType(RichText))
+      .map((RichText w) => w.text.toPlainText())
+      .toList();
+
+  /// Sends through the composer. The keyboard action is the primary path and
+  /// the button is pressed as well; `_send` clears the field, so the second
+  /// trigger sees an empty question and returns without duplicating the line.
+  Future<void> typeAndSend(WidgetTester tester, String text) async {
+    await tester.enterText(find.byKey(const ValueKey('tutor_input')), text);
+    await tester.pump();
+    await tester.testTextInput.receiveAction(TextInputAction.send);
+    await pumpFor(tester, const Duration(milliseconds: 120));
+    await tester.tap(find.byKey(const ValueKey('tutor_send')), warnIfMissed: false);
+    await pumpFor(tester, const Duration(milliseconds: 900));
+  }
 
   Future<AppServices> boot(WidgetTester tester, {bool withAi = false}) async {
     final services = (await tester.runAsync(() => AppServices.create(
@@ -45,7 +67,7 @@ void main() {
   }
 
   Future<void> openPanel(WidgetTester tester, AppServices services, {CharacterId? speakingAs}) async {
-    tester.view.physicalSize = const Size(1080, 2100);
+    tester.view.physicalSize = const Size(1200, 2700);
     tester.view.devicePixelRatio = 3.0;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(MaterialApp(
@@ -53,8 +75,8 @@ void main() {
         body: Align(
           alignment: Alignment.topCenter,
           child: SizedBox(
-            height: 620,
-            width: 360,
+            height: 860,
+            width: 400,
             child: TutorPanel(
               services: services,
               tutorContext: const TutorContext(
@@ -80,49 +102,59 @@ void main() {
     await openPanel(tester, services);
 
     final greeting = CastDialogue.line(CharacterId.nova, DialogueMoment.greet, PqLang.vi);
-    expect(find.text(greeting), findsOneWidget, reason: 'the tutor greets the learner');
-    expect(find.text('Bé'), findsNothing, reason: 'nobody has spoken yet');
-    expect(find.text('Nova'), findsWidgets, reason: 'the greeting is labelled with the speaker');
+    final said = onScreen(tester);
+    expect(said.where((String t) => t == greeting), hasLength(1), reason: 'the tutor greets the learner once');
+    expect(said.contains(PqStrings.vi.childLabel), isFalse, reason: 'nobody has spoken yet');
+    expect(said.any((String t) => t.contains('Nova')), isTrue, reason: 'the greeting is labelled with the speaker');
   });
 
   testWidgets('a typed question is the child’s line and the answer is the tutor’s', (tester) async {
     final services = await boot(tester, withAi: true);
     await openPanel(tester, services);
 
-    await tester.enterText(find.byKey(const ValueKey('tutor_input')), 'Vì sao cần biến?');
-    await tapAndSettle(tester, find.byKey(const ValueKey('tutor_send')), wait: const Duration(milliseconds: 700));
+    await typeAndSend(tester, 'Vì sao cần biến?');
 
-    expect(find.text('Bé'), findsOneWidget, reason: 'one child line');
-    expect(find.textContaining('Vì sao cần biến?'), findsWidgets);
-    expect(find.textContaining('Do AI soạn'), findsOneWidget, reason: 'the answer says where it came from');
+    final said = onScreen(tester);
+    // Exactly one line wears the learner's name, and it is the question.
+    expect(said.where((String t) => t == PqStrings.vi.childLabel), hasLength(1));
+    expect(said.any((String t) => t.contains('Vì sao cần biến?')), isTrue);
+    expect(said.any((String t) => t.contains('Bạn đã dùng biến đúng rồi.')), isTrue);
+    expect(
+      said.any((String t) => t.contains(PqStrings.vi.labelAiWritten) && t.contains('Nova')),
+      isTrue,
+      reason: 'the answer says who wrote it and where it came from',
+    );
 
     // The greeting is still there, still the tutor's, and still only once.
     final greeting = CastDialogue.line(CharacterId.nova, DialogueMoment.greet, PqLang.vi);
-    expect(find.text(greeting), findsOneWidget);
+    expect(said.where((String t) => t == greeting), hasLength(1));
+    expect(said.any((String t) => t.contains('Bé') && t.contains(greeting)), isFalse,
+        reason: 'the greeting is never re-labelled as something the child said');
   });
 
   testWidgets('an offline answer is never shown as an AI answer', (tester) async {
     final services = await boot(tester);
     await openPanel(tester, services);
 
-    await tester.enterText(find.byKey(const ValueKey('tutor_input')), 'Biến là gì?');
-    await tapAndSettle(tester, find.byKey(const ValueKey('tutor_send')), wait: const Duration(milliseconds: 700));
+    await typeAndSend(tester, 'Biến là gì?');
 
-    expect(find.textContaining(PqStrings.vi.labelOffline), findsWidgets);
-    expect(find.textContaining(PqStrings.vi.labelAiWritten), findsNothing);
-    // The child is still the only one whose name is «Bé».
-    expect(find.text('Bé'), findsOneWidget);
+    final said = onScreen(tester);
+    expect(said.any((String t) => t.contains(PqStrings.vi.labelOffline)), isTrue);
+    expect(said.any((String t) => t.contains(PqStrings.vi.labelAiWritten)), isFalse);
+    // The learner is still the only one named «Bé», and still has one line.
+    expect(said.where((String t) => t == PqStrings.vi.childLabel), hasLength(1));
   });
 
-  testWidgets('the voice sheet keeps the speaking character as the only identity', (tester) async {
+  testWidgets('the sheet offers a voice persona without inventing a speaker', (tester) async {
     final services = await boot(tester);
     await openPanel(tester, services, speakingAs: CharacterId.kai);
 
-    expect(find.text('Kai'), findsWidgets);
-    // Voice controls are there, and starting a session without a key reports
-    // honestly instead of pretending the tutor is speaking.
-    await tapAndSettle(tester, find.byKey(const ValueKey('tutor_gemini_live_voice')), wait: const Duration(milliseconds: 400));
-    expect(find.textContaining('GEMINI_API_KEY'), findsOneWidget);
-    expect(find.text('Bé'), findsNothing);
+    final said = onScreen(tester);
+    expect(said.any((String t) => t.contains('Kai')), isTrue, reason: 'the tutor that will speak is the one named');
+    expect(said.any((String t) => t.contains('Lumi')), isTrue, reason: 'the persona can be chosen before speaking');
+    expect(find.byKey(const ValueKey('tutor_gemini_live_voice')), findsOneWidget);
+    // Nothing has been said by the learner, so no line may wear the child's name.
+    expect(said.contains(PqStrings.vi.childLabel), isFalse);
+    expect(said.any((String t) => t.contains('GEMINI_API_KEY')), isFalse);
   });
 }

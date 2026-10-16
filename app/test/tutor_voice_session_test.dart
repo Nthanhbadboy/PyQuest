@@ -33,6 +33,10 @@ void main() {
       onStatus: (TutorVoiceStatus status) => statuses.add(status),
       onTranscript: (VoiceUtterance utterance) {
         utterances.add(utterance);
+        if (utterance.seals) {
+          chat.sealOpen();
+          return;
+        }
         chat.say(
           utterance.text,
           role: utterance.role,
