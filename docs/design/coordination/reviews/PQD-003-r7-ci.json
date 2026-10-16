@@ -1,0 +1,203 @@
+{
+  "reviewed_code_commit": "553e9acb2a8e701ae08880c74639630d2c103bfc",
+  "tested_code_commit": "553e9acb2a8e701ae08880c74639630d2c103bfc",
+  "baseline_code_commit": "4315d39d846626a0c175ef12bee65a694136567d",
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38911955285",
+  "report_check_run_id": 117012345266,
+  "actions_check_job_id": 117010314837,
+  "conclusion": "success",
+  "phase_summary": "| phase key | exit |\n|---|---|\n| pub_get | 0 |\n| analyze | 0 |\n| test | 0 |\n| render | 0 |",
+  "verified_report_lines": [
+    "Flutter 3.47.7 • channel stable • https://github.com/flutter/flutter.git",
+    "Tools • Dart 3.13.5 • DevTools 2.60.0",
+    "No issues found! (ran in 11.0s)",
+    "00:54 +255: All tests passed!",
+    "PQC-009 imageCache khi mở lần lượt sáu sheet (cache của engine trên máy CI, KHÔNG phải RAM/GPU thiết bị): j00=7entries/11501568B -> j01=7entries/11501568B -> j02=7entries/11501568B -> j03=7entries/11501568B -> j04=7entries/11501568B -> j05=7entries/11501568B",
+    "00:19 +10: All tests passed!"
+  ],
+  "report_text_sha256": "e563c799c5844882e1f5d8385113b4e4f18ca4fbc6a200daf21be64fa30392cf",
+  "app_tree_identity": {
+    "117651b": "0966bf0ef1f449ade264d566be024a2490080bcf",
+    "553e9ac": "0966bf0ef1f449ade264d566be024a2490080bcf"
+  },
+  "changed_paths": [
+    "app/lib/modules/tutor/board/board_controller.dart",
+    "app/lib/modules/tutor/board/board_models.dart",
+    "app/lib/modules/tutor/board/board_plan_codec.dart",
+    "app/lib/modules/tutor/board/board_validator.dart",
+    "app/lib/modules/tutor/board/board_view.dart",
+    "app/test/board/board_boundaries_test.dart",
+    "app/test/board/board_controller_test.dart",
+    "app/test/board/board_plan_codec_test.dart",
+    "app/test/board/board_previews_test.dart",
+    "app/test/board/board_test_support.dart",
+    "app/test/board/board_view_test.dart",
+    "app/test/board/fixtures/board_plans.v1.json",
+    "docs/implementation/coordination/AUTHORIZATION_2026-10-16_FOUNDATION.md",
+    "docs/implementation/coordination/EVIDENCE.md",
+    "docs/implementation/coordination/HANDOFF_TO_DESIGN.md",
+    "docs/implementation/coordination/TASK_BOARD.md",
+    "docs/implementation/coordination/tasks/PQC-009.md",
+    "docs/implementation/coordination/tasks/PQC-010.md",
+    "docs/implementation/coordination/tasks/PQC-014.md",
+    "docs/implementation/coordination/tasks/PQC-015.md",
+    "docs/implementation/coordination/tasks/PQD-003.md",
+    "tools/coordination/pq_lead.py",
+    "tools/coordination/test_pq_lead.py"
+  ],
+  "baseline_existing_tests_modified": false,
+  "content_pack": {
+    "bytes": 9359,
+    "sha256": "003a573b76e1363c4ed89280149a245b4ca4726662bee12e0b1545b8c960459c",
+    "byte_identical_to_design": true
+  },
+  "scoped_guard": {
+    "exact_r6_patch_match": true,
+    "local_tests": 37,
+    "result": "PASS",
+    "seconds": 10.024
+  },
+  "board_previews": [
+    {
+      "name": "board-mq1_03_s2-390x844-font2.0-vi",
+      "check_run_id": 117011816635,
+      "sha256": "99538a7bd7bb186724823a39ff29a163dea85afad7bbbf6a40debf11fa663548",
+      "bytes": 17551
+    },
+    {
+      "name": "board-mq1_03_s2-390x844-font2.0-en",
+      "check_run_id": 117011811947,
+      "sha256": "83bdd7c62c4888035fc6df2e72315fe13445be22c6c2a909049516c9876cc789",
+      "bytes": 15387
+    },
+    {
+      "name": "board-mq1_03_s2-390x844-font1.0-vi",
+      "check_run_id": 117011807019,
+      "sha256": "dd2cb8ee25199fb6d09035ba25a7c05195a8281663ba1ccec3d1f68f2fe2e7ff",
+      "bytes": 15501
+    },
+    {
+      "name": "board-mq1_03_s2-390x844-font1.0-en",
+      "check_run_id": 117011801627,
+      "sha256": "3b792cdbb5ff47778e9f7dc1b0a79565761c46b3762dac2773214ee0821141ab",
+      "bytes": 14089
+    },
+    {
+      "name": "board-mq1_03_s2-360x640-font2.0-vi",
+      "check_run_id": 117011796748,
+      "sha256": "33f8430173266cef405c0f7d536e41e01cff9c92b3d36f37d10767ced71078bf",
+      "bytes": 13740
+    },
+    {
+      "name": "board-mq1_03_s2-360x640-font2.0-en",
+      "check_run_id": 117011791884,
+      "sha256": "de8333dc619e1d036f2db963592518998f9beff5cfe6f7e5f5d86160fed55aef",
+      "bytes": 11284
+    },
+    {
+      "name": "board-mq1_03_s2-360x640-font1.0-vi",
+      "check_run_id": 117011785176,
+      "sha256": "a91a446e8ee8c99448cee6a734108c359f8e0c95d07bf67b4f51edc4220e356c",
+      "bytes": 16155
+    },
+    {
+      "name": "board-mq1_03_s2-360x640-font1.0-en",
+      "check_run_id": 117011779015,
+      "sha256": "ecacc649bfe0d2d8350796ec5f75c10dc81d8a21d8d7b1f54b2d32bf23dc7bfc",
+      "bytes": 14800
+    },
+    {
+      "name": "board-mq1_01_s2-390x844-font2.0-vi",
+      "check_run_id": 117011773654,
+      "sha256": "35edecce85b03ab033b5df2c84a4d53aefa789e282dde75a7d68baf9c6773e79",
+      "bytes": 17341
+    },
+    {
+      "name": "board-mq1_01_s2-390x844-font2.0-en",
+      "check_run_id": 117011768198,
+      "sha256": "a4ec2dbad94769272e4727809c25f5adc403e2aa90acf4c2c1c6e187fc94af8a",
+      "bytes": 15180
+    },
+    {
+      "name": "board-mq1_01_s2-390x844-font1.0-vi",
+      "check_run_id": 117011762041,
+      "sha256": "bd210ad2d945cd7074aec18ed6d86afa5a474141c7cd8fb0374a3a3523d1d09d",
+      "bytes": 13522
+    },
+    {
+      "name": "board-mq1_01_s2-390x844-font1.0-en",
+      "check_run_id": 117011757169,
+      "sha256": "d183c2ad3c1d367439dd1957e84c11d56aa137f10948a4ac93071ea3ebee9591",
+      "bytes": 12086
+    },
+    {
+      "name": "board-mq1_01_s2-360x640-font2.0-vi",
+      "check_run_id": 117011752506,
+      "sha256": "474cec777e18c948739d8bf3e3eb69e54fc287649c252a2c081539d8bcd536ca",
+      "bytes": 14671
+    },
+    {
+      "name": "board-mq1_01_s2-360x640-font2.0-en",
+      "check_run_id": 117011747134,
+      "sha256": "5043568204b3afc922599e22b2a04eb7d6fed4666c0cf457fb9201388a1627b4",
+      "bytes": 11202
+    },
+    {
+      "name": "board-mq1_01_s2-360x640-font1.0-vi",
+      "check_run_id": 117011741777,
+      "sha256": "e466f5e90cc86855899b7542829863da76184cb02b5832ca4f09bd3848094423",
+      "bytes": 14242
+    },
+    {
+      "name": "board-mq1_01_s2-360x640-font1.0-en",
+      "check_run_id": 117011736320,
+      "sha256": "da424861f2d014b459ddcbfdc00c1f92d5701f2de23c4005426cd05ae715e2a7",
+      "bytes": 13092
+    }
+  ],
+  "verdict": "CHANGES_REQUESTED for PQC-010; green CI and scoped guard verified, not full board acceptance",
+  "limits": [
+    "No local Flutter/Dart/device run; findings from source and CI images",
+    "Retrieved preview files are CI JPEG conversions, not original lossless PNG",
+    "Current screenshots show test-font glyph blocks and black background, not readable UI",
+    "255 ordinary +10 render reflects current tests, not coverage of all contract cases",
+    "APK skipped; no LessonScreen, AI, voice, TalkBack or production asset approval"
+  ],
+  "r7_candidate_header_gates": {
+    "PQC-010": {
+      "allowed": true,
+      "reason": "explicit order, task and dependency scope matched",
+      "order_source": "design working tree"
+    },
+    "PQC-014": {
+      "allowed": true,
+      "reason": "explicit order, task and dependency scope matched",
+      "order_source": "design working tree"
+    },
+    "PQC-015": {
+      "allowed": true,
+      "reason": "explicit order, task and dependency scope matched",
+      "order_source": "design working tree"
+    },
+    "PQC-008": {
+      "allowed": false,
+      "reason": "work order not in explicit runtime allowlist",
+      "order_source": "design working tree"
+    },
+    "PQC-005": {
+      "allowed": false,
+      "reason": "work order not in explicit runtime allowlist",
+      "order_source": "code 553e9ac extracted in cache"
+    },
+    "PQC-002": {
+      "allowed": false,
+      "reason": "work order not in explicit runtime allowlist",
+      "order_source": "code 553e9ac extracted in cache"
+    },
+    "PQC-004": {
+      "allowed": false,
+      "reason": "work order not in explicit runtime allowlist",
+      "order_source": "code 553e9ac extracted in cache"
+    }
+  }
+}

@@ -32,20 +32,24 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision6: người dùng đã mở010/014/015, không mở runtime toàn app**.
-Đọc `docs/design/coordination/tasks/PQD-003.md` và
-`docs/design/coordination/AUTHORIZATION_2026-10-16_FOUNDATION.md`, rồi ba work orders
-`docs/implementation/coordination/tasks/PQC-010.md`, `PQC-014.md`, `PQC-015.md`.
+Task hiện tại là **PQD-003 revision7: review010 vòng1, authorization r6 giữ nguyên**.
+Đọc `docs/design/coordination/tasks/PQD-003.md`, review `PQD-003-r7.md` + r7-ci.json
+trong `docs/design/coordination/reviews/`, authorization r6 và work orders010/014/015.
 
 **Làm ngay, không trả thêm ACK-only:**
-1. Nhập và chạy test patch scope guard ở `docs/design/coordination/patches/README.md`.
-   Coordinator cũ chỉ nhìn runtime=yes nên có thể mở nhầm008; không dùng nó cấp quyền.
-2. Fetch/track `--task PQD-003`; kiểm brief010/014/015 ALLOWED,008/005 BLOCKED.
-3. Thực hiện010 →014 →015 (015 sau014 CI xanh), mỗi gói commit/evidence riêng.
-   Chỉ015 được dependency locale tối thiểu. Không sửa art/assets/platform/workflow,
-   voice/provider, grader/economy/backend hoặc old task002/004/005/008.
-4. Trả đúng tested_code_commit, CI, ảnh/runtime test host và giới hạn.010 chưa wire
-   lesson;015 chưa port toàn UI/Settings. Không quảng cáo AI/voice/multilingual toàn app.
+1. Code553e9ac đã nhập guard đúng byte; design đã chạy37testsPASS. **Không apply lại**
+   scoped patch. Fetch003r7 bằng refspec tường minh, không chỉ tin tracking ref cũ.
+2. Brief010/014/015 vẫn ALLOWED,008/005 BLOCKED. PQC-010 verdict **CHANGES_REQUESTED**
+   nhưng runtime quyền sửa không bị thu hồi; parent/order vẫn READY_FOR_CODE.
+3. Sửa R7-A…E: decoder type/required/budgets; renderer thật thay dump op; locale đủ
+   controls/prose/semantics; learner wait + lesson owner; ảnh có font/nền đọc được và
+   test mọi beat, VI/EN,1/1.3/2. Trả regression + fix, không chỉ viết một ACK mới.
+4. Có thể tiếp014 riêng.015 sau014CI xanh; chỉ015 có quyền dependency locale tối thiểu.
+   Không sửa art/assets/platform/workflow, voice/provider, grader/economy/backend hay
+   old task002/004/005/008. P05 `981ea85` chỉ là design, chưa được port vào app.
+5. Trả tested_code_commit/run URL/**custom report check ID** đúng SHA, test counts,
+   ảnh board test host và giới hạn.010 chưa wire lesson;015 chưa port toàn UI/Settings.
+   Không quảng cáo AI/voice/multilingual toàn app đã hoàn thiện.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders

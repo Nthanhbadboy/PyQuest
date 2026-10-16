@@ -116,7 +116,9 @@ backend hay thử nghiệm với trẻ em. CSS text scale không phải bằng c
 
 ## Quan hệ với agent code
 
-Đã fetch nhánh code ở `ca2050a` trong lượt làm P05, không có commit mới hơn khi kiểm.
-Không audit/accept tip đó ở đây. Không đổi PQD-003 r6, PQC-010/014/015, runtime gates,
+Lượt P05 đã đọc remote-tracking ref `ca2050a`, không audit/accept code ở đây.
+**Đính chính khi review r7:** fetch chỉ ghi FETCH_HEAD chưa bảo đảm tracking ref tiến;
+câu trước đây “không có commit mới hơn” bị rút lại. Review r7 đã fetch refspec tường
+minh và đối chiếu remote/API tới `553e9ac`, xem `../coordination/reviews/PQD-003-r7.md`. Không đổi PQD-003 r6, PQC-010/014/015, runtime gates,
 app/assets/dependencies. P05 là gói review design riêng; hướng port ở handoff là
 **đề xuất**, không tự mở runtime work order mới.
