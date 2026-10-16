@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,24 +39,6 @@ void main() {
       .map((RichText w) => w.text.toPlainText())
       .toList();
 
-  /// Temporary CI diagnostic. The published report trims the middle of the
-  /// test log, so what the panel painted is appended to a section that is small
-  /// enough to survive: analyze.txt, which the analyze step finished writing
-  /// before this step started.
-  void dumpOnScreen(WidgetTester tester, String label) {
-    if (!Platform.environment.containsKey('CI')) return;
-    try {
-      final File log = File('../analyze.txt');
-      if (!log.existsSync()) return;
-      final RandomAccessFile handle = log.openSync(mode: FileMode.append);
-      final String said = onScreen(tester).join(' | ').replaceAll(RegExp('\s+'), ' ');
-      handle.writeStringSync('\n[identity:$label] ${said.substring(0, said.length > 700 ? 700 : said.length)}');
-      handle.closeSync();
-    } catch (_) {
-      // A diagnostic must never be the reason a test fails.
-    }
-  }
-
   /// Sends through the composer. The keyboard action is the primary path and
   /// the button is pressed as well; `_send` clears the field, so the second
   /// trigger sees an empty question and returns without duplicating the line.
@@ -87,7 +67,7 @@ void main() {
   }
 
   Future<void> openPanel(WidgetTester tester, AppServices services, {CharacterId? speakingAs}) async {
-    tester.view.physicalSize = const Size(1200, 2700);
+    tester.view.physicalSize = const Size(1200, 4200);
     tester.view.devicePixelRatio = 3.0;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(MaterialApp(
@@ -95,7 +75,7 @@ void main() {
         body: Align(
           alignment: Alignment.topCenter,
           child: SizedBox(
-            height: 860,
+            height: 1360,
             width: 400,
             child: TutorPanel(
               services: services,
@@ -123,7 +103,6 @@ void main() {
 
     final greeting = CastDialogue.line(CharacterId.nova, DialogueMoment.greet, PqLang.vi);
     final said = onScreen(tester);
-    dumpOnScreen(tester, 'greeting');
     expect(said.where((String t) => t == greeting), hasLength(1), reason: 'the tutor greets the learner once');
     expect(said.contains(PqStrings.vi.childLabel), isFalse, reason: 'nobody has spoken yet');
     expect(said.any((String t) => t.contains('Nova')), isTrue, reason: 'the greeting is labelled with the speaker');
@@ -136,7 +115,6 @@ void main() {
     await typeAndSend(tester, 'Vì sao cần biến?');
 
     final said = onScreen(tester);
-    dumpOnScreen(tester, 'typed');
     // Exactly one line wears the learner's name, and it is the question.
     expect(said.where((String t) => t == PqStrings.vi.childLabel), hasLength(1));
     expect(said.any((String t) => t.contains('Vì sao cần biến?')), isTrue);
@@ -161,7 +139,6 @@ void main() {
     await typeAndSend(tester, 'Biến là gì?');
 
     final said = onScreen(tester);
-    dumpOnScreen(tester, 'offline-answer');
     expect(said.any((String t) => t.contains(PqStrings.vi.labelOffline)), isTrue,
         reason: 'the panel must say the answer came from the offline tutor');
     expect(said.any((String t) => t.contains(PqStrings.vi.labelAiWritten)), isFalse);
@@ -175,7 +152,6 @@ void main() {
     await openPanel(tester, services, speakingAs: CharacterId.kai);
 
     final said = onScreen(tester);
-    dumpOnScreen(tester, 'voice-sheet');
     expect(said.any((String t) => t.contains('Kai')), isTrue, reason: 'the tutor that will speak is the one named');
     expect(said.any((String t) => t.contains('Lumi')), isTrue, reason: 'the persona can be chosen before speaking');
     expect(find.byKey(const ValueKey('tutor_gemini_live_voice')), findsOneWidget);
