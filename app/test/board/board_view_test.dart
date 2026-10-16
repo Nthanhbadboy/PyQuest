@@ -584,29 +584,51 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('R00-D1-setup: VI plan applies and beat 2 output keys exist before scrolling',
+  testWidgets('R00-D1-initial: VI setup applies at beat 0 without framework exception',
       (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
     addTearDown(handle.dispose);
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
-    final List<String> checkpoints = <String>[
-      'after pump: beat=${controller.beatIndex}, beatId=${controller.currentBeat?.beatId}, locale=${controller.locale}',
-    ];
-    expect(controller.beatIndex, 0, reason: checkpoints.last);
+    expect(controller.beatIndex, 0,
+        reason: 'beat=${controller.beatIndex}, beatId=${controller.currentBeat?.beatId}, locale=${controller.locale}');
+    expect(tester.takeException(), isNull,
+        reason: 'after initial pump: beat=${controller.beatIndex}, locale=${controller.locale}');
+  });
+
+  testWidgets('R00-D1-advance: same-controller next reaches output beat 2',
+      (WidgetTester tester) async {
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    final List<String> checkpoints = <String>[];
     while (controller.beatIndex < 2) {
+      checkpoints.add('before next: beat=${controller.beatIndex}, beatId=${controller.currentBeat?.beatId}');
       expect(controller.next() || controller.learnerAdvance(), isTrue,
-          reason: 'advance refused; ${checkpoints.join(' | ')}');
+          reason: checkpoints.join(' | '));
       await tester.pump();
-      checkpoints.add(
-          'after pump: beat=${controller.beatIndex}, beatId=${controller.currentBeat?.beatId}, locale=${controller.locale}');
-      expect(tester.takeException(), isNull, reason: checkpoints.last);
+      checkpoints.add('after pump: beat=${controller.beatIndex}, beatId=${controller.currentBeat?.beatId}');
+      expect(tester.takeException(), isNull, reason: checkpoints.join(' | '));
+    }
+    expect(controller.beatIndex, 2, reason: checkpoints.join(' | '));
+  });
+
+  testWidgets('R00-D1-key: beat 2 materializes output widget and semantics wrapper',
+      (WidgetTester tester) async {
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    while (controller.beatIndex < 2) {
+      expect(controller.next() || controller.learnerAdvance(), isTrue);
+      await tester.pump();
     }
     expect(find.byKey(const ValueKey<String>('board_output_2_1')), findsOneWidget,
-        reason: 'output key missing; ${checkpoints.join(' | ')}');
+        reason: 'beat=${controller.beatIndex}, beatId=${controller.currentBeat?.beatId}, locale=${controller.locale}');
     expect(find.byKey(const ValueKey<String>('board_output_2_1_label')), findsOneWidget,
-        reason: 'semantic wrapper key missing; ${checkpoints.join(' | ')}');
-    expect(tester.takeException(), isNull, reason: checkpoints.join(' | '));
+        reason: 'beat=${controller.beatIndex}, beatId=${controller.currentBeat?.beatId}, locale=${controller.locale}');
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('R00-D1-scroll: target geometry and offset before/after ensureVisible',
