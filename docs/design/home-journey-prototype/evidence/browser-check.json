@@ -1,0 +1,157 @@
+{
+  "status": "PASS",
+  "date": "2026-10-16",
+  "browser": "153.0.8010.0",
+  "scope": "P06C browser design prototype only; no Flutter, real persistent rewards, world/session changes or local AI",
+  "fixtures": 7,
+  "fixtureLayouts": 126,
+  "routeLayouts": 144,
+  "dialogLayouts": 54,
+  "layoutChecks": 324,
+  "viewports": [
+    "1440x1080",
+    "390x844",
+    "360x640"
+  ],
+  "languages": [
+    "vi",
+    "en"
+  ],
+  "textScales": [
+    1,
+    1.3,
+    2
+  ],
+  "axe": {
+    "version": "4.10.3",
+    "audits": [
+      {
+        "label": "home VI",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "missing requirements VI",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "maze VI",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "unclaimed result VI",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "bridge VI",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "build confirmation dialog VI",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "unlocked room VI",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "backpack dialog VI",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "home EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "project EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "quests EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "maze EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "bridge EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "result EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "room EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      }
+    ]
+  },
+  "checks": [
+    "both sample mini-games actually compute outcomes",
+    "two pending wins survive navigation and can each be collected without replay",
+    "room condition is medal AND all materials; no implicit reward on win",
+    "preview cancel leaves state unchanged; failed/pending build spends nothing",
+    "offline confirmation disabled; reconnect preserves pending operation",
+    "one build debit/entitlement; badge retained; replay cannot farm project materials",
+    "scripted pet reaction explicitly not local AI",
+    "locale changes preserve ledger and game state; reload resets sample data only",
+    "system language/fallback/ordered candidates and blocked storage",
+    "keyboard Tab/Shift+Tab/Space/Enter/Escape and focus return",
+    "system reduced motion and no active animation",
+    "visible buttons/selects/external links >=48 CSS px; no measured text/page overflow",
+    "no observed JS/HTTP errors, external requests or non-GET requests"
+  ],
+  "limitations": [
+    "no real-device, Safari/Firefox, screen-reader or child-user research",
+    "axe incomplete checks remain human-review items; not WCAG certification",
+    "CSS font scaling is not evidence for Flutter textScaler",
+    "recipe/materials/bridge game are proposals, not live app economy",
+    "no drawing/editable world, visits, purchasing or real AI pet implemented"
+  ]
+}

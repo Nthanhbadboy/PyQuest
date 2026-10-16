@@ -301,6 +301,8 @@ Tutor là các nhân vật có tính cách, lĩnh vực và vai trò riêng. H�
 ### 4.5. Nhà riêng, đất và đảo có thể lớn lên cùng người chơi
 
 - Người chơi có không gian riêng để sắp xếp nội thất, trưng bày sản phẩm, nuôi thú và đón bạn. Có thể mở rộng nhà (hiên/phòng/gác), đất (vườn/hồ/sân/bến) và đảo (khu mới, cầu/thuyền, chủ đề và hoạt động mới).
+- Các nhiệm vụ và dự án mở rộng phải liên kết thành hành trình rõ: xem điều kiện → đi đúng hoạt động để kiếm huy chương/vật liệu → nhận kết quả → quay về dự án → xác nhận mở. Ví dụ một phòng cần huy chương cụ thể và vật liệu có nguồn; không phải mọi nội dung mở chỉ bằng tiền hoặc một nút bấm.
+- Huy chương dùng làm điều kiện thành tích được giữ lại, khác với vật liệu bị tiêu khi xây. Mỗi món còn thiếu cần chỉ nguồn kiếm và đường quay lại; nhiệm vụ/điều kiện không được tạo vòng khóa lẫn nhau. Giá trị, số lượng và luật thưởng phải được duyệt riêng, chống nhận/trừ lặp và không khóa kiến thức cốt lõi sau mở nhà.
 - Mở rộng phải tạo thêm khả năng chơi và sáng tạo, không chỉ tăng ô chứa đồ hoặc thay hình nền. Không yêu cầu chạy theo nhà lớn nhất; một căn nhà nhỏ vẫn là trải nghiệm đầy đủ và có giá trị.
 - Đây là một nhánh hoạt động độc lập; không biến Main Map miễn phí thành đất tư, không đồng nhất đảo cá nhân với Side Maps trả phí, không tạo XP/cấp độ toàn cục.
 - Thăm nhà phải cho khách đi quanh, khám phá và tương tác với các đồ vật/tác phẩm/thú được phép; khi chủ và khách cùng hiện diện phải dựa trên phiên đồng bộ thật. Trang hồ sơ chỉ là một lối vào, không thay cho trải nghiệm thăm nhà.

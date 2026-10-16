@@ -3,6 +3,10 @@
 2026-10-16 · Bổ sung theo định hướng của chủ sản phẩm sau P06 `62627d5`.
 **Thiết kế/tầm nhìn; chưa có prototype P06B, multiplayer hay local AI chạy thật.**
 
+**Cập nhật bước nhỏ tiếp theo:** [P06C](P06C_LINKED_JOURNEYS.md) đã có màn chính,
+hai mini-game và chuỗi huy chương/vật liệu → mở phòng. Đây chưa phải prototype
+đi lại/sắp đồ/thăm nhà đồng bộ hoặc mua thú/AI local của P06B.
+
 ## 1. Điều cần sửa trong cách hiểu P06
 
 P06 không thể chỉ là một trang hồ sơ đẹp có tác phẩm và thiệp. Người chơi cần **một

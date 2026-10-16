@@ -5,9 +5,12 @@ Mục tiêu: thiết kế đi trước đủ một luồng hoàn chỉnh để c
 không chờ board/locale xong mới nghĩ tới mini-game, bạn bè, thi đấu và vinh danh.
 
 Sơ đồ tổng quan: [`experience-map.png`](experience-map.png).
-Gói gần nhất: [`P06_CLOUD_POST.md`](P06_CLOUD_POST.md) — **Bưu điện Mây**, bạn bè, góc trưng bày và xưởng thiệp.
+Gói gần nhất: [**P06C — màn chính và nhiệm vụ liên kết**](P06C_LINKED_JOURNEYS.md):
+7 màn, hai mini-game thao tác được, huy chương/vật liệu → mở Gác sáng tạo.
+Gói [P06 A — Bưu điện Mây](P06_CLOUD_POST.md) giữ lớp bạn bè, kệ và thiệp.
 **Bổ sung định hướng:** [P06B — nhà, đất, đảo và thú cưng thông minh](P06B_LIVING_HOMES_ISLANDS_PETS.md).
-P06 A hiện có chỉ là lớp giao lưu; chưa đáp ứng hết không gian sống và thăm nhà thật. P06B mới là thiết kế, chưa có prototype hoặc AI local.
+P06 A là lớp giao lưu; P06C thêm chuỗi mở phòng. Không gian đi lại/sắp đồ/thăm nhà
+đồng bộ và AI local của P06B chưa triển khai; không đánh đồng ba phạm vi.
 **Cập nhật:** [P06 đã có prototype tương tác](../friends-showcase-prototype/README.md),
 12 fixture, art mới, VI/EN, 414 cấu hình kiểm bố cục và handoff; chưa tích hợp Flutter.
 [P05 — kết quả và cuộc phiêu lưu tiếp theo](P05_RESULT_TO_NEXT_ADVENTURE.md) vẫn giữ nguyên.
@@ -55,7 +58,7 @@ Mỗi gói chỉ mở một luồng thử sâu trước, không làm hàng chụ
 | Gói | Đầu ra cụ thể | Làm trước mà không chờ code | Phần phải đợi trước khi ship |
 |---|---|---|---|
 | **P05 — Qua màn → được ghi nhận → chọn việc tiếp** | Storyboard, màn thắng/chưa đạt/kỷ lục/chơi lại; luồng thưởng và Nhà Thành Tích; copy theo tình huống | Thiết kế ngay trên dữ liệu kết quả hiện có; ưu tiên đầu tiên | Port Flutter và chứng minh kết quả/lưu thưởng thực, không cộng trùng |
-| **P06 — Giao lưu & không gian sống** | A: bạn bè, kệ, thiệp, block/report. B: mở nhà/đất/đảo, thăm nhà có hoạt động chung, mua thú thông minh | A đã có prototype; B mới có design brief và gate nghiên cứu AI local | Identity/consent, world/session authority, lưu trữ/transactions, moderation; benchmark AI on-device và entitlement thú |
+| **P06 — Giao lưu & không gian sống** | A: bạn bè, kệ, thiệp, block/report. B: mở nhà/đất/đảo, thăm nhà có hoạt động chung, mua thú thông minh | A/C đã có prototype; C nối hai game → badge/vật liệu → phòng; B giữ design brief và gate AI local | Identity/consent, world/session authority, lưu trữ/transactions, moderation; benchmark AI on-device và entitlement thú |
 | **P07 — Arena & Creator League** | Chọn bộ môn → xem luật → đăng ký → chờ → thi → kết quả → bảng hạng; đối kháng/sưu tập/đội có vai trò riêng | Mẫu thi đấu đầu dùng Maze để dễ liên hệ gameplay; nguyên tắc UI chung cho các bộ môn | Matchmaking/session/result authority, chống gian lận, disconnect/reconnect, scoring rules được duyệt |
 | **P08 — Mini-game có bản sắc** | HUD/gameplay/result mẫu cho Maze, Dragon Jump, Catch Stars, Bug Hunter; Creator Mode riêng khi phù hợp | Visual grammar, onboarding chơi ngay, feedback va chạm/nhặt đồ, pause/retry | Physics/hit testing/frame budget và kiểm máy thật; không sửa luật để khớp tranh |
 | **D-UI — Bộ giao diện game dùng chung** | Buttons/chips, sao, reward cards, bảng xếp hạng, modal, loading/empty/error, focus; animation timing và calm variants | Làm cùng P05 rồi kiểm lại ở P06/P07, không chờ Flutter widget library | Tích hợp component + font scale/keyboard/device evidence |

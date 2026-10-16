@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: seven fixtures initialize; unknown destinations and locked room fail closed
+ok 1 - seven fixtures initialize; unknown destinations and locked room fail closed
+  ---
+  duration_ms: 2.832935
+  type: 'test'
+  ...
+# Subtest: maze geometry stays pinned to existing rm_01, new bridge and materials remain separate design data
+ok 2 - maze geometry stays pinned to existing rm_01, new bridge and materials remain separate design data
+  ---
+  duration_ms: 1.210996
+  type: 'test'
+  ...
+# Subtest: room requires medal AND every material, not any one condition
+ok 3 - room requires medal AND every material, not any one condition
+  ---
+  duration_ms: 0.162049
+  type: 'test'
+  ...
+# Subtest: failed maze and incomplete bridge do not create claimable rewards
+ok 4 - failed maze and incomplete bridge do not create claimable rewards
+  ---
+  duration_ms: 1.817177
+  type: 'test'
+  ...
+# Subtest: wins are pending until explicitly collected; first medal is not minted by render or navigation
+ok 5 - wins are pending until explicitly collected; first medal is not minted by render or navigation
+  ---
+  duration_ms: 0.608014
+  type: 'test'
+  ...
+# Subtest: two games can be completed in either order and lead to the same build
+ok 6 - two games can be completed in either order and lead to the same build
+  ---
+  duration_ms: 0.376201
+  type: 'test'
+  ...
+# Subtest: two unclaimed wins survive navigation and each other without forcing replay
+ok 7 - two unclaimed wins survive navigation and each other without forcing replay
+  ---
+  duration_ms: 0.268109
+  type: 'test'
+  ...
+# Subtest: failed replay cannot claim the failed result or erase an earlier pending win
+ok 8 - failed replay cannot claim the failed result or erase an earlier pending win
+  ---
+  duration_ms: 0.159934
+  type: 'test'
+  ...
+# Subtest: repeated claims and replays do not farm project materials or medals
+ok 9 - repeated claims and replays do not farm project materials or medals
+  ---
+  duration_ms: 0.382199
+  type: 'test'
+  ...
+# Subtest: preview/cancel is read-only; pending and failed builds do not debit anything
+ok 10 - preview/cancel is read-only; pending and failed builds do not debit anything
+  ---
+  duration_ms: 0.622371
+  type: 'test'
+  ...
+# Subtest: retry and duplicate build acknowledgements unlock/debit exactly once
+ok 11 - retry and duplicate build acknowledgements unlock/debit exactly once
+  ---
+  duration_ms: 0.263644
+  type: 'test'
+  ...
+# Subtest: requirements and connection are checked again on acknowledgement
+ok 12 - requirements and connection are checked again on acknowledgement
+  ---
+  duration_ms: 0.259979
+  type: 'test'
+  ...
+# Subtest: offline play retains an eligible reward for a later simulated reconnect
+ok 13 - offline play retains an eligible reward for a later simulated reconnect
+  ---
+  duration_ms: 0.118267
+  type: 'test'
+  ...
+# Subtest: commands and plank indices are bounded, malformed commands are not accepted
+ok 14 - commands and plank indices are bounded, malformed commands are not accepted
+  ---
+  duration_ms: 0.154917
+  type: 'test'
+  ...
+# Subtest: snapshots are detached; navigation never claims or spends
+ok 15 - snapshots are detached; navigation never claims or spends
+  ---
+  duration_ms: 0.305502
+  type: 'test'
+  ...
+# Subtest: fresh reload-equivalent session resets resources, while completed room permits continued free play
+ok 16 - fresh reload-equivalent session resets resources, while completed room permits continued free play
+  ---
+  duration_ms: 0.132161
+  type: 'test'
+  ...
+# Subtest: both authored languages have matching interpolation parameters
+ok 17 - both authored languages have matching interpolation parameters
+  ---
+  duration_ms: 1.322528
+  type: 'test'
+  ...
+# Subtest: assets and source hashes match manifest
+ok 18 - assets and source hashes match manifest
+  ---
+  duration_ms: 5.253385
+  type: 'test'
+  ...
+# Subtest: journey graph has no circular prerequisites or orphan references; both games are initially accessible
+ok 19 - journey graph has no circular prerequisites or orphan references; both games are initially accessible
+  ---
+  duration_ms: 0.383274
+  type: 'test'
+  ...
+# Subtest: authored journey recipe matches model and offers exactly enough reachable materials without replay grinding
+ok 20 - authored journey recipe matches model and offers exactly enough reachable materials without replay grinding
+  ---
+  duration_ms: 0.202363
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 100.019812

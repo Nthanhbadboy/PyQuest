@@ -7,8 +7,8 @@
   "sources": [
     {
       "path": "docs/PRODUCT_VISION.md",
-      "bytes": 90004,
-      "sha256": "bda209e8885bb252daeed675661dd9fd6319456254d19677196d9216a98636eb"
+      "bytes": 90848,
+      "sha256": "5a51d94efd09f5b4a18a9bdc343d4a7ad0fead553688e7568c9d98d04ddeeeda"
     },
     {
       "path": "docs/design/shared-l10n/locale-core.mjs",
@@ -135,6 +135,12 @@
       "bytes": 83788,
       "sha256": "fc86f518857d90707dd50b48e8a484af7a471348fb7872aa6fa7518dc98b5ff8",
       "captured_for": "P06 A published at 62627d5; original prototype browser evidence"
+    },
+    {
+      "path": "docs/PRODUCT_VISION.md",
+      "bytes": 90004,
+      "sha256": "bda209e8885bb252daeed675661dd9fd6319456254d19677196d9216a98636eb",
+      "captured_for": "f44ef5d vision addendum before linked-project clarification"
     }
   ],
   "vision_addendum": {
