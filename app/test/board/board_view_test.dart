@@ -39,7 +39,7 @@ Widget boardHost(Widget child, {required double textScale, Size surface = const 
     data: MediaQueryData(size: surface, textScaler: TextScaler.linear(textScale)),
     child: MaterialApp(
       theme: ThemeData(fontFamily: PQFonts.body, scaffoldBackgroundColor: Colors.white),
-      home: Scaffold(body: SafeArea(child: child)),
+      home: Scaffold(body: SafeArea(child: SingleChildScrollView(child: child))),
     ),
   );
 }
@@ -498,6 +498,11 @@ void main() {
     final String viAlt = alt['vi']! as String;
     final String enAlt = alt['en']! as String;
     expect(viAlt, isNot(enAlt), reason: 'hai bản altText phải khác nhau thì ca này mới phân biệt được');
+    // At 360×640 the accumulated tutor content can put the output below the initial viewport.
+    // Bring the actual semantic target into view; otherwise a viewport-pruned semantics query is
+    // indistinguishable from a missing/localization-broken node.
+    await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
+    await tester.pumpAndSettle();
 
     final List<String> vi = allBoardTexts(tester);
     expect(vi, contains('Tiếp'), reason: 'nhãn điều khiển phải là tiếng Việt: $vi');
