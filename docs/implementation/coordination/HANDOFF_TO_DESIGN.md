@@ -1,15 +1,40 @@
 # Handoff → design (và người dùng): mọi đề xuất & câu hỏi đang mở
 
-- từ: code agent · nhánh `arena/b813b575-pyquest` · **tip chờ review: `117651b`** (CI `38910292250`
-  @ check-run `117006041656` **xanh**: `analyze` *No issues found!* (11.0s) · `test` **`+255 All tests
-  passed!`** = 175 nền + đúng 80 test board, không test nào bị bỏ/skip · `render` **`+10`** ·
-  `publish_previews` đăng **16 ảnh `board-*.png`** (2 plan × {360×640, 390×844} × font {1.0, 2.0} × {vi, en})
-- **`PQC-010` vòng 1 bị design trả `CHANGES_REQUESTED` (r7 @ `a9ffa1c`)** — 5 nhóm P1 R7-A..E, đang sửa tiếp
-  trong cùng allowlist (không xin quyền mới, không vòng ACK-only). Chuỗi vòng 1: `26d9dba`→`ca1e0e3`→`ca2050a`→
-  `117651b`; 5 vòng đỏ đầu là lỗi test/idiom của tôi, ghi nguyên văn ở `EVIDENCE.md` EV-ID-022;
-  board **chưa** nối `LessonScreen`/AI/voice — đúng phạm vi authored + caption-only đã authorize
-- theo dõi: **PQD-003 rev 7** @ `a9ffa1ccdb6e7d3402e1325829af256c8d902b9d` — đã nhập `reviews/PQD-003-r7.md` +
-  `PQD-003-r7-ci.json` vào coordination và ACK ở state `~/.pq-lead` (một ACK cho một revision);
+- từ: code agent · nhánh `arena/b813b575-pyquest` · **trạng thái hiện tại: `PQC-010` vòng 3 đã nộp,
+  chờ design mở lại ảnh + đọc assertions.** Chuỗi đã push: `dc2fd3e` (chín file runtime/test) →
+  `a45cff2` (mẫu ảnh connector) → `ac88109` (sửa analyzer) → `4fbcd62` (bỏ API tôi đoán tên) →
+  `1b91482` (gom ma trận theo nhóm) → **`0661523` = `tested_code_commit` đề nghị review**.
+  Số của từng vòng, đọc từ API: `4fbcd62` = run `38933448702` / report `117084809790` →
+  `analyze` **No issues found!** lần đầu, `test` `+323 -101` (96 ca ma trận **đã chạy thật**, tất cả
+  đỏ); `1b91482` = run `38936234960` / report `117094012750` → `analyze` 7 error do chính tôi (dời
+  `shot!` làm mất promotion) và `test` `+318 -19`. **Tôi đã tải và MỞ 8 ảnh board từ chính CI**
+  (check-run `preview|board-*`, ghép chunk base64) — mô tả những gì nhìn thấy ở `EVIDENCE.md`
+  EV-ID-025; đây là bằng chứng thị giác đầu tiên phía code tự đọc được, không phải lời tuyên bố.
+  Hai vòng giữa đã đọc thật: `ac88109` @ run `38932075485` / report `117081115914` =
+  `analyze` 2 error (`getAllSize` cũng không tồn tại) + `test` **`+303 -2`** (hai tên cũ, cùng nguyên
+  nhân) — nên `4fbcd62` là commit đầu tiên mà ma trận 96 ca và ảnh connector có cơ hội chạy đủ.
+  Những gì ĐÃ đọc được ở `dc2fd3e` (run `38931215746` · report `117077155500`): `test` **`+303 -2`**
+  (giảm từ 6 fail), `render` **`+10 All tests passed!`**, `analyze` còn 3 error làm đỏ cả
+  `board_view_test.dart` (API `getAllSize`, `switch` thiếu `BoardOpKind.unknown`) → 23 ca của file đó
+  **chưa chạy**, nên ma trận 96 ca chưa phải bằng chứng — đã sửa ở `ac88109`;
+  **8 ảnh board đã đăng** (`b1`, `b2` × font {1.0, 2.0} × {vi, en}) — ảnh không còn nền đen.
+- **Lịch sử vòng 1 (giữ nguyên, không viết lại):** tip `117651b` @ CI `38910292250` / check-run
+  `117006041656` từng **xanh** với `+255` · `render +10` · 16 ảnh `board-*.png` (2 plan × {360×640,
+  390×844} × font {1.0, 2.0} × {vi, en}). Xanh đó **không** được coi là xong: design trả
+  `CHANGES_REQUESTED` (r7 @ `a9ffa1c`, rồi r8 @ `b60ab71`) và vòng 2 (`2d55ff6`, `4a2a582`) đỏ với
+  6 fail — cả chuỗi ghi chi tiết ở `EVIDENCE.md` EV-ID-022…024.
+- board **chưa** nối `LessonScreen`/AI/voice — đúng phạm vi authored + caption-only đã authorize
+- **hai câu hỏi thẩm mỹ gửi design** (tôi không tự đổi thiết kế để ảnh "đẹp hơn", theo đúng ràng buộc
+  không self-redesign): (1) beat 1 font 1.0 để lại một khoảng trắng lớn dưới bảng — board cao hơn nội
+  dung; design muốn beat ngắn thì co hộp hay giữ chiều cao ổn định để khỏi nhảy khi sang beat 2?
+  (2) hàng chú thích `print   đưa nội dung ra màn hình` đứng rời, không có gì nối nó với hộp code bên
+  dưới (mũi tên connector chỉ xuất hiện từ beat 3) — giữ nguyên, thêm một nét nối nhẹ, hay đưa chú thích
+  vào chính hộp code? Cả hai đều là quyết định thiết kế, không phải lỗi dựng hình: không tràn, không
+  clipping, tô sáng đúng chỗ.
+- theo dõi: **PQD-003 rev 8** @ `b60ab7137d03e01000bcff86d4134023ce9989cd` — đã nhập
+  `reviews/PQD-003-r8.md` (bản đọc tại `docs/design/coordination/`), `reviews/PQD-003-r8-ci.json`,
+  `reviews/PQC-010-r2/*` và work order `tasks/PQC-010.md` bản r8 (kèm banner `imported-by`, không merge
+  nhánh design); ACK ở state `~/.pq-lead` (một ACK cho một revision);
   các mốc đã nhập: rev 4 `59f7023` (§M), rev 5 `reviews/PQD-003-r5.md` + `PQD-003-r5-ci.json` (ACCEPT phần
   delta test-only, không đóng PQC-008), rev 6 `AUTHORIZATION_2026-10-16_FOUNDATION.md` (mở runtime cho
   `PQC-010` → `PQC-014` → `PQC-015`, mỗi gói một commit + evidence + review riêng)

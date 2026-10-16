@@ -810,3 +810,138 @@ trong bài học. Đó là lý do tôi không tự đóng `PQC-010`, chỉ chuy�
 không tồn tại. Số đúng là `38911165569`, lấy từ `gh api .../commits/<sha>/check-runs → html_url` và
 `gh run list`; tôi để lại dòng này thay vì sửa im lặng, vì "số trong tài liệu phải tra lại được" là quy
 t tắc làm việc của nhánh này.)*
+
+---
+
+### EV-ID-023 — `PQC-010` vòng 2 (sửa theo rev 7): **không xanh**, và tôi không tô hồng
+
+Ba commit cho năm nhóm R7-A..E, mỗi cái kèm số CI thật lấy từ `gh api .../commits/<sha>/check-runs`
+→ `.output.text` của check-run **`PyQuest check`** (id != run id — tôi từng nhầm hai cái này):
+
+| commit | run | `analyze` | `test` thường | `render` | ảnh board |
+|---|---|---|---|---|---|
+| `5fb7fff` (C1) | run `38918044574` · report `117032600483` | 1 **error** | `+182 -4` | — | — |
+| `6936796` | run `38919383520` · report `117037147984` | *No issues found!* | **`+286 -7`** | `+10` | — |
+| `2d55ff6` (B) | run `38921681162` · report `117049321200` | **10 issue** | `+309 -11` | `+10` | — |
+| `4a2a582` (C2) | run `38924022896` · report `117057301755` | *No issues found!* (12.7s) | **`+316 -6`** | `+10` | **1** |
+
+Bốn run trên tra lại được bằng `gh api "repos/<repo>/actions/runs?head_sha=<sha>"` (run id) và
+`gh api .../commits/<sha>/check-runs` (report check id) — bản nháp đầu của đoạn này chép sai hai số
+run của `5fb7fff`/`6936796`; tôi sửa bằng số đã truy vấn, không giữ số đẹp.
+
+Bốn trong sáu failure ở `4a2a582` mà report kịp nêu tên: codec `thiếu copy cho locale`,
+`chụp board-<step>-<beat>-<khổ>-<font>-<locale>.png và đo điểm ảnh`,
+`ảnh đại diện vẫn còn trên đĩa và không phải một dải màu duy nhất`,
+`R7-B: layer vẽ từ op codeSnippet khác code trên bảng -> block code riêng có chữ thật`.
+**Hai ca còn lại chưa bao giờ hiện tên** (`ci/report.py` cắt mỗi section bằng tail; `gh run view
+--log-failed` và artifacts đều không cho nội dung) — nên tôi **không** gán chúng cho finding nào,
+kể cả khi suy luận từ diff rất mạnh. Design đã kiểm tra lại kết luận này ở r8.
+
+Điều vòng 2 chứng minh được (và giữ nguyên, rev 8 xác nhận là đúng ngay từ nguồn): codec fail-closed
+(286→316 ca), `RichText` tô đúng token, nhóm vẽ 3/4 vật, output một dòng vs hai dòng, `clearTutorLayer`,
+`labels` resolve trong builder, wait sống qua `cancelTurn`/`setLocale`, `applyPlan` đối chiếu owner
+lesson/step, fallback lưu **mã**, font thật nạp trong test host, ảnh đặt tên theo beat.
+
+Điều vòng 2 **chưa** chứng minh: ảnh có nền đọc được (boundary đặt sai chỗ → design decode JPEG ra
+nền đen), mũi tên thật sự nối hai hộp, highlight bị chặn trong phạm vi statement, cỡ chữ áp dụng
+một lần, và ma trận coverage đủ mọi beat. Đó chính là R8-A..D.
+
+### EV-ID-024 — `PQC-010` vòng 3 (sửa theo rev 8) @ `dc2fd3e` → `ac88109`
+
+Chuỗi commit: `dc2fd3e` (chín file: `board_layout/view/models/codec/validator` + bốn file test) →
+`a45cff2` (chỉ số hóa ảnh connector) → `ac88109` (sửa analyzer làm đỏ cả file test). Không file nào
+ngoài allowlist `app/lib/modules/tutor/board/**` + `app/test/board/**` đụng tới; publisher/workflow/
+pubspec giữ nguyên; **không** thêm route ẩn hay debug launcher.
+
+Số run `38931215746` @ `dc2fd3e` (check-run `PyQuest check` = `117077155500`):
+
+- `analyze`: **5 issue**, trong đó 3 **error** — `WidgetTester.getAllSizes` không tồn tại (API đúng là
+  `getAllSize`), `switch` thiếu `BoardOpKind.unknown`. Hai chỗ còn lại là info.
+  **Không có Flutter trong sandbox nên đây là loại lỗi chỉ CI mới thấy; tôi không nói "đã kiểm cục bộ".**
+- `test`: **`+303 -2`** — còn 2, không còn 6. Một trong hai là `board_view_test.dart: loading …`,
+  tức file **không compile được**: toàn bộ 23 ca của file (gồm cả ma trận 96 ca) **chưa chạy lần nào**
+  ⇒ chúng chưa phải bằng chứng, theo chiều ngược cũng chưa phải thất bại.
+- `render`: **`+10 All tests passed!`**, dòng characterization `j00..j05 = 7entries/11501568 B`
+  sáu lần đọc giống hệt ⇒ nền cũ không bị lệch.
+- ảnh board đã đăng: **8** (`b1-code-highlight`, `b2-quote-tokens` × {font1.0, font2.0} × {vi, en}),
+  so với 1 ở vòng trước ⇒ R8-A (boundary ngoài cùng + `ColoredBox` bên trong) đã hết nền đen; ca chụp
+  abort ở ảnh **connector đầu tiên** vì lỗi độ dài mẫu của tôi (`hasLength(n*4)` trong khi mỗi điểm ghi
+  5 số), đã sửa ở `a45cff2`.
+- `a45cff2` (run `38931817424`) bị **`cancelled`** vì push mới hơn cùng nhánh — không phải đỏ vì test.
+
+Không có ca nào bị bỏ: số khai báo test trong `app/test/board/` đi từ **139 → 152** theo
+`grep -cE "^\s*(test|testWidgets)\("` từng file — `boundaries 7 · controller 24 · previews 2 · view 23`
+**không đổi**, `layout 17 → 24` (+7: cạnh thật của connector, anchor theo đoạn tô, phạm vi statement,
+số đo font đưa vào), `codec 66 → 72` (+6: taxonomy `missingCopy` vs `wrongType` và `unanchoredConnector`).
+Riêng khai báo ma trận ở `board_view_test` là MỘT vòng lặp sinh **96 ca chạy thật**
+(2 plan × 4 beat × 2 locale × 2 khổ × 3 fontScale {1.0, 1.3, 2.0}), thay cho 8 ca beat-0 cũ.
+
+Run `38932075485` @ `ac88109` (report `117081115914`, title `FAILED: analyze=1, test=1`): `analyze`
+còn **2 error** cùng một loại — tôi đoán `getAllSize` tồn tại, nó cũng không — `test` **`+303 -2`**
+với đúng hai tên đã thấy ở `dc2fd3e` (`board_previews_test: chụp board-…png và đo điểm ảnh`,
+`board_view_test: loading …`), `render` `+10`. Hai chữ "loading" ở nghĩa vụ bằng chứng: **23 ca
+trong file view (kể cả 96 ca ma trận) chưa từng chạy**, nên tôi không được phép nói ma trận đã đạt.
+`4fbcd62` là commit sửa nốt hai điểm đó + thay bằng chứng ảnh; số run của nó sẽ nối vào mục này khi
+đọc được từ check-run (tôi để trống chứ không ghi số suy đoán).
+
+**Vẫn mở, không tự đóng:** `PQC-010` chờ design mở ảnh và đọc lại assertions; board **chưa** nối
+`LessonScreen`/AI/voice; widget test không phải bằng chứng thiết bị hay TalkBack; 512 px vẫn là
+projection; `PQC-011/012/013` chưa bắt đầu.
+
+### EV-ID-025 — vòng 3 tiếp diễn: bốn commit, và lần đầu tôi MỞ ảnh bằng chứng của chính mình
+
+Mọi số dưới đây đọc từ `gh api` trong cùng vòng lặp, không ghi từ trí nhớ: run id lấy từ
+`actions/runs?head_sha=`, báo cáo là check-run **tên `PyQuest check`** (`.output.text`), không phải job
+tên `check`.
+
+| commit | run | report check-run | analyze | `test` | `render` | ảnh board |
+|---|---|---|---|---|---|---|
+| `dc2fd3e` | 38931215746 | 117077155500 | 5 issue / 3 error | `+303 -2` | `+10` | 8 |
+| `a45cff2` | 38931817424 | — | **cancelled** (push mới đè, không phải đỏ) | — | — | — |
+| `ac88109` | 38932075485 | 117081115914 | 2 error (`getAllSize` cũng không tồn tại) | `+303 -2` | `+10` | 8 |
+| `4fbcd62` | 38933448702 | 117084809790 | **No issues found!** | `+323 -101` | `+10` | 8 |
+| `1b91482` | 38936234960 | 117094012750 | 7 error (`unchecked_use_of_nullable_value`) | `+318 -19` | `+10` | 0 (file không compile được) |
+| `0661523` | 38937259219 | (đang chạy) | | | | |
+
+Bốn bài học kỹ thuật, ghi lại vì mỗi cái đều trả giá bằng một run:
+
+1. **`WidgetTester.getAllSizes` và `getAllSize` đều không tồn tại ở SDK của repo này.** Sau hai lần
+   đoán, số đo chữ trong test lấy bằng `tester.getSize(finder.at(i))` + `find.descendant` — hai API
+   đã có mặt trong test khác của cùng nhánh. Dự đoán tên API khi sandbox không có toolchain = đánh
+   cược bằng CI, và cái giá không phải một lỗi mà là **cả file chết ở bước `loading`**: 23 declaration
+   (96 ca ma trận) chạy 0 lần, số failure GIẢM mà coverage biến mất. Đọc `### analyze.txt`, đừng chỉ
+   đọc `Failing tests:`.
+2. **`x!` chỉ tạo promotion cho các dòng KẾ TIẾP.** Tôi dời `shot!` xuống dưới bảy dòng đọc số đo,
+   và `board_previews_test.dart` chết compile — mất trọn bộ 40 ảnh dù pipeline đã sẵn sàng. Bind
+   `final _Shot s = shot!;` ngay sau `expect(shot, isNotNull)`.
+3. **Báo cáo CI giữ đầu + đuôi của mỗi log** (`ci/report.py`: `head = budget//3`, rồi tail, giữa là
+   `[trimmed]`), và `Failing tests:` chỉ in bốn tên + `... and N more`. Vì vậy 96 declaration cùng đỏ
+   = không có chẩn đoán. Cách tôi dùng trong `1b91482`/`0661523`: **gộp theo nhóm kiểm tra** (mỗi
+   nhóm vẫn đi qua cả 96 combo, có `expect(seen, 96)` để chính độ rộng ma trận là một assertion) và
+   **đặt các declaration đó CUỐI `main()`**, để tên của nó rơi vào phần đuôi còn đọc được.
+4. **Số ảnh đã đăng là một oracle:** `ci/publish_previews.py` tạo check-run
+   `preview|<stem>|<i>|<n>` cho từng file trong `app/build/previews`, vì thế "8/40 ảnh" cho biết vòng
+   lặp capture đã abort ở job thứ 9 — đúng chỗ ca đo ảnh của tôi raise, không phải chỗ pipeline hỏng.
+
+**Ảnh tôi đã mở (bằng chứng thị giác đầu tiên của PQC-010 ở phía code).** Tôi tải cả 8 stem
+`preview|board-*` của `4fbcd62`, ghép base64 theo thứ tự chunk và giải mã ra JPEG:
+`/tmp/pqimg/board-mq1_01_s2-b1-code-highlight-390x844-font1.0-vi.jpg` (25166 B),
+`...-b2-quote-tokens-390x844-font2.0-vi.jpg` (60293 B) và sáu file còn lại. Những gì tôi thấy, nói
+đúng mức một người mở ảnh thấy được:
+
+* ảnh **nền trắng**, không còn vệt đen; header `mq1_01 · mq1_01_s2 · 1/4 · nova`; title/say/caption
+  là font Việt thật (không phải Ahem), dấu câu và dấu thanh đúng;
+* `b1` (font 1.0): nền tô vàng nằm **đúng trên `print` của hộp code**, không phải trên hàng chú thích;
+* `b2` (font 2.0): **ba** mảng tô terpisah — `print`, dấu `"` mở, dấu `"` đóng — tức mỗi lần xuất hiện
+  của token có anchor riêng, và chữ không bị clipped ở mép phải dù mọi nhãn đã dồn thành 3-5 dòng;
+  ba control `Trước / Xem lại từ đầu / Tiếp` tự xuống dòng thành hai hàng, không tràn;
+* `b1` font 1.0 để lại khoảng trắng lớn phía dưới (board cao hơn nội dung) và hàng chú thích
+  `print   đưa nội dung ra màn hình` đứng rời, không có gì nối nó với hộp code — **đó là câu hỏi thẩm
+  mỹ thuộc về design**, tôi không tự đổi thiết kế để "đẹp hơn".
+
+Giới hạn của bằng chứng này, nói trước để không bị đọc quá: publisher **resize về rộng 480 và chuyển
+JPEG**; ảnh chỉ trả lời "có tô đúng chỗ không, có tràn không, có chữ không", không dùng để đo pixel.
+Mọi con số pixel (kích thước ảnh, số cấp sáng, dải mực của connector) phải đến từ `MANIFEST.txt` và
+assertion trong `board_previews_test.dart`. Ảnh **không** phải bằng chứng chạy trên thiết bị hay
+TalkBack, và board **chưa** nối `LessonScreen`/AI/voice.
+
