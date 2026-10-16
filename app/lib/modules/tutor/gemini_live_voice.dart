@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:record/record.dart';
@@ -45,7 +44,9 @@ class GeminiLiveVoice {
   final void Function(String text, {required bool fromUser}) onTranscript;
   final void Function(String message) onError;
 
-  final AudioRecorder _recorder = AudioRecorder();
+  /// Created on first use: constructing it talks to the platform plugin, and a
+  /// lesson that never opens the microphone must not pay for that.
+  late final AudioRecorder _recorder = AudioRecorder();
   final PcmAudioOutput _output;
 
   late final PcmTurnPump _pump = PcmTurnPump(
