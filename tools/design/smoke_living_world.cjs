@@ -1,6 +1,6 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium:pw}=require('playwright-core'),chromium=require('@sparticuz/chromium').default;
-const out=path.resolve(__dirname,'../../docs/design/living-world-prototype/evidence');
+const out=process.env.EVIDENCE_DIR?path.resolve(process.env.EVIDENCE_DIR):path.resolve(__dirname,'../../docs/design/living-world-prototype/evidence');
 (async()=>{const browser=await pw.launch({executablePath:process.env.BROWSER_EXECUTABLE_PATH||await chromium.executablePath(),args:chromium.args,headless:true});try{
  fs.mkdirSync(out,{recursive:true});const page=await browser.newPage({viewport:{width:1440,height:1100},deviceScaleFactor:1,locale:'vi-VN'});const errors=[];page.on('pageerror',e=>errors.push(String(e)));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`)});
  await page.goto(process.env.GALLERY_URL||'http://127.0.0.1:8001/',{waitUntil:'networkidle'});

@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-16",
+  "scope": "P03/P04 HTML prototypes and authored content contract only; not Flutter/device/AI/TTS",
+  "node": "v22.22.3",
+  "platform": "linux",
+  "architecture": "x64",
+  "server": "Python 3.11.2 / tools/design/serve_world.py / port 8001 / 0.0.0.0",
+  "playwright_core": "1.64.1",
+  "chromium_package": "153.0.0",
+  "browser_version": "153.0.8010.0",
+  "browser_mode": "headless",
+  "node_tests": {
+    "passed": 40,
+    "failed": 0,
+    "groups": {
+      "first_play": 8,
+      "tutor_board": 11,
+      "living_world": 8,
+      "locale": 9,
+      "authored_copy": 4
+    }
+  },
+  "browser_suites": {
+    "locale": "PASS",
+    "living_world": "PASS",
+    "tutor_board": "PASS"
+  },
+  "output_policy": "EVIDENCE_DIR per suite under /home/user/.cache/pyquest-review; did not overwrite published screenshots",
+  "note": "Earlier 36 = 27 gameplay/board regressions + 9 locale. This review adds 4 content-only tests. No production validator/scheduler test claimed.",
+  "tested_file_sha256": {
+    "tools/design/test_first_play.mjs": "7ec97eb8a5d59e013dc0305b524046d60039e7e9e10097934143a3abc8454686",
+    "tools/design/test_tutor_board.mjs": "768a7b5fc5d0803b96aad14ce0f71eac00c11a3dfe971976ec5f12c53aa1db35",
+    "tools/design/test_living_world.mjs": "2c160b7e3f367b56333477948ddcbda203d6d3bc6a2eec9424eb2245fdc84823",
+    "tools/design/test_locale.mjs": "c47b67262a18ac0da46cded2f43234d6e594dd992a49f45c5b4a5a018b7f078b",
+    "tools/design/test_board_copy.mjs": "2653dfcd08a176215fe1a1d4101359dca71bfa8491ab46e2248b73d2e8a5a286",
+    "tools/design/smoke_locale.cjs": "82de5d1c7f0c0875984489cf1204a4c99edc9b295611be33fa969890b38932ec",
+    "tools/design/smoke_living_world.cjs": "6f1bcc64d892dcdfc8b0664cb70d4c89d6aa0d65336dddd9c7837ea316997bf4",
+    "tools/design/smoke_tutor_board.cjs": "6fee28259fb451b356f6d502d89d08e1d26cf00caed16dda09242af8c80f51da",
+    "docs/design/tutor-board-prototype/authored-copy.v1.json": "003a573b76e1363c4ed89280149a245b4ca4726662bee12e0b1545b8c960459c"
+  }
+}

@@ -85,5 +85,11 @@
     "fallback": "en",
     "persistence": "Only language preference in localStorage; learner work remains session-only",
     "production_flutter_changed": false
+  },
+  "authored_copy_handoff": {
+    "path": "authored-copy.v1.json",
+    "bytes": 9359,
+    "sha256": "003a573b76e1363c4ed89280149a245b4ca4726662bee12e0b1545b8c960459c",
+    "status": "Design content only; not consumed by HTML runtime; not a validated Flutter TeachingPlan"
   }
 }

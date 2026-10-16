@@ -101,3 +101,12 @@ PQD-003 revision 3 nhận yêu cầu này vào board contract ngay từ đầu. 
 allowlist/migration/test plan cho foundation locale trước khi mở runtime work order;
 không đợi redesign mọi màn xong mới nghĩ tới localization, không trộn rewrite toàn
 app với NPC engine. Giữ PQC-009 delivery; PQC-008 và các gate khác không tự mở.
+
+## Làm rõ sau source review263033a
+
+Getter `lang` mất phân biệt unset/explicit, nhưng raw storage không mất: SettingsService
+vẫn có `raw(key)` và load map từ repository. Migration đọc raw, không hỏi người dùng
+chọn một chính sách làm mất system default. Xem quyết định D6–D8 trong
+`coordination/reviews/PQD-003-r4.md`: English fallback, supported BCP47 tags + adapter
+cho enum cũ, delegates/generation trước port ARB UI, lesson translation overlay không
+copy grader. Caption/altText authored đổi ngay ở beat hiện tại khi đổi ngôn ngữ.

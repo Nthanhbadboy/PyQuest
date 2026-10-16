@@ -139,3 +139,13 @@ hoặc expected output. Đổi locale không mất bài/nét/tiến trình và k
 voice/reply locale cũ. Xem [LANGUAGE_AND_LOCALIZATION.md](LANGUAGE_AND_LOCALIZATION.md)
 cho fallback, VI/EN ban đầu, kiến trúc mở rộng và nghiệm thu toàn app. P03/P04 đã có
 mẫu tương tác; đây chưa phải bằng chứng Flutter/AI/voice đã đa ngôn ngữ.
+
+## Chốt contract sau phản hồi code — PQD-003 r4
+
+Xem `coordination/reviews/PQD-003-r4.md` cho các quyết định chuẩn mới nhất. V1 authored/
+caption-only, lesson-session state ngoài chat sheet, không đặt board trên Main Map.
+Content VI/EN của8beat ở `tutor-board-prototype/authored-copy.v1.json`; chưa wire vào
+HTML/Flutter semantics. Invalid plan reject nguyên khối; chỉ accept đúng session/
+revision/turn, không lấy revision lớn hơn làm điều kiện đủ. Giảm chuyển động không
+bỏ beat; chờ learner không timeout nhảy cuối. Đổi locale dừng audio và đổi caption/
+altText tại beat đang chọn, giữ code/ink/note. Những điều này còn cần runtime tests.

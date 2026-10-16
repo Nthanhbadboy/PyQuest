@@ -1,6 +1,6 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium:pw}=require('playwright-core');const chromium=require('@sparticuz/chromium').default;
-const output=path.resolve(__dirname,'../../docs/design/tutor-board-prototype/evidence');
+const output=process.env.EVIDENCE_DIR?path.resolve(process.env.EVIDENCE_DIR):path.resolve(__dirname,'../../docs/design/tutor-board-prototype/evidence');
 (async()=>{
  const browser=await pw.launch({executablePath:process.env.BROWSER_EXECUTABLE_PATH||await chromium.executablePath(),args:chromium.args,headless:true});
  try{

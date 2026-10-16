@@ -67,3 +67,16 @@ reset system, languagechange, manual ignores OS, corrupt preference, cross-tab,
 parent/iframe, denied storage, code literal/output unchanged, giữ note/ink/beat,
 route không reset, Escape/focus return, EN phone390×844/360×640 và desktop1440×1100.
 Không coi kết quả này là acceptance Flutter/AI/TTS hay review bản dịch với trẻ thật.
+
+## Tái kiểm độc lập / môi trường
+
+`evidence/review-environment.json` ghi phiên bản Node/browser thật và lần chạy lại
+40 Node tests (36 cũ +4 kiểm content copy), ba browser suites. Đây không phải Flutter.
+Người nhận có thể chạy vào thư mục của mình, không đụng evidence đã xuất bản:
+
+```sh
+EVIDENCE_DIR=/path/to/own-output/locale NODE_PATH=/path/to/node_modules node tools/design/smoke_locale.cjs
+```
+
+`smoke_living_world.cjs` và `smoke_tutor_board.cjs` cũng nhận EVIDENCE_DIR; dùng thư mục
+khác nhau cho từng suite. Nhớ server8001 và browser dependencies như phần trên.

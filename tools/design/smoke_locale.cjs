@@ -1,6 +1,6 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium:pw}=require('playwright-core'),chromium=require('@sparticuz/chromium').default;
-const url=process.env.GALLERY_URL||'http://127.0.0.1:8001/';const out=path.resolve(__dirname,'../../docs/design/shared-l10n/evidence');
+const url=process.env.GALLERY_URL||'http://127.0.0.1:8001/';const out=process.env.EVIDENCE_DIR?path.resolve(process.env.EVIDENCE_DIR):path.resolve(__dirname,'../../docs/design/shared-l10n/evidence');
 (async()=>{const browser=await pw.launch({executablePath:process.env.BROWSER_EXECUTABLE_PATH||await chromium.executablePath(),args:chromium.args.filter(a=>a!=='--single-process'),headless:true});try{
  fs.mkdirSync(out,{recursive:true});const context=await browser.newContext({locale:'en-GB',viewport:{width:1440,height:1100}});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(String(e)));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`)});
  await page.goto(url,{waitUntil:'networkidle'});assert.equal(await page.locator('html').getAttribute('lang'),'en');assert.equal(await page.locator('#world-title').innerText(),'What shall we explore today?');assert.equal(await page.evaluate(()=>localStorage.getItem('pyquest.prototype.language.v1')),null,'System default must not persist its resolved language');

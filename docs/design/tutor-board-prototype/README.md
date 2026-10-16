@@ -88,3 +88,11 @@ Cài đặt → Theo hệ thống / Tiếng Việt / English, đổi UI/Tutor sc
 bài đang làm. BCP47 regional matching, English fallback, lựa chọn lưu qua reload.
 Xem `../shared-l10n/README.md` và `../LANGUAGE_AND_LOCALIZATION.md`; production Flutter
 chưa triển khai, literal code/output của bài nguồn không bị dịch.
+
+## Copy bàn giao production (chưa wire runtime)
+
+`authored-copy.v1.json` cung cấp title/say/caption/altText VI+EN cho8beat, stable IDs,
+source mapping và waitForLearner. Đây là content contract, không phải production
+TeachingPlan; HTML vẫn dùng lessons.json + shared-l10n, không được tuyên bố đã kiểm
+TalkBack từ file copy mới. Chạy `node --test tools/design/test_board_copy.mjs` (4 tests).
+Ba browser smokes hỗ trợ `EVIDENCE_DIR=/path/to/own-output` để không ghi đè ảnh của design.

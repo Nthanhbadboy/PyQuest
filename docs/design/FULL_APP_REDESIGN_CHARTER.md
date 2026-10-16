@@ -204,3 +204,15 @@ hoặc expected output. Đổi locale không mất bài/nét/tiến trình và k
 voice/reply locale cũ. Xem [LANGUAGE_AND_LOCALIZATION.md](LANGUAGE_AND_LOCALIZATION.md)
 cho fallback, VI/EN ban đầu, kiến trúc mở rộng và nghiệm thu toàn app. P03/P04 đã có
 mẫu tương tác; đây chưa phải bằng chứng Flutter/AI/voice đã đa ngôn ngữ.
+
+## Trụ cột chơi lâu dài — nhắc lại từ người dùng
+
+Bạn bè, thi đấu, phần thưởng/danh hiệu, động viên sau màn và mini-game là phần cốt lõi,
+không phụ kiện của Tutor. Thiết kế song song các luồng: chơi → vượt thử thách → tổng
+kết/ghi nhận → trưng bày → bạn bè/so tài → thử thách mới. Nguồn: Product Vision§7,
+11–13,15–16; Game Design§6–10,12; ARENA_CREATOR_COMPETITION_BRIEF. Roadmap online có thể
+chia giai đoạn nhưng không xóa social/đội/Creator League khỏi thiết kế toàn app.
+NPC hư cấu không thay bạn bè thật; không fake leaderboard, điểm thưởng hoặc kết quả.
+Động viên không gây áp lực cày liên tục, không mất phần thưởng đã kiếm khi nghỉ. Giữ
+private-by-default phù hợp, quyền phụ huynh/chặn/báo cáo khi thiết kế cộng đồng trẻ em.
+Đây là định hướng cần triển khai, **chưa có prototype social/thi đấu mới ở gói review này**.

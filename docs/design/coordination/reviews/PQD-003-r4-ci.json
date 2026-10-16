@@ -1,0 +1,52 @@
+{
+  "reviewed_code_commit": "db9b59f237d4abde76dd544ed7760c87312ce43e",
+  "review_method": "Independent gh API check reports + pinned git source read; no local Flutter/device execution",
+  "runs": [
+    {
+      "code_sha": "e546f9b504598c0f7ebc58ca3c39833f28540c46",
+      "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38890785888",
+      "check_run_id": 116940913688,
+      "conclusion": "success",
+      "phases": "| phase key | exit |\n|---|---|\n| pub_get | 0 |\n| analyze | 0 |\n| test | 0 |\n| render | 0 |",
+      "verified_report_lines": [
+        "Flutter 3.47.7 • channel stable • https://github.com/flutter/flutter.git",
+        "Tools • Dart 3.13.5 • DevTools 2.60.0",
+        "No issues found! (ran in 8.6s)",
+        "00:37 +167: All tests passed!",
+        "PQC-009 imageCache khi mở lần lượt sáu sheet (cache của engine trên máy CI, KHÔNG phải RAM/GPU thiết bị): j00=7entries/11501568B -> j01=7entries/11501568B -> j02=7entries/11501568B -> j03=7entries/11501568B -> j04=7entries/11501568B -> j05=7entries/11501568B",
+        "00:16 +10: All tests passed!"
+      ],
+      "report_sha256": "e442ea4509cb650e2aa6ab22648ce73d36ba5a2ca27016f69cfa00592c9075b6"
+    },
+    {
+      "code_sha": "c828ad4f46495f2998f8d33e1c96e958670f12d4",
+      "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38892233871",
+      "check_run_id": 116945607176,
+      "conclusion": "success",
+      "phases": "| phase key | exit |\n|---|---|\n| pub_get | 0 |\n| analyze | 0 |\n| test | 0 |\n| render | 0 |",
+      "verified_report_lines": [
+        "Flutter 3.47.7 • channel stable • https://github.com/flutter/flutter.git",
+        "Tools • Dart 3.13.5 • DevTools 2.60.0",
+        "No issues found! (ran in 10.8s)",
+        "00:38 +167: All tests passed!",
+        "PQC-009 imageCache khi mở lần lượt sáu sheet (cache của engine trên máy CI, KHÔNG phải RAM/GPU thiết bị): j00=7entries/11501568B -> j01=7entries/11501568B -> j02=7entries/11501568B -> j03=7entries/11501568B -> j04=7entries/11501568B -> j05=7entries/11501568B",
+        "00:22 +10: All tests passed!"
+      ],
+      "report_sha256": "fa4d3d80c0efd3601b715343eb0e7327a86bbdfde1b9ae9bbcab25c2d8e58c17"
+    }
+  ],
+  "app_tree_identity": {
+    "e546f9b": "9bfd13b190ffe2ad39ef63148e9da15436c51a48",
+    "c828ad4": "9bfd13b190ffe2ad39ef63148e9da15436c51a48",
+    "263033a": "9bfd13b190ffe2ad39ef63148e9da15436c51a48",
+    "db9b59f": "9bfd13b190ffe2ad39ef63148e9da15436c51a48"
+  },
+  "verdict": "CI facts verified; PQC-009 keyboard characterization CHANGES_REQUESTED (only post-loop focus asserted)",
+  "limits": [
+    "Sampled current ImageCache only; not peak/RAM/GPU",
+    "512px cache cost is projected, not measured",
+    "Keyboard six-step cycle ambiguity requires per-step assertion",
+    "APK build skipped in reviewed runs",
+    "No art/device/voice approval"
+  ]
+}
