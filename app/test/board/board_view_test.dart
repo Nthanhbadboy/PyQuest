@@ -649,7 +649,6 @@ void main() {
 
   testWidgets('R10-D1-sem-VI: output node contains the authored Vietnamese label',
       (WidgetTester tester) async {
-    final SemanticsHandle handle = tester.ensureSemantics();
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     while (controller.beatIndex < 2) {
@@ -665,14 +664,16 @@ void main() {
     final Map<String, dynamic> alt =
         (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
     final String viAlt = alt['vi']! as String;
-    expect(find.bySemanticsLabel(RegExp(RegExp.escape(viAlt))), findsWidgets,
-        reason: 'authored VI label must occur in the real semantics tree: "$viAlt"');
-    handle.dispose();
-  });
+    final String actual = tester
+        .getSemantics(find.byKey(const ValueKey<String>('board_output_2_1_label')))
+        .label;
+    expect(actual, contains(viAlt), reason: 'expected VI "$viAlt", actual "$actual"');
+    expect(actual, isNot(contains(alt['en']! as String)),
+        reason: 'initial VI node must not expose EN: "$actual"');
+  }, semanticsEnabled: true);
 
   testWidgets('R10-D2-sem: sau setLocale(en), semantic output cập nhật sang EN',
       (WidgetTester tester) async {
-    final SemanticsHandle handle = tester.ensureSemantics();
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     while (controller.beatIndex < 2) {
@@ -687,15 +688,15 @@ void main() {
         (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
     controller.setLocale('en');
     await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel(RegExp(RegExp.escape(alt['en']! as String))), findsWidgets,
-        reason: 'authored EN label must occur in the semantics tree');
-    expect(find.bySemanticsLabel(RegExp(RegExp.escape(alt['vi']! as String))), findsNothing);
-    handle.dispose();
-  });
+    final String actual = tester
+        .getSemantics(find.byKey(const ValueKey<String>('board_output_2_1_label')))
+        .label;
+    expect(actual, contains(alt['en']! as String), reason: 'expected EN, actual "$actual"');
+    expect(actual, isNot(contains(alt['vi']! as String)));
+  }, semanticsEnabled: true);
 
   testWidgets('R10-D3-sem: sau advance và EN→VI, semantic output trở lại VI',
       (WidgetTester tester) async {
-    final SemanticsHandle handle = tester.ensureSemantics();
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     while (controller.beatIndex < 2) {
@@ -718,11 +719,12 @@ void main() {
     expect(controller.beatIndex, 3);
     await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
     await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel(RegExp(RegExp.escape(alt['vi']! as String))), findsWidgets,
-        reason: 'authored VI label must return in the semantics tree after EN→VI');
-    expect(find.bySemanticsLabel(RegExp(RegExp.escape(alt['en']! as String))), findsNothing);
-    handle.dispose();
-  });
+    final String actual = tester
+        .getSemantics(find.byKey(const ValueKey<String>('board_output_2_1_label')))
+        .label;
+    expect(actual, contains(alt['vi']! as String), reason: 'expected VI after EN→VI, actual "$actual"');
+    expect(actual, isNot(contains(alt['en']! as String)));
+  }, semanticsEnabled: true);
 
   testWidgets('r7 §R7-C: fallback notice lưu MÃ, câu chữ theo locale hiện hành', (WidgetTester tester) async {
     final Map<String, dynamic> plan = composedPlan(0);
