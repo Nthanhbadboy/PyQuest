@@ -200,6 +200,9 @@ bằng `pumpWidget(SizedBox.shrink())` rồi pump thêm 1100 ms (> chu kỳ time
 callback kịp chạy và tự thoát nhờ guard `if (!mounted) return`. Không đổi assertion, không
 `ignore` lỗi, không đụng `app/lib/**`.
 
+Xác nhận sau khi sửa: run `38873995396` @ `f73f852` → **All steps passed**
+(`pub_get=0 analyze=0 test=0 render=0`, `No issues found! (11.3s)`, `+147`, render `+9`).
+
 Ghi nhận cho design (không tự sửa, thuộc scope runtime): mini-game **không huỷ** delayed
 callback khi dispose, chỉ dựa vào guard `mounted`. Trong app thật vô hại, nhưng nếu sau này
 `_finish` ghi DB/sau animation thì sẽ có callback chạy sau khi màn chơi đã đóng. Đề xuất
