@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "type": "HTML design prototype, NOT Flutter evidence",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1100
+    },
+    {
+      "width": 390,
+      "height": 844
+    },
+    {
+      "width": 360,
+      "height": 640
+    }
+  ],
+  "checks": [
+    "six map destinations",
+    "honest unimplemented-route state",
+    "real fixture collision",
+    "two-step hint and Escape",
+    "both fixture wins",
+    "gem collection",
+    "session-only completed count",
+    "stop cancels pending result",
+    "board does not overlap adjacent panels",
+    "no horizontal overflow",
+    "direction controls at least 48px",
+    "no JS or HTTP errors"
+  ]
+}

@@ -116,6 +116,9 @@ Ba tầng, và app luôn nói rõ câu trả lời đến từ tầng nào:
 
 ## Thiết kế & hình ảnh gốc
 
+**Mẫu first-play mới:** [Robo → làng → thử thách → chơi/sửa lỗi → kết quả](docs/design/first-play-prototype/README.md)
+— prototype HTML có tương tác, **chưa tích hợp Flutter**.
+
 **Bộ thiết kế mới:** [Village Kit 01 — 6 landmark 2.5D](docs/design/village-kit/README.md)
 (PNG gốc, WebP tối ưu, gallery so sánh và manifest; **chưa tích hợp runtime**).
 [Báo cáo so sánh/nhập nhánh và kiểm tra](docs/design/BRANCH_IMPORT_AND_ASSET_AUDIT.md).

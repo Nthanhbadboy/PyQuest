@@ -1,0 +1,33 @@
+{
+  "method": "WCAG sRGB relative luminance for selected opaque token pairs only. Not an audit of every pixel/state or disabled controls.",
+  "pairs": [
+    {
+      "role": "primary text",
+      "foreground": "#163c42",
+      "background": "#f8f8f1",
+      "contrast_ratio": 11.19,
+      "meets_4_5": true
+    },
+    {
+      "role": "body muted",
+      "foreground": "#526963",
+      "background": "#f8f8f1",
+      "contrast_ratio": 5.53,
+      "meets_4_5": true
+    },
+    {
+      "role": "button label",
+      "foreground": "#ffffff",
+      "background": "#176c60",
+      "contrast_ratio": 6.27,
+      "meets_4_5": true
+    },
+    {
+      "role": "error text",
+      "foreground": "#843e2c",
+      "background": "#fbe8dc",
+      "contrast_ratio": 6.53,
+      "meets_4_5": true
+    }
+  ]
+}

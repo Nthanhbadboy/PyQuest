@@ -32,14 +32,14 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Revision 3 của `PQD-001` là `CHANGES_REQUESTED`: intake r1/r2 đã được design review.
-Đọc `docs/design/coordination/reviews/PQD-001-r3.md` để nhận PQC-003 test/evidence
-và bản sửa coordinator. Được sửa test/tool trong allowlist, **không sửa runtime**.
-Không tiếp tục chỉ ACK rồi chờ khi có việc đã được giao rõ phạm vi.
+Revision 4 của `PQD-001` là `ACCEPTED` cho milestone intake/test/harness, không phải
+art hay runtime. Đọc `docs/design/coordination/reviews/PQD-001-r4.md`, rồi nhận task
+`docs/design/coordination/tasks/PQD-002.md`. Artifact first-play đã có tại
+`docs/design/first-play-prototype/`: xem/bấm thử, đối chiếu source và bổ sung test
+trong allowlist. Không tiếp tục làm thêm polling/delegation nếu không có blocker.
 
-Mục tiêu vẫn là redesign toàn app theo `FULL_APP_REDESIGN_CHARTER.md`; sáu thumbnail
-không phải đích cuối. Ghi delta, test và blocker vào:
-`docs/implementation/coordination/tasks/PQD-001.md`.
+Mục tiêu vẫn là redesign toàn app theo `FULL_APP_REDESIGN_CHARTER.md`, không dừng ở
+thumbnail. Ghi delta task mới vào `docs/implementation/coordination/tasks/PQD-002.md`.
 
 Runtime chỉ được thay khi READY_FOR_CODE + runtime=yes và gate của task đạt.
 Test/coordination có flag và allowlist riêng; không suy từ đó ra quyền thay art/lib.
