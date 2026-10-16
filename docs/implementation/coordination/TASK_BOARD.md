@@ -1,9 +1,14 @@
 # Bảng việc của nhánh code — PQD-001 và các work order phái sinh
 
-Cập nhật: 2026-10-16, lead @ code tip `10fd7aa`, design đã nhận **revision 3**
-(`560106e725e93c9385fd067d554693cf16e80a69`, verdict `CHANGES_REQUESTED`).
-Gate theo scope của revision 3: **`runtime=no` · `test=yes` · `coordination=yes`**
-(`art_approval: pending`).
+Cập nhật: 2026-10-16, lead @ code tip `3b59f0b` (+ lượt PQC-009). Design đã push
+**PQD-002 revision 2** @ `d321e986b97c4e039d9a4f45d2ad3e26a172d5b6`: verdict cho bảng
+feasibility rev-1 là `CHANGES_REQUESTED`, kèm `reviews/PQC-007/REVIEW.md` (phản biện từng
+dòng) và `docs/design/first-play-prototype/IMPLEMENTATION_DECISIONS.md` (trả lời sáu câu
+§A.3). Gate **không đổi**: **`runtime=no` · `test=yes` · `coordination=yes`**
+(`art_approval: pending-prototype-review`) — quyết định thiết kế **không** mở gate runtime
+và **không** thay người dùng duyệt art.
+Bảng feasibility của rev-1 đã được sửa tận nơi trong `tasks/PQD-002.md` theo số của
+`reviews/PQC-007/facts.json` (tôi chạy lại `audit.py`: output khớp 100 %).
 
 Cột `scope` là **quyền sửa** (design cấp gì); cột `trạng thái` là **sẵn sàng làm**
 (order có phụ thuộc/thiết bị nào chưa). `brief <id>` kiểm cột đầu, không kiểm cột sau.
@@ -16,16 +21,18 @@ Trạng thái: `READY` · `QUEUED` · `BLOCKED` · `IN_PROGRESS` · `READY_FOR_R
 | PQC-003 | Test mở đủ 6 ActivitySheet + evidence trước/sau (chỉ `app/test`) | test | rev 3 cho làm ngay | `DONE` — CI run `38871660306` @ `c39a86f`: `test=0` với `+147` (23 test mới pass), `render=0` `+9`; lint đã sửa, bằng chứng ở EV-ID-006/-007/-008 | EV-ID-006/007/008 |
 | PQC-004 | Đóng gate thiết bị cho Gemini Live trên Release APK | coordination (blocked_on: thiết bị) | cần phiên có emulator/thiết bị + nghe bằng tai | `BLOCKED` | `pyquest-release-apk` (run 93) |
 | PQC-005 | Regenerate `app/pubspec.lock` cho nhóm dependency audio | runtime (dependency) | sandbox không có SDK; `pub get` của CI tự resolve 14 gói → cần quyết định có commit lock hay không | `BLOCKED` | — |
-| PQC-007 | Đối chiếu feasibility P02 (bảng A.1–A.3 trong `tasks/PQD-002.md`) với design + người dùng; chốt 6 câu hỏi | coordination | design trả lời §A.3; người dùng chốt hướng hub | `READY` — delegate được ngay, không sửa code | PQD-002 rev 1 |
-| PQC-008 | Semantics/focus cho 6 ô landmark + test route `lesson:<id>` tới đúng bài | **runtime** | `runtime=no`; cần design bật gate vì chạm `main_map_screen.dart:165` | `BLOCKED` | PQC-007, ruling của §A.3 câu 5 |
+| PQC-007 | Đối chiếu feasibility P02 (bảng A.1–A.3) — phản biện độc lập từng `file:line` + số đo | coordination | design làm ở `arena/00838eb9-pyquest`; code **nhận corrections** và nhập `reviews/PQC-007/**` (audit tái hiện khớp, 9/9 ảnh khớp sha256) | `DONE` (verdict `CHANGES_REQUESTED` đã áp dụng; 4 over-claim bị rút — xem `tasks/PQD-002.md` §D, EV-ID-016) | — |
+| PQC-008 | Semantics/focus cho 6 ô landmark **trên thiết bị** (TalkBack, Tab/Enter/Space, focus-return, duplicate node) — rev 2 đã **tách** phần route lesson sang PQC-009 | **runtime** | `runtime=no`; prompt mới cấm snippet API chưa kiểm chứng (`Semantics(actionLabel:)`, `SemanticsController`) | `BLOCKED` — chưa ai authorized; PQC-009 characterize mức code xong, **không** được tính là PQC-008 xong | design bật gate runtime đúng allowlist |
+| PQC-009 | Route lesson thật + characterization geometry/cache/semantics (test-only, `app/test/**`) | test | rev 2 mở: `ALLOWED for scope=test` theo `brief PQC-009` | `READY_FOR_REVIEW` — `app/test/lesson_route_regression_test.dart` (5 test) + 3 nhóm sửa trong `activity_sheet_thumbnails_test.dart`; **chờ số CI trên đúng commit** rồi mới ghi `DONE` (EV-ID-016) | PQC-007 corrections ✅ |
 | PQC-006 | Đồng bộ 1 dòng audience trong `docs/PyQuest_Reffrence_Images/VILLAGE_2_5D_REDESIGN_BRIEF.md` theo `PRODUCT_VISION.md:17` (under-12) | coordination | design đã sửa ở rev 3 trên tài liệu của họ và cho phép nhập đúng câu đó | `DONE` — **một dòng**, byte-identical với bản design (đã `diff` với `560106e`); không đổi ảnh, không đổi định vị | — |
 
 ## Delegate được ngay (mỗi dòng = một phiên agent khác, tự chặn nếu gate đóng)
 
-0. **PQC-007** (không cần SDK, không cần gate): đọc `tasks/PQD-002.md` §A, kiểm lại từng
-   `file:line` mà bảng dẫn, phản biện chỗ nào lead đo sai; kết quả ghi thành mục mới trong
-   `tasks/PQC-007.md` + câu hỏi còn mở cho design.
-1. **Chạy lại `brief` + đọc EV-ID và tìm chỗ nói quá** — delegate đối chiếu từng mục trong
+0. ~~**PQC-007**~~ **đã DONE** (design phản biện, code nhận corrections). Việc test-only
+   kế tiếp là **PQC-009** và đã giao ở lượt này; delegate mới **không** cần thiết cho phần đã
+   được giao (rev 2 ghi rõ: một phiên code đang chạy có thể nhận PQC-009 trực tiếp).
+1. **Đọc `IMPLEMENTATION_DECISIONS.md` @ `d321e98` rồi rà `EVIDENCE.md` tìm chỗ nói quá** —
+   delegate đối chiếu từng mục trong
    `EVIDENCE.md` với lệnh thật (recipe CI ở `LEAD_RUNBOOK.md` §6); mục nào không tái hiện
    được thì hạ xuống `not run`, nếu CI đỏ thì sửa test chứ không sửa gate.
 2. **Rà soát bằng chứng** — đối chiếu từng EV-ID trong `EVIDENCE.md` với lệnh thật;

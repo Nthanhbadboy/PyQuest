@@ -204,13 +204,13 @@ Xác nhận sau khi sửa: run `38873995396` @ `f73f852` → **All steps passed*
 (`pub_get=0 analyze=0 test=0 render=0`, `No issues found! (11.3s)`, `+147`, render `+9`).
 
 Ghi nhận cho design (không tự sửa, thuộc scope runtime): mini-game **không huỷ** delayed
-callback khi dispose, chỉ dựa vào guard `mounted`. Trong app thật vô hại, nhưng nếu sau này
+callback khi dispose, chỉ dựa vào guard `mounted`. Chưa có đo lifecycle trên thiết bị để kết luận vô hại. Nếu sau này
 `_finish` ghi DB/sau animation thì sẽ có callback chạy sau khi màn chơi đã đóng. Đề xuất
 nhỏ cho gói UI/game riêng: lưu `Timer` và `cancel()` trong `dispose()`.
 
 ## EV-ID-011 — PQD-002 §B: test route thật + ngân sách byte — `verified trên CI của e98f826`
 
-File: `app/test/activity_sheet_thumbnails_test.dart` (443 dòng). Thêm/thay so với bản r3:
+File: `app/test/activity_sheet_thumbnails_test.dart` (xem hash/line count tại review PQC-007). Thêm/thay so với bản r3:
 
 * `group('route thật của sheet (showPQSheet) …')`: 7 ca. Mở sheet bằng **chính
   `showPQSheet`** của app ở `Size(360,640)@2` với `textScale 2.0` (đặt qua
@@ -227,13 +227,14 @@ File: `app/test/activity_sheet_thumbnails_test.dart` (443 dòng). Thêm/thay so 
   26.778 / 27.340 B, tổng **144.272 B**, cạnh 288 → pass; bản 512 (tổng 112.938 B, cạnh 512)
   cũng pass ⇒ **test không chặn PQC-002**.
 * `decodeAsset` dùng `try/finally` để `codec.dispose()` kể cả khi frame lỗi.
-* `group('ImageCache khi mở lần lượt sáu sheet')`: `cache.clear()` → `precacheImage` sáu
-  asset trong `runAsync` → in `entries/bytes/live` + assert `> 0` và `< 64 MiB`.
+* Group có tên “ImageCache khi mở lần lượt sáu sheet”, nhưng code thực tế chỉ
+  `cache.clear()` → `precacheImage` sáu asset trong `runAsync`; in `entries/bytes`
+  (không có live), assert entries≥1 và bytes<64MiB. Chưa chứng minh cả sáu còn ở cache.
   Ghi rõ trong comment: đây là ImageCache của engine trên máy test, **không phải** RAM/GPU
   thiết bị thật.
 * `group('vùng chạm của landmark …')`: dùng đúng công thức `_coverRect`/`toScreen` của
   `main_map_screen.dart:138` để tính `hitBox` ra px ở 360×640, assert mọi ô ≥ 48 px và
-  nằm trong 0..1.
+  right/bottom≤1.001 và kích thước dương; chưa assert left/top≥0 hoặc vùng sau clipping.
 
 Kết quả CI thật (`PyQuest CI` run `38881345619` @ `e98f826`): `pub_get=0 analyze=0 test=0
 render=0`, `No issues found! (ran in 11.0s)`, `flutter test` → **`+157: All tests passed!`**
@@ -249,32 +250,43 @@ bị cắt giữa (`... [trimmed] ...`) và endpoint `actions/jobs/<id>/logs` re
 storage ngoài danh sách host sandbox được phép → **lead không trích được con số ở đây** và
 không nêu số nào cả. Muốn số: mở run `38881345619` → job `check` → dòng `PQC-003 imageCache:`.
 
-## EV-ID-012 — Số đo hình học cho feasibility (PQD-002 §A.2)
+## EV-ID-012 — Số đo hình học: đã sửa bởi review độc lập PQC-007
 
-Tính bằng công thức của app (`kMapImageSize = 1152×2064`, `scale = max(w/imgW, h/imgH)`),
-không phải ước lượng:
+Source code `3b59f0b`, P02 `86513ca`. Số cũ (P02 1024²; crop ngang21%; bốn
+hitBox390; cover640×645 cho ảnh vuông) **sai**, không dùng làm đầu vào runtime.
+Chạy `python3 docs/implementation/coordination/reviews/PQC-007/audit.py` từ root;
+output đã pin ở `reviews/PQC-007/facts.json`, gồm source hash và file:line.
 
-| Khung | Nền thật vẽ ra | 6 `hitBox` (rộng×cao, px) |
+Công thức `_coverRect`: scale=max(w/imageW,h/imageH), destination căn giữa.
+Đơn vị logical px, giả định map constraints đúng full viewport, không nhân DPR.
+
+| Khung | Nền thật1152×2064 vẽ ra | Rect theo thứ tự main_quest, robot_maze, dragon_jump, catch_stars, bug_hunter, achievement_house |
 |---|---|---|
-| 390×844 @3 | 471×844 (crop 21 % chiều rộng) | 118×191, 154×122, 113×124, 85×105, 108×93, 94×108 — **nhỏ nhất 85×105** |
-| 360×640 @2 | 360×645 (crop 0,8 %) | 90×146, 117×93, 93×108, 85×80, 108×94, 94×108 — **nhỏ nhất 85×80** |
-| 360×640 với nền **vuông** 1024² (prototype) | 640×645 | chỉ **56,25 %** chiều rộng còn thấy ⇒ mọi toạ độ chuẩn hoá cũ lệch |
+|390×844|471.070×844; crop **17.2097% chiều rộng nguồn**|117.767×190.744;153.569×121.536;148.387×140.948;110.701×104.656;141.321×122.380;122.478×140.948|
+|360×640|360×645; crop **0.7752% chiều cao nguồn**, không crop ngang|90×145.770;117.360×92.880;113.400×107.715;84.600×79.980;108×93.525;93.600×107.715|
 
-Kết luận kỹ thuật (và là lý do PQC-002 không được "thay nền cho nhanh"): hitbox chỉ giữ
-nguyên nghĩa nếu nền mới có **cùng tỷ lệ và cùng cách crop**; ảnh làng mới là vuông.
-Cần design giao bảng toạ độ chuẩn hoá trên `village.webp` — tôi không tự đoán.
+P02 là **896×1200**,112,018B; full RGBA8 lý thuyết4,300,800B.
+- Cover full390×844 →630.187×844, còn61.8864% ngang.
+- Cover full360×640 →477.867×640, còn75.3348% ngang.
+- Ví dụ ảnh vuông1024² →640×640 trong360×640, còn56.25% ngang; **không phải P02**.
+- HTML P02 dùng contain trong map-region, không full-screen cover. Không suy ra vị trí
+  thực trong prototype từ phép tính giả định cover này.
+- Sáu point anchors đã có trong app.mjs (%/100). Chưa có production hit rect/polygon.
+- Thumbnail swap PQC-002 **không thay nền map**. Đừng dùng lỗi ratio để chặn lẫn hai scope.
+- Cùng ratio chưa đủ giữ hitbox: landmark mới còn phải cùng vị trí hình học.
 
-Không kiểm: `ChunkyButton small` = 44 px vẫn dưới sàn 48 px (giữ nguyên từ r3, chưa có
-ruling); contrast của prototype **không** phải của app — các con số 11.19 / 5.53 / 6.27 /
-6.53 là của `docs/design/first-play-prototype/evidence/contrast-check.json`, tự nó ghi
-"selected opaque token pairs only", không áp dụng cho token hiện tại của PyQuest.
+`ChunkyButton small`: face44 + padding depth4 **bên trong** GestureDetector ⇒ height48
+nếu constraints cho phép, chưa đo width/hit-test. Không dùng “44<48” làm bằng chứng
+sai target. RoundIconButton44 là case riêng (width44); cần widget measurements.
+
+Contrast11.19/5.53/6.27/6.53 thuộc bốn token pairs của HTML P02, không phải audit Flutter.
 
 ## EV-ID-013 — Before-set render cho sáu sheet (`render J`) — cách lấy ảnh
 
 Harness: `app/test/render/render_screens_test.dart` → `render J: activity sheet before-set
 (six + locked)`, cùng `start()/tap()/capture()/finish()` như các render khác,
 `toImage(pixelRatio: 1.5)`, publish qua `ci/publish_previews.py` (resize rộng ≤480 →
-hệ số 1.2308 ở khung 390). State: `j00_sheet_main_quest`, `j01_sheet_robot_maze`,
+hệ số final480/390=1.2308, final480/360=1.3333; không phải DPR). State: `j00_sheet_main_quest`, `j01_sheet_robot_maze`,
 `j02_sheet_dragon_jump`, `j03_sheet_catch_stars`, `j04_sheet_bug_hunter`,
 `j05_sheet_achievement_house` (seed `rich: true`), `j06_sheet_bug_hunter_locked`
 (seed người mới, 3 lần `welcome_next`), `j07_small_sheet_robot_maze`,
@@ -320,11 +332,67 @@ fixture giờ chặn `PQ_LEAD_STATE` vào thư mục tạm nên không đọc st
 1. Render "after" của bộ 512 chưa tồn tại vì chưa có asset mới — xem mục 2.
 2. Render "after" của bộ 512: phụ thuộc PQC-002, mà PQC-002 cần `runtime=yes` + người
    dùng duyệt art. Không tự thay asset để "có số liệu".
-3. Bộ đếm `ImageCache`/bộ nhớ decode khi mở nhiều sheet (review §1 mục 512-vs-384 yêu cầu
-   đo): cần Flutter SDK; lead không có số liệu, nên **không** kết luận 512 là rẻ.
-4. Con số contrast và vùng chạm thật của `ChunkyButton` (`small` = 44 px < sàn 48 px theo
-   charter): chỉ được sửa trong gói UI chung khi có quyết định design; chưa đo, chưa sửa.
+3. Bộ đếm `ImageCache` ở mức **precache per-key** đã có test và số đo đọc được từ
+   `currentSize`/`currentSizeBytes` trong test (PQC-009); nhưng (a) số **live images** vẫn
+   missing vì engine CI không có `currentLiveImages`, (b) log check-run bị cắt giữa nên không
+   trích con số công bố được, (c) **bộ nhớ decode/GPU/RSS trên thiết bị** khi mở nhiều sheet
+   vẫn chưa đo → **không** kết luận 512 px là rẻ hơn. W*H*4 không được dùng thay số đo.
+4. Contrast mới có 4 cặp token trong prototype; **vùng chạm** của `ChunkyButton.small` đã
+   đo bằng `RenderBox` trong test: mặt 44 + depth 4 padding **trong** hit area → 48 px cao
+   (không còn là “44 px dưới sàn” như rev-1 từng nói); `RoundIconButton(size:44)` rộng 44 và
+   depth cộng theo chiều dọc. Chưa có ruling thiết kế cho gói nút chung, chưa đo trên thiết bị,
+   và chưa kiểm overlay/clipping/hit arbitration → **không** đổi widget trong PQD-002.
 5. Giọng nói Gemini Live trên thiết bị (PQC-004), `flutter pub get`/`pubspec.lock` (PQC-005):
    vẫn cần phiên có emulator/SDK.
 6. Ảnh PNG master/WebP export **không** được render lại bằng art mới: không có art mới,
    không có pixel mới để so.
+
+## EV-ID-015 — PQC-007 đã tái kiểm độc lập ở nhánh design
+
+Review `reviews/PQC-007/REVIEW.md`: đủ12 dòng A.1/A.2, source pin3b59f0b/design86513ca,
+phép toán tái hiện, sửa cả kết luận hành vi/số đo. Không có external model delegate.
+Coordinator30/30 PASS local Python, không có Flutter/ADB/emulator local.
+
+GH run38881345619 head e98f826 success; check report chứa +157/+10 đã đọc độc lập.
+Đã tải đủ9 JPEG before của e98f826, không chỉ dựa vào danh sách filenames từ run đỏ;
+`reviews/PQC-007/ci-evidence.json` ghi check IDs/hash. Xem trực tiếp j01 và j08;
+các ảnh còn lại chưa được nghiệm thu visual. Không có bộ after hay memory/device claim.
+
+## EV-ID-016 — PQC-009 (test-only) đã giao + nhập corrections PQC-007 có kiểm tra tính toàn vẹn
+
+**Corrections được nhập, không chép tay.** Từ `d321e98` chỉ lấy các file docs/coordination
+(không merge nhánh design): `EVIDENCE.md`, `tasks/PQC-007.md`, `tasks/PQC-008.md`,
+`tasks/PQC-009.md`, `reviews/PQC-007/{REVIEW.md,audit.py,facts.json,ci-evidence.json}` +
+9 ảnh `reviews/PQC-007/before/*.jpg`. Kiểm tra tính toàn vẹn sau import, chạy thật:
+
+```sh
+python3 docs/implementation/coordination/reviews/PQC-007/audit.py > /tmp/pqc007.json
+cmp /tmp/pqc007.json docs/implementation/coordination/reviews/PQC-007/facts.json   # khớp
+# 9/9 file trước khớp "sha256" + "bytes" ghi trong ci-evidence.json
+```
+
+`audit.py` đọc blob **đã pin** (`3b59f0b`) chứ không đọc working tree, nên việc nó tái hiện
+trên nhánh này xác nhận số corrected, không phải xác nhận code của tôi. Bốn chỗ rev-1 tuyên
+bố quá (1024²/56,25 %; `command_limit` hard cap; TalkBack không tới được; `ChunkyButton`
+target 44) đã bị sửa ngay trong `tasks/PQD-002.md` và mục 3–4 ở trên.
+
+**Test mới (chỉ `app/test/**`, gate `test=yes`):**
+
+| File | Nội dung |
+|---|---|
+| `app/test/lesson_route_regression_test.dart` (mới) | 5 test: route map → sheet khóa → `sheet_go_lesson` → `MainQuestHomeScreen` (assert viền `PQColors.berry` trên card `mq1_03` = bằng chứng `openLessonId` tới screen), không `LessonScreen`, không đổi energy, không `lessonCompleted`; fixture `mq1_01`+`mq1_02` → tap card mới push `LessonScreen` và `energy.current` giảm đúng `config.cost('main_quest_lesson_first')` (=1); “Để sau” không phát `activityOpened`; characterization `Semantics(button:true)` của CTA vs sự vắng mặt khai báo ở `map_hit_*`; `_unlocked` không có đường vòng |
+| `app/test/activity_sheet_thumbnails_test.dart` | nhóm cache đổi tên **+ đổi cách đo** sang `precache qua ImageProvider thật` (resolve/decode từng key, giữ `ImageStreamListener` khi đọc `currentSize`/`currentSizeBytes`, assert `entries >= 6`); `hitBox` test thêm `left/top >= 0` và phần còn nhìn thấy sau cover crop (`intersect`, ≥48x48); nhóm mới `kích thước chạm đo từ RenderBox thật` đo `ChunkyButton.small` (48 cao characterization) và `RoundIconButton(44)` ở textScale 1 và 2 |
+
+Kỹ thuật đáng ghi lại cho đời sau (đều là lỗi thật đã trả giá):
+`MainMapScreen._ambient` là `AnimationController..repeat()` (`main_map_screen.dart:38`) nên
+**không** được dùng `pumpAndSettle()` trên map — bơm số khung cố định; teardown phải
+`s.dispose()` + gỡ cây như `finish()` của harness render, nếu không `Future.delayed(900ms)`
+của toast reward (`main_map_screen.dart:268-271`) nổ “Timer is still pending”; `Key('x')` là
+`ValueKey<String>('x')` nên `find.byKey` khớp được key của app.
+
+**Chưa có / không tuyên bố:** số `entries/bytes` cụ thể không trích được từ log CI (báo cáo
+check-run bị cắt giữa, `actions/jobs/.../logs` redirect ra blob ngoài allowlist sandbox — xem
+EV-ID-011); chưa chạy `flutter analyze`/`flutter test` local (không có SDK ở đây) nên mọi kết
+luận xanh/đỏ chỉ lấy từ run CI trên đúng commit; `git show` là cách đọc nhánh design, không
+merge; PQC-008 vẫn `BLOCKED` (runtime=no) và **không** được coi là xong vì PQC-009 đã characterize;
+PQC-002 + art P02 vẫn chờ người dùng duyệt.

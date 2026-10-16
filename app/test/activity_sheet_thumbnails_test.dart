@@ -20,6 +20,7 @@
 // Bằng chứng "không có chữ bake trong bitmap" KHÔNG nằm ở đây: đó là visual
 // review trên ảnh render, ghi trong docs/implementation/coordination/EVIDENCE.md.
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
 
@@ -31,6 +32,7 @@ import 'package:pyquest/app/activity_registry.dart';
 import 'package:pyquest/modules/bug_hunter/bug_models.dart';
 import 'package:pyquest/modules/main_map/activity_sheet.dart';
 import 'package:pyquest/modules/main_map/main_map_screen.dart' show kMapImageSize;
+import 'package:pyquest/shared/widgets/chunky_button.dart';
 import 'package:pyquest/shared/widgets/common.dart' show showPQSheet;
 
 import 'test_helpers.dart';
@@ -68,6 +70,9 @@ const int kMinSourceEdge = 256;
 
 /// Khung thumbnail trong ActivitySheet (hard-code trong widget, 104×104 logical).
 const Size kThumbSlot = Size(104, 104);
+
+/// Key cho probe ở nhóm đo kích thước chạm thật.
+const Key kProbeKey = Key('pyquest.probe');
 
 const ActivityStatus kUnlocked = ActivityStatus(
   progressLabel: '2/6 chương',
@@ -395,41 +400,148 @@ void main() {
       final double w = image.width * scale;
       final double h = image.height * scale;
       final List<String> tooSmall = <String>[];
+      final List<String> cropped = <String>[];
       for (final ActivityModule m in activityRegistry) {
         final Rect r = m.def.hitBox;
         final double pw = r.width * w;
         final double ph = r.height * h;
         expect(pw > 0 && ph > 0, isTrue, reason: '${m.def.id} có hitBox rỗng');
         expect(r.right <= 1.001 && r.bottom <= 1.001, isTrue, reason: '${m.def.id} hitBox vượt 0..1');
+        // PQC-009 item 2: chốt cả mép dưới của không gian normalized.
+        expect(r.left >= 0 && r.top >= 0, isTrue, reason: '${m.def.id} hitBox có tọa độ âm ngoài 0..1');
+        // Rect trên màn PHẢI tính tới crop: BoxFit.cover đặt ảnh lệch tâm, nên phần
+        // chạm thật sự khả dụng là giao với viewport, không phải pw×ph (review PQC-007).
+        final double dx = (box.width - w) / 2;
+        final double dy = (box.height - h) / 2;
+        final Rect visible = Rect.fromLTRB(dx + r.left * w, dy + r.top * h, dx + r.right * w, dy + r.bottom * h)
+            .intersect(Offset.zero & box);
+        if (visible.width < 48 || visible.height < 48) {
+          cropped.add('${m.def.id}=${visible.width.toStringAsFixed(1)}×${visible.height.toStringAsFixed(1)} '
+              '(tổng ${pw.toStringAsFixed(1)}×${ph.toStringAsFixed(1)})');
+        }
         if (pw < 48 || ph < 48) {
           tooSmall.add('${m.def.id}=${pw.toStringAsFixed(1)}×${ph.toStringAsFixed(1)}');
         }
       }
       expect(tooSmall, isEmpty,
           reason: 'dưới sàn chạm 48px ở khung nhỏ nhất; cần design chỉnh hitBox, không tự sửa');
+      expect(cropped, isEmpty, reason: 'landmark bị cover crop che mất phần chạm ở 360x640 — cần design '
+          'cung cấp rect production theo tỷ lệ nền mới, không tự sửa trong app/lib');
     });
   });
 
-  group('ImageCache khi mở lần lượt sáu sheet', () {
-    testWidgets('sáu thumbnail vào cache, có số đo và giải thích giới hạn', (WidgetTester tester) async {
+  group('ngân sách + cache của bộ thumbnail (precache qua ImageProvider thật)', () {
+    // PQC-009 item 3: tên phải nói ĐÚNG việc đã đo. Bản cũ ghi "ImageCache khi mở
+    // lần lượt sáu sheet" trong khi code chỉ precache — over-claim, đã bỏ. Chỗ thật
+    // sự mở cả sáu sheet là nhóm 'route thật của sheet (showPQSheet)' ở trên.
+    testWidgets('sáu key Asset resolve + decode từng cái một, rồi mới nhìn cache', (WidgetTester tester) async {
       useViewport(tester, logical: kPhone, dpr: kPhoneDpr);
       await tester.pumpWidget(sheetHost(const SizedBox(height: 1, width: 1)));
       final ImageCache cache = PaintingBinding.instance.imageCache;
+      final BuildContext context = tester.element(find.byType(SizedBox).first);
+      int entries = 0;
+      int bytes = 0;
       await tester.runAsync(() async {
         cache.clear();
-        final BuildContext context = tester.element(find.byType(SizedBox).first);
-        for (final String asset in kPinnedThumb.values) {
-          await precacheImage(AssetImage(asset), context);
+        final List<ImageStream> held = <ImageStream>[];
+        final List<ImageStreamListener> listeners = <ImageStreamListener>[];
+        for (final MapEntry<String, String> e in kPinnedThumb.entries) {
+          final ImageStream stream =
+              AssetImage(e.value).resolve(createLocalImageConfiguration(context, size: kThumbSlot));
+          final Completer<ImageInfo> done = Completer<ImageInfo>();
+          final ImageStreamListener listener = ImageStreamListener(
+            (ImageInfo info, bool _) => done.complete(info),
+            onError: (Object err, StackTrace? st) => done.completeError(err, st),
+          );
+          // Phải GIỮ listener khi đọc số cache: "còn trong cache" chỉ có nghĩa khi
+          // còn người giữ, nếu không entry có thể bị thải ngay sau đó.
+          stream.addListener(listener);
+          held.add(stream);
+          listeners.add(listener);
+          final ImageInfo info = await done.future.timeout(const Duration(seconds: 30));
+          expect(info.image.width, info.image.height, reason: '${e.key}: thumbnail kit phải là ảnh vuông');
+          expect(info.image.width, inInclusiveRange(kMinSourceEdge.toDouble(), kMaxSourceEdge.toDouble()),
+              reason: '${e.key}: cạnh ${info.image.width}px ngoài khoảng ${kMinSourceEdge}..${kMaxSourceEdge} của kit');
+        }
+        entries = cache.currentSize;
+        bytes = cache.currentSizeBytes;
+        for (var i = 0; i < held.length; i++) {
+          held[i].removeListener(listeners[i]);
         }
       });
-      await settleRealWork(tester, rounds: 8);
-      // Con số này là ImageCache của engine trên máy chạy test, KHÔNG phải RAM/GPU
-      // của thiết bị thật (review r4). Dùng để thấy bộ sáu ảnh có được giữ lại hay
-      // không, không dùng để tuyên bố budget thiết bị.
-      expect(cache.currentSize, greaterThanOrEqualTo(1), reason: 'cache phải nhận ảnh đã nạp');
-      expect(cache.currentSizeBytes, lessThan(64 * 1024 * 1024));
+      expect(entries, greaterThanOrEqualTo(kPinnedThumb.length),
+          reason: 'cả sáu key phải cùng nằm trong cache khi còn listener; entries>=1 không đủ');
+      expect(bytes, greaterThan(0), reason: 'phải có số byte thật, không suy từ W*H*4');
+      // Số "live images" là MISSING có chủ đích: engine của CI không có
+      // `ImageCache.currentLiveImages` (thử là analyze đỏ), và báo cáo check-run bị
+      // cắt giữa nên cũng không trích được log. Xem EV-ID-011.
       // ignore: avoid_print
-      print('PQC-003 imageCache: entries=${cache.currentSize} bytes=${cache.currentSizeBytes}');
+      print('PQC-009 imageCache precache: entries=$entries bytes=$bytes (cache của engine trên máy CI, '
+          'không phải RAM/GPU thiết bị)');
+    });
+  });
+
+  group('kích thước chạm đo từ RenderBox thật (characterization cho PQC-008)', () {
+    // Review PQC-007: bảng cũ suy target từ constant `_height` mà chưa nhân depth
+    // padding và chưa xét cả hai chiều. Ở đây đo thẳng RenderBox của widget đã dựng,
+    // ở cả textScale 1 và 2, và ghi số đo thành ràng buộc — không đặt mục tiêu
+    // "small phải 44px" cũng không nới sàn 48px để cho qua.
+    Future<Size> measureProbe(WidgetTester tester, Widget probe, {double textScale = 1.0}) async {
+      useViewport(tester, logical: kCompact, dpr: kCompactDpr);
+      await tester.pumpWidget(sheetHost(
+        SafeArea(child: Center(child: KeyedSubtree(key: kProbeKey, child: probe))),
+        textScale: textScale,
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byKey(kProbeKey).hitTestable(), findsOneWidget,
+          reason: 'probe phải trong màn và nhận hit-test ở ${kCompact.width.toInt()}x${kCompact.height.toInt()}');
+      return tester.getSize(find.byKey(kProbeKey));
+    }
+
+    SemanticsProperties semanticsOf(WidgetTester tester, String key) => tester
+        .widget<Semantics>(
+            find.descendant(of: find.byKey(ValueKey<String>(key)), matching: find.byType(Semantics)).first)
+        .properties;
+
+    testWidgets('ChunkyButton.small = mặt 44 + depth 4 theo chiều dọc; textScale 2 không làm nhỏ hơn',
+        (WidgetTester tester) async {
+      final Size at1 = await measureProbe(tester, ChunkyButton(label: 'OK', size: ChunkySize.small, onPressed: () {}));
+      expect(at1.height, closeTo(48.0, 0.01),
+          reason: 'characterization: _height 44 + _depth 4 (chunky_button.dart:42–51, 96–119). '
+              'Đổi số này là đổi thiết kế, không phải im lặng cho qua');
+      expect(at1.width, greaterThanOrEqualTo(44.0), reason: 'sàn chạm tối thiểu phải tính cả chiều rộng');
+
+      final Size at2 = await measureProbe(
+          tester, ChunkyButton(label: 'OK', size: ChunkySize.small, onPressed: () {}), textScale: 2.0);
+      expect(at2.height, at1.height, reason: 'chữ to gấp đôi không được cắt chiều cao nút');
+      expect(at2.width, greaterThanOrEqualTo(at1.width), reason: 'nhãn dài ra thì target phải rộng ra, không co lại');
+    });
+
+    testWidgets('RoundIconButton(size:44) là trường hợp khác: rộng 44, depth cộng theo chiều dọc',
+        (WidgetTester tester) async {
+      final Size box = await measureProbe(tester, RoundIconButton(icon: Icons.close_rounded, size: 44, onPressed: () {}));
+      expect(box.width, closeTo(44.0, 0.01), reason: 'mặt tròn lấy đúng theo `size`');
+      expect(box.height - box.width, closeTo(44 * 0.09, 0.01),
+          reason: 'depth = size*0.09 chỉ cộng theo chiều dọc (chunky_button.dart:159, 172–181)');
+      expect(box.height, greaterThanOrEqualTo(44.0));
+
+      // Accessible name của RoundIconButton đến từ `tooltip`: không truyền tooltip
+      // là không có tên. Ghi lại thành characterization, KHÔNG kết luận thiết bị.
+      await tester.pumpWidget(sheetHost(SafeArea(child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            RoundIconButton(key: const Key('probe_titled'), icon: Icons.close_rounded, size: 44, tooltip: 'Đóng', onPressed: () {}),
+            RoundIconButton(key: const Key('probe_untitled'), icon: Icons.close_rounded, size: 44, onPressed: () {}),
+          ],
+        ),
+      ))));
+      await tester.pumpAndSettle();
+      expect(semanticsOf(tester, 'probe_untitled').button, isTrue,
+          reason: 'role button vẫn được khai báo — không được suy thành screen reader không tới được');
+      expect(semanticsOf(tester, 'probe_titled').label, isNot(semanticsOf(tester, 'probe_untitled').label),
+          reason: 'RoundIconButton chỉ có tên khi có tooltip; các nút không tooltip đang thiếu accessible name '
+              '=> việc của PQC-008, chưa phải kết luận trên thiết bị');
     });
   });
 
