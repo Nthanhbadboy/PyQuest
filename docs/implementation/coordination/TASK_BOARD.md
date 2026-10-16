@@ -36,6 +36,10 @@ Trạng thái: `READY` · `QUEUED` · `BLOCKED` · `IN_PROGRESS` · `READY_FOR_R
    `PQC-014` có cần migration hay không. Không tự ý bật system default, vì nó đè lựa chọn cũ của trẻ.
 2. Khi được gật authored-only: `app/test/board/**` (fixture JSON + validator + golden render) làm
    **cùng một lượt** với type — không tạo test cho type chưa tồn tại (bài học 6 vòng CI ở EV-ID-018).
+0. Mọi câu hỏi/đề xuất đang mở đã gom về **một file**: `HANDOFF_TO_DESIGN.md` (D1–D10 / U1–U5 / V1–V3),
+   cross-link từ `tasks/PQD-003.md`. Trạng thái: `WAITING_FOR_DESIGN_REVIEW` cho D1–D10+V1,
+   `WAITING_FOR_USER` cho U1–U5.
+
 3. Publish số frame/cache của board qua **kênh render log** (`render.txt` không bị cắt giữa), không
    qua `test.txt`, và không sửa workflow để lách giới hạn log.
 
