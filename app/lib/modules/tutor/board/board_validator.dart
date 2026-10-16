@@ -120,6 +120,24 @@ BoardValidation validatePlan(
       }
     }
 
+    // rev 7 §R8-B2: luật ngược cho mũi tên — `fromId/toId` phải trỏ vào vật thể ĐANG được vẽ
+    // tại beat này (kể cả op cùng beat đứng sau, vì bảng là lớp tích lũy). Trước đây layout im
+    // lặng `continue`, plan sai vẫn được nhận rồi mất tính năng mà không ai giải thích được.
+    for (int i = 0; i < beat.ops.length; i++) {
+      final BoardOp op = beat.ops[i];
+      if (op.kind != BoardOpKind.connector) continue;
+      for (final String? endpoint in <String?>[op.fromId, op.toId]) {
+        if (endpoint == null || endpoint.isEmpty || !drawn.contains(endpoint)) {
+          issues.add(BoardIssue(
+            BoardIssueCode.unanchoredConnector,
+            'connector của beat ${beat.beatId} nối $endpoint nhưng không anchor nào đang vẽ tại beat $b',
+            beatIndex: b,
+            opIndex: i,
+          ));
+        }
+      }
+    }
+
     int outputs = 0;
     for (int i = 0; i < beat.ops.length; i++) {
       final BoardOp op = beat.ops[i];

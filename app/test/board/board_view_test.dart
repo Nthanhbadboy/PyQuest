@@ -11,13 +11,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/modules/tutor/board/board_controller.dart';
+import 'package:pyquest/modules/tutor/board/board_layout.dart';
 import 'package:pyquest/modules/tutor/board/board_models.dart';
 import 'package:pyquest/modules/tutor/board/board_view.dart';
 
 import 'board_test_support.dart';
 
 const List<Size> kViewportSizes = <Size>[Size(360, 640), Size(390, 844)];
-const List<double> kTextScales = <double>[1.0, 2.0];
+/// 1.0 / 1.3 / 2.0: 1.3 là hệ số Android hay dùng và là bậc mà font thật của app bắt đầu khác
+/// với số học trong layout — bỏ nó thì bug "tô một chỗ, neo một nẻo" lọt.
+const List<double> kTextScales = <double>[1.0, 1.3, 2.0];
+const List<String> kBoardLocales = <String>['vi', 'en'];
 const List<String> kBoardControlKeys = <String>['board_previous', 'board_replay', 'board_next'];
 
 String stepOf(int planIndex) => planIndex == 0 ? 'mq1_01_s2' : 'mq1_03_s2';
@@ -116,25 +120,174 @@ void main() {
     expect(sampled, 200.0);
   });
 
+  // rev 7 §R8-C: 2 plan × 4 beat × 2 locale × 2 khổ × 3 fontScale = 96 ca, **mỗi beat một lần
+  // dựng thật** (bảng tích lũy nên beat sau có hộp của beat trước; chụp một beat rồi nhân bản
+  // không phải coverage). Số đo lấy từ renderer: `getRect`/`getSize` của widget đang vẽ, cộng
+  // `RichText.textScaleFactor` của cây thật — không phải đọc lại con số trong model.
   for (final Size surface in kViewportSizes) {
     final String sizeName = '${surface.width.round()}x${surface.height.round()}';
     for (final double scale in kTextScales) {
-      for (int planIndex = 0; planIndex < 2; planIndex++) {
-        testWidgets(
-          '${stepOf(planIndex)} @ $sizeName font ${scale.toStringAsFixed(1)} — dựng được, không overflow',
-          (WidgetTester tester) async {
-            await pumpBoard(tester,
-                planIndex: planIndex, surface: surface, textScale: scale);
-            expect(tester.takeException(), isNull);
-            expect(find.byKey(const ValueKey<String>('board_scaffold')), findsOneWidget);
-            expect(find.byKey(const ValueKey<String>('board_title')), findsOneWidget);
-            expect(find.byKey(const ValueKey<String>('board_caption')), findsOneWidget);
-            expect(find.byKey(const ValueKey<String>('board_ink')), findsOneWidget);
-            for (final String key in kBoardControlKeys) {
-              expect(find.byKey(ValueKey<String>(key)), findsOneWidget, reason: 'thiếu $key');
-            }
-          },
-        );
+      for (final String locale in kBoardLocales) {
+        for (int planIndex = 0; planIndex < 2; planIndex++) {
+          for (int beat = 0; beat < 4; beat++) {
+            final String tag = '${stepOf(planIndex)} b$beat · $locale · $sizeName · font ${scale.toStringAsFixed(1)}';
+            testWidgets('$tag — hộp đúng chỗ, chữ đúng cỡ, không tràn', (WidgetTester tester) async {
+              final String code = kExampleSteps[stepOf(planIndex)]!;
+              final BoardController controller = await pumpBoard(tester,
+                  planIndex: planIndex,
+                  surface: surface,
+                  textScale: scale,
+                  locale: locale,
+                  reduceMotion: true,
+                  codeText: code);
+              for (int i = 0; i < beat; i++) {
+                // Beat nào đang chờ trẻ thì luật R7-D cấm board tự nhảy: đường hợp lệ để tới
+                // beat sau là Ý ĐỊNH CỦA TRẺ (`learnerAdvance`), không phải `next()` nội bộ.
+                final bool moved = controller.next() || controller.learnerAdvance();
+                expect(moved, isTrue, reason: '$tag: không tới được beat $beat (dừng ở ${controller.beatIndex})');
+              }
+              await tester.pumpAndSettle();
+              expect(controller.beatIndex, beat);
+              expect(tester.takeException(), isNull, reason: '$tag: board nổ khi dựng/cỡ chữ');
+
+              // (1) Khung chrome bắt buộc + đủ control, mỗi control >= 48 logical px.
+              for (final String key in <String>[
+                'board_scaffold',
+                'board_title',
+                'board_say',
+                'board_caption',
+                'board_ink',
+                'board_canvas',
+                ...kBoardControlKeys,
+              ]) {
+                expect(find.byKey(ValueKey<String>(key)), findsOneWidget, reason: '$tag: thiếu $key');
+              }
+              for (final String key in kBoardControlKeys) {
+                final Size box = tester.getSize(find.byKey(ValueKey<String>(key)));
+                expect(box.width, greaterThanOrEqualTo(48), reason: '$tag: $key rộng ${box.width}');
+                expect(box.height, greaterThanOrEqualTo(48), reason: '$tag: $key cao ${box.height}');
+              }
+
+              // (2) Hệ số co chữ chỉ được áp **một lần**: `Text` tự đọc textScaler từ MediaQuery
+              // trong khi RichText/layout thì không, nên scale 2.0 có thể thành 15 -> 30 -> 60 ở
+              // nhãn mà vẫn 26 ở dòng code. Không so `textScaleFactor` (property có thể luôn là 1.0
+              // trên SDK mới — thành tautology): đo paragraph mà renderer đã xếp chữ.
+              // Nhãn dài thì tự xuống dòng nên không được ép "đúng một dòng" — nhưng một dòng ở
+              // cỡ đã scale phải cao bằng `fontSize * height`, và không được nhỏ hơn cỡ trẻ yêu
+              // cầu. Chặn hai phía: nhân đôi scale làm phình lên (bị tràn), kẹp scale làm nhỏ lại.
+              for (final MapEntry<String, double> label in <String, double>{
+                'board_title': 15 * scale * 1.25 * 1.3,
+                'board_say': 15 * scale * 1.35,
+                'board_caption': 15 * scale * 1.35,
+              }.entries) {
+                final double h = tester
+                    .getSize(find.descendant(
+                        of: find.byKey(ValueKey<String>(label.key)), matching: find.byType(RichText))
+                        .first)
+                    .height;
+                expect(h, inInclusiveRange(label.value - 0.5, label.value * 4 + 1.5),
+                    reason: '$tag: ${label.key} cao $h, một dòng ở scale ${scale.toStringAsFixed(1)} '
+                        'phải là ${label.value} (± làm tròn), 4 dòng là trần của ô này');
+                // Cùng một hàng chữ thì không được co lại dưới cỡ đã yêu cầu.
+                expect(h, greaterThanOrEqualTo(label.value - 0.5),
+                    reason: '$tag: ${label.key} bị nhỏ hơn cỡ đã scale -> FittedBox/clamp đang ăn chữ');
+              }
+
+              // (3) Mỗi op đang thấy phải có hộp; op của beat tương lai thì chưa.
+              final TeachingPlan plan = validateComposed(planIndex, locale: locale).plan!;
+              final List<BoardVisibleOp> visible = visibleOpsThrough(plan, beat);
+              final Rect canvas = tester.getRect(find.byKey(const ValueKey<String>('board_canvas')));
+              for (final BoardVisibleOp entry in visible) {
+                final List<String> keys = boardNodeKeys(entry);
+                for (final String key in keys) {
+                  final Finder box = find.byKey(ValueKey<String>(key));
+                  expect(box, findsOneWidget, reason: '$tag: op ${entry.op.kind.wire} không có hộp $key');
+                  final Rect r = tester.getRect(box);
+                  expect(r.right, lessThanOrEqualTo(canvas.right + 0.5), reason: '$tag: $key tràn phải');
+                  expect(r.bottom, lessThanOrEqualTo(canvas.bottom + 0.5), reason: '$tag: $key tràn dưới');
+                  expect(r.left, greaterThanOrEqualTo(canvas.left - 0.5), reason: '$tag: $key tràn trái');
+                  expect(r.top, greaterThanOrEqualTo(canvas.top - 0.5), reason: '$tag: $key tràn trên');
+                  if (entry.op.kind == BoardOpKind.tokenGroup) {
+                    // Rộng của nhóm = số vật × (ô + khe). Đo từ hộp đã vẽ, không đọc lại layout.
+                    final double step = BoardLayout.chipSize + BoardLayout.chipGap;
+                    expect(r.width, closeTo(entry.op.tokenIds.length * step, 0.51),
+                        reason: '$tag: $key có ${entry.op.tokenIds.length} vật, rộng ${r.width}');
+                    // Từng vật phải là một hộp thật, cách đều nhau — "nhóm 7" mà vẽ 3 ô thì
+                    // phép đếm ở trên vẫn đúng nếu chỉ so tổng bề rộng.
+                    double previousRight = r.left;
+                    for (int k = 0; k < entry.op.tokenIds.length; k++) {
+                      final Rect chip =
+                          tester.getRect(find.byKey(ValueKey<String>('${key}_chip_$k')));
+                      expect(chip.width, closeTo(step, 0.51), reason: '$tag: vật $k rộng ${chip.width}');
+                      expect(chip.left, closeTo(previousRight, 0.51),
+                          reason: '$tag: vật $k lệch nhịp: ${chip.left} vs $previousRight');
+                      previousRight = chip.right;
+                    }
+                  }
+                  if (entry.op.kind == BoardOpKind.simpleShape) {
+                    expect(r.width, closeTo(entry.op.width * canvas.width, 0.51), reason: '$tag: $key sai width');
+                    expect(r.height, closeTo(entry.op.height * canvas.height, 0.51), reason: '$tag: $key sai height');
+                    expect(r.left, closeTo(canvas.left + entry.op.x * canvas.width, 0.51), reason: '$tag: $key sai x');
+                    expect(r.top, closeTo(canvas.top + entry.op.y * canvas.height, 0.51), reason: '$tag: $key sai y');
+                  }
+                  if (entry.op.kind == BoardOpKind.output ||
+                      entry.op.kind == BoardOpKind.text ||
+                      entry.op.kind == BoardOpKind.codeSnippet) {
+                    // Hộp phải chứa chữ của nó KÈM viền/padding: cao hơn chữ tối đa 12px (padding
+                    // 2+2, border 1+1, dung sai làm tròn) và không được thấp hơn chữ.
+                    final double text = tester
+                        .getAllSizes(find.descendant(of: box, matching: find.byType(RichText)))
+                        .fold<double>(0, (double sum, Size s) => sum + s.height);
+                    expect(r.height - text, inInclusiveRange(-0.5, 12),
+                        reason: '$tag: $key cao ${r.height}, chữ ${text} -> hộp không theo nội dung');
+                  }
+                  if (entry.op.kind == BoardOpKind.output) {
+                    // Một `Text` cho mỗi dòng + một nhãn: đếm từ cây thật, không tin chuỗi gộp.
+                    final int boxes =
+                        find.descendant(of: box, matching: find.byType(RichText)).evaluate().length;
+                    expect(boxes, entry.op.value.split('\n').length + 1,
+                        reason: '$tag: $key phải có ${entry.op.value.split('\n').length + 1} dòng chữ, thấy $boxes');
+                  }
+                }
+              }
+              for (final BoardVisibleOp future in boardOpsAfter(plan, beat)) {
+                for (final String key in boardNodeKeys(future)) {
+                  expect(find.byKey(ValueKey<String>(key)), findsNothing,
+                      reason: '$tag: $key là của beat ${future.beatIndex}, chưa tới mà đã vẽ');
+                }
+              }
+              // Dòng code của beat đang thấy phải mang đúng chữ của code ví dụ.
+              for (final BoardNode node in BoardLayout.build(
+                      visible: visible,
+                      codeText: code,
+                      width: canvas.width,
+                      lineHeight: 13 * scale * 1.35,
+                      altOf: (BoardOp op) => op.altFor(locale),
+                      proseOf: (BoardOp op) => op.proseFor(locale),
+                      outputHeader: 'out')
+                  .nodes) {
+                if (node.kind != BoardNodeKind.codeLine) continue;
+                final Finder box = find.byKey(ValueKey<String>(node.key));
+                expect(box, findsOneWidget, reason: '$tag: thiếu ${node.key}');
+                expect(
+                    nodeText(tester, node.key),
+                    node.runs.map((BoardRun r) => r.text).join(),
+                    reason: '$tag: ${node.key} không nguyên văn code của bước học');
+                // Dòng code là `RichText` trong `FittedBox(scaleDown)`: nếu chữ bị co để vừa hộp
+                // thì "không overflow" chỉ có nghĩa là chữ đã nhỏ lại. Chiều cao paragraph thật
+                // phải bằng đúng `lineHeight` mà layout dùng để đặt hộp, ở mọi scale.
+                final Size natural = tester.getSize(
+                    find.descendant(of: box, matching: find.byType(RichText)).first);
+                expect(natural.height, closeTo(13 * scale * 1.35, 1.5),
+                    reason: '$tag: ${node.key} xếp chữ cao ${natural.height} '
+                        'so với lineHeight ${13 * scale * 1.35}');
+                expect(natural.width, lessThanOrEqualTo(tester.getSize(box).width + 0.5),
+                    reason: '$tag: ${node.key} phải co chữ để vừa hộp '
+                        '(${natural.width} > ${tester.getSize(box).width})');
+              }
+            });
+          }
+        }
       }
     }
   }
@@ -280,16 +433,26 @@ void main() {
       final BoardController c = await pumpBoard(tester, planIndex: 0, codeText: 'print("Xin chào!")');
       expect(find.byKey(const ValueKey<String>('board_code_snippet_0_0')), findsNothing,
           reason: 'beat 1 đọc lại đúng dòng code đang có thì không vẽ trùng');
-      c.next();
-      await tester.pump();
-      c.next();
-      await tester.pump();
-      c.next();
-      await tester.pump();
-      expect(c.beatIndex, 3);
-      expect(find.byKey(const ValueKey<String>('board_code_snippet_3_1')), findsOneWidget);
+      for (int i = 0; i < 3; i++) {
+        expect(c.next() || c.learnerAdvance(), isTrue, reason: 'không tới được beat ${i + 1}');
+        await tester.pump();
+      }
+      expect(c.beatIndex, 3, reason: 'ba bước advance phải đưa tới beat cuối');
+      const Key snippetKey = ValueKey<String>('board_code_snippet_3_1');
+      expect(find.byKey(snippetKey), findsOneWidget,
+          reason: 'beat 4 đưa câu lệnh chưa có trên bảng -> phải có block code riêng');
       expect(nodeText(tester, 'board_code_snippet_3_1'), 'print("Robo thông minh")');
-      expect(tester.takeException(), isNull);
+      // rev 7 §R8-C: hộp mẫu cao `số dòng × lineHeight` trong khi con của nó là Container có
+      // padding 2+2 và border 1+1 — thiếu 6px đó thì RenderBox báo overflow và ca này đỏ vì
+      // `takeException`. Số đo ở đây là của renderer, nên log CI tự giải thích được lệch bao nhiêu.
+      final double box = tester.getSize(find.byKey(snippetKey)).height;
+      final double text = tester
+          .getAllSizes(find.descendant(of: find.byKey(snippetKey), matching: find.byType(RichText)))
+          .fold<double>(0, (double sum, Size size) => sum + size.height);
+      expect(text, greaterThan(0), reason: 'block mẫu không có chữ để đo');
+      expect(box - text, inInclusiveRange(-0.5, 12),
+          reason: 'hộp $box so với chữ $text: padding/border chưa được tính vào hộp');
+      expect(tester.takeException(), isNull, reason: 'board nổ khi dựng block code mẫu');
     });
 
     testWidgets('không có codeText thì bảng vẫn dựng được (chế độ caption-only của host thật)',
@@ -434,52 +597,72 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('r7 §R7-C: cùng BoardView, đổi locale đổi nhãn + op prose + semantics, giữ output',
+  testWidgets('rev 8 §R8-D: đổi locale trên cùng controller — prose nhìn thấy, semantics thật, output theo thứ tự',
       (WidgetTester tester) async {
-    final BoardController controller = await pumpBoard(tester, planIndex: 1, locale: 'vi');
+    // Rev 7 để lẫn hai kênh: altText bị tìm trong `allBoardTexts` trong khi renderer đặt nó ở
+    // node Semantics, và output bị tìm bằng chuỗi gộp `7\n3 + 4` dù mỗi dòng là một Text riêng.
+    // Ca này sửa theo đúng hợp đồng: **chữ nhìn thấy** đo bằng Text, **nhãn** đo bằng cây semantics
+    // thật, **output** đo bằng các dòng theo thứ tự. Không đưa altText lên bảng làm chữ debug chỉ
+    // để khớp assertion cũ.
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     controller.learner.addStroke('net-cua-tre');
-    controller.next();
-    controller.next();
-    await tester.pump();
-    expect(controller.beatIndex, 2, reason: 'beat numbers b3: có ô kết quả hai dòng');
+    while (controller.beatIndex < 2) {
+      expect(controller.next() || controller.learnerAdvance(), isTrue,
+          reason: 'không tới được beat 2 (đang ở ${controller.beatIndex})');
+      await tester.pump();
+    }
+    // Op `output` của beat 2 là chỗ có altText; lấy thẳng từ plan đã ghép để không tự bịa nhãn.
+    final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
+        as Map<String, dynamic>)['ops']! as List<dynamic>;
+    final Map<String, dynamic> alt =
+        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
+    final String viAlt = alt['vi']! as String;
+    final String enAlt = alt['en']! as String;
+    expect(viAlt, isNot(enAlt), reason: 'hai bản altText phải khác nhau thì ca này mới phân biệt được');
 
     final List<String> vi = allBoardTexts(tester);
-    final List<String> viSemantics = semanticLabels(tester, find.byType(BoardView));
-    expect(vi, contains('Tiếp'), reason: 'chưa đổi gì, nhãn phải là tiếng Việt: $vi');
-    expect(vi, contains('Kết quả chạy'));
-    expect(vi.any((String t) => t.contains('Ô kết quả có hai dòng')), isTrue,
-        reason: 'prose/altText của op lấy từ bản vi: $vi');
-    expect(viSemantics.any((String l) => l.contains('Ô kết quả có hai dòng')), isTrue);
+    expect(vi, contains('Tiếp'), reason: 'nhãn điều khiển phải là tiếng Việt: $vi');
+    expect(vi, contains('Kết quả chạy'), reason: 'nhãn ô kết quả theo locale: $vi');
+    expect(vi, contains(controller.currentCopy!.caption),
+        reason: 'caption đang áp dụng phải có mặt trong chữ nhìn thấy');
+    expect(outputLines(tester, 'board_output_2_1'), <String>['7', '3 + 4'],
+        reason: 'ô kết quả của cả đoạn: đúng hai dòng, đúng thứ tự');
+    expect(nodeText(tester, 'board_code_line_1'), 'print("3 + 4")');
+    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), viAlt,
+        reason: 'altText đã duyệt là nhãn semantics, không phải chữ trên bảng');
+    expect(vi.any((String t) => t == viAlt), isFalse,
+        reason: 'altText không được thành chữ nhìn thấy: đó là kênh riêng');
 
     controller.setLocale('en');
     await tester.pump();
     expect(controller.beatIndex, 2, reason: 'đổi ngôn ngữ không được đưa trẻ về beat khác');
-    expect(controller.learner.strokes, <String>['net-cua-tre']);
+    expect(controller.learner.strokes, <String>['net-cua-tre'], reason: 'nét của trẻ không liên quan locale');
     final List<String> en = allBoardTexts(tester);
-    final List<String> enSemantics = semanticLabels(tester, find.byType(BoardView));
-    expect(en, contains('Next'), reason: 'nhãn điều khiển phải resolve trong builder đang rebuild: $en');
+    expect(en, contains('Next'), reason: 'nhãn resolve trong builder đang rebuild: $en');
     expect(en, isNot(contains('Tiếp')));
     expect(en, contains('Run output'));
     expect(en, isNot(contains('Kết quả chạy')));
-    expect(en.any((String t) => t.contains('The result box has two lines')), isTrue,
-        reason: 'op prose phải sang en thật, không phải kế thừa vi: $en');
-    expect(en.any((String t) => t.contains('Ô kết quả')), isFalse);
-    expect(enSemantics.any((String l) => l.contains('The result box has two lines')), isTrue);
-    expect(enSemantics.any((String l) => l.contains('Ô kết quả có hai dòng')), isFalse,
-        reason: 'semantics phải theo cùng locale với chữ nhìn thấy: $enSemantics');
-    // Code, output và chữ của trẻ là nội dung **không** dịch.
-    for (final List<String> texts in <List<String>>[vi, en]) {
-      expect(texts.any((String t) => t.contains('7\n3 + 4')), isTrue,
-          reason: 'output của engine giữ nguyên khi đổi locale: $texts');
-    }
+    expect(en, contains(controller.currentCopy!.caption));
+    expect(outputLines(tester, 'board_output_2_1'), <String>['7', '3 + 4'],
+        reason: 'output của engine giữ nguyên khi đổi locale');
+    expect(nodeText(tester, 'board_code_line_1'), 'print("3 + 4")', reason: 'code thì không dịch');
+    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), enAlt,
+        reason: 'semantics phải đổi theo cùng locale với chữ nhìn thấy');
 
+    // Hộp chữ của op (beat 4) là kênh prose: cũng phải theo locale, trên cùng controller.
+    expect(controller.learnerAdvance(), isTrue, reason: 'beat 4 chờ trẻ nên phải đi bằng ý định của trẻ');
+    await tester.pumpAndSettle();
+    expect(nodeText(tester, 'board_prose_3_0'), startsWith('Look before'));
     controller.setLocale('vi');
     await tester.pump();
-    final List<String> back = allBoardTexts(tester);
-    expect(back, contains('Tiếp'));
-    expect(back, contains('Kết quả chạy'));
-    expect(back.any((String t) => t.contains('Ô kết quả có hai dòng')), isTrue,
+    expect(controller.beatIndex, 3);
+    expect(allBoardTexts(tester), contains('Tiếp'));
+    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), viAlt,
         reason: 'vi -> en -> vi phải trở về đúng bản gốc, không dính en lẫn vi');
+    expect(nodeText(tester, 'board_prose_3_0'), startsWith('Quan sát'));
     expect(tester.takeException(), isNull);
   });
 
@@ -519,6 +702,61 @@ void main() {
 
 /// Mọi chữ nhìn thấy được trong cây: `Text.data` và cả `RichText` (TextSpan nhiều đoạn),
 /// vì renderer hợp lệ có thể tô sáng bằng span thay vì một chuỗi duy nhất.
+/// Hộp mà renderer buộc phải dựng cho một op (key do layout sinh theo khuôn `beat_opIndex`).
+/// `codeSnippet` chỉ có hộp khi câu lệnh KHÁC code đang có trên bảng, còn `highlight*` và
+/// `clearTutorLayer` là trạng thái của dòng code — hai ca đó do layout test và ca
+/// "block code riêng" ở dưới lo, không phải chỗ này.
+List<String> boardNodeKeys(BoardVisibleOp entry) {
+  final String suffix = '${entry.beatIndex}_${entry.opIndex}';
+  switch (entry.op.kind) {
+    case BoardOpKind.text:
+      return <String>['board_prose_$suffix'];
+    case BoardOpKind.output:
+      return <String>['board_output_$suffix'];
+    case BoardOpKind.simpleShape:
+      return <String>['board_shape_$suffix'];
+    case BoardOpKind.tokenGroup:
+      return <String>['board_group_$suffix'];
+    case BoardOpKind.connector:
+      return <String>['board_connector_$suffix'];
+    case BoardOpKind.codeSnippet:
+    case BoardOpKind.highlightToken:
+    case BoardOpKind.highlightLine:
+    case BoardOpKind.clearTutorLayer:
+      return const <String>[];
+  }
+}
+
+/// Ops của các beat CHƯA tới — dùng để chứng minh bảng không vẽ trước nội dung tương lai.
+List<BoardVisibleOp> boardOpsAfter(TeachingPlan plan, int beat) {
+  final List<BoardVisibleOp> out = <BoardVisibleOp>[];
+  for (int b = beat + 1; b < plan.beats.length; b++) {
+    for (int i = 0; i < plan.beats[b].ops.length; i++) {
+      out.add(BoardVisibleOp(beatIndex: b, opIndex: i, op: plan.beats[b].ops[i]));
+    }
+  }
+  return out;
+}
+
+/// Nhãn của **một node** trong cây semantics mà Flutter thật sự dựng (`ensureSemantics` +
+/// `tester.getSemantics`). Khác với `semanticLabels` bên dưới — cái đó đọc properties trên widget
+/// tree, hữu ích để quét hàng loạt nhưng **không** phải bằng chứng reader sẽ nhận gì. Cả hai cũng
+/// không phải bằng chứng TalkBack/VoiceOver trên thiết bị: vẫn chỉ là test host.
+String realSemanticsLabel(WidgetTester tester, String key) =>
+    tester.getSemantics(find.byKey(ValueKey<String>(key))).label;
+
+/// Các dòng của một ô kết quả, **theo thứ tự vẽ**, không tính nhãn header.
+///
+/// Renderer đặt mỗi dòng output thành một `Text` riêng — nên đừng tìm chuỗi gộp
+/// `'7\n3 + 4'` trong `allBoardTexts`: không có widget nào mang chuỗi đó, và đó là lý do ca
+/// live-locale cũ đỏ dù bảng vẽ đúng.
+List<String> outputLines(WidgetTester tester, String key) => find
+    .descendant(of: find.byKey(ValueKey<String>(key)), matching: find.byType(RichText))
+    .evaluate()
+    .map((Element e) => (e.widget as RichText).text.toPlainText())
+    .toList()
+    .sublist(1);
+
 List<String> allBoardTexts(WidgetTester tester) {
   final List<String> out = <String>[];
   for (final Element e in find.byType(Text).evaluate()) {

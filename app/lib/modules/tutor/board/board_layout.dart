@@ -160,9 +160,33 @@ class BoardConnector {
   /// Vùng phủ của cả mũi tên, để node semantics chiếm đúng chỗ nó vẽ.
   final BoardRect rect;
 
-  /// Mũi tên đi từ mép phải hộp nguồn tới mép trái hộp đích, ở độ cao trung bình hai hộp.
-  Offset2 get start => Offset2(fromRect.right, (fromRect.centerY + toRect.centerY) / 2);
-  Offset2 get end => Offset2(toRect.left, (fromRect.centerY + toRect.centerY) / 2);
+
+  /// Hai hộp có đứng chồng lên nhau không (case thật của bảng: dòng code ở trên, ô kết quả
+  /// ở dưới). rev 7 §R8-B1: mũi tên phải **nối** hai hộp, không phải một nét ngang ở độ cao
+  /// trung bình của chúng — nên hướng đi quyết định điểm cắm vào cạnh nào.
+  bool get isVertical => toRect.top >= fromRect.bottom - 0.5 || toRect.bottom <= fromRect.top + 0.5;
+
+  /// Điểm đầu nằm trên cạnh của hộp nguồn, điểm có mũi tên nằm trên cạnh hộp đích.
+  Offset2 get start {
+    if (!isVertical) return Offset2(fromRect.right, fromRect.centerY);
+    return toRect.top >= fromRect.bottom
+        ? Offset2(fromRect.centerX, fromRect.bottom)
+        : Offset2(fromRect.centerX, fromRect.top);
+  }
+
+  Offset2 get end {
+    if (!isVertical) return Offset2(toRect.left, toRect.centerY);
+    return toRect.top >= fromRect.bottom
+        ? Offset2(toRect.centerX, toRect.top)
+        : Offset2(toRect.centerX, toRect.bottom);
+  }
+
+  /// Hướng đi tới của nét bút, để mũ mũi tên quay đúng chiều (xuống khi đích ở dưới, sang
+  /// phải khi đích ở bên phải). Mũ tên vẽ từ vector này nên không có chuyện đầu tên luôn hướng
+  /// trái như bản cũ.
+  Offset2 get headDirection => isVertical
+      ? Offset2(0, end.y >= start.y ? 1.0 : -1.0)
+      : Offset2(end.x >= start.x ? 1.0 : -1.0, 0);
 
   @override
   String toString() => '$key $fromRect -> $toRect';
@@ -232,13 +256,44 @@ class BoardLayout {
     required String Function(BoardOp op) altOf,
     required String Function(BoardOp op) proseOf,
     required String outputHeader,
+    double Function(String text)? codeWidthOf,
+    double Function(String text, double maxWidth)? proseHeightOf,
   }) {
     final List<String> codeLines =
         codeText.trim().isEmpty ? _statementUnion(visible) : codeText.split('\n');
     const double gutter = 8;
+    const double boxChrome = 6;
     final double inner = width < 40 ? width : width - gutter * 2;
     final List<BoardNode> nodes = <BoardNode>[];
     final Map<String, BoardRect> anchors = <String, BoardRect>{};
+
+    // Hai số đo này là chỗ duy nhất tầng layout biết về font. View truyền số đo THẬT
+    // (`TextPainter` trên đúng `TextStyle` sẽ vẽ); test pure Dart dùng ước lượng để
+    // arithmetic trong test không phụ thuộc font.
+    final double Function(String) widthOf =
+        codeWidthOf ?? ((String t) => t.runes.length * lineHeight * 0.44);
+    final double Function(String, double) proseHeight = proseHeightOf ??
+        ((String t, double w) {
+          final double perLine = w / (lineHeight * 0.46);
+          final int lines = (t.runes.length / (perLine < 8 ? 8 : perLine)).ceil();
+          return (lines < 1 ? 1 : lines) * lineHeight + 4;
+        });
+    // `FittedBox(fit: scaleDown)` co chữ lại khi dòng dài hơn bảng; anchor và nền tô
+    // phải nhân cùng hệ số, nếu không là "tô một chỗ, neo một nẻo".
+    double fitOf(int line) {
+      final double natural = widthOf(codeLines[line]);
+      return natural <= inner ? 1.0 : inner / natural;
+    }
+    double xOf(int line, int runeIndex) {
+      final double fit = fitOf(line);
+      return gutter + widthOf(codeLines[line].substring(0, runeIndex)) * fit;
+    }
+    BoardRect tokenRect(int line, int start, int end) {
+      final double fit = fitOf(line);
+      final double x = xOf(line, start);
+      final double w = widthOf(codeLines[line].substring(start, end)) * fit;
+      return BoardRect(x, nodes[line].rect.y, w < 1 ? 1 : w, nodes[line].rect.h);
+    }
 
     // 1) Bảng code: mỗi dòng một node. Dòng code là **nội dung thật**, không phải mô tả.
     //    Đánh dấu tô sáng được ghi bằng `List<bool>` theo ký tự, không thay chuỗi: nhiều op
@@ -265,37 +320,42 @@ class BoardLayout {
     for (final BoardVisibleOp entry in visible) {
       final BoardOp op = entry.op;
       if (op.kind != BoardOpKind.highlightToken && op.kind != BoardOpKind.highlightLine) continue;
+      // Rev 7 §R8-B3: phạm vi tô là **đúng các dòng của statement được chỉ định**, không phải
+      // "mọi dòng từ đó trở đi". Host không chứa statement thì không tô đâu cả — beat khai
+      // object cho phần tô đó sẽ bị `unanchoredObject` chặn, chứ không phải vẽ bừa.
       final int firstLine = _statementStart(codeLines, op.statement);
+      if (firstLine < 0) continue;
+      final int stmtLines = op.statement.split('\n').length;
+      final int lastLine = firstLine + stmtLines - 1;
       if (op.kind == BoardOpKind.highlightLine) {
-        final int at = firstLine < 0 ? op.line - 1 : firstLine + op.line - 1;
-        if (at < 0 || at >= marks.length) continue;
+        final int at = firstLine + op.line - 1;
+        if (at < firstLine || at > lastLine || at >= marks.length) continue;
         _markRange(marks[at], 0, codeLines[at].length);
         if (op.objectId != null) anchors[op.objectId!] = nodes[at].rect;
         continue;
       }
-      final List<int> markedLines = <int>[];
-      for (int line = 0; line < marks.length; line++) {
-        if (firstLine >= 0 && line < firstLine) continue;
+      // (dòng, start, end) của từng lần xuất hiện, theo thứ tự đọc.
+      final List<List<int>> hits = <List<int>>[];
+      for (int line = firstLine; line <= lastLine && line < marks.length; line++) {
         int at = 0;
-        int hits = 0;
         while (op.token.isNotEmpty) {
           final int found = codeLines[line].indexOf(op.token, at);
           if (found < 0) break;
           _markRange(marks[line], found, found + op.token.length);
+          hits.add(<int>[line, found, found + op.token.length]);
           at = found + op.token.length;
-          hits++;
         }
-        if (hits > 0) markedLines.add(line);
       }
-      if (op.objectId != null && markedLines.isNotEmpty) {
-        anchors[op.objectId!] = nodes[markedLines.first].rect;
+      if (op.objectId != null && hits.isNotEmpty) {
+        final List<int> first = hits.first;
+        anchors[op.objectId!] = tokenRect(first[0], first[1], first[2]);
       }
       for (int k = 0; k < op.tokenIds.length; k++) {
-        // Mỗi lần xuất hiện một object: `quote-open` là dấu ngoặc đầu, `quote-close` dấu sau.
-        final int line = markedLines.isEmpty
-            ? -1
-            : (k < markedLines.length ? markedLines[k] : markedLines[markedLines.length - 1]);
-        if (line >= 0) anchors[op.tokenIds[k]] = nodes[line].rect;
+        // Mỗi lần xuất hiện một object: `quote-open` là dấu ngoặc đầu, `quote-close` dấu sau,
+        // nên hai anchor phải là hai đoạn khác nhau trên cùng một dòng.
+        if (hits.isEmpty) break;
+        final List<int> hit = k < hits.length ? hits[k] : hits.last;
+        anchors[op.tokenIds[k]] = tokenRect(hit[0], hit[1], hit[2]);
       }
     }
 
@@ -345,13 +405,11 @@ class BoardLayout {
           ));
           cursor += lineHeight * 1.5;
         case BoardOpKind.text:
-          // Trần hợp đồng cho chữ là 600 code point. Đặt sẵn 4 dòng thì một beat dài sẽ tràn
-          // hộp và RenderBox báo overflow — nên chiều cao hộp tính từ **độ dài thật** của
-          // đoạn chữ, ước lượng theo bề rộng bảng, cộng một dòng dư.
+          // Rev 7 §R8-C: chiều cao hộp chữ là số đo font THẬT của đoạn chữ ở bề rộng thật,
+          // không phải "4 dòng cho chắc" — 600 code point mà đặt 4 dòng thì RenderBox overflow,
+          // tức là ảnh nghiệm thu thành dải chữ bị cắt.
           final String prose = proseOf(op);
-          final double perLine = inner / (lineHeight * 0.46);
-          final int estLines = (prose.runes.length / (perLine < 8 ? 8 : perLine)).ceil() + 1;
-          final double proseH = estLines * lineHeight + 4;
+          final double proseH = proseHeight(prose, inner);
           nodes.add(BoardNode(
             key: 'board_prose_$suffix',
             kind: BoardNodeKind.prose,
@@ -364,7 +422,11 @@ class BoardLayout {
           cursor += proseH + 6;
         case BoardOpKind.output:
           final List<String> lines = op.value.split('\n');
-          final double h = (lines.length + 1) * lineHeight + 8;
+          // Nhãn header = `lineHeight * 0.85` (view đặt `fontSize 0.85` với `height 1.35`, tức
+          // cùng đơn vị dòng) và hộp có padding 2+2 + border 1+1 = `boxChrome`. Bỏ số hạng nào
+          // trong hai số đó là hộp thấp hơn nội dung: đúng cái bẫy mà ca `codeSnippet` đã trả giá
+          // ở run 4a2a582 — và lần này là overflow thật, không phải assertion sai.
+          final double h = lines.length * lineHeight + lineHeight * 0.85 + boxChrome;
           final BoardRect box = BoardRect(gutter, cursor, inner, h);
           nodes.add(BoardNode(
             key: 'board_output_$suffix',
@@ -390,11 +452,11 @@ class BoardLayout {
               beatIndex: entry.beatIndex,
               opIndex: entry.opIndex,
               altText: altOf(op),
-              rect: BoardRect(gutter, cursor, inner, snippet.length * lineHeight),
+              rect: BoardRect(gutter, cursor, inner, snippet.length * lineHeight + boxChrome),
               lines: snippet,
               runs: <BoardRun>[for (final String l in snippet) BoardRun(l)],
             ));
-            cursor += snippet.length * lineHeight + 8;
+            cursor += snippet.length * lineHeight + boxChrome + 8;
           }
         case BoardOpKind.highlightToken:
         case BoardOpKind.highlightLine:

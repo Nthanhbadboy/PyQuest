@@ -95,6 +95,17 @@ void main() {
         0, <Object>['beats', 0, 'copy', 'vi', 'altText'], 'Ảnh minh họa', BoardIssueCode.genericAltText));
     test('thiếu copy cho locale', () =>
         expectOnly(0, <Object>['beats', 1, 'copy', 'en'], null, BoardIssueCode.missingCopy));
+    // rev 7 §R8-D: taxonomy chẩn đoán. Vắng mặt/null = model không trả lời cho locale đó ->
+    // `missingCopy`; có giá trị thật nhưng sai kiểu = `wrongType`. Cả hai vẫn reject nguyên plan,
+    // khác nhau ở chỗ bug report chỉ đúng chỗ phải sửa.
+    test('copy của locale vi là null -> missingCopy, không phải wrongType', () => expectOnly(
+        0, <Object>['beats', 1, 'copy', 'vi'], null, BoardIssueCode.missingCopy));
+    test('copy là số -> wrongType, không trộn thành missingCopy', () =>
+        expectOnly(0, <Object>['beats', 1, 'copy'], 42, BoardIssueCode.wrongType));
+    test('mất hẳn key copy -> missingCopy', () =>
+        expectOnly(0, <Object>['beats', 1, 'copy'], removed(), BoardIssueCode.missingCopy));
+    test('altText của locale là null -> missingCopy cho locale đó', () => expectOnly(
+        0, <Object>['beats', 1, 'ops', 0, 'altText', 'en'], null, BoardIssueCode.missingCopy));
     test('caption quá trần code point', () => expectOnly(0, <Object>['beats', 0, 'copy', 'vi', 'caption'],
         codePointsOfLength(BoardLimits.maxCopyField + 1), BoardIssueCode.copyTooLong));
     test('geometry ngoài 0..1', () =>
@@ -125,6 +136,44 @@ void main() {
       // Bỏ đúng op `output` của b2: `out-box` không còn hộp nào trên bảng ở beat đó, dù altText
       // vẫn kể về nó. Trước rev 7 ca này sạch — tức là validator không thấy bảng trống.
       expectOnly(1, <Object>['beats', 1, 'ops', 2], removed(), BoardIssueCode.unanchoredObject);
+    });
+    // rev 7 §R8-B2: cùng một luật nhưng cho `connector`. Trước đây layout gặp mũi tên không
+    // tra được anchor thì `continue` — plan vẫn được nhận, chỉ là mất tính năng, và không ai
+    // giải thích được vì sao bảng không có mũi tên. Vi phạm hợp đồng thì reject.
+    test('connector nối object đã đăng ký nhưng không còn trên bảng -> unanchoredConnector', () {
+      // `expr-add` vẫn nằm trong `registeredObjects` của plan (nên không phải `unknownObject`),
+      // nhưng ops[0] của beat là `clearTutorLayer`: tại beat này không còn hộp nào của `expr-add`.
+      // `objectIds` được sửa kèm để `out-box` không kéo theo `unanchoredObject` — ca này phải
+      // gọi đúng một lỗi.
+      final Map<String, dynamic> beat = (composedPlan(1)['beats']! as List<dynamic>)[1] as Map<String, dynamic>;
+      final List<dynamic> original = beat['ops']! as List<dynamic>;
+      final Map<String, dynamic> connector = <String, dynamic>{
+        'type': 'connector',
+        'fromId': 'expr-add',
+        'toId': 'out-box',
+        'altText': <String, dynamic>{
+          'vi': 'Mũi tên nối phép cộng với ô kết quả',
+          'en': 'Arrow from the sum to the result box',
+        },
+      };
+      expectOnly(
+        1,
+        <Object>['beats', 1, 'ops'],
+        <dynamic>[original[0], connector, original[2]],
+        BoardIssueCode.unanchoredConnector,
+        also: <Object?>[
+          <Object>['beats', 1, 'objectIds'],
+          <String>['out-box'],
+        ],
+      );
+    });
+    test('connector tham chiếu op cùng beat đứng sau vẫn hợp lệ', () {
+      // greeting b3: `connector` ở ops[0] nối tới `out-box` mà ops[1] cùng beat mới vẽ. Beat là
+      // một khung hình nên thứ tự trong beat không được biến plan hợp lệ thành lỗi — nếu luật
+      // R8-B2 kẹp quá chặt thì ca này đỏ và mũi tên của bài thật bị cấm.
+      final BoardValidation validation = validateComposed(0);
+      expect(validation.issues, isEmpty, reason: validation.issues.toString());
+      expect(validation.accepted, isTrue);
     });
     test('sai outputScope (hai dòng mà khai one line)', () => expectOnly(
         1, <Object>['beats', 2, 'outputScope'], 'singleStatement', BoardIssueCode.outputScopeMismatch));

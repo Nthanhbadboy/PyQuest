@@ -275,6 +275,10 @@ class _TutorLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // rev 7 §R8-C: hệ số co chữ chỉ được áp dụng **một lần**. `Text` tự đọc `textScaler` từ
+    // MediaQuery trong khi `RichText`/`TextPainter`/layout thì không, nên để nguyên thì mỗi
+    // dòng code một cao độ khác nhau, scale nhân đôi (15 -> 30 -> 60) ở nhãn và hộp chữ vẫn
+    // nhân một. Cách sửa: tự scale ở đây, rồi tắt kế thừa scaler cho cả subtree bên dưới.
     final TextScaler scaler = MediaQuery.textScalerOf(context);
     final double copySize = scaler.scale(_copyFontSize);
     final double codeSize = scaler.scale(_codeFontSize);
@@ -283,6 +287,17 @@ class _TutorLayer extends StatelessWidget {
     final double lineHeight = codeSize * 1.35;
     final List<BoardVisibleOp> visible = visibleOpsThrough(plan, beatIndex);
 
+    return MediaQuery.withNoTextScaling(
+      child: _buildLayer(visible, copySize, codeSize, lineHeight),
+    );
+  }
+
+  Widget _buildLayer(
+    List<BoardVisibleOp> visible,
+    double copySize,
+    double codeSize,
+    double lineHeight,
+  ) {
     return Semantics(
       container: true,
       label: copy?.altText ?? '',
@@ -306,6 +321,31 @@ class _TutorLayer extends StatelessWidget {
               final double width = box.maxWidth.isFinite && box.maxWidth > 40
                   ? box.maxWidth
                   : _fallbackCanvasWidth;
+
+              // Số đo font THẬT, do `TextPainter` trên đúng style sẽ vẽ trả về. Layout dùng
+              // nó cho bề rộng anchor của token được tô và cho chiều cao hộp chữ, nên hộp
+              // widget và nền tô không thể lệch nhau ở fontScale 1.3/2.0.
+              double measureCodeWidth(String text) {
+                final TextPainter painter = TextPainter(
+                  text: TextSpan(text: text, style: _codeStyle(codeSize)),
+                  textDirection: TextDirection.ltr,
+                  maxLines: 1,
+                )..layout();
+                final double w = painter.width;
+                painter.dispose();
+                return w;
+              }
+
+              double measureProseHeight(String text, double maxWidth) {
+                final TextPainter painter = TextPainter(
+                  text: TextSpan(text: text, style: _proseStyle(codeSize)),
+                  textDirection: TextDirection.ltr,
+                )..layout(maxWidth: maxWidth);
+                final double h = painter.height;
+                painter.dispose();
+                return h + 4;
+              }
+
               final BoardLayout layout = BoardLayout.build(
                 visible: visible,
                 codeText: codeText,
@@ -314,6 +354,8 @@ class _TutorLayer extends StatelessWidget {
                 altOf: (BoardOp op) => op.altFor(locale),
                 proseOf: (BoardOp op) => op.proseFor(locale),
                 outputHeader: labels.outputLabel,
+                codeWidthOf: measureCodeWidth,
+                proseHeightOf: measureProseHeight,
               );
               return SizedBox(
                 key: const ValueKey<String>('board_canvas'),
@@ -330,7 +372,11 @@ class _TutorLayer extends StatelessWidget {
                       Positioned.fromRect(
                         key: ValueKey<String>(link.key),
                         rect: _toRect(link.rect),
-                        child: Semantics(label: link.altText, child: const SizedBox.shrink()),
+                        child: Semantics(
+                          key: ValueKey<String>('${link.key}_label'),
+                          label: link.altText,
+                          child: const SizedBox.shrink(),
+                        ),
                       ),
                   ],
                 ),
@@ -418,7 +464,7 @@ class _TutorLayer extends StatelessWidget {
       case BoardNodeKind.prose:
         body = Text(
           node.lines.isEmpty ? '' : node.lines.first,
-          style: TextStyle(fontSize: codeSize, height: 1.35, color: const Color(0xE6000000)),
+          style: _proseStyle(codeSize),
           softWrap: true,
         );
       case BoardNodeKind.output:
@@ -433,10 +479,13 @@ class _TutorLayer extends StatelessWidget {
             children: <Widget>[
               Text(
                 node.header,
+                // `0.85` và `height: 1.35` là cặp số mà `BoardLayout` dùng cho chiều cao nhãn
+                // (`lineHeight * 0.85`): khác nhau ở đây thì Column cao hơn hộp và RenderFlex báo
+                // overflow dù mọi con số trong layout đều "đúng".
                 style: TextStyle(
                     fontSize: codeSize * 0.85,
                     fontWeight: FontWeight.w700,
-                    height: 1.2,
+                    height: 1.35,
                     color: const Color(0x99000000)),
               ),
               for (final String line in node.lines)
@@ -452,16 +501,34 @@ class _TutorLayer extends StatelessWidget {
     return Positioned.fromRect(
       key: ValueKey<String>(node.key),
       rect: _toRect(node.rect),
-      child: node.altText.isEmpty ? body : Semantics(label: node.altText, child: body),
+      // Node `Semantics` mang key riêng: test đọc **cây semantics thật** qua
+      // `tester.getSemantics(byKey('<node>_label'))` thay vì đoán từ widget properties.
+      child: node.altText.isEmpty
+          ? body
+          : Semantics(
+              key: ValueKey<String>('${node.key}_label'),
+              label: node.altText,
+              child: body,
+            ),
     );
   }
+
+  /// Style của hộp chữ op. Cùng một thể thức này được dùng để **đo** cao hộp trong layout và
+  /// để **vẽ** — hai chỗ khác nhau là nguồn của overflow mà test không giải thích được.
+  static TextStyle _proseStyle(double size) => TextStyle(
+        fontSize: size,
+        height: 1.35,
+        color: const Color(0xE6000000),
+      );
 
   static TextStyle _codeStyle(double size) => TextStyle(
         // `PQFonts.code` — board giữ biên giới import của mình nên nhắc tên font trực tiếp;
         // font này đã có trong assets của app (pubspec), không phải dependency mới.
         fontFamily: 'JetBrainsMono',
         fontSize: size,
-        height: 1,
+        // `1.35` là cùng một số với `lineHeight = codeSize * 1.35` mà layout dùng để đặt hộp:
+        // khác nhau ở đây thì nền tô và ô neo lệch nhau, dù cả hai đều "không tràn".
+        height: 1.35,
         color: const Color(0xE6000000),
         fontWeight: FontWeight.w500,
       );
@@ -506,19 +573,28 @@ class _BoardCanvasPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round;
       final Offset from = Offset(link.start.x, link.start.y);
       final Offset to = Offset(link.end.x, link.end.y);
-      final double midX = (from.dx + to.dx) / 2;
-      canvas.drawPath(
-        Path()
-          ..moveTo(from.dx, from.dy)
-          ..cubicTo(midX, from.dy, midX, to.dy, to.dx, to.dy),
-        stroke,
-      );
+      // rev 7 §R8-B1: route phải đi từ cạnh của hộp nguồn tới cạnh hộp đích. Hai hộp của
+      // bảng thường chồng nhau theo trục Y (dòng code ở trên, ô kết quả ở dưới) nên đường
+      // cong phải uốn theo trục Y; uốn theo X sẽ cho một nét ngang lơ lửng giữa hai hộp.
+      final Path route = Path()..moveTo(from.dx, from.dy);
+      if (link.isVertical) {
+        final double midY = (from.dy + to.dy) / 2;
+        route.cubicTo(from.dx, midY, to.dx, midY, to.dx, to.dy);
+      } else {
+        final double midX = (from.dx + to.dx) / 2;
+        route.cubicTo(midX, from.dy, midX, to.dy, to.dx, to.dy);
+      }
+      canvas.drawPath(route, stroke);
       final double head = codeSize * 0.55;
+      final Offset unit = Offset(link.headDirection.x, link.headDirection.y);
+      final Offset perp = Offset(-unit.dy, unit.dx);
       canvas.drawPath(
         Path()
           ..moveTo(to.dx, to.dy)
-          ..lineTo(to.dx - head, to.dy - head * 0.6)
-          ..lineTo(to.dx - head, to.dy + head * 0.6)
+          ..lineTo(to.dx - unit.dx * head + perp.dx * head * 0.6,
+              to.dy - unit.dy * head + perp.dy * head * 0.6)
+          ..lineTo(to.dx - unit.dx * head - perp.dx * head * 0.6,
+              to.dy - unit.dy * head - perp.dy * head * 0.6)
           ..close(),
         Paint()
           ..color = ink

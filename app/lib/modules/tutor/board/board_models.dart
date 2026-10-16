@@ -304,6 +304,9 @@ enum BoardIssueCode {
   /// Beat khai object mà không op nào trên bảng vẽ nó (rev 7 §R7-B): `objectIds` là danh sách
   /// thứ **có thật trên bảng**, không phải chỗ để ghi chú tên cho đẹp.
   unanchoredObject('unanchoredObject'),
+  /// rev 7 §R8-B2: đầu của `connector` trỏ vào object không có anchor đang vẽ ở beat đó. Layout
+  /// từng `continue` âm thầm nên plan vẫn được nhận rồi mất mũi tên — contract vi phạm thì reject.
+  unanchoredConnector('unanchoredConnector'),
   staleToken('staleToken'),
   wrongSession('wrongSession'),
   wrongTurn('wrongTurn'),

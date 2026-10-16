@@ -410,11 +410,23 @@ BoardBeat? _decodeBeat(
     c.add(BoardIssueCode.malformedId, 'beatId không hợp lệ: $beatId');
   }
 
-  final Map<String, dynamic>? copy = c.map(raw['copy'], 'copy');
+  // rev 7 §R8-D: "thiếu copy" và "copy sai kiểu" là hai chẩn đoán khác nhau. `null`/vắng mặt
+  // nghĩa là model không trả lời cho locale đó -> `missingCopy`; một giá trị có thật nhưng không
+  // phải object -> `wrongType`. Gộp cả hai về `wrongType` (hoặc thả cả hai) thì bug report của
+  // model bị đổi tên — còn reject thì vẫn nguyên, nên luật này chỉ để người đọc sửa đúng chỗ.
+  final Object? copyValue = raw['copy'];
+  final Map<String, dynamic>? copy = copyValue == null
+      ? null
+      : (copyValue is Map<String, dynamic> ? copyValue : c.map(copyValue, 'copy'));
   final Map<String, BoardBeatCopy> byLocale = <String, BoardBeatCopy>{};
   if (copy != null) {
     for (final String locale in requiredLocales) {
-      final Map<String, dynamic>? entry = c.map(copy[locale], 'copy.$locale');
+      final Object? localeValue = copy[locale];
+      final Map<String, dynamic>? entry = localeValue == null
+          ? null
+          : (localeValue is Map<String, dynamic>
+              ? localeValue
+              : c.map(localeValue, 'copy.$locale'));
       if (entry == null) continue;
       // Trần 600 code point áp cho **mọi** trường chữ của beat, kể cả caption: thiếu ở đây thì
       // một plan AI dài tùy ý vẫn lọt qua codec rồi mới vỡ ở validator — và validator không phải
@@ -435,7 +447,9 @@ BoardBeat? _decodeBeat(
       c.add(BoardIssueCode.wrongType, 'copy có khóa locale lạ: $unexpected');
     }
   }
-  if (byLocale.length < 2) {
+  if (copyValue == null) {
+    c.add(BoardIssueCode.missingCopy, 'beat phải có copy cho đủ các locale yêu cầu');
+  } else if (copy != null && byLocale.length < 2) {
     c.add(BoardIssueCode.missingCopy, 'beat phải có copy cho đủ các locale yêu cầu');
   }
 
