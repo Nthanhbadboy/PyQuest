@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:record/record.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -38,7 +39,9 @@ class GeminiLiveVoice {
   int _turnPcmBytes = 0;
   DateTime? _turnAudioStartedAt;
   int _audioTurn = 0;
-  String _outputText = '';
+  int _micChunkCount = 0;
+  int _micByteCount = 0;
+  int _serverAudioChunkCount = 0;
   bool _recording = false;
   bool _stopAfterResponse = false;
   Timer? _stopTimeout;
@@ -53,6 +56,7 @@ class GeminiLiveVoice {
       return;
     }
     try {
+      debugPrint('[PyQuestVoice] startListening character=$characterName language=$language model=$_model');
       onStatus('Đang kết nối Gemini Live…');
       // WebSocketChannel.connect only accepts ws:// or wss:// URIs.
       // Uri.https() creates an https:// URI and fails before the Live session
@@ -100,16 +104,20 @@ class GeminiLiveVoice {
           },
           'systemInstruction': <String, Object>{'parts': <Object>[<String, String>{'text': persona}]},
           'inputAudioTranscription': <String, Object>{},
-          'outputAudioTranscription': <String, Object>{},
         },
       }));
       await _setupComplete.future.timeout(const Duration(seconds: 25));
-      if (!await _recorder.hasPermission()) {
+      debugPrint('[PyQuestVoice] setupComplete received');
+      final hasMicPermission = await _recorder.hasPermission();
+      debugPrint('[PyQuestVoice] microphone permission=$hasMicPermission');
+      if (!hasMicPermission) {
         throw StateError('Chưa được cấp quyền micro cho PyQuest.');
       }
       await _streamPlayer.openPlayer();
       _playerOpened = true;
-      _outputText = '';
+      _micChunkCount = 0;
+      _micByteCount = 0;
+      _serverAudioChunkCount = 0;
       _stopTimeout?.cancel();
       _stopAfterResponse = false;
       final stream = await _recorder.startStream(const RecordConfig(
@@ -121,9 +129,15 @@ class GeminiLiveVoice {
         noiseSuppress: true,
       ));
       _recording = true;
+      debugPrint('[PyQuestVoice] microphone stream started: PCM16 mono 16000Hz');
       onStatus('Đang trò chuyện… Hãy nói tự nhiên, không cần nhấn giữ micro');
       _micSubscription = stream.listen((chunk) {
         if (!_recording || _channel == null) return;
+        _micChunkCount++;
+        _micByteCount += chunk.length;
+        if (_micChunkCount == 1 || _micChunkCount % 50 == 0) {
+          debugPrint('[PyQuestVoice] mic chunks=$_micChunkCount bytes=$_micByteCount latestChunkBytes=${chunk.length}');
+        }
         _channel!.sink.add(jsonEncode(<String, Object>{
           'realtimeInput': <String, Object>{
             'audio': <String, String>{
@@ -132,7 +146,12 @@ class GeminiLiveVoice {
             },
           },
         }));
-      }, onError: (Object error) => onError('Không đọc được micro: $error'));
+      }, onError: (Object error) {
+        debugPrint('[PyQuestVoice] microphone stream ERROR: $error');
+        onError('Không đọc được micro: $error');
+      }, onDone: () {
+        debugPrint('[PyQuestVoice] microphone stream done chunks=$_micChunkCount bytes=$_micByteCount');
+      });
       // Prompt the tutor to open the conversation as soon as the session is ready.
       _channel!.sink.add(jsonEncode(<String, Object>{
         'clientContent': <String, Object>{
@@ -149,7 +168,8 @@ class GeminiLiveVoice {
           'turnComplete': true,
         },
       }));
-    } catch (error) {
+    } catch (error, stackTrace) {
+      debugPrint('[PyQuestVoice] startListening ERROR: $error\n$stackTrace');
       await _stopRecorder();
       onError('Không thể bắt đầu voice: $error');
       onStatus('Voice chưa kết nối');
@@ -159,6 +179,7 @@ class GeminiLiveVoice {
 
   Future<void> stopListening() async {
     if (!_recording) return;
+    debugPrint('[PyQuestVoice] stop requested chunks=$_micChunkCount micBytes=$_micByteCount serverAudioChunks=$_serverAudioChunkCount');
     _recording = false;
     _stopAfterResponse = true;
     onStatus('Đang chờ Kai/Lumi nói nốt…');
@@ -167,6 +188,7 @@ class GeminiLiveVoice {
       _channel?.sink.add(jsonEncode(<String, Object>{
         'realtimeInput': <String, Object>{'audioStreamEnd': true},
       }));
+      debugPrint('[PyQuestVoice] sent audioStreamEnd');
     } catch (error) {
       onError('Không gửi được đoạn âm thanh: $error');
     }
@@ -190,20 +212,21 @@ class GeminiLiveVoice {
     try {
       final message = jsonDecode(raw is String ? raw : utf8.decode(raw as List<int>)) as Map<String, dynamic>;
       if (message.containsKey('setupComplete')) {
+        debugPrint('[PyQuestVoice] server setupComplete message');
         if (!_setupComplete.isCompleted) _setupComplete.complete();
         return;
       }
       if (message['error'] != null) {
+        debugPrint('[PyQuestVoice] server ERROR: ${message['error']}');
         onError('Gemini Live: ${message['error']}');
         return;
       }
-      final inputText = message['serverContent']?['inputTranscription']?['text'];
+      final serverContent = message['serverContent'];
+      final inputText = serverContent?['inputTranscription']?['text'];
       if (inputText is String && inputText.trim().isNotEmpty) {
+        debugPrint('[PyQuestVoice] input transcription received (${inputText.trim().length} chars)');
         onTranscript(inputText.trim(), fromUser: true);
       }
-      final serverContent = message['serverContent'];
-      final outputText = serverContent?['outputTranscription']?['text'];
-      if (outputText is String && outputText.isNotEmpty) _outputText += outputText;
       final parts = serverContent?['modelTurn']?['parts'];
       if (parts is List) {
         for (final part in parts) {
@@ -211,27 +234,28 @@ class GeminiLiveVoice {
           final data = inlineData is Map ? inlineData['data'] : null;
           if (data is String) {
             final pcm = Uint8List.fromList(base64Decode(data));
+            _serverAudioChunkCount++;
+            if (_serverAudioChunkCount == 1 || _serverAudioChunkCount % 10 == 0) {
+              debugPrint('[PyQuestVoice] server audio chunks=$_serverAudioChunkCount latestPcmBytes=${pcm.length}');
+            }
             _audioQueue = _audioQueue.then((_) => _feedPcm(pcm));
           }
-          final text = part is Map ? part['text'] : null;
-          if (text is String) _outputText += text;
         }
       }
       if (serverContent?['turnComplete'] == true) {
-        if (_outputText.trim().isNotEmpty) {
-          onTranscript(_outputText.trim(), fromUser: false);
-          _outputText = '';
-        }
+        debugPrint('[PyQuestVoice] server turnComplete received');
         unawaited(_finishAudioTurn());
       }
       if (serverContent?['interrupted'] == true) {
+        debugPrint('[PyQuestVoice] server interrupted=true; discarding queued turn audio');
         _audioTurn++;
         _turnPcmBytes = 0;
         _turnAudioStartedAt = null;
         _streamStarted = false;
         unawaited(_streamPlayer.stopPlayer());
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      debugPrint('[PyQuestVoice] server message parse/handling ERROR: $error\n$stackTrace');
       onError('Không đọc được phản hồi Gemini Live: $error');
     }
   }
@@ -256,6 +280,7 @@ class GeminiLiveVoice {
       // packet. Keep this delay short so it does not reintroduce turn buffering.
       await Future<void>.delayed(const Duration(milliseconds: 60));
       if (_disposed || turn != _audioTurn) return;
+      debugPrint('[PyQuestVoice] audio player stream started');
       onStatus('Kai/Lumi đang nói…');
     }
     if (_disposed) return;
@@ -288,6 +313,7 @@ class GeminiLiveVoice {
       _streamStarted = false;
       _turnPcmBytes = 0;
       _turnAudioStartedAt = null;
+      debugPrint('[PyQuestVoice] audio turn finished pcmBytes=$_turnPcmBytes stopAfterResponse=$_stopAfterResponse');
       if (_stopAfterResponse) {
         _stopTimeout?.cancel();
         _stopTimeout = null;
@@ -297,13 +323,15 @@ class GeminiLiveVoice {
       } else {
         onStatus('Đang nghe bé nói…');
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      debugPrint('[PyQuestVoice] audio playback/turn finish ERROR: $error\n$stackTrace');
       onError('Không phát được luồng giọng nói: $error');
       _streamStarted = false;
     }
   }
 
   Future<void> _stopRecorder() async {
+    debugPrint('[PyQuestVoice] stopping recorder; chunks=$_micChunkCount bytes=$_micByteCount');
     await _micSubscription?.cancel();
     _micSubscription = null;
     try {
@@ -316,8 +344,11 @@ class GeminiLiveVoice {
     _socketSubscription = null;
     try {
       await _channel?.sink.close();
-    } catch (_) {}
+    } catch (error) {
+      debugPrint('[PyQuestVoice] socket close ERROR: $error');
+    }
     _channel = null;
+    debugPrint('[PyQuestVoice] socket closed');
   }
 
   Future<void> dispose() async {
