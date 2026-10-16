@@ -477,8 +477,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('rev 8 §R8-D: đổi locale trên cùng controller — prose nhìn thấy, semantics thật, output theo thứ tự',
-      (WidgetTester tester) async {
+  testWidgets('R10-D1: output VI ban đầu có prose, thứ tự và semantics thật', (WidgetTester tester) async {
     // Rev 7 để lẫn hai kênh: altText bị tìm trong `allBoardTexts` trong khi renderer đặt nó ở
     // node Semantics, và output bị tìm bằng chuỗi gộp `7\n3 + 4` dù mỗi dòng là một Text riêng.
     // Ca này sửa theo đúng hợp đồng: **chữ nhìn thấy** đo bằng Text, **nhãn** đo bằng cây semantics
@@ -531,26 +530,68 @@ void main() {
     expect(vi.any((String t) => t == viAlt), isFalse,
         reason: 'altText không được thành chữ nhìn thấy: đó là kênh riêng');
 
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('R10-D2: đổi locale VI→EN cập nhật chữ và semantics trên cùng controller',
+      (WidgetTester tester) async {
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    controller.learner.addStroke('net-cua-tre');
+    while (controller.beatIndex < 2) {
+      expect(controller.next() || controller.learnerAdvance(), isTrue);
+      await tester.pump();
+    }
+    await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
+    await tester.pumpAndSettle();
+    final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
+        as Map<String, dynamic>)['ops']! as List<dynamic>;
+    final Map<String, dynamic> alt =
+        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
+    final String viAlt = alt['vi']! as String;
+    final String enAlt = alt['en']! as String;
+
     controller.setLocale('en');
     await tester.pumpAndSettle();
-    expect(controller.beatIndex, 2, reason: 'đổi ngôn ngữ không được đưa trẻ về beat khác');
-    expect(controller.learner.strokes, <String>['net-cua-tre'], reason: 'nét của trẻ không liên quan locale');
+    expect(controller.beatIndex, 2);
+    expect(controller.learner.strokes, <String>['net-cua-tre']);
     final List<String> en = allBoardTexts(tester);
     expect(en, contains('Next'), reason: 'nhãn resolve trong builder đang rebuild: $en');
     expect(en, isNot(contains('Tiếp')));
     expect(en, contains('Run output'));
     expect(en, isNot(contains('Kết quả chạy')));
     expect(en, contains(controller.currentCopy!.caption));
-    expect(outputLines(tester, 'board_output_2_1'), <String>['7', '3 + 4'],
-        reason: 'output của engine giữ nguyên khi đổi locale');
-    expect(nodeText(tester, 'board_code_line_1'), 'print("3 + 4")', reason: 'code thì không dịch');
+    expect(outputLines(tester, 'board_output_2_1'), <String>['7', '3 + 4']);
+    expect(nodeText(tester, 'board_code_line_1'), 'print("3 + 4")');
     expect(realSemanticsLabel(tester, 'board_output_2_1_label'), contains(enAlt),
-        reason: 'semantics phải đổi theo cùng locale với chữ nhìn thấy');
-    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), isNot(contains(viAlt)),
-        reason: 'đổi sang en mà nhãn còn giữ bản vi là đỏ thật');
+        reason: 'VI→EN output semantics: actual=${realSemanticsLabel(tester, 'board_output_2_1_label')}, '
+            'expected contains $enAlt');
+    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), isNot(contains(viAlt)));
+    expect(tester.takeException(), isNull);
+  });
 
-    // Hộp chữ của op (beat 4) là kênh prose: cũng phải theo locale, trên cùng controller.
-    expect(controller.learnerAdvance(), isTrue, reason: 'beat 4 chờ trẻ nên phải đi bằng ý định của trẻ');
+  testWidgets('R10-D3: VI→EN→VI giữ beat, dịch prose và semantics về VI',
+      (WidgetTester tester) async {
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    while (controller.beatIndex < 2) {
+      expect(controller.next() || controller.learnerAdvance(), isTrue);
+      await tester.pump();
+    }
+    final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
+        as Map<String, dynamic>)['ops']! as List<dynamic>;
+    final Map<String, dynamic> alt =
+        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
+    final String viAlt = alt['vi']! as String;
+    await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
+    await tester.pumpAndSettle();
+    controller.setLocale('en');
+    await tester.pumpAndSettle();
+    expect(controller.learnerAdvance(), isTrue, reason: 'đến beat chờ trẻ bằng ý định của trẻ');
     await tester.pumpAndSettle();
     expect(nodeText(tester, 'board_prose_3_0'), startsWith('Look before'));
     controller.setLocale('vi');
@@ -558,7 +599,8 @@ void main() {
     expect(controller.beatIndex, 3);
     expect(allBoardTexts(tester), contains('Tiếp'));
     expect(realSemanticsLabel(tester, 'board_output_2_1_label'), contains(viAlt),
-        reason: 'vi -> en -> vi phải trở về đúng bản gốc, không dính en lẫn vi');
+        reason: 'EN→VI output semantics: actual=${realSemanticsLabel(tester, 'board_output_2_1_label')}, '
+            'expected contains $viAlt');
     expect(nodeText(tester, 'board_prose_3_0'), startsWith('Quan sát'));
     expect(tester.takeException(), isNull);
   });
