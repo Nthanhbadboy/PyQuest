@@ -7,6 +7,11 @@ bàn giao của nhau ở đầu/cuối lượt. Xem [quy ước design ↔ code]
 Không yêu cầu agent code đổi sang nhánh design; các chỉ dẫn không đổi nhánh bên
 dưới áp dụng cho phiên design hiện tại.
 
+**Mục tiêu toàn dự án:** [redesign toàn app cho người dùng thật](FULL_APP_REDESIGN_CHARTER.md),
+không chỉ sáu thumbnail. Đọc charter trước khi chọn việc tiếp theo; phạm vi/gate
+của từng task vẫn phải được giữ, không hiểu định hướng lớn là cho phép sửa mọi thứ
+trong một lượt. Bộ landmark hiện tại là thử hướng art, chưa phải chuẩn cuối cho mọi màn.
+
 ## 1. Nhận đúng phiên bản trước khi làm
 
 - Workspace chuẩn của đợt này: nhánh `arena/00838eb9-pyquest`.

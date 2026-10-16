@@ -119,6 +119,7 @@ Ba tầng, và app luôn nói rõ câu trả lời đến từ tầng nào:
 **Bộ thiết kế mới:** [Village Kit 01 — 6 landmark 2.5D](docs/design/village-kit/README.md)
 (PNG gốc, WebP tối ưu, gallery so sánh và manifest; **chưa tích hợp runtime**).
 [Báo cáo so sánh/nhập nhánh và kiểm tra](docs/design/BRANCH_IMPORT_AND_ASSET_AUDIT.md).
+[Mục tiêu redesign toàn app & tiêu chí người dùng thật](docs/design/FULL_APP_REDESIGN_CHARTER.md).
 [Bàn giao cho AI triển khai & các bộ asset cần làm tiếp](docs/design/AI_IMPLEMENTATION_HANDOFF.md).
 [Prompt cho agent code](docs/design/coordination/CODE_AGENT_PROMPT.md) ·
 [Task đầu PQD-001](docs/design/coordination/tasks/PQD-001.md) ·

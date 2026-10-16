@@ -32,9 +32,11 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Nhiệm vụ đầu tiên: intake, chưa sửa runtime
 
-Làm theo revision mới nhất của `PQD-001`. Revision 1 là `READY_FOR_INTAKE`:
+Làm theo revision mới nhất của `PQD-001`. Revision 2 vẫn là `READY_FOR_INTAKE`:
 kiểm tra bộ 6 thumbnail, hash/mapping, source hiện tại, test/SDK, gate Tutor và việc
-bảo vệ baseline. Ghi ACK, blocker và kế hoạch vào:
+bảo vệ baseline. Đọc thêm `docs/design/FULL_APP_REDESIGN_CHARTER.md`: mục tiêu cuối
+là redesign toàn app và thực hiện tầm nhìn sản phẩm, không dừng ở sáu thumbnail.
+Định hướng toàn app không tự mở rộng phạm vi task đang nhận. Ghi ACK, blocker và kế hoạch vào:
 
 `docs/implementation/coordination/tasks/PQD-001.md`
 
