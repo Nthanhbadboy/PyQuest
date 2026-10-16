@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/app/app_services.dart';
 import 'package:pyquest/modules/tutor/tutor_config.dart';
@@ -43,7 +44,7 @@ void main() {
     return services;
   }
 
-  Future<void> openPanel(WidgetTester tester, AppServices services, {CharacterId? as}) async {
+  Future<void> openPanel(WidgetTester tester, AppServices services, {CharacterId? speakingAs}) async {
     tester.view.physicalSize = const Size(1080, 2100);
     tester.view.devicePixelRatio = 3.0;
     addTearDown(tester.view.reset);
@@ -65,7 +66,7 @@ void main() {
                 stepType: 'exercise',
                 stepPrompt: 'In ra tên của em.',
               ),
-              character: as ?? CharacterId.nova,
+              character: speakingAs ?? CharacterId.nova,
             ),
           ),
         ),
@@ -115,7 +116,7 @@ void main() {
 
   testWidgets('the voice sheet keeps the speaking character as the only identity', (tester) async {
     final services = await boot(tester);
-    await openPanel(tester, services, as: CharacterId.kai);
+    await openPanel(tester, services, speakingAs: CharacterId.kai);
 
     expect(find.text('Kai'), findsWidgets);
     // Voice controls are there, and starting a session without a key reports

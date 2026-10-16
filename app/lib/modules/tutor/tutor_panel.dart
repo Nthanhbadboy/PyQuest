@@ -164,6 +164,12 @@ class _TutorPanelState extends State<TutorPanel> {
       },
       onTranscript: (utterance) {
         if (!mounted) return;
+        if (utterance.seals) {
+          setState(() {
+            _chat.sealOpen();
+          });
+          return;
+        }
         setState(() {
           _chat.say(
             utterance.text,

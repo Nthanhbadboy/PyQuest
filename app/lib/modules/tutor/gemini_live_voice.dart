@@ -51,7 +51,19 @@ class VoiceUtterance {
     required this.text,
     this.isFinal = true,
     this.interrupted = false,
+    this.seals = false,
   });
+
+  /// "No more revisions are coming": the conversation display must close
+  /// whatever it still shows as being spoken. Emitted when a session ends
+  /// without a turnComplete — the alternative, re-sending the text, would add
+  /// a second bubble for a sentence that is already on screen.
+  const VoiceUtterance.sealed()
+      : role = TutorSpeakerRole.assistant,
+        text = '',
+        isFinal = true,
+        interrupted = false,
+        seals = true;
 
   final TutorSpeakerRole role;
   final String text;
@@ -62,8 +74,11 @@ class VoiceUtterance {
   /// The assistant stopped mid-sentence because the child interrupted it.
   final bool interrupted;
 
+  /// True only for [VoiceUtterance.sealed].
+  final bool seals;
+
   @override
-  String toString() => '${role.name}(${isFinal ? 'final' : 'partial'}): $text';
+  String toString() => seals ? 'seal-open-lines' : '${role.name}(${isFinal ? 'final' : 'partial'}): $text';
 }
 
 /// Experimental hands-free Gemini Live conversation for development builds.
@@ -393,14 +408,10 @@ class GeminiLiveVoice {
   /// A session that ends mid-sentence must leave a readable conversation
   /// behind, not a bubble that is still "partial" forever.
   void _sealOpenTranscripts() {
-    if (_turnUserText.trim().isNotEmpty) {
-      onTranscript(VoiceUtterance(role: TutorSpeakerRole.child, text: _turnUserText.trim()));
-    }
-    if (_outputText.trim().isNotEmpty) {
-      onTranscript(VoiceUtterance(role: TutorSpeakerRole.assistant, text: _outputText.trim()));
-    }
+    final pending = _turnUserText.trim().isNotEmpty || _outputText.trim().isNotEmpty;
     _turnUserText = '';
     _outputText = '';
+    if (pending) onTranscript(const VoiceUtterance.sealed());
   }
 
   void _onSpeakStarted() {
@@ -491,12 +502,15 @@ class GeminiLiveVoice {
       // Shown while it arrives: an answer that only appears on turnComplete
       // disappears altogether when the turn is interrupted, and then the
       // tutor's own words are the only line left in the chat — labelled as the
-      // child's.
-      onTranscript(VoiceUtterance(
-        role: TutorSpeakerRole.assistant,
-        text: _outputText.trim(),
-        isFinal: false,
-      ));
+      // child's. When this very message ends the turn, the final emission below
+      // is the one that counts.
+      if (!event.turnComplete && !event.interrupted) {
+        onTranscript(VoiceUtterance(
+          role: TutorSpeakerRole.assistant,
+          text: _outputText.trim(),
+          isFinal: false,
+        ));
+      }
     }
 
     if (event.hasAudio) {

@@ -90,7 +90,7 @@ void main() {
       final chat = TutorTranscript();
       expect(chat.say('   ', role: TutorSpeakerRole.child), -1);
       expect(chat.say('chưa có gì', role: TutorSpeakerRole.child), 0);
-      expect(chat.say('', role: TutorSpeakerRole.child), 0);
+      expect(chat.say('', role: TutorSpeakerRole.child), -1);
       expect(chat.length, 1);
       expect(chat.lines.single.text, 'chưa có gì');
     });

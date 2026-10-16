@@ -213,13 +213,16 @@ void main() {
       await voice.pump.prepare();
       voice.handleServerMessageForTest(spoken('Câu trả lời đang'));
       voice.handleServerMessageForTest(heard('còn đang hỏi'));
-      expect(chat.lines.every((TutorLine line) => line.isOpen), isTrue);
+      expect(chat.openIndexOf(TutorSpeakerRole.child), isNotNull,
+          reason: 'the child is still being heard when the goodbye arrives');
+      expect(chat.openIndexOf(TutorSpeakerRole.assistant), isNull,
+          reason: 'at most one line can be open — the newest one');
 
       voice.handleServerMessageForTest(<String, Object?>{
         'goAway': <String, Object?>{'timeLeftBeforeClose': '3s'},
       });
 
-      expect(chat.lines, hasLength(2), reason: 'nothing the child saw may vanish');
+      expect(chat.lines, hasLength(2), reason: 'nothing the child saw may vanish, and nothing is duplicated');
       expect(chat.lines.every((TutorLine line) => line.isFinal), isTrue,
           reason: 'a transcript of an ending session must not stay "partial"');
       expect(statuses.last.phase, VoicePhase.closing);
