@@ -66,20 +66,27 @@ void main() {
               ),
             ));
             expect(tester.takeException(), isNull, reason: '$name: board nổ khi dựng');
-            final RenderRepaintBoundary render =
-                boundary.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-            final ui.Image image =
-                (await tester.runAsync(() async => render.toImage(pixelRatio: 2.0)))!;
-            // Không nêu tên type `ByteData`: SDK của CI không export nó qua material
-            // (đây chính là lý do run trước đỏ ở `undefined_class`) — để suy luận kiểu.
-            final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-            image.dispose();
-            expect(bytes, isNotNull, reason: '$name: không encode được PNG');
-            final File file = File('${outDir.path}/$name.png');
-            file.writeAsBytesSync(bytes!.buffer.asUint8List());
+            // Đúng khuôn đã chứng minh trong repo (`render_screens_test.dart:34-46`): một nhịp
+            // pump cho painted, rồi **toàn bộ** toImage + toByteData + write nằm GỌN trong
+            // `runAsync`. Gọi `toByteData` ngoài runAsync là nguyên nhân đỏ ở run `ca2050a`:
+            // widget test chạy trong zone giả lập nên encode ảnh thật không chờ được ở đó.
+            await tester.pump(const Duration(milliseconds: 50));
+            final int size = (await tester.runAsync(() async {
+              final RenderRepaintBoundary render =
+                  boundary.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+              final ui.Image image = await render.toImage(pixelRatio: 2.0);
+              // Không nêu tên type `ByteData`: SDK của CI không export nó qua material
+              // (run trước đỏ ở `undefined_class`) — để trình biên dịch suy luận.
+              final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+              final File file = File('${outDir.path}/$name.png');
+              await file.create(recursive: true);
+              await file.writeAsBytes(bytes!.buffer.asUint8List());
+              image.dispose();
+              return file.lengthSync();
+            }))!;
             // Ảnh của một bảng chữ phải có nội dung: dưới 2 KB nghĩa là chỉ có nền trắng.
-            expect(file.lengthSync(), greaterThan(2000), reason: '$name: ảnh rỗng');
-            written.add('$name=${file.lengthSync()}B');
+            expect(size, greaterThan(2000), reason: '$name: ảnh rỗng');
+            written.add('$name=${size}B');
           }
         }
       }

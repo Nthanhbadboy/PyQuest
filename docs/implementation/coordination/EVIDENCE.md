@@ -754,6 +754,15 @@ baseline 175 nguyên). Ba việc làm ở vòng này, và một việc **phươn
 Test semantics mới đòi ba điều: altText đã duyệt **là** nhãn của một node, không có node nào mang nhãn
 chung kiểu "Ảnh minh họa", và vị trí beat (`1/4`) đọc được.
 
+**Run đỏ thứ năm `ca2050a` — `test +254 -1`: toàn bộ 79 test board còn lại đã xanh**, baseline 175 nguyên,
+`render=0`, analyze chỉ còn 1 `info` (`unnecessary_import` — tôi để lại import `rendering.dart` sau khi bỏ
+dùng `RenderRepaintBoundary` ở file test kia, đã xóa). Một đỏ cuối cùng là **bài học `runAsync`**:
+`treat capture = tester.pump(50ms)` rồi **toàn bộ** `toImage → toByteData → write file` phải nằm trong
+`tester.runAsync`. Tôi gọi `toByteData()` ở ngoài ⇒ widget test (zone giả lập) không chờ encode ảnh thật
+được. `render_screens_test.dart:34-46` đã có khuôn đúng — tôi không sao chép khuôn đó mà viết lại.
+Test chụp ảnh là test **thường** có chủ ý (tag `render` ngoài `test/render/` sẽ không chạy ở cả hai bước
+CI ⇒ ảnh "có" mà không ai chụp); ảnh này là **nội dung tác giả, chưa nối LessonScreen/AI/voice**.
+
 **Chưa xong:** commit sửa tiếp theo đây phải có `analyze` No issues + `test` xanh với toàn bộ số test mới,
 `số CI xanh` sẽ ghi thành EV-ID-022.1 ngay khi run về, kèm 16 ảnh `board-*.png` mà `publish_previews.py`
 đăng từ `build/previews` (chụp bằng test thường, **không** tag `render` vì `ci.yml` chỉ quét `--tags render
