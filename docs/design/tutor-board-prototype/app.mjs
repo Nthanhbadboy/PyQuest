@@ -1,5 +1,7 @@
 import {boardAt,validatePlan,tryPrint} from './engine.mjs';
 const $ = s => document.querySelector(s);
+const embedded=new URLSearchParams(location.search).get('embedded')==='1';
+if(embedded)document.body.classList.add('embedded');
 const escape = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let plans=[],topic='print',screen='village',timer=null,playing=false,drawing=false,stroke=null;
 const books={print:{beat:0,code:'print("")',note:'',inks:[[],[],[],[]],output:null},numbers:{beat:0,code:'print(3 + 4)',note:'',inks:[[],[],[],[]],output:null}};
@@ -44,5 +46,6 @@ $('#student-ink').onpointerup=$('#student-ink').onpointercancel=()=>{stroke=null
 $('#undo-ink').onclick=()=>{stroke=null;ink().pop();renderInk();};$('#clear-ink').onclick=()=>{stroke=null;current().inks[current().beat]=[];renderInk();};
 for(const id of ['begin','skip','lesson-nav'])$('#'+id).onclick=()=>setScreen('lesson');$('#village-nav').onclick=()=>setScreen('village');$('.brand').onclick=e=>{e.preventDefault();setScreen('village');};
 for(const button of document.querySelectorAll('button[data-topic]'))button.onclick=()=>setTopic(button.dataset.topic);
+window.addEventListener('message',e=>{if(!embedded||e.origin!==location.origin||e.source!==window.parent)return;if(e.data?.type==='pyquest:pause'){stop();stroke=null;document.body.classList.add('sleeping');}else if(e.data?.type==='pyquest:resume'){document.body.classList.remove('sleeping');$('#calm').checked=Boolean(e.data.calm);calm();}});
 document.addEventListener('visibilitychange',()=>{document.body.classList.toggle('sleeping',document.hidden);if(document.hidden){stop();stroke=null;}});
-try{const response=await fetch('lessons.json');if(!response.ok)throw new Error('Không tải được bài mẫu');const data=await response.json();plans=data.plans.map(validatePlan);render(true);for(const id of ['begin','skip','lesson-nav'])$('#'+id).disabled=false;}catch(e){$('#begin').disabled=true;$('#skip').disabled=true;$('#lesson-nav').disabled=true;$('.prototype-note').textContent='Không tải được bài mẫu. Mở qua HTTP theo README; chưa có AI kết nối.';console.error(e);}
+try{const response=await fetch('lessons.json');if(!response.ok)throw new Error('Không tải được bài mẫu');const data=await response.json();plans=data.plans.map(validatePlan);render(true);for(const id of ['begin','skip','lesson-nav'])$('#'+id).disabled=false;if(embedded){setScreen('lesson');parent.postMessage({type:'pyquest:ready'},location.origin);}}catch(e){$('#begin').disabled=true;$('#skip').disabled=true;$('#lesson-nav').disabled=true;$('.prototype-note').textContent='Không tải được bài mẫu. Mở qua HTTP theo README; chưa có AI kết nối.';console.error(e);}

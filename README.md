@@ -116,6 +116,9 @@ Ba tầng, và app luôn nói rõ câu trả lời đến từ tầng nào:
 
 ## Thiết kế & hình ảnh gốc
 
+**Thế giới sống:** [P04 — làng, cư dân và hải đồ quần đảo](docs/design/living-world-prototype/README.md)
+— đi thuyền mô phỏng và quay lại bảng Tutor, chưa phải vùng game Flutter mới.
+
 **Mẫu Tutor + bảng giảng:** [P03 — viết, vẽ, chỉ từng bước và cho người chơi thử](docs/design/tutor-board-prototype/README.md)
 — prototype có tương tác, chưa kết nối AI/voice hoặc tích hợp Flutter.
 

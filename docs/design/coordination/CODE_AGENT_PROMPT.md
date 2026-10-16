@@ -32,9 +32,11 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task ưu tiên hiện tại là **PQD-003 revision1, Tutor-first + bảng giảng**.
+Task ưu tiên hiện tại là **PQD-003 revision2, Tutor-first + bảng giảng trong thế giới sống**.
 Đọc `docs/design/coordination/tasks/PQD-003.md`, `docs/design/TUTOR_TEACHING_BOARD.md`
-và `docs/design/tutor-board-prototype/README.md`. Chạy mẫu để hiểu vì sao đây không
+và `docs/design/tutor-board-prototype/README.md`. Xem thêm
+`docs/design/LIVING_WORLD_DIRECTION.md` / P04 nối world với bảng, không ưu tiên NPC
+trước board. Chạy mẫu để hiểu vì sao đây không
 phải chat reskin. PQC-009 vừa có bàn giao code8a8af34; giữ kết quả/test đã làm, không làm lại. Design
 đã đọc tóm tắt nhưng chưa full-review suite mới; trả evidence đúng SHA khi được hỏi.
 

@@ -187,3 +187,11 @@ P02 chưa giải quyết đủ; không tiếp tục dùng chat panel như lesson
 source, learner annotation, pause/replay và thử code cục bộ; AI/voice vẫn chưa tích hợp.
 Làng thử một mèo ambient, không mở rộng NPC trước khi vòng Tutor → hiểu → tự thử tốt.
 Đây là ưu tiên mới trong redesign toàn app, không xóa các nhánh free-play/Creator.
+
+## P04 — quyền sáng tạo thế giới được mở rộng
+
+Thêm làng có nhịp sống, lời Tutor biến thể theo context, NPC trẻ đi chơi/ghé nhà, bến
+thuyền và hải đồ nhiều đảo theo phản hồi người dùng. `LIVING_WORLD_DIRECTION.md` chốt
+hướng kiến trúc/thẩm mỹ và `living-world-prototype/` có tương tác. Không dùng sự đông
+đúc của cảnh thay cho trải nghiệm học: bảng Tutor P03 vẫn là ưu tiên implementation.
+Quyền chọn/đưa asset đẹp vào không bỏ yêu cầu provenance/license/camera/palette nhất quán.

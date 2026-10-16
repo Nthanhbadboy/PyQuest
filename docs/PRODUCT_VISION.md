@@ -775,8 +775,11 @@ PyQuest cần có hệ thống vinh danh nhiều tầng. Không ép mọi thành
   Voice nếu bật phải gắn đúng bước trình bày; barge-in/background hủy cue cũ an toàn.
 - AI đề xuất kế hoạch bảng qua schema/allowlist được kiểm tra; không render mã/URL
   tùy ý, không tự chạy code hay quyết định điểm. Engine bài học là nguồn đáp án.
-- Làng có thể có mèo/NPC đi lại để tạo sự sống nhưng không cạnh tranh với Tutor,
-  không chặn tương tác, tôn trọng reduced motion và lifecycle.
+- Làng có mèo và vài NPC trẻ hư cấu đi chơi, ghé vào/ra nhà để tạo sự sống nhưng không
+  cạnh tranh với Tutor, không chặn tương tác, tôn trọng reduced motion và lifecycle.
+  Tutor có lời chào/gợi ý biến thể theo context, không lặp một câu hoặc nói liên tục.
+  Hướng mở rộng là nhiều làng/đảo với bến thuyền và hải đồ, mỗi nơi có bản sắc riêng;
+  không giả NPC là người chơi online hoặc chặn Tutor sau một chuyến đi bắt buộc.
 - Thiết kế và mẫu tương tác: `docs/design/TUTOR_TEACHING_BOARD.md`, P03. Prototype
   scripted không đồng nghĩa đã tích hợp AI/voice hoặc qua kiểm nghiệm trẻ em.
 
