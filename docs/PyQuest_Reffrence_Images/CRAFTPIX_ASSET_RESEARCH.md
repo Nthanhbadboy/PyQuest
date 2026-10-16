@@ -19,6 +19,11 @@ Purpose: improve PyQuest's visual quality without making it look like a preschoo
 | P2 | Free Horizontal 2D Game Backgrounds | https://craftpix.net/freebies/free-horizontal-2d-game-backgrounds/ | Potential background layers for a game-mode scene or promotional screen. | Not a default background for the code editor, lessons or AI Tutor; preserve text/code contrast. |
 | P2 | Free Alphabet Vector Asset Kit for Education Games | https://craftpix.net/freebies/free-alphabet-vector-asset-kit-for-education-games/ | Inspect reusable education-related symbols and letter assets if a lesson actually needs them. | Avoid adding decorative alphabet art to Python screens without a clear purpose. |
 
+
+| P0 | Free Sci-Fi Platformer 1-Bit Pixel Art Game Kit | https://craftpix.net/freebies/free-sci-fi-platformer-1-bit-pixel-art-game-kit/ | Alternative direction for older learners: quest maps, futuristic challenge rooms and technology-themed worlds. | Strong monochrome 1-bit pixel style; only use if PyQuest intentionally adopts pixel art for the game-world layer. |
+| P1 | Free Basic Pixel Art UI for RPG | https://craftpix.net/categorys/pixel-art-game-ui/ | Explore a compact, more restrained UI family for game-mode overlays and status elements. | Pixel style should stay inside the game-world layer, not leak into the lesson editor or AI Tutor. |
+| P1 | Free Alphabet Vector Asset Kit for Education Games | https://craftpix.net/freebies/free-alphabet-vector-asset-kit-for-education-games/ | Secondary reference for reusable education symbols and interaction states. | Explicitly aimed at early learning and uses pastel/kawaii art; low priority for PyQuest's core UI. |
+
 CraftPix's free catalog: https://craftpix.net/freebies/  
 All assets: https://craftpix.net/all-game-assets/  
 GUI category: https://craftpix.net/categorys/gui/  
@@ -35,6 +40,8 @@ Official license terms: https://craftpix.net/file-licenses/
 - **AI Tutor:** preserve a conversational layout and legible transcript; avoid game HUD framing around every message.
 
 ## Download and integration workflow
+
+**Download gate confirmed:** the official free-download links for the Kids Math kit and Island GUI currently redirect to a CraftPix sign-in page. An account/login is required before the archive can be downloaded. No archive was downloaded during this research pass; do not claim that assets have been added to the repo.
 
 1. Open each official product page and use the site's own free-download flow; confirm it is marked free rather than premium-only.
 2. Inspect the downloaded archive locally. Prefer transparent PNGs or vector files that can be exported cleanly for Flutter.
@@ -53,6 +60,10 @@ An asset is accepted only if it:
 - is technically usable in Flutter at phone scale;
 - has a verified source and license;
 - is optimized and does not unnecessarily inflate the APK.
+
+## Public-repository rule
+
+Do not commit downloaded ZIPs, raw artwork, preview screenshots, or extracted assets into this public reference folder just to build a gallery: the CraftPix license prohibits redistributing source art separately. Keep a source/asset manifest here. If an asset is selected for the actual PyQuest app, include only the specific optimized files used by the running app under the applicable license and ensure they are not exposed as standalone downloadable artwork. For visual references in this folder, prefer links to the official pages and original app screenshots created by the project team.
 
 ## Important status
 
