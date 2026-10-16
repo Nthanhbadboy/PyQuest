@@ -25,7 +25,12 @@ Trạng thái: `READY` · `QUEUED` · `BLOCKED` · `IN_PROGRESS` · `READY_FOR_R
    được thì hạ xuống `not run`, nếu CI đỏ thì sửa test chứ không sửa gate.
 2. **Rà soát bằng chứng** — đối chiếu từng EV-ID trong `EVIDENCE.md` với lệnh thật;
    mục nào không tái hiện được thì hạ xuống `not run`.
-3. **Việc KHÔNG giao**: bất kỳ sửa nào trong `app/lib/**`, `app/assets/**`, Android,
+3. **Prompt đã sẵn sàng cho phiên có phần cứng/SDK**: `tasks/PQC-004.md` (emulator + nghe
+   bằng tai) và `tasks/PQC-005.md` (máy có Flutter SDK, chỉ báo cáo diff nếu `runtime=no`).
+   `tasks/PQC-002.md` cũng đã có prompt " armed ": phiên đó chạy `brief PQC-002` trước, gate
+   chưa mở là trả `BLOCKED` ngay — nên khi người dùng gật, việc nhảy được vào queue mà không
+   cần viết lại mô tả.
+4. **Việc KHÔNG giao**: bất kỳ sửa nào trong `app/lib/**`, `app/assets/**`, Android,
    dependency, gameplay, hay workflow CI (`runtime=no`). Delegate nào nhận order mà
    `brief` in ra `DO NOT START` phải trả `BLOCKED`, không tự nới.
 
