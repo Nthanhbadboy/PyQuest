@@ -247,6 +247,10 @@ void main() {
       expect(highlightedIn(tester, 'board_code_line_0'), isEmpty,
           reason: 'lau bảng là xóa cả dấu tô, không chỉ các ô nổi');
       expect(find.byKey(const ValueKey<String>('board_group_1_1')), findsOneWidget);
+      final Rect loneGroup = tester.getRect(find.byKey(const ValueKey<String>('board_group_1_1')));
+      final Rect canvas = tester.getRect(find.byKey(const ValueKey<String>('board_canvas')));
+      expect(loneGroup.left, closeTo(canvas.left + 8, 0.5),
+          reason: 'group đơn phải neo ở gutter; không bị đẩy sang phải khi không có sibling');
       expect(find.byKey(const ValueKey<String>('board_output_1_2')), findsOneWidget);
       expect(nodeText(tester, 'board_output_1_2'), contains('7'));
       expect(nodeText(tester, 'board_output_1_2'), isNot(contains('3 + 4')),

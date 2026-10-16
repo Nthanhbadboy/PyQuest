@@ -405,7 +405,11 @@ class BoardLayout {
           final bool pairNext = nextIndex < visible.length &&
               visible[nextIndex].beatIndex == entry.beatIndex &&
               visible[nextIndex].op.kind == BoardOpKind.tokenGroup;
-          final double groupX = pairNext ? gutter : gutter + rowW + 16;
+          // Every token group starts at the board gutter unless it is the SECOND member of a
+          // pair. `pairNext` only answers whether this group has a right-hand sibling; it must
+          // never push a lone group rightward. (That happened in the prior R10 attempt, whose
+          // `pairNext ? gutter : gutter + rowW + 16` made a one-group beat float after itself.)
+          const double groupX = gutter;
           nodes.add(BoardNode(
             key: 'board_group_$suffix',
             kind: BoardNodeKind.group,
