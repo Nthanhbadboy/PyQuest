@@ -106,7 +106,11 @@ class FakeGit:
 
     def __init__(self, *, tip='f' * 40, files=None, ancestors=(), show_rc=0):
         self.tip = tip
-        self.files = files if files is not None else {'docs/design/coordination/tasks/PQD-001.md': R3_HEADER}
+        if files is None:
+            # Mặc định phục vụ đúng file mà tool đang theo dõi, để test không phụ
+            # thuộc state thật của máy (~/.pq-lead).
+            files = {f'{pq.DESIGN_TASK_DIR}/{pq.TASK_IDS[0]}.md': R3_HEADER}
+        self.files = files
         self.ancestors = set(ancestors)
         self.show_rc = show_rc
         self.calls = []
@@ -145,6 +149,9 @@ class AckTest(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         os.makedirs(os.path.join(self.tmp.name, 'inbox'), exist_ok=True)
+        # Hermetic: tracked-task resolution must not read the developer's real state.
+        os.environ['PQ_LEAD_STATE'] = self.tmp.name
+        self.addCleanup(os.environ.pop, 'PQ_LEAD_STATE', None)
         self.args = Namespace(state_dir=self.tmp.name, wait=0, sha='')
 
     def _state(self):
@@ -303,6 +310,69 @@ class FetchWatchStatusTest(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertIn('runtime=no, test=yes, coordination=yes', text)
         self.assertIn('ACTION', text)
+
+
+class TaskTrackingTest(unittest.TestCase):
+    """`fetch` follows a forward pointer to a newer design task, once."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        os.makedirs(os.path.join(self.tmp.name, 'inbox'), exist_ok=True)
+        os.environ['PQ_LEAD_STATE'] = self.tmp.name
+        self.addCleanup(os.environ.pop, 'PQ_LEAD_STATE', None)
+
+    def _fetch(self, files, *, tracked=None):
+        if tracked:  # bắt đầu từ một task id cũ hơn để kiểm tra chiều theo con trỏ
+            pq.save_state(self.tmp.name, {'processed_design_sha': None, 'queue': [],
+                                          'events': [], 'tracked_task': tracked})
+        git = FakeGit(files=files)
+        original, original_log = pq.git, pq.log_line
+        pq.git, pq.log_line = git, lambda *a, **k: None
+        try:
+            rc = pq.do_fetch(Namespace(state_dir=self.tmp.name, wait=0, task=None))
+        finally:
+            pq.git, pq.log_line = original, original_log
+        return rc, pq.load_state(self.tmp.name)
+
+    def test_forward_pointer_is_followed_once(self):
+        rc, state = self._fetch({
+            f'{pq.DESIGN_TASK_DIR}/PQD-001.md':
+                R3_HEADER + '\nĐọc docs/design/coordination/tasks/PQD-002.md để biết việc mới.\n',
+            f'{pq.DESIGN_TASK_DIR}/PQD-002.md':
+                '- revision: 1\n- status: READY_FOR_INTAKE\n- runtime_change_authorized_by_this_revision: no\n',
+        }, tracked='PQD-001')
+        self.assertEqual(rc, 0)
+        self.assertEqual(state['tracked_task'], 'PQD-002')
+
+    def test_pointer_never_moves_backwards(self):
+        rc, state = self._fetch({
+            f'{pq.DESIGN_TASK_DIR}/PQD-001.md': '- revision: 4\n- status: ACCEPTED\n',
+            f'{pq.DESIGN_TASK_DIR}/PQD-002.md':
+                R3_HEADER + '\nQuay lại docs/design/coordination/tasks/PQD-001.md\n',
+            f'{pq.DESIGN_TASK_DIR}/PQD-001.md': '- revision: 4\n- status: ACCEPTED\n',
+        }, tracked='PQD-002')
+        self.assertEqual(rc, 0)
+        self.assertEqual(state['tracked_task'], 'PQD-002', 'con trỏ ngược về id cũ phải bị bỏ qua')
+
+    def test_pointer_to_a_missing_file_is_ignored(self):
+        rc, state = self._fetch({
+            f'{pq.DESIGN_TASK_DIR}/PQD-001.md':
+                R3_HEADER + '\nViệc mới ở docs/design/coordination/tasks/PQD-009.md\n',
+        }, tracked='PQD-001')
+        self.assertEqual(rc, 0)
+        self.assertEqual(state['tracked_task'], 'PQD-001', 'trỏ tới file không tồn tại thì không được đổi con trỏ')
+
+    def test_explicit_task_flag_wins_over_state(self):
+        args = Namespace(state_dir=self.tmp.name, wait=0, sha='f' * 40, task='PQD-042')
+        git = FakeGit(files={'docs/design/coordination/tasks/PQD-042.md': R3_HEADER})
+        original, original_log = pq.git, pq.log_line
+        pq.git, pq.log_line = git, lambda *a, **k: None
+        try:
+            self.assertEqual(pq.do_ack(args), 0)
+        finally:
+            pq.git, pq.log_line = original, original_log
+        self.assertEqual(pq.load_state(self.tmp.name)['processed_design_sha'], 'f' * 40)
 
 
 class BriefTest(unittest.TestCase):

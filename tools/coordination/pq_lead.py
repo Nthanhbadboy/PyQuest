@@ -45,8 +45,45 @@ from datetime import datetime, timezone
 REPO = os.environ.get('PQ_LEAD_REPO') or os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 DESIGN_BRANCH = os.environ.get('PQ_LEAD_DESIGN_BRANCH', 'arena/00838eb9-pyquest')
 CODE_BRANCH = os.environ.get('PQ_LEAD_CODE_BRANCH', 'arena/b813b575-pyquest')
-DESIGN_TASK = 'docs/design/coordination/tasks/PQD-001.md'
-CODE_ACK = 'docs/implementation/coordination/tasks/PQD-001.md'
+# The design branch can hand the active conversation to a new task id (PQD-001 r4
+# points at PQD-002). Instead of hard-coding one file, the tool resolves the pair
+# from a *tracked* id: `--task` on the command line wins, then `tracked_task` in the
+# state (written by `fetch` when it follows a pointer), then the newest known id.
+TASK_IDS = ('PQD-002', 'PQD-001')
+DESIGN_TASK_DIR = 'docs/design/coordination/tasks'
+CODE_ACK_DIR = 'docs/implementation/coordination/tasks'
+POINTER_RE = re.compile(r'docs/design/coordination/tasks/(PQD-\d+)\.md')
+
+
+def tracked_id() -> str:
+    path = os.environ.get('PQ_LEAD_STATE') or os.path.expanduser('~/.pq-lead')
+    try:
+        with open(os.path.join(path, 'state.json'), encoding='utf-8') as handle:
+            saved = (json.load(handle) or {}).get('tracked_task')
+    except (OSError, ValueError):
+        saved = None
+    return saved if saved in TASK_IDS or saved else TASK_IDS[0]
+
+
+def task_id(args=None) -> str:
+    explicit = getattr(args, 'task', None) if args is not None else None
+    return explicit.strip() if explicit else tracked_id()
+
+
+def pick_task_id(args, state: dict | None) -> str:
+    """--task wins, else the state's tracked id (read inside the lock), else default."""
+    explicit = getattr(args, 'task', None) if args is not None else None
+    if explicit:
+        return explicit.strip()
+    return (state or {}).get('tracked_task') or tracked_id()
+
+
+def design_task(args=None) -> str:
+    return f'{DESIGN_TASK_DIR}/{task_id(args)}.md'
+
+
+def code_ack(args=None) -> str:
+    return f'{CODE_ACK_DIR}/{task_id(args)}.md'
 GIT_TIMEOUT = 120
 LOCK_STALE_SECONDS = 900
 
@@ -270,10 +307,11 @@ def code_tip() -> str:
     return rev_parse(f'origin/{CODE_BRANCH}')
 
 
-def describe(sha: str, since: str | None) -> tuple[str, dict]:
+def describe(sha: str, since: str | None, task_path: str | None = None) -> tuple[str, dict]:
     """Summary of a design commit plus its parsed task header."""
-    lines = [f'design commit: {sha}', f'task header ({DESIGN_TASK}):']
-    fields = parse_task(read_file(sha, DESIGN_TASK))
+    task_path = task_path or design_task()
+    lines = [f'design commit: {sha}', f'task header ({task_path}):']
+    fields = parse_task(read_file(sha, task_path))
     if not fields:
         lines.append('  (task file not readable at that SHA)')
     for key in FIELDS:
@@ -320,7 +358,17 @@ def do_fetch(args) -> int:
                 save_state(path, state)
                 return 2
             prev = state.get('processed_design_sha')
-            text, fields = describe(sha, prev)
+            active = pick_task_id(args, state)
+            task_path = f'{DESIGN_TASK_DIR}/{active}.md'
+            # One-way handoff only: follow a pointer to a *higher* id that really has a
+            # task file at this SHA, so PQD-001 -> PQD-002 works and cannot ping-pong.
+            pointer = next((c for c in POINTER_RE.findall(read_file(sha, task_path) or '')
+                            if c > active and parse_task(read_file(sha, f'{DESIGN_TASK_DIR}/{c}.md'))), None)
+            if pointer:
+                log_line(path, f'FOLLOW_POINTER {active} -> {pointer} @ {sha[:7]}')
+                state['tracked_task'] = pointer
+                active, task_path = pointer, f'{DESIGN_TASK_DIR}/{pointer}.md'
+            text, fields = describe(sha, prev, task_path)
             verdict, why, scopes = classify(fields)
             state.pop('last_error', None)
             state['last_check'] = utcnow()
@@ -352,7 +400,7 @@ def do_fetch(args) -> int:
                 '## Next actor: a code-agent session (this tool cannot act by itself)',
                 '',
                 '1. `python3 tools/coordination/pq_lead.py status`',
-                f'2. Read the design task file at the pinned SHA: `git show {sha}:{DESIGN_TASK}`',
+                f'2. Read the design task file at the pinned SHA: `git show {sha}:{task_path}`',
                 f'3. Read the review file if the task points at one (`docs/design/coordination/reviews/`).',
                 '4. Apply the gate per scope: app/lib and assets only when runtime=yes *and* the task',
                 '   says READY_FOR_CODE; test-only and coordination work follow their own flags.',
@@ -402,7 +450,9 @@ def do_status(args) -> int:
                     state['fetched_design_sha'] = design_tip()
                     state['last_check'] = utcnow()
                     sha = state['fetched_design_sha']
-                    fields = parse_task(read_file(sha, DESIGN_TASK))
+                    active = pick_task_id(args, state)
+                    design_path = f'{DESIGN_TASK_DIR}/{active}.md'
+                    fields = parse_task(read_file(sha, design_path))
                     verdict, why, scopes = classify(fields)
                     state['design'] = {'sha': sha, 'fields': fields, 'verdict': verdict, 'scopes': scopes,
                                        'observed_at': utcnow()}
@@ -418,7 +468,8 @@ def do_status(args) -> int:
             scopes = design.get('scopes') or {}
             try:
                 code_sha = code_tip()
-                ack_present = git('cat-file', '-e', f'{code_sha}:{CODE_ACK}', check=False).returncode == 0
+                ack_path = f'{CODE_ACK_DIR}/{pick_task_id(args, state)}.md'
+                ack_present = git('cat-file', '-e', f'{code_sha}:{ack_path}', check=False).returncode == 0
             except LeadError as err:
                 code_sha, ack_present = f'(unreadable: {err})', False
             processed = state.get('processed_design_sha')
@@ -428,7 +479,8 @@ def do_status(args) -> int:
             print(f'- code branch:           {CODE_BRANCH}')
             print(f'- code tip (published):  {code_sha}')
             print(f'- code CI on tip:        {ci_on(code_sha)}')
-            print(f'- our ACK on tip:        {CODE_ACK if ack_present else "MISSING"}')
+            print(f'- tracked task id:        {pick_task_id(args, state)}')
+            print(f'- our ACK on tip:        {ack_path if ack_present else "MISSING (phải nộp ACK cho task đang theo dõi)"}')
             print(f'- design processed sha:  {processed or "never"}   rev {state.get("processed_revision") or "?"}')
             print(f'- design tip fetched:    {design.get("sha") or "never fetched"}')
             print(f'- design task status:    {fields.get("status") or "?"} (revision {fields.get("revision") or "?"})')
@@ -484,9 +536,9 @@ def do_ack(args) -> int:
             if ancestor is False:
                 print(f'rejecting ack: {sha} is not in the fetched {DESIGN_BRANCH} history', file=sys.stderr)
                 return 2
-            fields = parse_task(read_file(sha, DESIGN_TASK))
+            fields = parse_task(read_file(sha, design_task(args)))
             if not fields:
-                print(f'rejecting ack: no readable task file at {sha[:7]}:{DESIGN_TASK}', file=sys.stderr)
+                print(f'rejecting ack: no readable task file at {sha[:7]}:{design_task(args)}', file=sys.stderr)
                 return 2
             state = load_state(path)
             state['processed_design_sha'] = sha
@@ -594,6 +646,7 @@ def main(argv=None) -> int:
     parser.add_argument('--state-dir', help='default ~/.pq-lead (outside the repo on purpose)')
     parser.add_argument('--repo', help='repository checkout to read (default: the one holding this script)')
     parser.add_argument('--wait', type=int, default=10, help='seconds to wait for the state lock')
+    parser.add_argument('--task', help=f'design task to follow (default: tracked, one of {", ".join(TASK_IDS)})')
     sub = parser.add_subparsers(dest='cmd', required=True)
     sub.add_parser('fetch', help='fetch design, queue anything new')
     status = sub.add_parser('status', help='print the contract state')

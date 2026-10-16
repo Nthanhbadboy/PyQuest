@@ -16,10 +16,15 @@ Trạng thái: `READY` · `QUEUED` · `BLOCKED` · `IN_PROGRESS` · `READY_FOR_R
 | PQC-003 | Test mở đủ 6 ActivitySheet + evidence trước/sau (chỉ `app/test`) | test | rev 3 cho làm ngay | `DONE` — CI run `38871660306` @ `c39a86f`: `test=0` với `+147` (23 test mới pass), `render=0` `+9`; lint đã sửa, bằng chứng ở EV-ID-006/-007/-008 | EV-ID-006/007/008 |
 | PQC-004 | Đóng gate thiết bị cho Gemini Live trên Release APK | coordination (blocked_on: thiết bị) | cần phiên có emulator/thiết bị + nghe bằng tai | `BLOCKED` | `pyquest-release-apk` (run 93) |
 | PQC-005 | Regenerate `app/pubspec.lock` cho nhóm dependency audio | runtime (dependency) | sandbox không có SDK; `pub get` của CI tự resolve 14 gói → cần quyết định có commit lock hay không | `BLOCKED` | — |
+| PQC-007 | Đối chiếu feasibility P02 (bảng A.1–A.3 trong `tasks/PQD-002.md`) với design + người dùng; chốt 6 câu hỏi | coordination | design trả lời §A.3; người dùng chốt hướng hub | `READY` — delegate được ngay, không sửa code | PQD-002 rev 1 |
+| PQC-008 | Semantics/focus cho 6 ô landmark + test route `lesson:<id>` tới đúng bài | **runtime** | `runtime=no`; cần design bật gate vì chạm `main_map_screen.dart:165` | `BLOCKED` | PQC-007, ruling của §A.3 câu 5 |
 | PQC-006 | Đồng bộ 1 dòng audience trong `docs/PyQuest_Reffrence_Images/VILLAGE_2_5D_REDESIGN_BRIEF.md` theo `PRODUCT_VISION.md:17` (under-12) | coordination | design đã sửa ở rev 3 trên tài liệu của họ và cho phép nhập đúng câu đó | `DONE` — **một dòng**, byte-identical với bản design (đã `diff` với `560106e`); không đổi ảnh, không đổi định vị | — |
 
 ## Delegate được ngay (mỗi dòng = một phiên agent khác, tự chặn nếu gate đóng)
 
+0. **PQC-007** (không cần SDK, không cần gate): đọc `tasks/PQD-002.md` §A, kiểm lại từng
+   `file:line` mà bảng dẫn, phản biện chỗ nào lead đo sai; kết quả ghi thành mục mới trong
+   `tasks/PQC-007.md` + câu hỏi còn mở cho design.
 1. **Chạy lại `brief` + đọc EV-ID và tìm chỗ nói quá** — delegate đối chiếu từng mục trong
    `EVIDENCE.md` với lệnh thật (recipe CI ở `LEAD_RUNBOOK.md` §6); mục nào không tái hiện
    được thì hạ xuống `not run`, nếu CI đỏ thì sửa test chứ không sửa gate.

@@ -418,4 +418,43 @@ void main() {
     await capture(tester, 'i01_lesson_with_tutor_button');
     await finish(tester, s);
   });
+
+  // PQD-002 §B: bộ "before" đủ sáu ActivitySheet + Bug Hunter locked, MỘT harness,
+  // MỘT seed, cả hai khung nhìn. Đây là ảnh nền để so khi (và chỉ khi) PQC-002 được
+  // duyệt art — bản thân nó không phải bằng chứng "art đã đạt".
+  testWidgets('render J: activity sheet before-set (six + locked)', (tester) async {
+    const List<String> ids = <String>[
+      'main_quest', 'robot_maze', 'dragon_jump', 'catch_stars', 'bug_hunter', 'achievement_house',
+    ];
+    final AppServices seededProgress = await start(tester);
+    for (var i = 0; i < ids.length; i++) {
+      await tap(tester, 'map_label_${ids[i]}', ms: 900);
+      await capture(tester, 'j0${i}_sheet_${ids[i]}');
+      await home(tester);
+    }
+    await finish(tester, seededProgress);
+
+    // Người chơi mới toanh: Bug Hunter còn khoá, CTA là "Đi tới bài học".
+    final AppServices newPlayer = await start(tester, rich: false, intro: true);
+    for (var i = 0; i < 3; i++) {
+      await tap(tester, 'welcome_next', ms: 500);
+    }
+    await tap(tester, 'map_label_bug_hunter', ms: 900);
+    await capture(tester, 'j06_sheet_bug_hunter_locked');
+    await finish(tester, newPlayer);
+
+    final AppServices smallPhone = await start(tester, small: true);
+    await tap(tester, 'map_label_robot_maze', ms: 900);
+    await capture(tester, 'j07_small_sheet_robot_maze');
+    await home(tester);
+    await finish(tester, smallPhone);
+
+    final AppServices smallNew = await start(tester, small: true, rich: false, intro: true);
+    for (var i = 0; i < 3; i++) {
+      await tap(tester, 'welcome_next', ms: 500);
+    }
+    await tap(tester, 'map_label_bug_hunter', ms: 900);
+    await capture(tester, 'j08_small_sheet_bug_hunter_locked');
+    await finish(tester, smallNew);
+  });
 }

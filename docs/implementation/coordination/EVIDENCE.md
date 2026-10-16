@@ -208,9 +208,96 @@ callback khi dispose, chỉ dựa vào guard `mounted`. Trong app thật vô h�
 `_finish` ghi DB/sau animation thì sẽ có callback chạy sau khi màn chơi đã đóng. Đề xuất
 nhỏ cho gói UI/game riêng: lưu `Timer` và `cancel()` trong `dispose()`.
 
+## EV-ID-011 — PQD-002 §B: test route thật + ngân sách byte — `written ở 83cd3b9+`, CI đang chạy
+
+File: `app/test/activity_sheet_thumbnails_test.dart` (443 dòng). Thêm/thay so với bản r3:
+
+* `group('route thật của sheet (showPQSheet) …')`: 7 ca. Mở sheet bằng **chính
+  `showPQSheet`** của app ở `Size(360,640)@2` với `textScale 2.0` (đặt qua
+  `platformDispatcher.textScaleFactorTestValue`, vì `MediaQuery` của route modal lấy từ
+  *view* chứ không từ cây cha), `ensureVisible` rồi `tap` (giữ `warnIfMissed: true` — chạm
+  không tới thì đỏ), và assert giá trị pop: `'open'` cho sáu activity, `'lesson:<id>'` cho
+  Bug Hunter khoá.
+* `unlockLessonId` **lấy từ data thật**: `BugHunterContent.load(rootBundle).unlockLessonId`
+  (nguồn: `app/assets/data/bug_hunter_puzzles.json` → `packs[0].requires_lesson = mq1_03`),
+  không còn `bug_3` tự đặt.
+* Bỏ assertion `> 8 KiB` (review r4: proxy vô nghĩa). Thay bằng `test('ngân sách byte …')`:
+  mỗi thumbnail ≤ 100.000 B, cả sáu ≤ 600.000 B, `> 0`; và test decode siết
+  `256 ≤ cạnh ≤ 512` + vuông. Số thật của bộ hiện tại: 17.656 / 25.976 / 19.846 / 26.676 /
+  26.778 / 27.340 B, tổng **144.272 B**, cạnh 288 → pass; bản 512 (tổng 112.938 B, cạnh 512)
+  cũng pass ⇒ **test không chặn PQC-002**.
+* `decodeAsset` dùng `try/finally` để `codec.dispose()` kể cả khi frame lỗi.
+* `group('ImageCache khi mở lần lượt sáu sheet')`: `cache.clear()` → `precacheImage` sáu
+  asset trong `runAsync` → in `entries/bytes/live` + assert `> 0` và `< 64 MiB`.
+  Ghi rõ trong comment: đây là ImageCache của engine trên máy test, **không phải** RAM/GPU
+  thiết bị thật.
+* `group('vùng chạm của landmark …')`: dùng đúng công thức `_coverRect`/`toScreen` của
+  `main_map_screen.dart:138` để tính `hitBox` ra px ở 360×640, assert mọi ô ≥ 48 px và
+  nằm trong 0..1.
+
+Trạng thái: chờ `check` job của commit chứa file này (`test=0 analyze=0 render=0`) rồi mới
+ghi là verified. Không đổi workflow, không nới assert để được xanh.
+
+## EV-ID-012 — Số đo hình học cho feasibility (PQD-002 §A.2)
+
+Tính bằng công thức của app (`kMapImageSize = 1152×2064`, `scale = max(w/imgW, h/imgH)`),
+không phải ước lượng:
+
+| Khung | Nền thật vẽ ra | 6 `hitBox` (rộng×cao, px) |
+|---|---|---|
+| 390×844 @3 | 471×844 (crop 21 % chiều rộng) | 118×191, 154×122, 113×124, 85×105, 108×93, 94×108 — **nhỏ nhất 85×105** |
+| 360×640 @2 | 360×645 (crop 0,8 %) | 90×146, 117×93, 93×108, 85×80, 108×94, 94×108 — **nhỏ nhất 85×80** |
+| 360×640 với nền **vuông** 1024² (prototype) | 640×645 | chỉ **56,25 %** chiều rộng còn thấy ⇒ mọi toạ độ chuẩn hoá cũ lệch |
+
+Kết luận kỹ thuật (và là lý do PQC-002 không được "thay nền cho nhanh"): hitbox chỉ giữ
+nguyên nghĩa nếu nền mới có **cùng tỷ lệ và cùng cách crop**; ảnh làng mới là vuông.
+Cần design giao bảng toạ độ chuẩn hoá trên `village.webp` — tôi không tự đoán.
+
+Không kiểm: `ChunkyButton small` = 44 px vẫn dưới sàn 48 px (giữ nguyên từ r3, chưa có
+ruling); contrast của prototype **không** phải của app — các con số 11.19 / 5.53 / 6.27 /
+6.53 là của `docs/design/first-play-prototype/evidence/contrast-check.json`, tự nó ghi
+"selected opaque token pairs only", không áp dụng cho token hiện tại của PyQuest.
+
+## EV-ID-013 — Before-set render cho sáu sheet (`render J`) — cách lấy ảnh
+
+Harness: `app/test/render/render_screens_test.dart` → `render J: activity sheet before-set
+(six + locked)`, cùng `start()/tap()/capture()/finish()` như các render khác,
+`toImage(pixelRatio: 1.5)`, publish qua `ci/publish_previews.py` (resize rộng ≤480 →
+hệ số 1.2308 ở khung 390). State: `j00_sheet_main_quest`, `j01_sheet_robot_maze`,
+`j02_sheet_dragon_jump`, `j03_sheet_catch_stars`, `j04_sheet_bug_hunter`,
+`j05_sheet_achievement_house` (seed `rich: true`), `j06_sheet_bug_hunter_locked`
+(seed người mới, 3 lần `welcome_next`), `j07_small_sheet_robot_maze`,
+`j08_small_sheet_bug_hunter_locked` (360×640 @2).
+
+```sh
+CID=$(gh api "repos/Nthanhbadboy/PyQuest/commits/<sha>/check-runs?per_page=100" \
+      --jq '.check_runs[] | select(.name|startswith("preview|j")) | {name, id}')
+# ghép chunk base64 theo <state> rồi decode — xem recipe đầy đủ ở LEAD_RUNBOOK.md §6
+```
+
+Số liệu run chứa `render J` (test + render + preview): `pending` ở mục này — lead ghi vào
+delta khi đọc được report của **đúng SHA** đã push.
+
+## EV-ID-014 — `pq_lead.py` thôi cứng PQD-001, theo con trỏ task một chiều
+
+Review r4 §C nêu tool "theo dõi PQD-001 cứng". Đã sửa tối thiểu, không thêm framework:
+
+* `TASK_IDS = ('PQD-002','PQD-001')`, `pick_task_id(args, state)`: `--task` > `tracked_task`
+  trong state > id mới nhất; đường dẫn design/ACK suy ra từ id được chọn.
+* `fetch` chỉ đi theo con trỏ tới id **lớn hơn** và **có file task thật** tại SHA đó
+  (`POINTER_RE` + `parse_task`) → `PQD-001 r4 → PQD-002` hoạt động, không ping-pong,
+  không nhảy tới file ma.
+* `status` in `tracked task id` và báo `MISSING (phải nộp ACK cho task đang theo dõi)` khi
+  nhánh code chưa có ACK cho đúng task — đó là cách phát hiện "ACK để cho có".
+
+Unit test: `python3 tools/coordination/test_pq_lead.py` → **`Ran 30 tests … OK`**
+(4 ca mới: `test_forward_pointer_is_followed_once`, `test_pointer_never_moves_backwards`,
+`test_pointer_to_a_missing_file_is_ignored`, `test_explicit_task_flag_wins_over_state`;
+fixture giờ chặn `PQ_LEAD_STATE` vào thư mục tạm nên không đọc state thật của máy).
+
 ## Chưa kiểm tra được — không được suy ra từ các mục trên
 
-1. Render "after" của PQC-003 chưa tồn tại vì chưa có asset mới — xem mục 2.
+1. Render "after" của bộ 512 chưa tồn tại vì chưa có asset mới — xem mục 2.
 2. Render "after" của bộ 512: phụ thuộc PQC-002, mà PQC-002 cần `runtime=yes` + người
    dùng duyệt art. Không tự thay asset để "có số liệu".
 3. Bộ đếm `ImageCache`/bộ nhớ decode khi mở nhiều sheet (review §1 mục 512-vs-384 yêu cầu
