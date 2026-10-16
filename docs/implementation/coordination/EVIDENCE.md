@@ -493,10 +493,12 @@ RAM/GPU thiết bị): j00=7entries/11501568B -> j01=7entries/11501568B -> ... -
   `288*288*4 = 331.776 B` × 6 = `1.990.656 B` → `9.510.912 + 1.990.656 = 11.501.568 B`,
   tức đúng bằng số đo. Kết luận hẹp mà chắc: bộ đếm `currentSizeBytes` của engine CI này
   tính theo RGBA8 của ảnh **đã giải mã**, không theo byte file asset.
-- Vì vậy bộ 512 px của PQC-002: 6 * `512*512*4 = 1.048.576 B` = `6.291.456 B ≈ 6,00 MiB`,
-  tức **+4.300.800 B ≈ +4,10 MiB** so với bộ hiện tại trên máy CI — *trùng* với con số
-  review PQC-007 cảnh báo (1.990.656 → 6.291.456), nhưng ở đây là số **đo** trên kênh cache
-  thật chứ không phải tích W*H*4 tự tuyên bố. **Không** được dùng làm RAM/GPU thiết bị,
+- **Sửa lại theo rev 4 §U1 (tôi đã trộn hai đại lượng):** `6 * 512*512*4 = 6.291.456 B` và delta
+  `+4.300.800 B` là **dự phóng RGBA8 cho riêng sáu thumbnail**, **chưa** từng đo bộ 512 trong CI.
+  Cái **đo thật** là tổng `11.501.568 B` = nền `9.510.912` + sáu thumbnail `1.990.656`. Nếu đổi sang 512
+  mà **giữ nền cũ**, tổng dự phóng = `9.510.912 + 6.291.456 = 15.802.368 B` — không phải
+  `11.501.568 → 6.291.456` (mũi tên đó so tổng cache với riêng thumbnails). Vẫn chỉ là cache của engine
+  trên máy CI, không phải RAM/GPU thiết bị. **Không** được dùng làm RAM/GPU thiết bị,
   và **không** đủ để nói 512 px là rẻ hay đắt trên máy thật; quyết định PQC-002 vẫn thuộc
   người dùng + gate runtime.
 - Giới hạn còn nguyên: `currentLiveImages` không tồn tại ở engine CI → số “live” vẫn
@@ -583,4 +585,58 @@ không dịch literal/engine output, không đổi grader) — §K.2.
 Không audit hộ số liệu của design (`9 locale unit + 27 regression + 3 browser suites PASS` ở
 `shared-l10n/evidence` là counterpart-reported, tôi chưa chạy); không tạo fixture `app/test/l10n/**` cho
 type chưa tồn tại (§K.4). Gate PQC-002/P02/PQC-004/PQC-005/PQC-008 giữ nguyên. Một ACK cho `9172ecd`.
+
+## EV-ID-021 — PQD-003 rev 4 (`59f7023`): design audit độc lập, tôi bị bắt 2 overclaim, đã sửa
+
+`docs/design/coordination/reviews/PQD-003-r4-ci.json` không trích handoff của tôi mà đối chiếu
+**check-run thật** (`116940913688`, `116945607176`) với `report_sha256`, và đưa `app_tree_identity`
+(`9bfd13b190…`) cho `e546f9b`/`c828ad4`. Tôi kiểm lại bằng `git rev-parse <sha>:app` trên bốn commit
+`e546f9b`/`c828ad4`/`263033a`/`db9b59f`: **cùng một tree** ✓ → "commit docs không đổi app" là sự thật
+đã xác minh, và họ **không** cần tôi đưa số.
+
+**Hai correction họ đưa chống lại tôi — cả hai đúng, sửa tận gốc:**
+1. **Baseline keyboard chỉ assert sau vòng 6 Tab** → một chuỗi 6 điểm có thể quay về node cũ và che
+   mọi thứ xảy ra giữa đường. Test giờ assert **sau từng lần down và từng lần up**, in `trace`
+   `#1 down=giu-nguyen up=giu-nguyen | …` ra log. Thêm characterization Enter + ghi rõ giới hạn
+   (*Tab = traversal; sheet không mở không chứng minh activation hỏng*). `isLogicalKeyPressed` giữ.
+2. **Wording số liệu.** (a) `activity_sheet_thumbnails_test.dart:395-436` là **toán rect cover**
+   (nhóm tự tên "toán hitBox, không cần pump"), **không phải** đo RenderBox của sáu hotspot lúc runtime
+   — docs của tôi gọi nó là "đo RenderBox thật" → đã sửa ở `PQD-003.md` §L.8; RenderBox thật chỉ phủ
+   thumbnail slot + probe `ChunkyButton`/`RoundIconButton`. (b) `6.291.456 B`/`+4.300.800 B` là
+   **dự phóng RGBA8**, không phải số đo; tổng dự phóng khi giữ nền cũ `15.802.368 B` → đã sửa ở
+   EV-ID-018 và `PQD-003.md` §L.9.
+
+**Họ BÁC một claim của tôi và họ có lý:** tôi viết "`unset` và `explicit vi` không phân biệt được từ
+storage" — đúng cho **getter** (`settings_service.dart:42`, lossy qua `PqLang.fromCode`), **sai cho service**:
+`raw(String key)` ở `:46` (và `setRaw`) trả nguyên giá trị, `SettingsRepository.all()` trả đúng map từ DB.
+→ migration đọc **raw**; bảng ưu tiên 4 hàng của rev 4 thay đề xuất "coi di sản = explicit" của tôi
+(tôi **rút** đề xuất đó, có ghi biên bản). Họ cũng sửa: fallback cuối là **en** không phải vi; thứ tự
+`PQC-014 → 015 → 016`; `PQC-010` đặt ở `app/lib/modules/tutor/board/**`; `grep 48 ternary` không phải
+inventory → **bỏ** nó khỏi vai trò coverage gate; `// l10n-todo` không phải pass coverage.
+
+**Contract siết theo rev 4:** 1..12 beats (plan rỗng ≠ thành công); caption ≤ **600 code point**;
+invalid → **reject cả plan trước render** + fallback có nhãn (không bỏ beat/connector rồi render nốt);
+accept chỉ khi `sessionId+contextRevision+turnId+active+locale` **khớp chính xác** (bỏ "larger wins");
+reduced-motion chỉ bỏ tween của beat đang chọn, **không** nhảy beat cuối; board **chỉ hiển thị**, không
+callback ghi score/quota/energy; đổi locale thì **thay ngay** caption/altText, giữ ink/code/note, và
+replay + đổi locale không phát lại reward/complete. §F thành 20 dòng (không khóa nghiệm thu vào số dòng).
+
+**Việc tôi làm trong `test/coordination` ngay trong revision này:**
+- `app/test/lesson_route_regression_test.dart`: keyboard per-Tab + Enter characterization.
+- **Nhập content pack** `authored-copy.v1.json` từ `59f7023` (byte-identical, 9359 B, sha256
+  `003a573b76e1363c…`) → `app/test/fixtures/tutor_board/`, và `app/test/tutor_board_content_pack_test.dart`
+  (8 test **dữ liệu**, không import type chưa tồn tại): shape khóa; `beatId = <sourceStep>.b<n>`;
+  `sourceBeatIndex` = vị trí; đúng một `waitForLearner` và là beat cuối; altText không rỗng/không nhãn
+  chung/≥30 code point; mọi field ≤600 code point; **không** có `code`/`expectedOutput`/answer/rules/
+  prerequisite/score/reward/stars/energy trong overlay; `lessonId/sourceStep` khớp `main_quest_ch1.json`
+  (đọc qua `rootBundle`); beat 2 `numbers` phải nhắc "ngoặc" để `7` không bị gán cho cả hai lệnh.
+- **Không** chuyển số cache thành assert (họ đồng ý ở §V3); **không** sửa app/lib để làm test keyboard xanh
+  (§U3); **không** audit-gộp `38892940223` (họ chưa kiểm run đó, tôi cũng không coi nó là bằng chứng mới).
+
+**Trạng thái gate sau rev 4:** `runtime=no / test=yes / coordination=yes`, `art_approval: pending-review`;
+`U1` 512 px chưa duyệt; `U2` footprint map-art còn nợ (riêng, không đụng `PQC-010`); `U4` device voice
+chưa có; `U5` — design **đồng ý kiến trúc** cần `flutter_localizations`/delegates nhưng **chưa cấp**
+dependency gate. Scope guard ghi trên board: **không** thu nhỏ app thành "app học có Tutor" — giữ
+bạn bè/thi đấu/thưởng-danh hiệu/động viên/mini-game (Product Vision §7, 11–13, 15–16; Game Design §6–10, 12),
+không fake leaderboard/reward, không đổi economy trong patch board/locale. Một ACK cho `59f7023`.
 

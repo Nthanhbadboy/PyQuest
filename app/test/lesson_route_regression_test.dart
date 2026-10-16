@@ -301,35 +301,46 @@ void main() {
   });
 
   group('characterization những gì code đang có/không có (chưa phải kết luận thiết bị)', () {
-    testWidgets('characterization keyboard: Tab không đặt focus vào landmark nào (hành vi hiện có)',
+    testWidgets('characterization keyboard: TỪNG lần Tab đều không đổi focus (rev 4 §V1)',
         (WidgetTester tester) async {
       final AppServices s = await boot(tester);
-      // Ghi lại **hành vi hiện tại** bằng API có thật, không đoán tên: sáu ô chạm là
-      // GestureDetector trần (main_map_screen.dart:161-168), không Focus/Actions tường
-      // minh nên Tab không có gì để nhảy tới. Đây là baseline cho PQC-008: khi ai đó làm
-      // thật, assertion này ĐỔI và buộc tài liệu phải cập nhật — bản thân nó không tuyên
-      // bố Android/TalkBack đạt hay không đạt, và không được dùng để đóng PQC-008.
-      final FocusNode? before = FocusManager.instance.primaryFocus;
+      // rev 4 §V1 sửa đúng một lỗi phương pháp của tôi: bản cũ chỉ đối chiếu focus **sau**
+      // vòng 6 lần, nên một chuỗi 6 điểm đi qua 6 node rồi quay về node ban đầu vẫn "xanh".
+      // Từ giờ assertion nằm ở **mỗi** lần Tab (cả lúc giữ phím lẫn sau khi nhả), và có
+      // trace in ra log để đọc được trong CI mà không phải đoán.
+      final FocusNode? baseline = FocusManager.instance.primaryFocus;
+      final List<String> trace = <String>[];
       for (var i = 0; i < 6; i++) {
-        // Ba vòng CI mới dạy đủ chữ ký thật (Flutter 3.47): `sendKeyDownEvent` nhận
-        // **một positional `LogicalKeyboardKey`** — không có named `logicalKey`
-        // (run 38889441962), và `usbHidUsage` là của `PhysicalKeyboardKey` chứ không phải
-        // `LogicalKeyboardKey` (run 38889939855 + 38890358736). Bài học ghi luôn ở đây:
-        // trong test, hoặc API có source/analyze xác nhận, hoặc không viết.
+        // Chữ ký thật của SDK (3 vòng CI đỏ đã dạy, EV-ID-018): `sendKeyDownEvent` nhận
+        // một positional `LogicalKeyboardKey`; `usbHidUsage` thuộc PhysicalKeyboardKey.
         await tester.sendKeyDownEvent(LogicalKeyboardKey.tab);
-        // Nếu sự kiện không thực sự được ghi nhận là Tab thì kết luận keyboard vô nghĩa
-        // → kiểm thẳng vào HardwareKeyboard thay vì giả định.
-        
         expect(HardwareKeyboard.instance.isLogicalKeyPressed(LogicalKeyboardKey.tab), isTrue,
-            reason: 'sự kiện phải được hiểu là Tab, nếu không kết luận keyboard là rỗng');
+            reason: 'Tab #${i + 1}: sự kiện không được ghi nhận là Tab -> mọi kết luận keyboard bên dưới vô nghĩa');
+        final FocusNode? afterDown = FocusManager.instance.primaryFocus;
         await tester.sendKeyUpEvent(LogicalKeyboardKey.tab);
         await tester.pump();
+        final FocusNode? afterUp = FocusManager.instance.primaryFocus;
+        expect(afterDown, same(baseline),
+            reason: 'Tab #${i + 1} lúc giữ phím đã đổi focus node: baseline lệch ngay từ lần đầu');
+        expect(afterUp, same(baseline),
+            reason: 'Tab #${i + 1} đã đổi focus node -> landmark đã có target bàn phím, phải cập nhật tài liệu + PQC-008');
+        trace.add('#${i + 1} down=${identical(afterDown, baseline) ? 'giu-nguyen' : 'DOI'}'
+            ' up=${identical(afterUp, baseline) ? 'giu-nguyen' : 'DOI'}');
       }
       expect(tester.takeException(), isNull);
-      expect(FocusManager.instance.primaryFocus, same(before),
-          reason: 'Tab 6 lần không đổi focus node — landmark chưa có target bàn phím');
-      // Và bàn phím cũng không mở được sheet: không có route nào bật lên.
+      // Tab là **traversal**, không phải activation: sheet không mở sau 6 lần Tab KHÔNG
+      // chứng minh activation hỏng. Phần Enter dưới đây cũng chỉ chứng minh một việc ở mức
+      // cây widget: không có focus target nào để kích hoạt. Đo thật (TalkBack, thứ tự focus,
+      // activation trên landmark) thuộc PQC-008 và cần thiết bị — gate vẫn đóng.
       expect(find.byKey(const Key('sheet_go_lesson')), findsNothing);
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.enter);
+      expect(tester.takeException(), isNull, reason: 'Enter không được ném exception khi primaryFocus là scope');
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(find.byKey(const Key('sheet_go_lesson')), findsNothing,
+          reason: 'Enter không mở sheet vì landmark chưa có Focus target, không phải vì Enter bị vô hiệu');
+      // ignore: avoid_print
+      print('PQC-008 keyboard baseline (mức widget CI, KHÔNG phải thiết bị): ${trace.join(' | ')}');
 
       await finishTest(tester, s);
     });
