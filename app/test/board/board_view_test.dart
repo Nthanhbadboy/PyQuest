@@ -1022,7 +1022,8 @@ Future<List<String>> forEachMatrixCombo(
               ));
             } on Object catch (e) {
               // Bắt mọi loại: một combo hỏng không được xoá thông tin của 95 combo còn lại.
-              bad.add('$tag → ${e.toString().split('\n').first}');
+              final String diagnostic = e.toString().replaceAll(RegExp(r'\s+'), ' ').trim();
+              bad.add('$tag → ${diagnostic.length > 700 ? diagnostic.substring(0, 700) : diagnostic}');
             }
           }
         }
