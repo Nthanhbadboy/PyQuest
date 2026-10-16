@@ -443,7 +443,62 @@ EV-ID-011; `actions/jobs/<id>/logs` redirect ra blob storage ngoài allowlist sa
 `mq1_01`+`mq1_02` → card hết khóa, tap card mới push `LessonScreen` và energy giảm đúng cost
 tính theo rule của `_open`; “Để sau” không phát `activityOpened`.
 
+Không có số `entries/bytes` nào được công bố ở EV-ID-016/-017: kênh render log đã làm việc đó ở **EV-ID-018**.
+
 **Không đổi gate:** `brief PQC-009` = ALLOWED(test), `brief PQC-008` vẫn BLOCKED(runtime=no);
 PQC-002/art P02 vẫn chờ người dùng. Diff của cả ba commit chỉ nằm trong `app/test/**` và
 `docs/implementation/coordination/**`; `audit.py` của design tái hiện khớp `facts.json` trên
 nhánh này và 9/9 ảnh import khớp sha256+bytes.
+
+## EV-ID-018 — PQC-009 phần còn hở: baseline keyboard + **số cache đo được**, sau 4 vòng CI
+
+`0d609f7` xanh nhưng PQC-009 vẫn còn hai mục chưa làm: ý 4 (keyboard/Tab order) và ý 3
+(số `entries/bytes` không trích được vì `test.txt` bị cắt giữa). cả hai đã đóng, và chuỗi
+run sau là bằng chứng thật, kể cả bốn run đỏ:
+
+| Run | Commit | Kết quả | Lý do |
+|---|---|---|---|
+| `38889441962` | `37b3a23` | đỏ | `sendKeyDownEvent(logicalKey: ...)` — SDK này không có named `logicalKey` (4 error) |
+| `38889939855` | `f08eec7` | đỏ | `.usbHidUsage` không tồn tại trên `LogicalKeyboardKey` (2 error) |
+| `38890358736` | `9b7e979` | đỏ | `.usbHidUsage` trả `int`, mà tham số là `LogicalKeyboardKey` (2 error) |
+| `38890785888` | `e546f9b` | **xanh** | `analyze` **No issues found! (8.6s)** · `test` **`+167 All tests passed!`** · `render` **`+10`** |
+
+`+166 → +167` = đúng một test mới (keyboard), không test nào bị bỏ/skip. Ba run đỏ **không**
+phải hành vi app: là chữ ký API trong test của tôi → bài học “không đoán API” giờ nằm trong
+comment của chính test đó.
+
+**1) Baseline keyboard (mức widget, không phải kết luận thiết bị).** Test
+`characterization keyboard: Tab không đặt focus vào landmark nào (hành vi hiện có)` bơm
+6 lần Tab bằng `sendKeyDownEvent(LogicalKeyboardKey.tab)` và **kiểm chứng** từng lần bằng
+`HardwareKeyboard.instance.isLogicalKeyPressed(LogicalKeyboardKey.tab)` — nếu sự kiện không
+được ghi nhận là Tab thì test đỏ tại đó, không cho phép kết luận từ tổ hợp phím vô nghĩa.
+Kết quả trên CI: focus node **không đổi** sau 6 lần Tab và `sheet_go_lesson` **không** bật.
+Đây là baseline để PQC-008 phải làm *đảo ngược* (Tab tới được sáu địa điểm, Enter/Space mở
+đúng hành vi tap, focus trả về launcher) — và nó **không** đóng PQC-008, không nói tới
+TalkBack/Android.
+
+**2) Số cache thật, lấy từ kênh render log (không cắt giữa).** `render J` là chỗ duy nhất mở
+lần lượt sáu sheet qua route của app, nên phép đo `imageCache` được đặt ở đó, in một dòng:
+
+```
+PQC-009 imageCache khi mở lần lượt sáu sheet (cache của engine trên máy CI, KHÔNG phải
+RAM/GPU thiết bị): j00=7entries/11501568B -> j01=7entries/11501568B -> ... -> j05=7entries/11501568B
+```
+
+Đọc đúng những gì nó nói (đã kiểm qua **ba run (kể cả hai run đỏ vì lỗi analyzer, render job vẫn chạy) — số giống hệt nhau**):
+- **7 entries / 11.501.568 B ≈ 10,97 MiB** cho cả nền đảo + sáu thumbnail, và **không đổi**
+  khi mở lần lượt sáu sheet → sáu ảnh này đã nằm sẵn trong cache từ `precacheMap`, mở sheet
+  không nạp thêm. Phép đo này *không* chứng minh hành vi thải cache theo thời gian.
+- Khớp số học **chính xác đến từng byte**: nền `1152*2064*4 = 9.510.912 B` + sáu thumbnail
+  `288*288*4 = 331.776 B` × 6 = `1.990.656 B` → `9.510.912 + 1.990.656 = 11.501.568 B`,
+  tức đúng bằng số đo. Kết luận hẹp mà chắc: bộ đếm `currentSizeBytes` của engine CI này
+  tính theo RGBA8 của ảnh **đã giải mã**, không theo byte file asset.
+- Vì vậy bộ 512 px của PQC-002: 6 * `512*512*4 = 1.048.576 B` = `6.291.456 B ≈ 6,00 MiB`,
+  tức **+4.300.800 B ≈ +4,10 MiB** so với bộ hiện tại trên máy CI — *trùng* với con số
+  review PQC-007 cảnh báo (1.990.656 → 6.291.456), nhưng ở đây là số **đo** trên kênh cache
+  thật chứ không phải tích W*H*4 tự tuyên bố. **Không** được dùng làm RAM/GPU thiết bị,
+  và **không** đủ để nói 512 px là rẻ hay đắt trên máy thật; quyết định PQC-002 vẫn thuộc
+  người dùng + gate runtime.
+- Giới hạn còn nguyên: `currentLiveImages` không tồn tại ở engine CI → số “live” vẫn
+  **missing**; không sửa workflow/CI config để lách giới hạn log (work order cấm).
+
