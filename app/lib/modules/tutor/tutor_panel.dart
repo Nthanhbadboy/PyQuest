@@ -265,15 +265,6 @@ class _TutorPanelState extends State<TutorPanel> {
             const SizedBox(height: 6),
             Text(_voiceError, style: const TextStyle(color: PQColors.coralDeep, fontSize: 12)),
           ],
-          if (_voiceTranscript.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            ..._voiceTranscript.take(3).map(
-              (line) => Padding(
-                padding: const EdgeInsets.only(top: 3),
-                child: Text(line, style: const TextStyle(fontFamily: 'Nunito', fontSize: 12, color: PQColors.inkSoft)),
-              ),
-            ),
-          ],
           const SizedBox(height: 4),
           Text(
             _lang == PqLang.vi
