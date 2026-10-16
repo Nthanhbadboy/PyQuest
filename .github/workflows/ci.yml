@@ -228,11 +228,16 @@ jobs:
           # system/events logcat buffers; pull those lines out where they can be
           # read (the raw dump stays in the artifact).
           if [ -f emulator-diagnostics/logcat_all.txt ]; then
+            # --app-evidence also writes the short "what happened to the app"
+            # extract that the report prints on the check page.
             python3 ci/analyze_logcat.py emulator-diagnostics/logcat_all.txt \
+              --app-evidence emulator-app-evidence.txt \
               > emulator-log-analysis.txt 2>&1 || true
           else
             echo "no logcat dump in emulator-diagnostics/ (the journey produced none)" \
               > emulator-log-analysis.txt
+            echo "no logcat dump was read, so the app's own evidence is missing" \
+              > emulator-app-evidence.txt
           fi
           head -n 60 emulator-log-analysis.txt
       - name: Shrink screenshots
@@ -258,6 +263,7 @@ jobs:
             runner-state-before.txt
             emulator-stop-reason.txt
             emulator-log-analysis.txt
+            emulator-app-evidence.txt
             emulator-diagnostics/
             status.txt
             shrink.txt

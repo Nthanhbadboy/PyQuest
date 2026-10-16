@@ -102,6 +102,23 @@ def relaunch_evidence(root, limit=45):
     return lines
 
 
+def app_evidence(root, limit=50):
+    """What the system buffers said about com.pyquest.pyquest itself.
+
+    ci/analyze_logcat.py writes this small extract next to the full analysis. It
+    answers the question a journey failure asks - did the app crash, get killed,
+    or restart - and it is short enough to be printed here, so the answer is on
+    the check page instead of only inside the artifact.
+    """
+    lines = read_lines(os.path.join(root, "emulator-app-evidence.txt"))
+    if not lines:
+        return None
+    if len(lines) > limit:
+        lines = lines[:limit] + [
+            "... [the rest is in emulator-app-evidence.txt in the artifact]"]
+    return lines
+
+
 def status_keys(root):
     keys = []
     for line in read_lines(os.path.join(root, "status.txt")) or []:
@@ -349,6 +366,16 @@ def report(args, root):
     out.extend(causes)
     out.append("")
 
+    # --- what the device said about the app ---------------------------------
+    app_state = app_evidence(root)
+    if app_state:
+        out.append("### The app on the device (from the logcat)")
+        out.append("")
+        out.append("```")
+        out.extend(trim(line) for line in app_state)
+        out.append("```")
+        out.append("")
+
     # --- steps, exit codes --------------------------------------------------
     if steps:
         out.append("### Steps in this job")
@@ -457,7 +484,7 @@ def report(args, root):
         "emulator-sampler.txt", "emulator-stop-reason.txt", "emulator-report.md",
         "runner-state-before.txt", "runner-state.txt", "status.txt", "journey.txt",
         "relaunch.txt", "shrink.txt", "emulator-log-analysis.txt",
-        "emulator-relaunch-evidence.txt")
+        "emulator-relaunch-evidence.txt", "emulator-app-evidence.txt")
         if os.path.exists(os.path.join(root, name))]
     out.append("- files this report could read: %s"
                % (", ".join("`%s`" % n for n in present) if present else "_(none)_"))

@@ -257,7 +257,12 @@ khung đã đo là `content` mới được đăng; khung không dùng được 
 key `relaunch_screen_blank=1` ⇒ check run *PyQuest emulator* thất bại, thay vì báo
 thành công mà không có bằng chứng. Trạng thái màn hình/cửa sổ/app và verdict của
 từng lần chụp được ghi vào `emulator-relaunch-evidence.txt` (in thẳng trong báo cáo
-ở mục *Screen and frame state at the relaunch capture*).
+ở mục *Screen and frame state at the relaunch capture*). Cùng nguyên tắc đó,
+`ci/analyze_logcat.py --app-evidence` ghi một đoạn ngắn những dòng logcat nói về
+chính `com.pyquest.pyquest` (process start/death, bị kill, ANR, FATAL EXCEPTION) và
+báo cáo in nó ở mục *The app on the device (from the logcat)* — để câu hỏi "app bị
+crash, bị hệ thống kill hay tự khởi động lại?" trả lời được ngay trên trang check,
+không cần tải artifact.
 
 **Báo cáo đọc ngay trên trang job:** bước *Report to step summary* chạy
 `ci/job_summary.py` và ghi `emulator-report.md` vào GitHub Step Summary của job
