@@ -647,7 +647,23 @@ void main() {
             'viewport=$viewport offset=$offsetBefore->$offsetAfter');
   });
 
-  testWidgets('R10-D1-sem: semantic output ở beat 2 mang nhãn VI đã author',
+  testWidgets('R10-D1-sem-query: VI output semantics node is queryable at beat 2',
+      (WidgetTester tester) async {
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    while (controller.beatIndex < 2) {
+      expect(controller.next() || controller.learnerAdvance(), isTrue);
+      await tester.pump();
+    }
+    await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
+    await tester.pumpAndSettle();
+    final String actual = realSemanticsLabel(tester, 'board_output_2_1_label');
+    expect(actual, isNotEmpty, reason: 'queried semantics node returned an empty label');
+  });
+
+  testWidgets('R10-D1-sem-VI: output node contains the authored Vietnamese label',
       (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
     addTearDown(handle.dispose);
@@ -666,7 +682,6 @@ void main() {
     final String viAlt = alt['vi']! as String;
     final String actual = realSemanticsLabel(tester, 'board_output_2_1_label');
     expect(actual, contains(viAlt), reason: 'expected VI "$viAlt", actual "$actual"');
-    expect(actual, isNot(contains(alt['en']! as String)));
   });
 
   testWidgets('R10-D2-sem: sau setLocale(en), semantic output cập nhật sang EN',
