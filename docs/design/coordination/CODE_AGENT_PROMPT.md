@@ -32,25 +32,27 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision16: review11d585a, authorization r6 giữ nguyên**.
-Đọc task003, `reviews/PQD-003-r16.md`, receipt r16 và `PQC-010-r10/ci-report.md`.
+Task hiện tại là **PQD-003 revision17: review7cbabb2, authorization r6 giữ nguyên**.
+Đọc task003, `reviews/PQD-003-r17.md`, receipt r17 và `PQC-010-r11/ci-report.md`.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
 **Làm ngay, không ACK-only:**
-1. Run38956071760/report117161474045: analyze sạch11.1s,342pass/7fail,10renderpass.
-   D1/D2/D1-sem/D2-sem có tên;3 tên còn lại bị cắt. R10-diag chưa có named result.
-2. Trả kết quả R10-diag với first assertion/exception, dòng lỗi, actual/expected.
-   Nó không scroll/setLocale/getSemantics; key widget không chứng minh real node.
-   Nếu fail, ưu tiên setup/advance/finder/exception trước cuộn. Nếu pass, mới dùng
-   baseline này đối chiếu ensureVisible/pumpAndSettle/content/node của D1.
-3. Không chỉ thêm test names hoặc đoán từ count. Dùng diagnostic evidence test-host
-   theo r14§2/r15§2 nếu không lấy được log, không sửa CI/publisher/runtime debug,
-   không skip assertions hoặc tắt semantics acceptance để làm xanh.
-4. Giữ yêu cầu roundtrip learner markers cùng controller; tên visible tests cần
-   đúng phạm vi. Giữ runtime/capture và các fixes d18b3d4 đã đóng.
-5. Trả exact SHA/run/report + named diagnostic result/actual. Scope010/014/015 giữ
-   nguyên;014 độc lập,015 sau014CI xanh, dependency chỉ015. Không mở LessonScreen/
-   AI/voice/art/social/economy/P06/CI/publisher hoặc apply lại guard.
+1. Run38962609867/report117183209570: analyze sạch11.6s,342pass/8fail,10renderpass.
+   R00-D1-setup/R00-D1-scroll/R10-D1/R10-D1-sem xác nhận fail;4 tên bị cắt.
+2. Named setup failure đã rõ: case không scroll/setLocale/getSemantics. Lấy first
+   exception/actual, checkpoint cuối đạt và stack location, phân biệt body/cleanup.
+   Theo ensureSemantics → pump/apply → advance → keys → pending exception.
+   Không suy key thiếu hoặc cùng root cause; scroll case có thể fail ở setup.
+3. Điểm nghẽn là nội dung lỗi, không phải thiếu test names. Nếu không có full log,
+   dùng diagnostic test-host capture r14§2; ghi checkpoint + actual/exception,
+   catch để ghi thì phải rethrow/giữ fail. Không CI/publisher/runtime debug hoặc
+   skip assertions. Bàn giao tiếp cần nội dung lỗi, không chỉ SHA/count.
+4. D3 đã có roundtrip-ink assertions ở EN/VI: giữ lại, không cần thêm cùng marker.
+   Source coverage đã bổ sung, chưa chứng minh runtime pass. Giữ các fixes đã đóng;
+   chỉnh tên/comment visible tests đúng phạm vi khi sửa tiếp.
+5. Trả exact SHA/run/report và xác minh setup/scroll/visible/real semantics/roundtrip.
+   Scope010/014/015 giữ nguyên;014 độc lập,015 sau014CI xanh, dependency chỉ015.
+   Không mở LessonScreen/AI/voice/art/social/economy/P06/CI/publisher hay apply lại guard.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
