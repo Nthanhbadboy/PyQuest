@@ -235,9 +235,7 @@ void main() {
                       entry.op.kind == BoardOpKind.codeSnippet) {
                     // Hộp phải chứa chữ của nó KÈM viền/padding: cao hơn chữ tối đa 12px (padding
                     // 2+2, border 1+1, dung sai làm tròn) và không được thấp hơn chữ.
-                    final double text = tester
-                        .getAllSize(find.descendant(of: box, matching: find.byType(RichText)))
-                        .fold<double>(0, (double sum, Size s) => sum + s.height);
+                    final double text = textHeightIn(tester, box);
                     expect(r.height - text, inInclusiveRange(-0.5, 12),
                         reason: '$tag: $key cao ${r.height}, chữ $text -> hộp không theo nội dung');
                   }
@@ -446,9 +444,7 @@ void main() {
       // padding 2+2 và border 1+1 — thiếu 6px đó thì RenderBox báo overflow và ca này đỏ vì
       // `takeException`. Số đo ở đây là của renderer, nên log CI tự giải thích được lệch bao nhiêu.
       final double box = tester.getSize(find.byKey(snippetKey)).height;
-      final double text = tester
-          .getAllSize(find.descendant(of: find.byKey(snippetKey), matching: find.byType(RichText)))
-          .fold<double>(0, (double sum, Size size) => sum + size.height);
+      final double text = textHeightIn(tester, find.byKey(snippetKey));
       expect(text, greaterThan(0), reason: 'block mẫu không có chữ để đo');
       expect(box - text, inInclusiveRange(-0.5, 12),
           reason: 'hộp $box so với chữ $text: padding/border chưa được tính vào hộp');
@@ -737,6 +733,20 @@ List<BoardVisibleOp> boardOpsAfter(TeachingPlan plan, int beat) {
     }
   }
   return out;
+}
+
+/// Tổng chiều cao chữ mà renderer đã xếp bên trong một hộp.
+///
+/// Dùng `getSize` + `Finder.at` thay vì `getAllSize`/`getSizeList`: vòng trước tôi đoán tên API
+/// nhóm này và trả giá bằng một run đỏ vì `undefined_method` (đỏ cả file, 23 ca không chạy).
+double textHeightIn(WidgetTester tester, Finder box) {
+  final Finder texts = find.descendant(of: box, matching: find.byType(RichText));
+  final int count = texts.evaluate().length;
+  double sum = 0;
+  for (int i = 0; i < count; i++) {
+    sum += tester.getSize(texts.at(i)).height;
+  }
+  return sum;
 }
 
 /// Nhãn của **một node** trong cây semantics mà Flutter thật sự dựng (`ensureSemantics` +

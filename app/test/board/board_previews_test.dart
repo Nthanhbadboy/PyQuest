@@ -74,7 +74,8 @@ class _Shot {
     required this.width,
     required this.height,
     required this.path,
-    this.ink = const <int>[],
+    required this.inkRows,
+    required this.inkSpan,
   });
 
   final int bytes;
@@ -83,12 +84,16 @@ class _Shot {
   final int width;
   final int height;
   final String path;
-  /// RGBA tại giữa nét vẽ của `connector` (4 số mỗi điểm) — bằng chứng mực thật nằm ở chỗ mũi tên
-  /// phải đi qua, không phải bằng chứng "có một đường nào đó trên ảnh".
-  final List<int> ink;
+  /// Số hàng ảnh có điểm tối trong dải nối của `connector` và tổng số hàng của dải (-1 / 0 khi
+  /// ảnh không có mũi tên). Đây là bằng chứng "mũi tên cắt ngang khoảng trống", không phải
+  /// "trên ảnh có một nét nào đó".
+  final int inkRows;
+  final int inkSpan;
 
   String describe(String name) => '$name | ${width}x$height | $bytes B | $levels mức sáng | '
-      'góc RGBA ${corner.join(',')} | commit ${_commit()}';
+      'góc RGBA ${corner.join(',')}'
+      '${inkRows >= 0 ? ' | mực dải nối $inkRows/$inkSpan hàng' : ''}'
+      ' | commit ${_commit()}';
 }
 
 /// `tested_code_commit` của run CI; rỗng khi chạy ở máy cá nhân thì nói rõ là local.
@@ -249,19 +254,18 @@ Future<_Shot> _captureBoard(
   expect(controller.beatIndex, beatIndex);
   expect(controller.currentCopy!.caption, isNotEmpty, reason: '$name: beat không có caption');
 
-  // rev 8 §R8-B1: với beat có `connector`, phải thấy **mực vẽ** ở giữa khoảng nối. Điểm lấy từ
-  // hình học mà layout tính cho đúng canvas đang vẽ (độ rộng đo từ renderer), rồi nhân
-  // pixelRatio và trừ gốc của boundary — nên nó là bằng chứng trên ảnh, không phải trên model.
-  // Nét ngang kiểu cũ (hai điểm cùng y trung bình) không đi qua điểm này.
-  final List<Offset> inkPoints = <Offset>[];
-  late Offset canvasOrigin;
+  // rev 8 §R8-B1: với beat có `connector`, phải thấy **mực vẽ băng qua khoảng trống** giữa hai hộp.
+  // Tiêu chuẩn là số HÀNG ảnh có điểm tối trong dải [đáy hộp nguồn, đỉnh hộp đích]: nét dọc hoặc
+  // S-curve nối hai hộp thì gần như mọi hàng đều có mực, còn nét ngang kiểu cũ (hai điểm cùng ở độ
+  // cao trung bình) chỉ để lại 1-3 hàng. Cách đo này không phụ thuộc số đo font hay làm tròn một điểm
+  // ảnh, nên đỏ = mũi tên thật sự không nối, không phải = tôi lấy mẫu hụt.
+  int bandTop = -1, bandBottom = -1, bandLeft = 0, bandRight = 0;
   if (name.contains('connector')) {
     final Size canvasSize = tester.getSize(find.byKey(const ValueKey<String>('board_canvas')));
     final Offset canvasTopLeft = tester.getTopLeft(find.byKey(const ValueKey<String>('board_canvas')));
-    // Gốc của boundary trong toạ độ màn hình: `toImage` trả ảnh tính từ đây, không phải từ
-    // canvas — hiệu hai cái là phần đệm trắng mà `ColoredBox` đã tô sẵn.
+    // Gốc của boundary trong toạ độ màn hình: `toImage` trả ảnh tính từ đây, không phải từ canvas.
     final Offset boundaryTopLeft = tester.getTopLeft(find.byKey(boundary));
-    canvasOrigin = canvasTopLeft - boundaryTopLeft;
+    final Offset origin = canvasTopLeft - boundaryTopLeft;
     final TeachingPlan model = validateComposed(planIndex).plan!;
     final BoardLayout geometry = BoardLayout.build(
       visible: visibleOpsThrough(model, beatIndex),
@@ -273,9 +277,19 @@ Future<_Shot> _captureBoard(
       proseOf: (BoardOp op) => op.proseFor(locale),
       outputHeader: locale == 'en' ? 'Run output' : 'Kết quả chạy',
     );
-    expect(geometry.connectors, isNotEmpty, reason: '$name: plan có connector mà geometry không có');
-    for (final BoardConnector link in geometry.connectors) {
-      inkPoints.add(Offset((link.start.x + link.end.x) / 2, (link.start.y + link.end.y) / 2));
+    expect(geometry.connectors, hasLength(1), reason: '$name: beat này phải có đúng một mũi tên');
+    final BoardConnector link = geometry.connectors.single;
+    bandTop = ((origin.dy + link.start.y) * 1.5).round();
+    bandBottom = ((origin.dy + link.end.y) * 1.5).round();
+    final double left = link.fromRect.x < link.toRect.x ? link.fromRect.x : link.toRect.x;
+    final double right =
+        link.fromRect.right > link.toRect.right ? link.fromRect.right : link.toRect.right;
+    bandLeft = ((origin.dx + left) * 1.5).round();
+    bandRight = ((origin.dx + right) * 1.5).round();
+    if (bandBottom < bandTop) {
+      final int t = bandTop;
+      bandTop = bandBottom;
+      bandBottom = t;
     }
   }
 
@@ -293,31 +307,25 @@ Future<_Shot> _captureBoard(
     final rgba = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
     final Uint8List pixels = rgba!.buffer.asUint8List();
     final List<int> size = _pngSize(file.readAsBytesSync());
-    final List<int> ink = <int>[];
-    for (final Offset point in inkPoints) {
-      final int cx = ((canvasOrigin.dx + point.dx) * 1.5).round();
-      final int cy = ((canvasOrigin.dy + point.dy) * 1.5).round();
-      // Ô 3×3 quanh điểm giữa nét: nét 2.2px và một điểm duy nhất thì phụ thuộc làm tròn. 3×3
-      // vẫn là "đúng chỗ mũi tên phải đi qua", không phải "gần gần chỗ đó".
-      int bestLum = -1;
-      List<int> bestRgba = const <int>[];
-      for (int dy = -1; dy <= 1; dy++) {
-        for (int dx = -1; dx <= 1; dx++) {
-          final int sx = cx + dx;
-          final int sy = cy + dy;
-          if (sx < 0 || sy < 0 || sx >= image.width || sy >= image.height) continue;
-          final int at = (sy * image.width + sx) * 4;
-          final List<int> rgba =
-              <int>[pixels[at], pixels[at + 1], pixels[at + 2], pixels[at + 3]];
-          final int lum = (rgba[0] * 299 + rgba[1] * 587 + rgba[2] * 114) ~/ 1000;
-          if (bestLum < 0 || lum < bestLum) {
-            bestLum = lum;
-            bestRgba = rgba;
+    int inkRows = -1;
+    if (bandBottom >= 0) {
+      final int x0 = bandLeft < 0 ? 0 : bandLeft;
+      final int x1 = bandRight > image.width ? image.width : bandRight;
+      final int y1 = bandBottom > image.height ? image.height : bandBottom;
+      int rows = 0;
+      for (int y = bandTop < 0 ? 0 : bandTop; y <= y1; y++) {
+        for (int x = x0; x < x1; x++) {
+          final int at = (y * image.width + x) * 4;
+          if (at + 3 >= pixels.length) break;
+          if (pixels[at + 3] != 255) continue; // chỉ tính điểm opaque; transparent là lỗi khác
+          final int lum = (pixels[at] * 299 + pixels[at + 1] * 587 + pixels[at + 2] * 114) ~/ 1000;
+          if (lum < 150) {
+            rows++;
+            break;
           }
         }
       }
-      ink.add(bestLum);
-      ink.addAll(bestLum < 0 ? <int>[-1, -1, -1, -1] : bestRgba);
+      inkRows = rows;
     }
     final _Shot measured = _Shot(
       bytes: file.lengthSync(),
@@ -326,7 +334,8 @@ Future<_Shot> _captureBoard(
       width: size[0],
       height: size[1],
       path: file.path,
-      ink: ink,
+      inkRows: inkRows,
+      inkSpan: bandBottom - bandTop + 1,
     );
     image.dispose();
     return measured;
@@ -343,17 +352,14 @@ Future<_Shot> _captureBoard(
   // file, và chặn trường hợp chụp nhằm một node rỗng 1x1.
   expect(shot.width, (surface.width * 1.5).round(), reason: '$name: bề rộng ảnh không khớp surface');
   expect(shot.height, (surface.height * 1.5).round(), reason: '$name: chiều cao ảnh không khớp surface');
-  if (inkPoints.isNotEmpty) {
-    // Mỗi điểm 5 số: [độ sáng nhỏ nhất, R, G, B, A] — đủ để log CI tự giải thích mà không phải đoán.
-    expect(shot.ink, hasLength(inkPoints.length * 5), reason: '$name: không lấy được mẫu mực vẽ');
-    for (int k = 0; k + 4 < shot.ink.length; k += 5) {
-      final List<int> sample = shot.ink.sublist(k, k + 5);
-      expect(sample[0], greaterThanOrEqualTo(0), reason: '$name: điểm lấy mẫu rơi ngoài ảnh: $sample');
-      expect(sample[0], lessThan(150),
-          reason: '$name: giữa khoảng nối không có mực (tối nhất $sample) -> mũi tên không nối hai hộp');
-      expect(sample[4], 255,
-          reason: '$name: nét vẽ RGBA $sample: transparent sẽ thành nền đen khi publish');
-    }
+  if (shot.inkRows >= 0) {
+    final int span = shot.inkSpan;
+    expect(span, greaterThan(1), reason: '$name: dải nối rỗng ($span hàng) — không có chỗ nào để vẽ');
+    // Ít nhất nửa dải phải có mực: nét nối thật thì liên tục từ hộp nguồn xuống hộp đích.
+    expect(shot.inkRows * 2 >= span, isTrue,
+        reason: '$name: mũi tên chỉ phủ ${shot.inkRows}/$span hàng của khoảng nối -> nó không nối '
+            'hai hộp (một nét ngang ở độ cao trung bình sẽ trượt kiểm tra này)');
+    expect(shot.inkRows, lessThanOrEqualTo(span), reason: '$name: đếm hàng vô lý ${shot.inkRows}>$span');
   }
   return shot;
 }
