@@ -313,10 +313,7 @@ Future<_Shot> _captureBoard(
                 height: surface.height,
                 child: Padding(
                   padding: const EdgeInsets.all(8),
-                  child: SingleChildScrollView(
-                    key: const ValueKey<String>('board_preview_scroll'),
-                    child: BoardView(controller: controller, codeText: kExampleSteps[stepId]!),
-                  ),
+                  child: BoardView(controller: controller, codeText: kExampleSteps[stepId]!),
                 ),
               ),
             ),

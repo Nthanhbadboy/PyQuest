@@ -34,19 +34,12 @@ String stepOf(int planIndex) => planIndex == 0 ? 'mq1_01_s2' : 'mq1_03_s2';
 /// `loadAppFonts()` trong `board_previews_test.dart` chỉ có hiệu lực trong file/isolate của nó.
 /// Ahem rộng 1em/vuông 1em, JetBrainsMono và font body của app thì không: khi đó mọi assertion
 /// width/height là số của một font không ai dùng, đỏ hay xanh đều không đại diện cho ảnh thật.
-Widget boardHost(
-  Widget child, {
-  required double textScale,
-  Size surface = const Size(360, 640),
-  bool scrollable = false,
-}) {
+Widget boardHost(Widget child, {required double textScale, Size surface = const Size(360, 640)}) {
   return MediaQuery(
     data: MediaQueryData(size: surface, textScaler: TextScaler.linear(textScale)),
     child: MaterialApp(
       theme: ThemeData(fontFamily: PQFonts.body, scaffoldBackgroundColor: Colors.white),
-      home: Scaffold(
-        body: SafeArea(child: scrollable ? SingleChildScrollView(child: child) : child),
-      ),
+      home: Scaffold(body: SafeArea(child: child)),
     ),
   );
 }
@@ -106,7 +99,6 @@ Future<BoardController> pumpBoard(
   String locale = 'vi',
   bool reduceMotion = false,
   String codeText = '',
-  bool scrollable = false,
 }) async {
   final Map<String, dynamic> plan = composedPlan(planIndex);
   final BoardController controller = BoardController(
@@ -121,12 +113,8 @@ Future<BoardController> pumpBoard(
       controller.applyPlan(controller.currentToken, validateComposed(planIndex, locale: locale));
   expect(outcome, BoardApplyOutcome.applied, reason: 'host test phải nhận được plan đã duyệt');
   setSurface(tester, surface);
-  await tester.pumpWidget(boardHost(
-    BoardView(controller: controller, codeText: codeText),
-    textScale: textScale,
-    surface: surface,
-    scrollable: scrollable,
-  ));
+  await tester.pumpWidget(boardHost(BoardView(controller: controller, codeText: codeText),
+      textScale: textScale, surface: surface));
   return controller;
 }
 
@@ -498,8 +486,7 @@ void main() {
         planIndex: 1,
         locale: 'vi',
         reduceMotion: true,
-        codeText: 'print(3 + 4)\nprint("3 + 4")',
-        scrollable: true);
+        codeText: 'print(3 + 4)\nprint("3 + 4")');
     controller.learner.addStroke('net-cua-tre');
     while (controller.beatIndex < 2) {
       expect(controller.next() || controller.learnerAdvance(), isTrue,
