@@ -1,0 +1,91 @@
+{
+  "review": "PQD-003-r8",
+  "verdict": "CHANGES_REQUESTED",
+  "tested_code_commit": "4a2a5826a3d9717190aa7147fe78287b472cac7d",
+  "baseline_review_commit": "553e9acb2a8e701ae08880c74639630d2c103bfc",
+  "run_id": 38924022896,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38924022896",
+  "custom_report_check_id": 117057301755,
+  "report_head_sha": "4a2a5826a3d9717190aa7147fe78287b472cac7d",
+  "conclusion": "failure",
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze": {
+    "result": "No issues found",
+    "seconds": 12.7
+  },
+  "ordinary_tests": {
+    "passed": 316,
+    "failed": 6,
+    "known_failure_count": 4,
+    "unavailable_failure_names": 2
+  },
+  "render_tests": {
+    "passed": 10,
+    "scope": "existing app screen render suite, not board acceptance"
+  },
+  "flutter": "3.47.7",
+  "dart": "3.13.5",
+  "apk": "skipped",
+  "full_test_log_retrieved": false,
+  "log_limitation": "gh signed log archive download failed EOF; custom report trimmed; job annotations add no missing failure names",
+  "changed_paths": [
+    "app/lib/modules/tutor/board/board_controller.dart",
+    "app/lib/modules/tutor/board/board_layout.dart",
+    "app/lib/modules/tutor/board/board_models.dart",
+    "app/lib/modules/tutor/board/board_plan_codec.dart",
+    "app/lib/modules/tutor/board/board_validator.dart",
+    "app/lib/modules/tutor/board/board_view.dart",
+    "app/test/board/board_boundaries_test.dart",
+    "app/test/board/board_controller_test.dart",
+    "app/test/board/board_layout_test.dart",
+    "app/test/board/board_plan_codec_test.dart",
+    "app/test/board/board_previews_test.dart",
+    "app/test/board/board_view_test.dart",
+    "app/test/board/fixtures/board_plans.v1.json",
+    "docs/implementation/coordination/HANDOFF_TO_DESIGN.md",
+    "docs/implementation/coordination/TASK_BOARD.md",
+    "docs/implementation/coordination/reviews/PQD-003-r7-ci.json",
+    "docs/implementation/coordination/reviews/PQD-003-r7.md",
+    "docs/implementation/coordination/tasks/PQC-010.md",
+    "docs/implementation/coordination/tasks/PQD-003.md"
+  ],
+  "board_source_sha256": {
+    "app/lib/modules/tutor/board/board_controller.dart": "40135861e5b9b6522b5bf246125a956345a2bf5c7683b33efcb2e6f71c6ec1ef",
+    "app/lib/modules/tutor/board/board_layout.dart": "ae016022ae70278733ffcbb50cde6155ab742d552f35b8bf1d5be6fe92e87114",
+    "app/lib/modules/tutor/board/board_models.dart": "91d96bd71cdfc13e7a886da059d7b868438e490a3b1fe27d380535dae7cb9c4f",
+    "app/lib/modules/tutor/board/board_plan_codec.dart": "56c80b695446505f7489f457a9102761cbaaf2593feb67c9170ff833232b50d8",
+    "app/lib/modules/tutor/board/board_validator.dart": "706807ea60b30e1316fbb678ec6803166f945448b67ed94a237f8961e516ec65",
+    "app/lib/modules/tutor/board/board_view.dart": "7cb54e21d0a6fc0bc64d77dd22e45eb3098ee1d4e3221bf2143add3c8edaf799",
+    "app/test/board/board_boundaries_test.dart": "f028824660bca03d3430c87f0e35e17f3cb1500d942b9f65415b28bc380712fe",
+    "app/test/board/board_controller_test.dart": "189547919d1cebcbd763407f39848b0a8f8148557fdfcfab701b0ed0d1208727",
+    "app/test/board/board_layout_test.dart": "2935586b2af62ef4b1669b898cc6f5f1c0ba6af2f474dc4df2088e912d082d82",
+    "app/test/board/board_plan_codec_test.dart": "9691e1cd7a68027a65da3409a400acc616384acf9e9a8f42696180c2e65ba118",
+    "app/test/board/board_previews_test.dart": "97d9783099e4895a71714bf8ace9b2b2feca88e859524d81e6aa043daa94cbeb",
+    "app/test/board/board_view_test.dart": "7687e2c7330ff4d3b218251ed84bfd8008e0ac8d1da874129d0413f8e8718f90",
+    "app/test/board/fixtures/board_plans.v1.json": "8a39e5ad21766cbff90bdc96dd83549505b8c777f51f317c634697954ea5d784"
+  },
+  "guard_delta_since_r7": false,
+  "guard_retested_this_review": false,
+  "local_flutter_dart_available": false,
+  "local_flutter_tests_run": false,
+  "images": [
+    {
+      "check_id": 117056733450,
+      "head_sha": "4a2a5826a3d9717190aa7147fe78287b472cac7d",
+      "file": "PQC-010-r2/board-mq1_01_s2-b1-code-highlight-390x844-font1.0-vi.jpg",
+      "bytes": 10776,
+      "sha256": "f16cfc1dcaf4185db3483b6e3d2fbcf35dbe0c49f34788d0eca934f3f37a61e4",
+      "format": "JPEG from CI publisher; original PNG not retrieved",
+      "visually_inspected": true
+    }
+  ],
+  "authored_copy": {
+    "bytes": 9359,
+    "sha256": "003a573b76e1363c4ed89280149a245b4ca4726662bee12e0b1545b8c960459c"
+  }
+}

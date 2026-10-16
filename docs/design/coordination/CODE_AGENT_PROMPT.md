@@ -32,24 +32,31 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision7: review010 vòng1, authorization r6 giữ nguyên**.
-Đọc `docs/design/coordination/tasks/PQD-003.md`, review `PQD-003-r7.md` + r7-ci.json
-trong `docs/design/coordination/reviews/`, authorization r6 và work orders010/014/015.
+Task hiện tại là **PQD-003 revision8: review010 vòng2, authorization r6 giữ nguyên**.
+Đọc `docs/design/coordination/tasks/PQD-003.md`, review `PQD-003-r8.md` + r8-ci.json
+và `reviews/PQC-010-r2/`; r7 vẫn là baseline requirements. Đọc orders010/014/015.
 
 **Làm ngay, không trả thêm ACK-only:**
-1. Code553e9ac đã nhập guard đúng byte; design đã chạy37testsPASS. **Không apply lại**
-   scoped patch. Fetch003r7 bằng refspec tường minh, không chỉ tin tracking ref cũ.
-2. Brief010/014/015 vẫn ALLOWED,008/005 BLOCKED. PQC-010 verdict **CHANGES_REQUESTED**
-   nhưng runtime quyền sửa không bị thu hồi; parent/order vẫn READY_FOR_CODE.
-3. Sửa R7-A…E: decoder type/required/budgets; renderer thật thay dump op; locale đủ
-   controls/prose/semantics; learner wait + lesson owner; ảnh có font/nền đọc được và
-   test mọi beat, VI/EN,1/1.3/2. Trả regression + fix, không chỉ viết một ACK mới.
-4. Có thể tiếp014 riêng.015 sau014CI xanh; chỉ015 có quyền dependency locale tối thiểu.
-   Không sửa art/assets/platform/workflow, voice/provider, grader/economy/backend hay
-   old task002/004/005/008. P05 `981ea85` chỉ là design, chưa được port vào app.
-5. Trả tested_code_commit/run URL/**custom report check ID** đúng SHA, test counts,
-   ảnh board test host và giới hạn.010 chưa wire lesson;015 chưa port toàn UI/Settings.
-   Không quảng cáo AI/voice/multilingual toàn app đã hoàn thiện.
+1. Fetch refspec tường minh, pin design SHA. Code4a2a582 đã review: **CHANGES_REQUESTED**.
+   CI38924022896/report117057301755:316pass/6fail,10renderpass,analyze sạch12.7s.
+   Không viện CI xanh117651b/553e9ac để nhận gói hiện tại. Lấy full log đủ6failure:
+   report công khai chỉ4tên+2more; không đoán tên hoặc bỏ tests.
+2. Sửa R8-A nền bên TRONG capture boundary, I/O test và ảnh publish đọc được;
+   R8-B connector endpoint/anchor đúng vật, reject unresolved connector sau clear,
+   highlight không lan ngoài statement. Test đường vẽ, không chỉ semantics bounds.
+3. Sửa R8-C scale đúng một lần, hộp text/sample/output đủ font metrics/padding,
+   matrix96case mọi beat/VI/EN/2sizes/font1/1.3/2, semantics tree thật. R8-D sửa
+   assertions missing-vs-type, prose-vs-altText và ordered output đúng contract;
+   không đưa debug altText lên UI để làm test xanh, không bỏ/nới safety checks.
+4. Giữ các sửa đúng codec/wait/lesson owner/live labels. Guard đã nhập đúng và
+   không đổi: không apply lại.010/014/015 vẫn ALLOWED;014 tiếp riêng;015 sau014CI
+   xanh, dependency chỉ015 phần locale tối thiểu. Không sửa assets/platform/CI,
+   LessonScreen/AI/voice/grader/economy/backend hoặc old task002/004/005/008.
+5. Trả tested_code_commit/run URL/**custom report check ID** cùng SHA, counts/phases,
+   ảnh có beat/locale/scale đã mở kiểm, log regression đầy đủ và giới hạn. Header
+   handoff phải là trạng thái mới, không giữ117651b/255+10/16ảnh như tip hiện tại.
+   Board vẫn test host, chưa nối LessonScreen/AI/voice. P05/P06A/B/C chỉ là design,
+   không suy quyền port prototypes hoặc tuyên bố multilingual toàn app đã xong.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
