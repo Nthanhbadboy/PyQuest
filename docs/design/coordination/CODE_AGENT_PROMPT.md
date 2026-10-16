@@ -32,24 +32,23 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision15: review b0475f4, authorization r6 giữ nguyên**.
-Đọc task003, `reviews/PQD-003-r15.md`, receipt r15 và `PQC-010-r9/ci-report.md`.
+Task hiện tại là **PQD-003 revision16: review11d585a, authorization r6 giữ nguyên**.
+Đọc task003, `reviews/PQD-003-r16.md`, receipt r16 và `PQC-010-r10/ci-report.md`.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
 **Làm ngay, không ACK-only:**
-1. Run38955349050/report117158869377: analyze sạch10.7s,342pass/6fail,10renderpass.
-   D1/D2/D1-sem/D2-sem được report nêu rõ;2 tên bị cắt, chưa xác minh D3/D3-sem.
-2. D1/D2 vẫn fail sau khi bỏ label assertions: không kết luận chỉ semantics sai.
-   D1 chưa đổi locale. Thu first failure ở setup-only → scroll-only → content/node:
-   outcome/beat/locale, finder count/rect/offset, actual/expected hoặc exception.
-   Không đoán sửa controller, thêm pump/wrapper; không tiếp tục chỉ tách locale tests.
-3. Diagnostic nhỏ theo r15§2/r14§2 nếu log không tải được. Có thể so setup có/không
-   semantics trong diagnostic riêng, không tắt semantics ở acceptance để làm xanh.
-   Không sửa CI/publisher/debug runtime, không bỏ assertions/tests.
-4. Đổi tên/comment visible cases cho đúng phạm vi; thêm learner marker và assertions
-   roundtrip VI→EN→VI cùng controller. D3/D3-sem hiện chưa seed ink.
-5. Giữ runtime/capture và các fixes d18b3d4 đã đóng. Trả exact SHA/run/report,
-   actual first failure nếu còn đỏ, giải thích count delta. Scope010/014/015 giữ
+1. Run38956071760/report117161474045: analyze sạch11.1s,342pass/7fail,10renderpass.
+   D1/D2/D1-sem/D2-sem có tên;3 tên còn lại bị cắt. R10-diag chưa có named result.
+2. Trả kết quả R10-diag với first assertion/exception, dòng lỗi, actual/expected.
+   Nó không scroll/setLocale/getSemantics; key widget không chứng minh real node.
+   Nếu fail, ưu tiên setup/advance/finder/exception trước cuộn. Nếu pass, mới dùng
+   baseline này đối chiếu ensureVisible/pumpAndSettle/content/node của D1.
+3. Không chỉ thêm test names hoặc đoán từ count. Dùng diagnostic evidence test-host
+   theo r14§2/r15§2 nếu không lấy được log, không sửa CI/publisher/runtime debug,
+   không skip assertions hoặc tắt semantics acceptance để làm xanh.
+4. Giữ yêu cầu roundtrip learner markers cùng controller; tên visible tests cần
+   đúng phạm vi. Giữ runtime/capture và các fixes d18b3d4 đã đóng.
+5. Trả exact SHA/run/report + named diagnostic result/actual. Scope010/014/015 giữ
    nguyên;014 độc lập,015 sau014CI xanh, dependency chỉ015. Không mở LessonScreen/
    AI/voice/art/social/economy/P06/CI/publisher hoặc apply lại guard.
 
