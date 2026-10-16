@@ -24,6 +24,7 @@ class AudioService with WidgetsBindingObserver {
   MusicTrack? _loadedTrack;
   bool _ready = false;
   bool _paused = false;
+  bool _musicDuckedForTutor = false;
 
   static const Map<Sfx, int> _voices = {Sfx.coin: 3, Sfx.sparkle: 3, Sfx.step: 2, Sfx.tap: 2, Sfx.pop: 2};
 
@@ -82,7 +83,8 @@ class AudioService with WidgetsBindingObserver {
         await player.pause();
         return;
       }
-      final volume = _wantedTrack == MusicTrack.calm ? 0.35 : 0.45;
+      final baseVolume = _wantedTrack == MusicTrack.calm ? 0.35 : 0.45;
+      final volume = baseVolume * (_musicDuckedForTutor ? 0.08 : 1.0);
       if (_loadedTrack != _wantedTrack) {
         _loadedTrack = _wantedTrack;
         await player.stop();
@@ -95,6 +97,12 @@ class AudioService with WidgetsBindingObserver {
     } catch (e) {
       debugPrint('music failed: $e');
     }
+  }
+
+  /// Lowers background music while the live voice tutor is active.
+  Future<void> setTutorVoiceMode(bool active) async {
+    _musicDuckedForTutor = active;
+    await _syncMusic();
   }
 
   void _onSettingsChanged() => unawaited(_syncMusic());
