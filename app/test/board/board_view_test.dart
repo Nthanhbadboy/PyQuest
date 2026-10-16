@@ -647,7 +647,7 @@ void main() {
             'viewport=$viewport offset=$offsetBefore->$offsetAfter');
   });
 
-  testWidgets('R10-D1-sem-query: VI output semantics node is queryable at beat 2',
+  testWidgets('R10-D1-sem-read: querying VI output semantics node does not throw',
       (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
     addTearDown(handle.dispose);
@@ -659,8 +659,8 @@ void main() {
     }
     await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
     await tester.pumpAndSettle();
-    final String actual = realSemanticsLabel(tester, 'board_output_2_1_label');
-    expect(actual, isNotEmpty, reason: 'queried semantics node returned an empty label');
+    // This case deliberately only proves the query itself succeeds; label content is tested below.
+    realSemanticsLabel(tester, 'board_output_2_1_label');
   });
 
   testWidgets('R10-D1-sem-VI: output node contains the authored Vietnamese label',
