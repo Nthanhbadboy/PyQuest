@@ -62,7 +62,11 @@ in ra thay vì giả vờ vừa kiểm tra.
    diff trước khi ghi.
 5. Không copy file coordination của nhau rồi commit lại; không push một ACK y hệt cho
    cùng một revision; bằng chứng luôn gắn SHA thật.
-6. Không secret ở bất kỳ đâu: không in `GEMINI_API_KEY`, không bỏ key vào app release,
+6. Index của sandbox có thể lệch với HEAD (sandbox này từng có lúc `git ls-files` = 6 mục
+   trong khi tree đã 269 file) → `git status` báo `??`/`D` giả. Trước khi kết luận "file này
+   không được theo dõi", chạy `git read-tree HEAD` (chỉ sửa index, **không** đụng working tree)
+   rồi `git diff --stat HEAD`. Không `git add .`, không `stash`/`reset`/`checkout .`.
+7. Không secret ở bất kỳ đâu: không in `GEMINI_API_KEY`, không bỏ key vào app release,
    evidence, tài liệu hay log.
 
 ## 4. Giao việc cho model khác (delegate)

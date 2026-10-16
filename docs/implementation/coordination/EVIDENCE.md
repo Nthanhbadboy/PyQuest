@@ -178,6 +178,13 @@ Nếu chạy trên máy có font khác, phần đo layout ở textScale 2.0 vẫ
 Đọc CI của một SHA cụ thể: `LEAD_RUNBOOK.md` §6 (dùng `gh api …/commits/<sha>/check-runs`,
 không lấy "run gần nhất" của nhánh).
 
+## EV-ID-009 — Dòng audience đã đồng bộ: `verified bằng diff`
+
+`sed -n '7p' docs/PyQuest_Reffrence_Images/VILLAGE_2_5D_REDESIGN_BRIEF.md` khác bản cũ đúng
+một dòng; `diff` với `git show 560106e:…` cùng dòng → **byte-identical** ✓ (thiết kế lại thành
+"children under 12, consistent with `PRODUCT_VISION.md` §1", giữ câu "not a preschool playroom").
+Không sửa ảnh, không sửa file khác trong thư mục reference của người dùng.
+
 ## Chưa kiểm tra được — không được suy ra từ các mục trên
 
 1. Render "after" của PQC-003 chưa tồn tại vì chưa có asset mới — xem mục 2.
