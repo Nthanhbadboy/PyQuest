@@ -520,13 +520,8 @@ void main() {
     expect(find.byKey(const ValueKey<String>('board_output_1_2')), findsNothing,
         reason: 'output mới thay ô out-box cũ; không để hai kết quả hiện hành cùng nhãn');
     expect(nodeText(tester, 'board_code_line_1'), 'print("3 + 4")');
-    // rev 9 §R9-C2: so với `contains` chứ không `==`: `container: true` đã dựng ranh giới node,
-    // nhưng assertion phải còn đúng kể cả khi engine gộp chữ của hộp vào nhãn. Điều kiện thật cần
-    // kiểm là "nhãn mang đúng bản altText đã duyệt, không phải bản khác".
-    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), contains(viAlt),
-        reason: 'altText đã duyệt là nhãn semantics, không phải chữ trên bảng');
-    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), isNot(contains(enAlt)),
-        reason: 'nhãn vi không được lẫn bản en');
+    // A11y is asserted in a separate focused test so a failing visible-output assertion cannot
+    // hide whether the semantic node itself is present and correctly localized.
     expect(vi.any((String t) => t == viAlt), isFalse,
         reason: 'altText không được thành chữ nhìn thấy: đó là kênh riêng');
 
@@ -546,13 +541,6 @@ void main() {
     }
     await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
     await tester.pumpAndSettle();
-    final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
-        as Map<String, dynamic>)['ops']! as List<dynamic>;
-    final Map<String, dynamic> alt =
-        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
-    final String viAlt = alt['vi']! as String;
-    final String enAlt = alt['en']! as String;
-
     controller.setLocale('en');
     await tester.pumpAndSettle();
     expect(controller.beatIndex, 2);
@@ -565,10 +553,6 @@ void main() {
     expect(en, contains(controller.currentCopy!.caption));
     expect(outputLines(tester, 'board_output_2_1'), <String>['7', '3 + 4']);
     expect(nodeText(tester, 'board_code_line_1'), 'print("3 + 4")');
-    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), contains(enAlt),
-        reason: 'VI→EN output semantics: actual=${realSemanticsLabel(tester, 'board_output_2_1_label')}, '
-            'expected contains $enAlt');
-    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), isNot(contains(viAlt)));
     expect(tester.takeException(), isNull);
   });
 
@@ -582,11 +566,6 @@ void main() {
       expect(controller.next() || controller.learnerAdvance(), isTrue);
       await tester.pump();
     }
-    final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
-        as Map<String, dynamic>)['ops']! as List<dynamic>;
-    final Map<String, dynamic> alt =
-        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
-    final String viAlt = alt['vi']! as String;
     await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
     await tester.pumpAndSettle();
     controller.setLocale('en');
@@ -598,11 +577,84 @@ void main() {
     await tester.pumpAndSettle();
     expect(controller.beatIndex, 3);
     expect(allBoardTexts(tester), contains('Tiếp'));
-    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), contains(viAlt),
-        reason: 'EN→VI output semantics: actual=${realSemanticsLabel(tester, 'board_output_2_1_label')}, '
-            'expected contains $viAlt');
     expect(nodeText(tester, 'board_prose_3_0'), startsWith('Quan sát'));
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('R10-D1-sem: semantic output ở beat 2 mang nhãn VI đã author',
+      (WidgetTester tester) async {
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    while (controller.beatIndex < 2) {
+      expect(controller.next() || controller.learnerAdvance(), isTrue);
+      await tester.pump();
+    }
+    await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
+    await tester.pumpAndSettle();
+    final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
+        as Map<String, dynamic>)['ops']! as List<dynamic>;
+    final Map<String, dynamic> alt =
+        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
+    final String viAlt = alt['vi']! as String;
+    final String actual = realSemanticsLabel(tester, 'board_output_2_1_label');
+    expect(actual, contains(viAlt), reason: 'expected VI "$viAlt", actual "$actual"');
+    expect(actual, isNot(contains(alt['en']! as String)));
+  });
+
+  testWidgets('R10-D2-sem: sau setLocale(en), semantic output cập nhật sang EN',
+      (WidgetTester tester) async {
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    while (controller.beatIndex < 2) {
+      expect(controller.next() || controller.learnerAdvance(), isTrue);
+      await tester.pump();
+    }
+    await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
+    await tester.pumpAndSettle();
+    final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
+        as Map<String, dynamic>)['ops']! as List<dynamic>;
+    final Map<String, dynamic> alt =
+        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
+    controller.setLocale('en');
+    await tester.pumpAndSettle();
+    final String actual = realSemanticsLabel(tester, 'board_output_2_1_label');
+    expect(actual, contains(alt['en']! as String), reason: 'expected EN, actual "$actual"');
+    expect(actual, isNot(contains(alt['vi']! as String)));
+  });
+
+  testWidgets('R10-D3-sem: sau advance và EN→VI, semantic output trở lại VI',
+      (WidgetTester tester) async {
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    while (controller.beatIndex < 2) {
+      expect(controller.next() || controller.learnerAdvance(), isTrue);
+      await tester.pump();
+    }
+    await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
+    await tester.pumpAndSettle();
+    final List<dynamic> beatOps = ((composedPlan(1)['beats']! as List<dynamic>)[2]
+        as Map<String, dynamic>)['ops']! as List<dynamic>;
+    final Map<String, dynamic> alt =
+        (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
+    controller.setLocale('en');
+    await tester.pumpAndSettle();
+    expect(controller.learnerAdvance(), isTrue);
+    await tester.pumpAndSettle();
+    expect(nodeText(tester, 'board_prose_3_0'), startsWith('Look before'));
+    controller.setLocale('vi');
+    await tester.pumpAndSettle();
+    expect(controller.beatIndex, 3);
+    await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
+    await tester.pumpAndSettle();
+    final String actual = realSemanticsLabel(tester, 'board_output_2_1_label');
+    expect(actual, contains(alt['vi']! as String), reason: 'expected VI after return, actual "$actual"');
+    expect(actual, isNot(contains(alt['en']! as String)));
   });
 
   testWidgets('r7 §R7-C: fallback notice lưu MÃ, câu chữ theo locale hiện hành', (WidgetTester tester) async {
