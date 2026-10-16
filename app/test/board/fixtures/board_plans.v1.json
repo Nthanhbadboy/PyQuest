@@ -1,0 +1,255 @@
+{
+ "provenance": {
+  "authoredBy": "ops do code agent soạn cho PQC-010; copy VI/EN lấy nguyên văn từ gói design",
+  "copyFixture": "app/test/fixtures/tutor_board/authored-copy.v1.json",
+  "copySourceDesignCommit": "59f702375551865efb3590fdc0e60d4dc1dc7408",
+  "copySourceSha256": "003a573b76e1363c4ed89280149a245b4ca4726662bee12e0b1545b8c960459c",
+  "opsAuthoredUnderCommit": "5c69046272154cad57d2b8c34a3b5805f1d9435a",
+  "datasetPinSha256": "bead251d9f290db0b8fa4475f7413976324b00e7b0f498c633a25a5e6392f8b8",
+  "rule": "plan KHONG tu khai output: reference dung từ engine-that (SimulatedPythonRuntime) o board_test_support.dart",
+  "registeredObjectsNote": "registeredObjects gia lap dieu lesson se dang ky khi PQC-011 wire; board khong tu them object"
+ },
+ "plans": [
+  {
+   "planId": "mq1-01-s2.board.v1",
+   "lessonId": "mq1_01",
+   "stepId": "mq1_01_s2",
+   "characterId": "__from_cast_registry__",
+   "source": "authored",
+   "registeredObjects": [
+    "cmd-print",
+    "quote-open",
+    "quote-close",
+    "out-box"
+   ],
+   "beats": [
+    {
+     "beatId": "mq1_01_s2.b1",
+     "sourceStatement": "print(\"Xin chào!\")",
+     "outputScope": "singleStatement",
+     "objectIds": [
+      "cmd-print"
+     ],
+     "waitForLearner": false,
+     "ops": [
+      {
+       "type": "codeSnippet",
+       "text": "print(\"Xin chào!\")",
+       "altText": "Dong lenh print co chu Xin chao trong ngoac kep"
+      },
+      {
+       "type": "highlightToken",
+       "statement": "print(\"Xin chào!\")",
+       "objectId": "cmd-print",
+       "altText": "Tu khoa print duoc to noi bat, chua co ket qua"
+      }
+     ]
+    },
+    {
+     "beatId": "mq1_01_s2.b2",
+     "sourceStatement": "print(\"Xin chào!\")",
+     "outputScope": "singleStatement",
+     "objectIds": [
+      "quote-open",
+      "quote-close"
+     ],
+     "waitForLearner": false,
+     "ops": [
+      {
+       "type": "highlightToken",
+       "statement": "print(\"Xin chào!\")",
+       "tokenIds": [
+        "quote-open",
+        "quote-close"
+       ],
+       "altText": "Hai dau ngoac kep bao phan chu cua lenh"
+      }
+     ]
+    },
+    {
+     "beatId": "mq1_01_s2.b3",
+     "sourceStatement": "print(\"Xin chào!\")",
+     "outputScope": "singleStatement",
+     "objectIds": [
+      "cmd-print",
+      "out-box"
+     ],
+     "waitForLearner": false,
+     "ops": [
+      {
+       "type": "connector",
+       "fromId": "cmd-print",
+       "toId": "out-box",
+       "altText": "Mui ten noi lenh print voi o ket qua"
+      },
+      {
+       "type": "output",
+       "value": "Xin chào!",
+       "altText": "O ket qua hien Xin chao! va khong co dau ngoac kep"
+      }
+     ]
+    },
+    {
+     "beatId": "mq1_01_s2.b4",
+     "sourceStatement": "print(\"Xin chào!\")",
+     "outputScope": "singleStatement",
+     "objectIds": [],
+     "waitForLearner": true,
+     "ops": [
+      {
+       "type": "text",
+       "text": "Muc tieu bai tap: in ra Robo thông minh",
+       "altText": "Loi moi be sua chu trong ngoac kep"
+      },
+      {
+       "type": "codeSnippet",
+       "text": "print(\"Robo thông minh\")",
+       "altText": "Cau lenh mau de be thu trong o code"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "planId": "mq1-03-s2.board.v1",
+   "lessonId": "mq1_03",
+   "stepId": "mq1_03_s2",
+   "characterId": "__from_cast_registry__",
+   "source": "authored",
+   "registeredObjects": [
+    "expr-add",
+    "lit-text",
+    "out-box",
+    "stone-1",
+    "stone-2",
+    "stone-3",
+    "stone-4",
+    "stone-5",
+    "stone-6",
+    "stone-7"
+   ],
+   "beats": [
+    {
+     "beatId": "mq1_03_s2.b1",
+     "sourceStatement": "print(3 + 4)",
+     "outputScope": "singleStatement",
+     "objectIds": [
+      "expr-add",
+      "stone-1",
+      "stone-2",
+      "stone-3",
+      "stone-4",
+      "stone-5",
+      "stone-6",
+      "stone-7"
+     ],
+     "waitForLearner": false,
+     "ops": [
+      {
+       "type": "highlightLine",
+       "statement": "print(3 + 4)",
+       "line": 1,
+       "altText": "Dong dau print(3 + 4) duoc to, dong hai co ngoac kep nen in nguyen chu"
+      },
+      {
+       "type": "tokenGroup",
+       "tokenIds": [
+        "stone-1",
+        "stone-2",
+        "stone-3"
+       ],
+       "altText": "Ba vien da o ben trai"
+      },
+      {
+       "type": "tokenGroup",
+       "tokenIds": [
+        "stone-4",
+        "stone-5",
+        "stone-6",
+        "stone-7"
+       ],
+       "altText": "Bon vien da o ben phai"
+      }
+     ]
+    },
+    {
+     "beatId": "mq1_03_s2.b2",
+     "sourceStatement": "print(3 + 4)",
+     "outputScope": "singleStatement",
+     "objectIds": [
+      "expr-add",
+      "out-box",
+      "stone-1",
+      "stone-2",
+      "stone-3",
+      "stone-4",
+      "stone-5",
+      "stone-6",
+      "stone-7"
+     ],
+     "waitForLearner": false,
+     "ops": [
+      {
+       "type": "clearTutorLayer",
+       "altText": "Xop lai lop cua thay roi ve minh hoa ket qua"
+      },
+      {
+       "type": "output",
+       "value": "7",
+       "altText": "Bay vien da gop thanh mot nhom; day la ket qua cua DONG DAU ma thoi"
+      }
+     ]
+    },
+    {
+     "beatId": "mq1_03_s2.b3",
+     "sourceStatement": "print(3 + 4)\nprint(\"3 + 4\")",
+     "outputScope": "wholeRun",
+     "objectIds": [
+      "lit-text",
+      "out-box"
+     ],
+     "waitForLearner": false,
+     "ops": [
+      {
+       "type": "highlightLine",
+       "statement": "print(\"3 + 4\")",
+       "line": 2,
+       "altText": "Dong hai in nguyen chu 3 cong 4 vi co ngoac kep"
+      },
+      {
+       "type": "output",
+       "value": "7\n3 + 4",
+       "altText": "O ket qua co hai dong: 7 roi den 3 + 4"
+      }
+     ]
+    },
+    {
+     "beatId": "mq1_03_s2.b4",
+     "sourceStatement": "print(\"3 + 4\")",
+     "outputScope": "singleStatement",
+     "objectIds": [
+      "stone-1"
+     ],
+     "waitForLearner": true,
+     "ops": [
+      {
+       "type": "text",
+       "text": "Quan sat truoc khi ket luan: so va chu khong giong nhau",
+       "altText": "Loi thay nhan xet, be thu them bo ngoac kep trong o code"
+      },
+      {
+       "type": "simpleShape",
+       "shape": "circle",
+       "objectId": "stone-1",
+       "x": 0.2,
+       "y": 0.4,
+       "width": 0.08,
+       "height": 0.06,
+       "altText": "Mot vien da minh hoa o goc trai duoi"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

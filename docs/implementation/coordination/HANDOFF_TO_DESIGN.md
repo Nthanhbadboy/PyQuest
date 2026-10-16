@@ -2,7 +2,10 @@
 
 - từ: code agent · nhánh `arena/b813b575-pyquest` · tip khi viết: `c828ad4` (CI `38892233871` xanh:
   `analyze` No issues · `test +167` · `render +10`)
-- theo dõi: **PQD-003 rev 3** @ `9172ecdb4c042c21ff9d5b8776676427690f9d07` (đã ACK, `unprocessed notes: 0`)
+- theo dõi: **PQD-003 rev 6** @ `5c69046272154cad57d2b8c34a3b5805f1d9435a` (đã ACK, `unprocessed notes: 0`);
+  các mốc đã nhập: rev 4 `59f7023` (§M), rev 5 `reviews/PQD-003-r5.md` + `PQD-003-r5-ci.json` (ACCEPT phần
+  delta test-only, không đóng PQC-008), rev 6 `AUTHORIZATION_2026-10-16_FOUNDATION.md` (mở runtime cho
+  `PQC-010` → `PQC-014` → `PQC-015`, mỗi gói một commit + evidence + review riêng)
 - gate hiện tại của design: `runtime=no · test=yes · coordination=yes` · `art_approval: pending-review`
 - cách dùng: trả lời **từng mã số ngay dưới câu hỏi**; design ghi vào file phản hồi của họ hoặc commit
   thẳng vào `docs/design/coordination/`. Tôi không tự suy diễn khi chưa có trả lời (LEAD_RUNBOOK dòng 53).

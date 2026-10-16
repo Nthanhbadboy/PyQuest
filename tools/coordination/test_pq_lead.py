@@ -446,6 +446,63 @@ class BriefTest(unittest.TestCase):
             self.assertEqual(rc, 2)
 
 
+
+class ScopedRuntimeTest(unittest.TestCase):
+    def state(self):
+        fields = pq.parse_task(header('READY_FOR_CODE',
+            task_id='PQD-003', runtime_change_authorized_by_this_revision='yes',
+            authorized_runtime_work_orders='PQC-010,PQC-014,PQC-015',
+            dependency_change_authorized_by_this_revision='yes',
+            authorized_dependency_work_orders='PQC-015'))
+        verdict, _, scopes = pq.classify(fields)
+        return {'fields': fields, 'verdict': verdict, 'scopes': scopes}
+
+    def order(self, ident, *, status='READY_FOR_CODE', source='PQD-003', dependency='no'):
+        return (f'- work_order: {ident}\n- scope: runtime\n- status: {status}\n'
+                f'- source_task: {source}\n- dependency_change_required: {dependency}\n')
+
+    def test_only_three_explicit_runtime_orders_open(self):
+        for ident in ('PQC-010', 'PQC-014', 'PQC-015'):
+            self.assertTrue(pq.runtime_order_gate(self.state(), ident,
+                self.order(ident, dependency='yes' if ident == 'PQC-015' else 'no'))[0])
+
+    def test_old_orders_stay_blocked_even_if_their_header_claims_ready(self):
+        for ident in ('PQC-002','PQC-004','PQC-005','PQC-008','PQC-011','PQC-012','PQC-013','PQC-016','PQC-017'):
+            self.assertFalse(pq.runtime_order_gate(self.state(), ident, self.order(ident))[0])
+
+    def test_allowlist_missing_wildcard_or_partial_match_fails_closed(self):
+        for value in ('', '*', 'PQC-*', 'PQC-0100', 'PQC-010,PQC-*', 'PQC-010;PQC-008'):
+            state=self.state();state['fields']['authorized_runtime_work_orders']=value
+            self.assertFalse(pq.runtime_order_gate(state,'PQC-010',self.order('PQC-010'))[0])
+
+    def test_blocked_order_and_source_mismatch_are_not_authorized(self):
+        for body in (self.order('PQC-010',status='BLOCKED'),self.order('PQC-010',source='PQD-002'),self.order('PQC-008')):
+            self.assertFalse(pq.runtime_order_gate(self.state(),'PQC-010',body)[0])
+
+    def test_dependency_requires_its_own_exact_permission_and_order(self):
+        for value in ('no', 'yesterday', 'true', ''):
+            state=self.state();state['fields']['dependency_change_authorized_by_this_revision']=value
+            self.assertFalse(pq.runtime_order_gate(state,'PQC-015',self.order('PQC-015',dependency='yes'))[0])
+        state=self.state();state['fields']['authorized_dependency_work_orders']='PQC-005'
+        self.assertFalse(pq.runtime_order_gate(state,'PQC-015',self.order('PQC-015',dependency='yes'))[0])
+        self.assertFalse(pq.runtime_order_gate(self.state(),'PQC-010',self.order('PQC-010',dependency='yes'))[0])
+
+    def test_missing_requirement_and_cached_verdict_cannot_open_gate(self):
+        self.assertFalse(pq.runtime_order_gate(self.state(),'PQC-010',self.order('PQC-010',dependency=''))[0])
+        state=self.state();state['fields']['runtime_change_authorized_by_this_revision']='no'
+        self.assertFalse(pq.runtime_order_gate(state,'PQC-010',self.order('PQC-010'))[0])
+
+    def test_brief_applies_order_gate_not_just_global_flag(self):
+        helper=BriefTest()
+        with tempfile.TemporaryDirectory() as tmp:
+            root=helper._fixture(tmp)
+            for ident in ('PQC-010','PQC-008'):
+                with open(os.path.join(root,'tasks',ident+'.md'),'w') as f: f.write(self.order(ident))
+            pq.save_state(tmp,{'design':self.state()})
+            self.assertEqual(helper._run(tmp,'PQC-010')[0],0)
+            self.assertEqual(helper._run(tmp,'PQC-008')[0],1)
+
+
 class LockTest(unittest.TestCase):
     def test_second_writer_is_refused(self):
         with tempfile.TemporaryDirectory() as tmp:

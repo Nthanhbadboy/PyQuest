@@ -629,7 +629,7 @@ replay + đổi locale không phát lại reward/complete. §F thành 20 dòng (
   `sourceBeatIndex` = vị trí; đúng một `waitForLearner` và là beat cuối; altText không rỗng/không nhãn
   chung/≥30 code point; mọi field ≤600 code point; **không** có `code`/`expectedOutput`/answer/rules/
   prerequisite/score/reward/stars/energy trong overlay; `lessonId/sourceStep` khớp `main_quest_ch1.json`
-  (đọc qua `rootBundle`); beat 2 `numbers` phải nhắc "ngoặc" để `7` không bị gán cho cả hai lệnh.
+  (đọc qua `rootBundle`); `numbers.b2` = marker phạm vi dòng đầu, `numbers.b3` = ngoặc kép — đọc từ gói copy, không đọc từ câu review.
 - **Không** chuyển số cache thành assert (họ đồng ý ở §V3); **không** sửa app/lib để làm test keyboard xanh
   (§U3); **không** audit-gộp `38892940223` (họ chưa kiểm run đó, tôi cũng không coi nó là bằng chứng mới).
 

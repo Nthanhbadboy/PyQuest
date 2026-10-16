@@ -90,6 +90,13 @@ LOCK_STALE_SECONDS = 900
 # The header fields a design task may declare. Order matters for display.
 SCOPES = ('runtime', 'test', 'coordination')
 FIELDS = (
+    'task_id',
+    'authorized_runtime_work_orders',
+    'dependency_change_authorized_by_this_revision',
+    'authorized_dependency_work_orders',
+    'work_order',
+    'source_task',
+    'dependency_change_required',
     'revision',
     'status',
     'design_branch',
@@ -555,6 +562,41 @@ def do_ack(args) -> int:
         return 3
 
 
+
+def listed_work_orders(value: str) -> set[str]:
+    """Exact IDs only: missing/malformed/wildcard lists fail closed."""
+    items = [item.strip() for item in (value or '').split(',')]
+    if not items or any(not re.fullmatch(r'PQC-\d{3}', item) for item in items):
+        return set()
+    return set(items)
+
+
+def runtime_order_gate(design: dict, requested_id: str, body: str) -> tuple[bool, str]:
+    """Global runtime permission never authorizes an unrelated work order."""
+    fields = design.get('fields') or {}
+    order = parse_task(body)
+    if (design.get('scopes') or {}).get('runtime') != 'yes' or design.get('verdict') != 'READY_FOR_CODE':
+        return False, 'runtime scope not ready'
+    # Recompute rather than trusting a cached verdict alone.
+    if classify(fields)[0] != 'READY_FOR_CODE':
+        return False, 'task header does not authorize runtime'
+    if requested_id not in listed_work_orders(fields.get('authorized_runtime_work_orders', '')):
+        return False, 'work order not in explicit runtime allowlist'
+    if order.get('work_order') != requested_id or order.get('status') != 'READY_FOR_CODE':
+        return False, 'order ID/status mismatch (blocked/draft orders stay blocked)'
+    if not fields.get('task_id') or order.get('source_task') != fields['task_id']:
+        return False, 'order belongs to a different design task'
+    dependency = order.get('dependency_change_required')
+    if dependency not in ('yes', 'no'):
+        return False, 'dependency requirement missing or invalid'
+    if dependency == 'yes':
+        if scope_flag(fields, 'dependency')[0] != 'yes':
+            return False, 'dependency permission missing'
+        if requested_id not in listed_work_orders(fields.get('authorized_dependency_work_orders', '')):
+            return False, 'order not in explicit dependency allowlist'
+    return True, 'explicit order, task and dependency scope matched'
+
+
 def do_brief(args) -> int:
     root = os.path.join(repo_dir(args), 'docs', 'implementation', 'coordination')
     if args.task_id.upper() == 'BOARD':
@@ -579,8 +621,8 @@ def do_brief(args) -> int:
         allowed = False
         gate = f'UNKNOWN scope={scope!r} - blocked'
     elif scope == 'runtime':
-        allowed = scopes.get('runtime') == 'yes' and design.get('verdict') == 'READY_FOR_CODE'
-        gate = f'{("ALLOWED" if allowed else "BLOCKED")} for scope=runtime'
+        allowed, reason = runtime_order_gate(design, args.task_id, body)
+        gate = f'{("ALLOWED" if allowed else "BLOCKED")} for scope=runtime: {reason}'
     else:
         allowed = scopes.get(scope) == 'yes'
         gate = f'{("ALLOWED" if allowed else "BLOCKED")} for scope={scope}'
