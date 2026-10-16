@@ -14,7 +14,9 @@ import 'package:pyquest/modules/tutor/board/board_controller.dart';
 import 'package:pyquest/modules/tutor/board/board_layout.dart';
 import 'package:pyquest/modules/tutor/board/board_models.dart';
 import 'package:pyquest/modules/tutor/board/board_view.dart';
+import 'package:pyquest/shared/theme/app_theme.dart';
 
+import '../test_helpers.dart';
 import 'board_test_support.dart';
 
 const List<Size> kViewportSizes = <Size>[Size(360, 640), Size(390, 844)];
@@ -26,10 +28,19 @@ const List<String> kBoardControlKeys = <String>['board_previous', 'board_replay'
 
 String stepOf(int planIndex) => planIndex == 0 ? 'mq1_01_s2' : 'mq1_03_s2';
 
+/// Host của mọi ca widget test.
+///
+/// rev 9 §R9-B1: trước đây file này không nạp font thật, nên toàn bộ hình học đo trên Ahem —
+/// `loadAppFonts()` trong `board_previews_test.dart` chỉ có hiệu lực trong file/isolate của nó.
+/// Ahem rộng 1em/vuông 1em, JetBrainsMono và font body của app thì không: khi đó mọi assertion
+/// width/height là số của một font không ai dùng, đỏ hay xanh đều không đại diện cho ảnh thật.
 Widget boardHost(Widget child, {required double textScale, Size surface = const Size(360, 640)}) {
   return MediaQuery(
     data: MediaQueryData(size: surface, textScaler: TextScaler.linear(textScale)),
-    child: MaterialApp(home: Scaffold(body: SafeArea(child: child))),
+    child: MaterialApp(
+      theme: ThemeData(fontFamily: PQFonts.body, scaffoldBackgroundColor: Colors.white),
+      home: Scaffold(body: SafeArea(child: child)),
+    ),
   );
 }
 
@@ -108,6 +119,12 @@ Future<BoardController> pumpBoard(
 }
 
 void main() {
+  setUpAll(() async {
+    // Font thật của app, cùng khuôn với `board_previews_test.dart` — geometry chỉ có nghĩa khi
+    // đo trên đúng font sẽ render.
+    await loadAppFonts();
+  });
+
   testWidgets('host giữ textScale 2.0, không dùng clamp 1.2 của app', (WidgetTester tester) async {
     double? sampled;
     await tester.pumpWidget(boardHost(
@@ -328,8 +345,18 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Tab: mỗi lần tới một control board MỚI, đủ ba control', (WidgetTester tester) async {
-    await pumpBoard(tester, planIndex: 0);
+  // rev 9 §R9-C3: ca Tab PHAI BAT DAU TU MOT BEAT GIUA. O beat 0, `board_previous` bị disable
+  // THẬT (`canGoPrevious == false` -> `Focus(canRequestFocus: false)`), nên không vòng Tab nào chạm
+  // đủ ba control: đó là hành vi đúng của UI, không phải traversal lặp. Viết ở beat 0 thì test đỏ
+  // vì lý do sai, và sửa bằng cách ép nút Previous bật lên là gian lận.
+  testWidgets('Tab (beat giữa): mỗi lần tới một control board MỚI, đủ ba control', (WidgetTester tester) async {
+    final BoardController controller = await pumpBoard(tester, planIndex: 0);
+    controller.next();
+    await tester.pump();
+    controller.next();
+    await tester.pump();
+    expect(controller.canGoPrevious, isTrue,
+        reason: 'ca nay dung o beat giua de ca ba nut deu ben; beatIndex = ${controller.beatIndex}');
     final Set<String> visited = <String>{};
     for (int i = 0; i < kBoardControlKeys.length; i++) {
       await tester.sendKeyDownEvent(LogicalKeyboardKey.tab);
@@ -343,6 +370,32 @@ void main() {
       visited.add(key!);
     }
     expect(visited, containsAll(kBoardControlKeys));
+  });
+
+  /// Ca riêng cho beat 0: nút Previous bị disable là CHỦ Ý, nên nó không nhận focus — nhưng
+  /// traversal không được chết: Tab vẫn quay vòng giữa các control còn bật, và Enter trên control
+  /// đang focus không được hoàn thành bài.
+  testWidgets('Tab (beat 0): Previous disabled không nhận focus, vòng Tab vẫn quay', (WidgetTester tester) async {
+    final BoardController controller = await pumpBoard(tester, planIndex: 0);
+    expect(controller.canGoPrevious, isFalse, reason: 'beat đầu thì Previous phải disabled');
+    final Set<String> visited = <String>{};
+    for (int i = 0; i < kBoardControlKeys.length + 1; i++) {
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      final String? key = focusedBoardControlKey();
+      expect(key, isNotNull, reason: 'Tab ${i + 1} không rơi vào control board nào');
+      expect(key, isNot('board_previous'), reason: 'nút disabled mà vẫn nhận focus là sai');
+      visited.add(key!);
+    }
+    expect(visited, containsAll(<String>['board_replay', 'board_next']),
+        reason: 'hai control còn lại phải tới được: $visited');
+    final int before = controller.beatIndex;
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.enter);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.enter);
+    await tester.pump();
+    expect(controller.beatIndex, before, reason: 'Enter trên beat 0 không được hoàn thành bài');
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('Enter trên nút đang focus kích hoạt thật (đo trên board_next)',
@@ -457,8 +510,13 @@ void main() {
     expect(outputLines(tester, 'board_output_2_1'), <String>['7', '3 + 4'],
         reason: 'ô kết quả của cả đoạn: đúng hai dòng, đúng thứ tự');
     expect(nodeText(tester, 'board_code_line_1'), 'print("3 + 4")');
-    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), viAlt,
+    // rev 9 §R9-C2: so với `contains` chứ không `==`: `container: true` đã dựng ranh giới node,
+    // nhưng assertion phải còn đúng kể cả khi engine gộp chữ của hộp vào nhãn. Điều kiện thật cần
+    // kiểm là "nhãn mang đúng bản altText đã duyệt, không phải bản khác".
+    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), contains(viAlt),
         reason: 'altText đã duyệt là nhãn semantics, không phải chữ trên bảng');
+    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), isNot(contains(enAlt)),
+        reason: 'nhãn vi không được lẫn bản en');
     expect(vi.any((String t) => t == viAlt), isFalse,
         reason: 'altText không được thành chữ nhìn thấy: đó là kênh riêng');
 
@@ -475,8 +533,10 @@ void main() {
     expect(outputLines(tester, 'board_output_2_1'), <String>['7', '3 + 4'],
         reason: 'output của engine giữ nguyên khi đổi locale');
     expect(nodeText(tester, 'board_code_line_1'), 'print("3 + 4")', reason: 'code thì không dịch');
-    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), enAlt,
+    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), contains(enAlt),
         reason: 'semantics phải đổi theo cùng locale với chữ nhìn thấy');
+    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), isNot(contains(viAlt)),
+        reason: 'đổi sang en mà nhãn còn giữ bản vi là đỏ thật');
 
     // Hộp chữ của op (beat 4) là kênh prose: cũng phải theo locale, trên cùng controller.
     expect(controller.learnerAdvance(), isTrue, reason: 'beat 4 chờ trẻ nên phải đi bằng ý định của trẻ');
@@ -486,7 +546,7 @@ void main() {
     await tester.pump();
     expect(controller.beatIndex, 3);
     expect(allBoardTexts(tester), contains('Tiếp'));
-    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), viAlt,
+    expect(realSemanticsLabel(tester, 'board_output_2_1_label'), contains(viAlt),
         reason: 'vi -> en -> vi phải trở về đúng bản gốc, không dính en lẫn vi');
     expect(nodeText(tester, 'board_prose_3_0'), startsWith('Quan sát'));
     expect(tester.takeException(), isNull);
@@ -555,7 +615,7 @@ void main() {
   testWidgets('ma trận 96 ca · (2) hộp của mỗi op đang thấy nằm trong canvas', (WidgetTester tester) async {
     final List<String> bad = await forEachMatrixCombo(tester, (MatrixProbe p) {
       for (final BoardVisibleOp entry in p.visible) {
-        for (final String key in boardNodeKeys(entry)) {
+        for (final String key in p.expectedKeys(entry)) {
           expect(p.box(key), findsOneWidget,
               reason: '${p.tag}: op ${entry.op.kind.wire} không có hộp $key');
           final Rect r = p.rectOf(key);
@@ -613,7 +673,7 @@ void main() {
         if (kind != BoardOpKind.text && kind != BoardOpKind.output && kind != BoardOpKind.codeSnippet) {
           continue;
         }
-        final List<String> keys = boardNodeKeys(entry);
+        final List<String> keys = p.expectedKeys(entry);
         if (keys.isEmpty) continue; // `codeSnippet` trùng code thì không có hộp riêng
         final String key = keys.single;
         final Rect r = p.rectOf(key);
@@ -658,52 +718,72 @@ void main() {
     expect(bad, isEmpty, reason: '${bad.length}/96 combo hỏng:\n${bad.join('\n')}');
   });
 
-  // (7) §R8-C đúng nghĩa: hệ số co chữ chỉ được áp **một lần**. Không đọc `textScaleFactor`
-  // (property có thể luôn là 1.0 trên SDK mới -> tautology) và cũng không so với công thức: dựng
-  // cùng một board ở scale 1.0 rồi 2.0 và đo TỶ SỐ chiều cao chữ mà renderer đã xếp. Nhân đôi hệ
-  // số (15 -> 30 -> 60) cho tỷ số 4; host kẹp 1.2 của app cho tỷ số 1.2; layer bỏ qua scale cho tỷ
-  // số 1.0. Cả ba đều đỏ, và không có con số nào trong test là dự đoán cỡ chữ.
+  // (7) rev 9 §R9-B2 + §R8-C: `textScale` phải tới chữ ĐÃ TÔ, và chỉ tới MỘT lần. Board tự scale
+  // cỡ chữ (`scaler.scale(...)` trong `BoardTutorLayer.build`) rồi tắt kế thừa scaler cho subtree
+  // bằng `MediaQuery.withNoTextScaling`, nên đọc `RichText.textScaleFactor` hay `fontSize` đơn lẻ
+  // đều near-tautology. Ba bằng chứng độc lập, mỗi cái bắt một kiểu hỏng khác nhau:
+  //   (a) cỡ chữ THẬT của paragraph đã tô = 13 × scale   -> 'layer nuốt scale' cho 13 ở 2.0,
+  //       'host mượn clamp 1.2 của LessonScreen' cho 15.6;
+  //   (b) paragraph mang `TextScaler.noScaling`           -> scale bị áp HAI LẦN;
+  //   (c) tỷ số cao độ của MỘT dòng ngắn chắc chắn không wrap = đúng 2.0 -> reflow không được lẫn
+  //       vào số đo (bản cũ so tổng cao độ ba hộp, nên đổi font sang font thật là tỷ số đổi theo
+  //       lý do sai, và 1,832 đã_trượt qua mắt người).
   for (final Size surface in kViewportSizes) {
     final String sizeName = '${surface.width.round()}x${surface.height.round()}';
     for (final String locale in kBoardLocales) {
       testWidgets(
-        '§R8-C: scale 1.0 -> 2.0 làm chữ cao gấp đôi, không gấp bốn, ở $sizeName/$locale',
+        '§R9-B: scale đi tới chữ đã tô, đúng một lần, không lẫn reflow, $sizeName/$locale',
         (WidgetTester tester) async {
-          Future<Map<String, double>> measureAt(double scale) async {
+          Future<(double, TextScaler, double)> measureAt(double scale) async {
             await pumpBoard(tester,
                 planIndex: 0,
                 surface: surface,
                 textScale: scale,
                 locale: locale,
-                codeText: kExampleSteps['mq1_01_s2']!);
+                codeText: 'a = 1'); // 7 rune: khong bao gio wrap o 360/font 2.0
             await tester.pumpAndSettle();
-            double h(String key) => tester
-                .getSize(find
-                    .descendant(of: find.byKey(ValueKey<String>(key)), matching: find.byType(RichText))
-                    .first)
-                .height;
-            return <String, double>{
-              'board_title': h('board_title'),
-              'board_say': h('board_say'),
-              'board_caption': h('board_caption'),
-              'board_code_line_0': h('board_code_line_0'),
-            };
+            final Finder line = find
+                .descendant(
+                    of: find.byKey(const ValueKey<String>('board_code_line_0')),
+                    matching: find.byType(RichText))
+                .first;
+            final RichText painted = tester.widget<RichText>(line);
+            final TextSpan root = painted.text as TextSpan;
+            return (root.style!.fontSize!, painted.textScaler, tester.getSize(line).height);
           }
 
-          final Map<String, double> one = await measureAt(1.0);
-          final Map<String, double> two = await measureAt(2.0);
-          for (final String key in one.keys) {
-            final double ratio = two[key]! / one[key]!;
-            expect(ratio, closeTo(2.0, 0.08),
-                reason: '$sizeName/$locale $key: ${one[key]} -> ${two[key]} (tỷ số $ratio). '
-                    'Gần 4 = scale bị áp hai lần; gần 1 = layer nuốt scale; '
-                    'gần 1.2 = host mượn clamp 1.2 của app.');
-          }
+          final (double sizeOne, TextScaler scalerOne, double heightOne) = await measureAt(1.0);
+          final (double sizeTwo, TextScaler scalerTwo, double heightTwo) = await measureAt(2.0);
+          expect(sizeOne, closeTo(13.0, 0.01), reason: '$sizeName/$locale: cỡ chữ ở 1.0 = $sizeOne');
+          expect(sizeTwo, closeTo(26.0, 0.01),
+              reason: '$sizeName/$locale: cỡ chữ ở 2.0 = $sizeTwo — 13 = scale bị nuốt, '
+                  '15.6 = host kẹp 1.2 của app bị mượn để áp vào board');
+          expect(scalerOne.scale(100), closeTo(100.0, 0.01),
+              reason: '$sizeName/$locale: paragraph không được tự nhân scale lần hai');
+          expect(scalerTwo.scale(100), closeTo(100.0, 0.01),
+              reason: '$sizeName/$locale: scale đã áp ở cỡ chữ rồi, paragraph phải mang noScaling');
+          expect(heightTwo / heightOne, closeTo(2.0, 0.02),
+              reason: '$sizeName/$locale: một dòng không wrap đổi cao độ $heightOne -> $heightTwo '
+                  '(tỷ số ${(heightTwo / heightOne).toStringAsFixed(3)}; ~4 = áp hai lần, '
+                  '~1 = nuốt scale, ~1.2 = clamp)');
+          // (d) wrap được phép, tràn thì không: hộp phải cao đủ cho đoạn chữ đã xếp dòng.
+          final Size box = tester.getSize(find.byKey(const ValueKey<String>('board_code_line_0')));
+          final Size text = tester.getSize(find
+              .descendant(
+                  of: find.byKey(const ValueKey<String>('board_code_line_0')),
+                  matching: find.byType(RichText))
+              .first);
+          expect(text.width, lessThanOrEqualTo(box.width + 0.5),
+              reason: '$sizeName/$locale: chữ ${text.width} ngang hơn hộp ${box.width}');
+          expect(text.height, lessThanOrEqualTo(box.height + 0.5),
+              reason: '$sizeName/$locale: chữ ${text.height} cao hơn hộp ${box.height}');
         },
       );
     }
   }
 }
+
+
 
 /// Mọi chữ nhìn thấy được trong cây: `Text.data` và cả `RichText` (TextSpan nhiều đoạn),
 /// vì renderer hợp lệ có thể tô sáng bằng span thay vì một chuỗi duy nhất.
@@ -725,6 +805,11 @@ List<String> boardNodeKeys(BoardVisibleOp entry) {
     case BoardOpKind.connector:
       return <String>['board_connector_$suffix'];
     case BoardOpKind.codeSnippet:
+      // rev 9 §R9-C1: `codeSnippet` CÓ hộp riêng khi nó khác code đang có trên bảng — đó là
+      // "block code riêng có chữ thật" của greeting b1 và numbers b4, hai ca mà bản trước bỏ
+      // khỏi 96 combo chỉ vì hàm này trả []. Trường hợp ngược lại (snippet trùng code) thì không
+      // có hộp nào, xem [snippetNeedsBox].
+      return <String>['board_code_snippet_$suffix'];
     case BoardOpKind.highlightToken:
     case BoardOpKind.highlightLine:
     case BoardOpKind.clearTutorLayer:
@@ -742,6 +827,14 @@ List<BoardVisibleOp> boardOpsAfter(TeachingPlan plan, int beat) {
     }
   }
   return out;
+}
+
+/// `codeSnippet` chỉ có hộp riêng khi ít nhất một dòng của nó CHƯA xuất hiện trong `code` mà host
+/// đưa vào — viết lại đúng điều kiện của layout (`snippet.any((l) => !codeLines.contains(l))`) để
+/// test đòi sự tồn tại của hộp mà không phải đo lại số đo của hộp.
+bool snippetNeedsBox(BoardOp op, String code, String locale) {
+  final List<String> lines = code.split('\n');
+  return op.proseFor(locale).split('\n').any((String l) => !lines.contains(l));
 }
 
 /// Tổng chiều cao chữ mà renderer đã xếp bên trong một hộp.
@@ -821,6 +914,8 @@ class MatrixProbe {
     required this.tester,
     required this.tag,
     required this.beat,
+    required this.locale,
+    required this.code,
     required this.plan,
     required this.visible,
     required this.layout,
@@ -830,6 +925,8 @@ class MatrixProbe {
   final WidgetTester tester;
   final String tag;
   final int beat;
+  final String locale;
+  final String code;
   final TeachingPlan plan;
   final List<BoardVisibleOp> visible;
 
@@ -837,6 +934,13 @@ class MatrixProbe {
   /// mọi assertion về kích thước vẫn so giữavới hộp đã vẽ, không so với số ở đây.
   final BoardLayout layout;
   final Rect canvas;
+
+  /// Key của các hộp mà op này bắt buộc phải dựng, đã lọc theo điều kiện thật của layout
+  /// (`codeSnippet` chỉ có hộp khi nó khác code của host — rev 9 §R9-C1).
+  List<String> expectedKeys(BoardVisibleOp entry) => boardNodeKeys(entry)
+      .where((String k) =>
+          !k.startsWith('board_code_snippet_') || snippetNeedsBox(entry.op, code, locale))
+      .toList();
 
   Finder box(String key) => find.byKey(ValueKey<String>(key));
   Size sizeOf(String key) => tester.getSize(box(key));
@@ -892,6 +996,8 @@ Future<List<String>> forEachMatrixCombo(
                 tester: tester,
                 tag: tag,
                 beat: beat,
+                locale: locale,
+                code: code,
                 plan: plan,
                 visible: visible,
                 canvas: canvas,

@@ -1,5 +1,66 @@
 # Handoff → design (và người dùng): mọi đề xuất & câu hỏi đang mở
 
+## 0. Vòng 4 (rev 9 `c04e688`) — đã sửa gì, và cái gì **chưa** phải bằng chứng
+
+- **Trạng thái:** `PQC-010` rev 9 `CHANGES_REQUESTED` đã nhập và sửa **trong allowlist** (`app/lib/modules/tutor/board/**`,
+  `app/test/board/**`, `docs/implementation/coordination/**`). Không đổi CI workflow, không đổi publisher,
+  không đụng `pubspec`/asset/platform, không mở route `LessonScreen`/AI/voice. ACK rev 9 đã ghi
+  (`pq_lead.py ack c04e688…` → `revision=9`); bốn file review r9 đã nhập **verbatim** và hash blob khớp
+  `c04e688`: `reviews/PQD-003-r9.md`, `reviews/PQD-003-r9-ci.json`, `reviews/PQC-010-r3/{README.md,ci-report.md}`,
+  plus `tasks/PQC-010.md` bản có 14 dòng r9 của design (banner import ghi rõ SHA design, không merge nhánh).
+- **R9-A (capture + diagnostic) — sửa xong, `board_previews_test.dart`:**
+  `jobs` giờ mang **6** field `[plan, beat, why, surface, fromPrefix, toPrefix]` (trước đây entry 5 field nhưng
+  comprehension chỉ copy 4 → `job[4]`/`job[5]` ném `RangeError` **trước** `_captureBoard`, nên 0 ảnh tồn tại
+  và report mất 36/40 diagnostic); thêm `expect(job, hasLength(6))` để kiểu hỏng này không tái phát;
+  mỗi failure mang `tên combo → ĐO HỎNG: <exception> || <stack hint>` qua `failures` riêng, **không** nuốt ca;
+  `MANIFEST.txt` được ghi + in **trước** mọi aggregate assert (kể cả `hasLength(40)` trên danh sách
+  `board-*.png`) nên log còn tồn tại khi đỏ; một ca **canary** chạy đầu tiên và reuse đúng tên file của `jobs[0]`;
+  thêm smoke test pure-Dart cho hình dạng capture-entry (5 field, plan/beat trong khoảng, `hasArrow ⟺ có prefix`).
+- **R9-B (font/metrics) — sửa xong, hai phía:** `board_view.dart` resolve **một** cặp style
+  (`base = DefaultTextStyle.of(context).style`, `codeStyle = base.merge(_codeStyle(codeSize))`,
+  `proseStyle = base.merge(...)`) rồi đưa cho **cả** `TextPainter` đo **và** widget vẽ — hết cảnh đo bằng
+  style trần, vẽ bằng style của host; mọi cao độ hộp (`codeHeightOf`, `outputHeaderHeightOf`,
+  `measureLineHeight`) lấy từ **số đã đo**, bỏ hẳn `codeSize * 1.35` danh nghĩa; **bỏ `FittedBox(scaleDown)`**
+  ở dòng code, thay bằng `softWrap: true` — không còn chuyện chữ tự te lại để "khớp" hộp, và layout
+  `fitOf(line)` trả `1.0` để số đo và hình không lệch theo hệ số co. Phía test: host của **ma trận** giờ
+  `ThemeData(fontFamily: PQFonts.body, scaffoldBackgroundColor: Colors.white)` + `setUpAll(loadAppFonts)`
+  — cùng khuôn với `board_previews_test.dart:300`; trước đó toàn bộ 96 ca đo trên Ahem (Ahem = 1em vuông
+  vức, JetBrainsMono/Nunito thì không), nên mọi con số width/height của ca widget là số của font không ai dùng.
+- **R9-C (assertion thật, không nới) — sửa xong 3/3:**
+  (1) `boardNodeKeys` không còn trả `[]` cho `codeSnippet`; thay vì thế có `snippetNeedsBox(op, code, locale)`
+  dựng lại **đúng điều kiện của layout** (`prose` có dòng chưa nằm trong `code`) → hai ca "block code riêng có
+  chữ thật" (greeting b1, numbers b4) vào lại ma trận 96 combo, và hộp bị đòi hỏi chỉ khi nó thật sự phải tồn tại;
+  (2) semantics: node op mang `container: true` (ranh giới thật, reader không nghe altText dính liền chữ trong hộp),
+  assertion chuyển sang `contains(bản altText)` **và** `isNot(contains(bản kia))` — kiểm đúng thứ cần kiểm
+  (đúng bản locale) mà không phụ thuộc việc engine gộp child; (3) Tab: ca chính bắt đầu từ **beat giữa**
+  (`canGoPrevious` được assert trước, để không ai "sửa" bằng cách ép nút bật lên), cộng **một ca riêng** cho
+  beat 0 chứng minh Previous disabled **không** nhận focus (đó là hành vi chủ ý), vòng Tab vẫn quay giữa
+  `replay`/`next`, và Enter trên beat 0 **không** đổi beat.
+- **R9-D (multiline + host/source mismatch) — sửa xong, giữ an toàn dữ liệu:** `_statementStart` chỉ khớp
+  **nguyên khối liên tiếp sau khi trim** (không còn "từ dòng đầu trở đi"), và khi host code không chứa statement
+  thì layout ghi vào `BoardLayout.unresolvedStatements` thay vì `continue` im lặng; view dựng notice
+  `board_code_mismatch` với `labels.codeMismatch` (đã có bản **vi và en** trong `BoardLabels`) — trẻ không còn
+  bị đưa một bảng "trông ổn nhưng thiếu tô sáng", và test gọi được tên đúng ca hỏng. Ba ca mới trong
+  `board_layout_test.dart`: mismatch → unresolved không rỗng; khớp **một phần** → vẫn là chưa khớp, không tô nửa
+  vời; statement nằm ở dòng sau → khớp và **không** bị liệt vào unresolved (chặn notice giả).
+- **Chưa phải bằng chứng, nói rõ trước khi design đọc:** (a) sandbox **không có** Dart/Flutter toolchain nên
+  mọi sửa đổi trên **chưa được compile** ở đây — `analyze`/`test`/`render` của commit này chỉ có ở CI, và số
+  liệu chính thức sẽ nằm ở commit evidence **kế tiếp** sau khi run của chính SHA này xong; (b) tôi đã đọc CI
+  của hai SHA gần nhất: `0661523` (run `38937259219`) **không phải đỏ** — nó bị **cancel** bởi chính push docs
+  của tôi (`concurrency: cancel-in-progress`), nên không được tính là failure evidence; `8647916` (run
+  `38937509150`, report `117099178577`) = `analyze` 0 issues, `test` **`+319 -19`**, `render` **`+10`**,
+  **0** ảnh board được đăng — 19 là **số khai báo test hỏng**, không phải 19 combo, và report bị `trim()` cắt
+  đuôi nên **không** khôi phục được toàn bộ 15 tên còn lại; tôi không đoán tên.
+- **Hai câu hỏi §5 đã được trả lời, đã áp dụng, không chờ ACK:** Tutor **co theo nội dung** trong outer
+  viewport ổn định — không kéo giãn, không filler giả, không lấy chiều cao beat dài nhất, không auto-advance;
+  **một** caption duy nhất cách hộp code **6–8 logical px** trên cùng trục trái, không connector ở b1, không lặp
+  caption trong code block, không mượn mũi tên của b3 làm decor. Production `LessonScreen` layout thuộc `PQC-011`
+  (still closed) nên ở đây chỉ áp dụng luật trong `modules/tutor/board/**`.
+- `PQC-014` vẫn nằm ngoài rev 9 và vẫn **uncommitted trong worktree** (`locale_resolver.dart` 140 dòng,
+  `locale_migration.dart` 74 dòng, `settings_locale_test.dart` 299 dòng): ba file đó **không** nằm trong
+  allowlist của `PQC-010`, tôi không stage chúng trong commit này; gate 015 giữ nguyên thứ tự 014 → CI 014 xanh → 015.
+
+
 - từ: code agent · nhánh `arena/b813b575-pyquest` · **trạng thái hiện tại: `PQC-010` vòng 3 đã nộp,
   chờ design mở lại ảnh + đọc assertions.** Chuỗi đã push: `dc2fd3e` (chín file runtime/test) →
   `a45cff2` (mẫu ảnh connector) → `ac88109` (sửa analyzer) → `4fbcd62` (bỏ API tôi đoán tên) →

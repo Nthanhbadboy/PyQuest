@@ -320,6 +320,36 @@ void main() {
       expect(layout.anchors.containsKey('quote-open'), isFalse);
       expect(layout.anchors.containsKey('quote-close'), isFalse);
     });
+
+    test('rev 9 §R9-D: host không chứa statement được GHI LẠI, không im lặng bỏ qua', () {
+      // Rev 8 dùng `continue`: board vẫn vẽ, test vẫn xanh, chỉ có trẻ là thấy một bảng không được
+      // tô gì cả. Layout phải trả về bằng chứng để view dựng notice và để test gọi tên đúng ca hỏng.
+      final BoardLayout mismatch = layoutOf(0, 1, code: 'x = 1');
+      expect(mismatch.unresolvedStatements, isNotEmpty,
+          reason: 'lệch host/source mà không có issue thì không ai biết board đang thiếu gì');
+      expect(mismatch.unresolvedStatements, contains(kGreetingCode));
+      expect(highlighted(mismatch, 0), isEmpty);
+    });
+
+    test('rev 9 §R9-D: khớp MỘT PHẦN statement vẫn là chưa khớp', () {
+      // Luật mới là "khớp nguyên khối, liên tiếp, sau khi trim" — host chứa đúng dòng đầu nhưng
+      // thiếu phần còn lại thì không được tô nửa vời, và phải bị ghi vào unresolved.
+      final String partial = kGreetingCode.substring(0, kGreetingCode.length - 2);
+      expect(partial, isNot(equals(kGreetingCode)));
+      final BoardLayout layout = layoutOf(0, 1, code: 'y = 2\n$partial');
+      expect(highlighted(layout, 0), isEmpty, reason: 'dòng host khác statement: ${lineRuns(layout, 0)}');
+      expect(highlighted(layout, 1), isEmpty);
+      expect(layout.unresolvedStatements, contains(kGreetingCode));
+    });
+
+    test('statement nằm ở dòng sau vẫn khớp, và không bị liệt vào unresolved', () {
+      // Chiều ngược lại của luật full-contiguous: khong duoc tim thay la tim thay, neu khong moi
+      // "ban not" o day se sinh notice gia tren board dung.
+      final BoardLayout layout = layoutOf(0, 1, code: 'x = 1\n$kGreetingCode');
+      expect(layout.unresolvedStatements, isEmpty, reason: '${layout.unresolvedStatements}');
+      expect(highlighted(layout, 1), isNotEmpty, reason: 'statement ở dòng 1 phải được tô');
+      expect(highlighted(layout, 0), isEmpty);
+    });
   });
 
   // rev 7 §R8-C: số đo font là thứ view đưa vào (`TextPainter` trên đúng style sẽ vẽ). Test pure

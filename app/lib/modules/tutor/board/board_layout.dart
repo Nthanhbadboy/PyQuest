@@ -246,6 +246,7 @@ class BoardLayout {
     required this.height,
     required this.panelHeight,
     required this.codeLines,
+    required this.unresolvedStatements,
   });
 
   factory BoardLayout.build({
@@ -258,6 +259,8 @@ class BoardLayout {
     required String outputHeader,
     double Function(String text)? codeWidthOf,
     double Function(String text, double maxWidth)? proseHeightOf,
+    double Function(String text, double maxWidth)? codeHeightOf,
+    double Function(String text, double maxWidth)? outputHeaderHeightOf,
   }) {
     final List<String> codeLines =
         codeText.trim().isEmpty ? _statementUnion(visible) : codeText.split('\n');
@@ -266,6 +269,7 @@ class BoardLayout {
     final double inner = width < 40 ? width : width - gutter * 2;
     final List<BoardNode> nodes = <BoardNode>[];
     final Map<String, BoardRect> anchors = <String, BoardRect>{};
+    final List<String> unresolved = <String>[];
 
     // Hai số đo này là chỗ duy nhất tầng layout biết về font. View truyền số đo THẬT
     // (`TextPainter` trên đúng `TextStyle` sẽ vẽ); test pure Dart dùng ước lượng để
@@ -278,12 +282,13 @@ class BoardLayout {
           final int lines = (t.runes.length / (perLine < 8 ? 8 : perLine)).ceil();
           return (lines < 1 ? 1 : lines) * lineHeight + 4;
         });
-    // `FittedBox(fit: scaleDown)` co chữ lại khi dòng dài hơn bảng; anchor và nền tô
-    // phải nhân cùng hệ số, nếu không là "tô một chỗ, neo một nẻo".
-    double fitOf(int line) {
-      final double natural = widthOf(codeLines[line]);
-      return natural <= inner ? 1.0 : inner / natural;
-    }
+    // rev 9 §R9-B4: dòng code DÀI thì **xuống dòng trong hộp của nó** (view bỏ `FittedBox`
+    // scaleDown), chứ không co chữ — co chữ là âm thầm lấy đi cỡ chữ mà trẻ đã chọn, và mọi
+    // assertion "không tràn" chỉ còn có nghĩa là chữ đã nhỏ lại. Vì không còn co, anchor không
+    // nhân hệ số nào nữa; `heightOf` trả đúng chiều cao của đoạn đã xếp chữ nên hộp cao theo số
+    // dòng thực tế.
+    double fitOf(int line) => 1.0;
+    double heightOf(int line) => codeHeightOf == null ? lineHeight : codeHeightOf(codeLines[line], inner);
     double xOf(int line, int runeIndex) {
       final double fit = fitOf(line);
       return gutter + widthOf(codeLines[line].substring(0, runeIndex)) * fit;
@@ -291,7 +296,10 @@ class BoardLayout {
     BoardRect tokenRect(int line, int start, int end) {
       final double fit = fitOf(line);
       final double x = xOf(line, start);
-      final double w = widthOf(codeLines[line].substring(start, end)) * fit;
+      final double raw = widthOf(codeLines[line].substring(start, end)) * fit;
+      // Không được neighbours một hộp vượt ra ngoài canvas: hộp đích của connector/mũi tên mà
+      // rộng hơn bảng thì paint sẽ cắt, và "không clipping" chỉ còn là lời hứa.
+      final double w = raw < 1 ? 1 : (x + raw > gutter + inner ? gutter + inner - x : raw);
       return BoardRect(x, nodes[line].rect.y, w < 1 ? 1 : w, nodes[line].rect.h);
     }
 
@@ -310,9 +318,9 @@ class BoardLayout {
         beatIndex: -1,
         opIndex: -1,
         altText: '',
-        rect: BoardRect(gutter, y, inner, lineHeight),
+        rect: BoardRect(gutter, y, inner, heightOf(i)),
       ));
-      y += lineHeight;
+      y += heightOf(i);
     }
     final double panelHeight = y;
 
@@ -324,7 +332,13 @@ class BoardLayout {
       // "mọi dòng từ đó trở đi". Host không chứa statement thì không tô đâu cả — beat khai
       // object cho phần tô đó sẽ bị `unanchoredObject` chặn, chứ không phải vẽ bừa.
       final int firstLine = _statementStart(codeLines, op.statement);
-      if (firstLine < 0) continue;
+      if (firstLine < 0) {
+        //rev 9 §R9-D: host code không chứa statement của op. Trước đây chỗ này là `continue`
+        // thuần -> mất nền tô/mất anchor mà không ai giải thích được, và validator vẫn báo plan
+        // hợp lệ vì nó không biết `codeText` của host. Ghi lại để view in nhãn fallback.
+        if (op.statement.trim().isNotEmpty) unresolved.add(op.statement);
+        continue;
+      }
       final int stmtLines = op.statement.split('\n').length;
       final int lastLine = firstLine + stmtLines - 1;
       if (op.kind == BoardOpKind.highlightLine) {
@@ -426,7 +440,12 @@ class BoardLayout {
           // cùng đơn vị dòng) và hộp có padding 2+2 + border 1+1 = `boxChrome`. Bỏ số hạng nào
           // trong hai số đó là hộp thấp hơn nội dung: đúng cái bẫy mà ca `codeSnippet` đã trả giá
           // ở run 4a2a582 — và lần này là overflow thật, không phải assertion sai.
-          final double h = lines.length * lineHeight + lineHeight * 0.85 + boxChrome;
+          // `0.85` là cỡ tương đối của nhãn; chiều cao thật của nó do view đo bằng đúng style sẽ
+          // vẽ (test pure Dart thì vẫn dùng `lineHeight * 0.85`).
+          final double header = outputHeaderHeightOf == null
+              ? lineHeight * 0.85
+              : outputHeaderHeightOf(outputHeader, inner);
+          final double h = lines.length * lineHeight + header + boxChrome;
           final BoardRect box = BoardRect(gutter, cursor, inner, h);
           nodes.add(BoardNode(
             key: 'board_output_$suffix',
@@ -505,6 +524,7 @@ class BoardLayout {
       height: height,
       panelHeight: panelHeight,
       codeLines: codeLines,
+      unresolvedStatements: unresolved,
     );
   }
 
@@ -516,6 +536,11 @@ class BoardLayout {
   final double height;
   final double panelHeight;
   final List<String> codeLines;
+
+  /// Những statement mà plan khai nhưng **không có** trong `codeText` mà host đưa vào.
+  ///rev 9 §R9-D: layout không âm thầm bỏ qua — host và nguồn không khớp là một lỗi hợp đồng
+  /// mà người dùng phải thấy (view in nhãn fallback), không phải một tính năng biến mất không lời.
+  final List<String> unresolvedStatements;
 
   /// Một vật trong `tokenGroup`: 18px ô + 6px kẽ. 12 vật (trần hợp đồng) = 288px, vẫn nằm
   /// trong bảng 360px trừ hai lần gutter — nên không cần kẹp bề rộng hàng và làm lệch anchor.
@@ -541,13 +566,27 @@ class BoardLayout {
     return out;
   }
 
-  /// Dòng đầu tiên trong panel khớp với dòng đầu của `statement`; `-1` khi không khớp.
+  /// Vị trí bắt đầu của **toàn bộ** statement trong panel code: từng dòng một, liên tục; `-1` khi
+  /// host không chứa đúng khối đó.
+  ///
+  /// rev 9 §R9-D: bản cũ chỉ so dòng đầu, nên với host `print(3 + 4)\nprint("KHAC")` và plan khai
+  /// statement `print(3 + 4)\nprint("3 + 4")`, phép tô vẫn khớp dòng đầu rồi tô lan sang dòng
+  /// "KHAC" — một đoạn sáng trên màn hình mà học sinh không hề viết. So cả khối thì không có đường
+  /// đó; các dòng sau của statement mà host không có nghĩa là host khác nguồn, phải báo chứ không tô.
   static int _statementStart(List<String> codeLines, String statement) {
     final String trimmed = statement.trim();
     if (trimmed.isEmpty) return -1;
-    final String first = trimmed.split('\n').first.trim();
-    for (int i = 0; i < codeLines.length; i++) {
-      if (codeLines[i].trim() == first) return i;
+    final List<String> want =
+        trimmed.split('\n').map((String l) => l.trim()).toList(growable: false);
+    for (int i = 0; i + want.length <= codeLines.length; i++) {
+      bool matches = true;
+      for (int k = 0; k < want.length; k++) {
+        if (codeLines[i + k].trim() != want[k]) {
+          matches = false;
+          break;
+        }
+      }
+      if (matches) return i;
     }
     return -1;
   }

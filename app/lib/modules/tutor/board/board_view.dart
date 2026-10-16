@@ -30,6 +30,7 @@ class BoardLabels {
     required this.noteHint,
     required this.outputLabel,
     required this.fallbackPrefix,
+    required this.codeMismatch,
   });
 
   static const BoardLabels vi = BoardLabels(
@@ -44,6 +45,9 @@ class BoardLabels {
     noteHint: 'Ghi chú của con',
     outputLabel: 'Kết quả chạy',
     fallbackPrefix: 'Bảng soạn sẵn',
+    codeMismatch:
+        'Code trên bảng khác với phần thầy đã soạn cho bước này, nên bảng không tô sáng theo dòng. '
+        'Nội dung chữ vẫn nguyên văn, chỉ có phần tô bị tắt để không chỉ sai.',
   );
 
   /// Ba câu fallback, theo locale. Rev 7 §R7-C: controller giữ **mã** lỗi, còn câu chữ nằm ở
@@ -79,6 +83,10 @@ class BoardLabels {
     noteHint: 'Your note',
     outputLabel: 'Run output',
     fallbackPrefix: 'Authored board',
+    codeMismatch:
+        'The code on the board differs from what the authored plan describes, so line highlighting '
+        'is off. The text is still verbatim; only the paint is skipped, so nothing points at the '
+        'wrong line.',
   );
 
   static BoardLabels of(String locale) => locale.startsWith('vi') ? vi : en;
@@ -270,6 +278,18 @@ class _TutorLayer extends StatelessWidget {
   /// Code của bước, do **host** đưa vào (board không tự chạy code, không tự bịa nội dung).
   final String codeText;
 
+  /// Chiều cao engine xếp cho MỘT dòng của `style`. View và layout cùng dùng số này, nên hộp do
+  /// layout tính và paragraph do renderer dựng không thể lệch nhau ở bất kỳ fontScale nào.
+  static double measureLineHeight(TextStyle style) {
+    final TextPainter painter = TextPainter(
+      text: TextSpan(text: 'X', style: style),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    final double h = painter.height;
+    painter.dispose();
+    return h;
+  }
+
   static const double _copyFontSize = 15;
   static const double _codeFontSize = 13;
 
@@ -282,13 +302,22 @@ class _TutorLayer extends StatelessWidget {
     final TextScaler scaler = MediaQuery.textScalerOf(context);
     final double copySize = scaler.scale(_copyFontSize);
     final double codeSize = scaler.scale(_codeFontSize);
-    // `lineHeight` là số nguyên duy nhất giữa layout và chữ: mỗi dòng code chiếm đúng
-    // `codeSize * 1.35`, nên hộp do layout tính và hộp do text chiếm không thể lệch nhau.
-    final double lineHeight = codeSize * 1.35;
+    // rev 9 §R9-B3: `Text` kế thừa `fontFamily`/`color`/`height` từ `DefaultTextStyle` của host,
+    // còn `TextPainter` thì KHÔNG. Đo bằng một style, vẽ bằng một style khác (r8 chỉ đưa
+    // `_proseStyle` trần vào painter trong khi `Text` lại nhận font của host) là nguồn của hộp
+    // "khớp số đo tưởng tượng". Resolve MỘT cặp style ở đây rồi đưa cho cả bên đo lẫn bên vẽ.
+    final TextStyle base = DefaultTextStyle.of(context).style;
+    final TextStyle codeStyle = base.merge(_codeStyle(codeSize));
+    final TextStyle proseStyle = base.merge(_proseStyle(codeSize));
+    // `lineHeight` là số nguyên duy nhất giữa layout và chữ, nhưng phải là số ĐÃ ĐO: mỗi dòng code
+    // chiếm đúng chiều cao mà engine xếp cho một paragraph một dòng của `codeStyle`. Dùng
+    // `codeSize * 1.35` danh nghĩa thì mọi hộp output/snippet dựng từ nó lệch đúng phần làm tròn
+    // của engine — đó là chỗ `4 failure` công khai ở r9 còn treo.
+    final double lineHeight = measureLineHeight(codeStyle);
     final List<BoardVisibleOp> visible = visibleOpsThrough(plan, beatIndex);
 
     return MediaQuery.withNoTextScaling(
-      child: _buildLayer(visible, copySize, codeSize, lineHeight),
+      child: _buildLayer(visible, copySize, codeSize, lineHeight, codeStyle, proseStyle),
     );
   }
 
@@ -297,6 +326,8 @@ class _TutorLayer extends StatelessWidget {
     double copySize,
     double codeSize,
     double lineHeight,
+    TextStyle codeStyle,
+    TextStyle proseStyle,
   ) {
     return Semantics(
       container: true,
@@ -327,7 +358,7 @@ class _TutorLayer extends StatelessWidget {
               // widget và nền tô không thể lệch nhau ở fontScale 1.3/2.0.
               double measureCodeWidth(String text) {
                 final TextPainter painter = TextPainter(
-                  text: TextSpan(text: text, style: _codeStyle(codeSize)),
+                  text: TextSpan(text: text, style: codeStyle),
                   textDirection: TextDirection.ltr,
                   maxLines: 1,
                 )..layout();
@@ -338,7 +369,7 @@ class _TutorLayer extends StatelessWidget {
 
               double measureProseHeight(String text, double maxWidth) {
                 final TextPainter painter = TextPainter(
-                  text: TextSpan(text: text, style: _proseStyle(codeSize)),
+                  text: TextSpan(text: text, style: proseStyle),
                   textDirection: TextDirection.ltr,
                 )..layout(maxWidth: maxWidth);
                 final double h = painter.height;
@@ -356,6 +387,27 @@ class _TutorLayer extends StatelessWidget {
                 outputHeader: labels.outputLabel,
                 codeWidthOf: measureCodeWidth,
                 proseHeightOf: measureProseHeight,
+                // Dòng code dài thì xuống dòng trong hộp của nó (view đã bỏ `FittedBox`), nên chiều
+                // cao hộp PHẢI đo ra; và nhãn output cũng vậy — hai chỗ này là nơi hộp và chữ từng
+                // lệch nhau 6px mà test không giải thích được.
+                codeHeightOf: (String text, double maxWidth) {
+                  final TextPainter painter = TextPainter(
+                    text: TextSpan(text: text, style: codeStyle),
+                    textDirection: TextDirection.ltr,
+                  )..layout(maxWidth: maxWidth);
+                  final double h = painter.height;
+                  painter.dispose();
+                  return h;
+                },
+                outputHeaderHeightOf: (String text, double maxWidth) {
+                  final TextPainter painter = TextPainter(
+                    text: TextSpan(text: text, style: _outputHeaderStyle(codeStyle, codeSize)),
+                    textDirection: TextDirection.ltr,
+                  )..layout(maxWidth: maxWidth);
+                  final double h = painter.height;
+                  painter.dispose();
+                  return h;
+                },
               );
               return SizedBox(
                 key: const ValueKey<String>('board_canvas'),
@@ -367,7 +419,23 @@ class _TutorLayer extends StatelessWidget {
                     Positioned.fill(
                       child: CustomPaint(painter: _BoardCanvasPainter(layout: layout, codeSize: codeSize)),
                     ),
-                    for (final BoardNode node in layout.nodes) _nodeWidget(node, codeSize),
+                    for (final BoardNode node in layout.nodes)
+                      _nodeWidget(node, codeSize, codeStyle, proseStyle),
+                  // rev 9 §R9-D: plan nói tô dòng này mà host không có dòng đó -> nói thẳng ra,
+                  // thay vì `continue` im lặng trong layout (mất nền tô, mất anchor, không ai giải
+                  // thích được). Board vẫn hiển thị chữ nguyên văn; chỉ phần tô bị tắt.
+                  if (layout.unresolvedStatements.isNotEmpty)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: _Notice(
+                            key: const ValueKey<String>('board_code_mismatch'),
+                            text: labels.codeMismatch,
+                          ),
+                        ),
+                      ),
+                    ),
                     for (final BoardConnector link in layout.connectors)
                       Positioned.fromRect(
                         key: ValueKey<String>(link.key),
@@ -393,16 +461,19 @@ class _TutorLayer extends StatelessWidget {
   static Rect _toRect(BoardRect r) => Rect.fromLTWH(r.x, r.y, r.w, r.h);
 
   /// Một node của layout -> một hộp widget ở **đúng** chỗ layout đã tính.
-  Widget _nodeWidget(BoardNode node, double codeSize) {
+  /// Một node của layout -> một hộp widget ở **đúng** chỗ layout đã tính, và dùng **đúng cặp style
+  /// đã resolve** mà bên đo đã dùng. Không nhận `DefaultTextStyle` ở đây: hai bên lệch nhau một
+  /// `fontFamily` là hộp và chữ lệch nhau cả dòng.
+  Widget _nodeWidget(BoardNode node, double codeSize, TextStyle codeStyle, TextStyle proseStyle) {
     final Widget body;
     switch (node.kind) {
       case BoardNodeKind.codeLine:
-        body = FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: RichText(
-            text: TextSpan(
-              style: _codeStyle(codeSize),
+        // rev 9 §R9-B4: không còn `FittedBox(fit: scaleDown)`. Co chữ để vừa hộp là cách dễ nhất
+        // làm test "không overflow" xanh mà lại ăn cắp cỡ chữ của trẻ; ở đây chữ giữ nguyên cỡ và
+        // xuống dòng, hộp cao theo số dòng đo được (xem `codeHeightOf`).
+        body = RichText(
+          text: TextSpan(
+            style: codeStyle,
               children: <InlineSpan>[
                 for (final BoardRun run in node.runs)
                   TextSpan(
@@ -412,10 +483,9 @@ class _TutorLayer extends StatelessWidget {
               ],
             ),
             // Code luôn LTR; board không suy ra hướng đọc từ dữ liệu của trẻ.
-            textDirection: TextDirection.ltr,
-            softWrap: false,
-            overflow: TextOverflow.visible,
-          ),
+          textDirection: TextDirection.ltr,
+          softWrap: true,
+          overflow: TextOverflow.visible,
         );
       case BoardNodeKind.sample:
         body = Container(
@@ -429,7 +499,7 @@ class _TutorLayer extends StatelessWidget {
             children: <Widget>[
               for (final BoardRun run in node.runs)
                 Text(run.text,
-                    style: _codeStyle(codeSize), textDirection: TextDirection.ltr, softWrap: false),
+                    style: codeStyle, textDirection: TextDirection.ltr, softWrap: false),
             ],
           ),
         );
@@ -464,7 +534,7 @@ class _TutorLayer extends StatelessWidget {
       case BoardNodeKind.prose:
         body = Text(
           node.lines.isEmpty ? '' : node.lines.first,
-          style: _proseStyle(codeSize),
+          style: proseStyle,
           softWrap: true,
         );
       case BoardNodeKind.output:
@@ -482,15 +552,13 @@ class _TutorLayer extends StatelessWidget {
                 // `0.85` và `height: 1.35` là cặp số mà `BoardLayout` dùng cho chiều cao nhãn
                 // (`lineHeight * 0.85`): khác nhau ở đây thì Column cao hơn hộp và RenderFlex báo
                 // overflow dù mọi con số trong layout đều "đúng".
-                style: TextStyle(
-                    fontSize: codeSize * 0.85,
-                    fontWeight: FontWeight.w700,
-                    height: 1.35,
-                    color: const Color(0x99000000)),
+                // Một hàm style duy nhất cho cả đo lẫn vẽ: `outputHeaderHeightOf` ở `_buildLayer`
+                // dùng đúng thể thức này, nên hộp output không thể cao hơn/thấp hơn Column của nó.
+                style: _outputHeaderStyle(codeStyle, codeSize),
               ),
               for (final String line in node.lines)
                 Text(line,
-                    style: _codeStyle(codeSize),
+                    style: codeStyle,
                     softWrap: false,
                     overflow: TextOverflow.visible,
                     textDirection: TextDirection.ltr),
@@ -508,6 +576,11 @@ class _TutorLayer extends StatelessWidget {
           : Semantics(
               key: ValueKey<String>('${node.key}_label'),
               label: node.altText,
+              // rev 9 §R9-C2: `container: true` biến node này thành một ranh giới thật. Không có
+              // nó, `Semantics` chỉ là một lớp properties gộp xuống node của con, và người đọc
+              // nghe altText dính liền với chữ trong hộp — test so nhãn == altText sẽ đỏ vì lý do
+              // không liên quan tới việc nhãn có đúng bản locale hay không.
+              container: true,
               child: body,
             ),
     );
@@ -515,6 +588,14 @@ class _TutorLayer extends StatelessWidget {
 
   /// Style của hộp chữ op. Cùng một thể thức này được dùng để **đo** cao hộp trong layout và
   /// để **vẽ** — hai chỗ khác nhau là nguồn của overflow mà test không giải thích được.
+  /// Nhãn "Kết quả chạy"/"Run output": cỡ 0.85 dòng code, cùng `height` 1.35 để
+  /// `outputHeaderHeightOf` đo ra đúng cái mà Column sẽ chiếm.
+  static TextStyle _outputHeaderStyle(TextStyle codeStyle, double codeSize) => codeStyle.copyWith(
+        fontSize: codeSize * 0.85,
+        fontWeight: FontWeight.w700,
+        color: const Color(0x99000000),
+      );
+
   static TextStyle _proseStyle(double size) => TextStyle(
         fontSize: size,
         height: 1.35,

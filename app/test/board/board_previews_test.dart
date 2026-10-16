@@ -121,17 +121,75 @@ void main() {
     await loadAppFonts();
   });
 
+  // R9-A: cấu trúc `jobs` là thứ đã làm 0 ảnh được đăng ở `8647916` — mỗi entry capture có NĂM
+  // field (plan, beat, nhãn, fromPrefix, toPrefix) còn vòng build `jobs` chỉ sinh BỐN, nên
+  // `job[4]`/`job[5]` ném RangeError trước cả cú chụp. Kiểm hợp đồng dữ liệu ở đây để lần sau
+  // sai là đỏ ĐÚNG TÊN, không phải im lặng mất trọn bộ ảnh.
+  test('cấu trúc capture: mỗi entry 5 field, jobs ra 40 combo, chỉ beat có mũi tên khai hai hộp', () {
+    final List<List<Object>> all = <List<Object>>[...kPrimaryCaptures, ...kSmallCaptures];
+    for (final List<Object> e in all) {
+      expect(e, hasLength(5),
+          reason: 'mỗi entry phải là [plan, beat, nhãn, fromPrefix, toPrefix], thấy ${e.length}');
+      expect(e[0] as int, inInclusiveRange(0, 1), reason: 'chỉ có hai plan authored: $e');
+      expect(e[1] as int, inInclusiveRange(0, 3), reason: 'mỗi plan bốn beat: $e');
+      final String why = e[2] as String;
+      expect(why, isNotEmpty);
+      final bool hasArrow = why.contains('connector');
+      expect((e[3] as String).isNotEmpty, hasArrow,
+          reason: '$why: beat có mũi tên BẮT BUỘC khai hộp ở hai đầu, beat khác thì không');
+      expect((e[4] as String).isNotEmpty, hasArrow, reason: '$why: thiếu prefix hộp đích');
+    }
+    // Khổ hẹp chỉ chụp font 2.0 (case xấu nhất) nên số combo là 8*2*2 + 4*2, không phải *4.
+    final int combos =
+        kPrimaryCaptures.length * kPreviewLocales.length * kPreviewScales.length +
+            kSmallCaptures.length * kPreviewLocales.length;
+    expect(combos, 40, reason: 'bộ ảnh dự kiến là 40 combo, không phải $combos');
+  });
+
+  // R9-A (yêu cầu "chụp một combo và mở ảnh publish đúng SHA, rồi 40 ảnh"): ca này chạy TRƯỚC và
+  // ghi thẳng vào `build/previews` với đúng tên mà job đầu tiên của vòng 40 sẽ dùng, nên nếu vòng
+  // đó chết giữa đường, publisher vẫn còn MỘT ảnh board ở đúng SHA để reviewer mở. Nó vẫn tự chụp
+  // chứ không đọc lại ảnh của test khác (đọc ảnh người khác viết thì ảnh cũ trên đĩa vẫn cho xanh).
+  testWidgets('pipeline ảnh còn sống: chụp MỘT combo, mở lại bằng chính số đo của nó',
+      (WidgetTester tester) async {
+    final Directory outDir = Directory('build/previews');
+    final _Shot shot = await _captureBoard(tester, outDir,
+        'board-mq1_01_s2-b1-code-highlight-390x844-font1.0-vi', 0, 0, kPrimarySurface, 1.0, 'vi');
+    final File file = File(shot.path);
+    expect(file.existsSync(), isTrue, reason: 'ảnh phải được chính ca này ghi ra: ${file.path}');
+    final Uint8List bytes = file.readAsBytesSync();
+    expect(bytes.sublist(0, 8), <int>[137, 80, 78, 71, 13, 10, 26, 10],
+        reason: 'không phải PNG hợp lệ thì không có gì để mở');
+    expect(shot.bytes, greaterThan(4000), reason: 'ảnh quá nhỏ, nhiều khả năng chỉ có nền');
+    // Một dải màu đặc = 1 mức sáng. Font Ahem (thiếu `loadAppFonts`) hoặc mất nền trong boundary
+    // đều cho ảnh "to nhưng không có chữ"; số cấp sáng là thứ phân biệt được hai trường hợp đó.
+    expect(shot.levels, greaterThanOrEqualTo(8),
+        reason: 'chỉ ${shot.levels} mức sáng = một dải màu, không phải chữ đọc được');
+    expect(shot.corner, <int>[255, 255, 255, 255],
+        reason: 'góc trên-trái phải là nền trắng opaque, không phải transparent (publisher ra nền đen)');
+    expect(shot.width, (kPrimarySurface.width * 1.5).round(), reason: 'ảnh không đúng khổ đã khai');
+    expect(shot.height, (kPrimarySurface.height * 1.5).round(), reason: 'ảnh không đúng khổ đã khai');
+  });
+
   testWidgets('chụp board-<step>-<beat>-<khổ>-<font>-<locale>.png và đo điểm ảnh',
       (WidgetTester tester) async {
     final Directory outDir = Directory('build/previews');
     if (!outDir.existsSync()) outDir.createSync(recursive: true);
     final List<String> manifest = <String>[];
+    final List<String> failures = <String>[];
     // `List<Object>` đã là non-nullable: thêm `!` ở đây chỉ tổ thành
     // `unnecessary_non_null_assertion`, mà CI coi warning là lỗi (analyze=1 ở run 2d55ff6).
     final List<List<Object>> jobs = <List<Object>>[
-      for (final List<Object> e in kPrimaryCaptures) <Object>[e[0], e[1], e[2], kPrimarySurface],
-      for (final List<Object> e in kSmallCaptures) <Object>[e[0], e[1], e[2], kSmallSurface],
+      for (final List<Object> e in kPrimaryCaptures)
+        <Object>[e[0], e[1], e[2], kPrimarySurface, e[3], e[4]],
+      for (final List<Object> e in kSmallCaptures)
+        <Object>[e[0], e[1], e[2], kSmallSurface, e[3], e[4]],
     ];
+    // R9-A chính là chỗ này: entry capture có NĂM field, `jobs` chèn thêm surface thành SÁU. Vòng
+    // `8647916` jobs chỉ có bốn field nên `job[4]`/`job[5]` ném RangeError TRƯỚC cả `_captureBoard`
+    // -> không một ảnh nào được ghi, publisher không có gì đăng, và báo cáo chỉ còn bốn cái tên.
+    expect(jobs.every((List<Object> j) => j.length == 6), isTrue,
+        reason: 'jobs phải mang đủ plan/beat/nhãn/surface/fromPrefix/toPrefix');
     for (final List<Object> job in jobs) {
       final int planIndex = job[0] as int;
       final int beatIndex = job[1] as int;
@@ -151,21 +209,20 @@ void main() {
             final _Shot shot = await _captureBoard(tester, outDir, name, planIndex, beatIndex,
                 surface, scale, locale, fromPrefix, toPrefix);
             manifest.add(shot.describe(name));
-          } on Object catch (e) {
-            // Một phép đo hỏng không được khai tử cả bộ ảnh: CI chỉ thấy những file đã ghi ra đĩa,
-            // và vòng trước 32 ảnh đã biến mất chỉ vì ca đo đầu tiên abort giữa vòng lặp. Lỗi vẫn
-            // làm đỏ test (dòng check bên dưới), nhưng design còn đủ 40 ảnh để mở.
-            manifest.add('$name → ĐO HỎNG: $e'); // giữ nguyên message, kể cả nhiều dòng
+          } on Object catch (e, st) {
+            // Một phép đo hỏng không được khai tử cả bộ ảnh: publisher chỉ lấy những file đã ghi ra
+            // đĩa, và mất 32/40 ảnh là mất luôn bằng chứng design cần mở. Lỗi vẫn làm đỏ test ở
+            // dòng check cuối, nhưng phần tử ở đây phải đủ để KHÔNG phải đoán: kèm message đầy đủ
+            // và hai dòng stack, vì report CI cắt giữa log.
+            failures.add(name);
+            manifest.add('$name → ĐO HỎNG: $e || ${_stackHint(st)}');
           }
         }
       }
     }
-    expect(manifest, hasLength(kPrimaryCaptures.length * 4 + kSmallCaptures.length * 2),
-        reason: 'bộ ảnh phải phủ từng beat ở vi/en và font 2.0: ${manifest.length}');
-    expect(manifest.where((String n) => n.contains('-b1-')), isNotEmpty,
-        reason: 'tên ảnh phải chứa beat, không chỉ plan');
-    expect(manifest.where((String n) => n.contains('ĐO HỎNG')).toList(), isEmpty,
-        reason: 'có combo đo ảnh hỏng; danh sách nằm ở cuối log của file này');
+    // R9-A: ghi + in manifest TRƯỚC mọi assertion tổng. Vòng trước câu check `ĐO HỎNG isEmpty`
+    // đứng TRƯỚC chỗ write/print, nên đúng lúc có combo hỏng thì phần chi tiết — thứ duy nhất có
+    // giá trị chẩn đoán — lại không chạy.
     // `render.txt`/`test.txt` là kênh CI in đủ; MANIFEST đi cùng ảnh để ảnh tự giải thích nó là
     // gì, chụp từ commit nào, và đã được đo ra sao.
     File('${outDir.path}/MANIFEST.txt').writeAsStringSync('${manifest.join('\n')}\n');
@@ -180,29 +237,22 @@ void main() {
     // ignore: avoid_print
     print('board previews label: ảnh renderer PQC-010 — chưa nối LessonScreen/AI/voice, '
         'không phải bằng chứng chạy trên thiết bị hay TalkBack.');
-  });
-
-  testWidgets('ảnh đại diện vẫn còn trên đĩa và không phải một dải màu duy nhất',
-      (WidgetTester tester) async {
-    // Rev 8 §R8-A: ca này **tự chụp lấy một ảnh** thay vì đọc lại file mà test trước để lại —
-    // đọc file người khác viết thì ảnh cũ trên đĩa vẫn cho xanh, tức là test không phát hiện
-    // được gì. Nó giữ đúng điều nó tên: mở ảnh ra, đếm số cấp độ sáng và kiểm màu nền.
-    final Directory outDir =
-        Directory('${Directory('build/previews').path}/probe-${DateTime.now().microsecondsSinceEpoch}');
-    final _Shot shot = await _captureBoard(tester, outDir, 'probe-single-band', 0, 0, kPrimarySurface, 1.0, 'vi');
-    final File file = File(shot.path);
-    expect(file.existsSync(), isTrue, reason: 'ảnh phải được chính ca này ghi ra: ${file.path}');
-    final Uint8List bytes = file.readAsBytesSync();
-    expect(bytes.sublist(0, 8), <int>[137, 80, 78, 71, 13, 10, 26, 10],
-        reason: 'không phải PNG hợp lệ thì không có gì để mở');
-    expect(shot.bytes, greaterThan(4000), reason: 'ảnh quá nhỏ, nhiều khả năng chỉ có nền');
-    // Một dải màu đặc = 1 mức sáng. Font Ahem (thiếu `loadAppFonts`) hoặc mất nền trong boundary
-    // đều cho ảnh "to nhưng không có chữ"; số cấp sáng là thứ phân biệt được hai trường hợp đó.
-    expect(shot.levels, greaterThanOrEqualTo(8),
-        reason: 'chỉ ${shot.levels} mức sáng = một dải màu, không phải chữ đọc được');
-    expect(shot.corner, <int>[255, 255, 255, 255],
-        reason: 'góc trên-trái phải là nền trắng opaque, không phải transparent (publisher ra nền đen)');
-    expect(shot.width, (kPrimarySurface.width * 1.5).round(), reason: 'ảnh không đúng khổ đã khai');
+    expect(manifest, hasLength(kPrimaryCaptures.length * 4 + kSmallCaptures.length * 2),
+        reason: 'bộ ảnh phải phủ từng beat ở vi/en và font 2.0: ${manifest.length}');
+    expect(manifest.where((String n) => n.contains('-b1-')), isNotEmpty,
+        reason: 'tên ảnh phải chứa beat, không chỉ plan');
+    expect(failures, isEmpty,
+        reason: '${failures.length} combo đo ảnh hỏng: ${failures.join(', ')} — chi tiết ở '
+            'MANIFEST.txt và ở các dòng in phía trên');
+    // Bộ đếm này nói thẳng publisher có gì trong tay, thay vì để người đọc suy ra từ số ảnh đã đăng.
+    final List<String> onDisk = outDir
+        .listSync()
+        .map((FileSystemEntity e) => e.uri.pathSegments.last)
+        .where((String n) => n.startsWith('board-') && n.endsWith('.png'))
+        .toList()..sort();
+    expect(onDisk, hasLength(40),
+        reason: 'build/previews phải có 40 ảnh board để publish, thấy ${onDisk.length}: '
+            '${onDisk.take(3).join(", ")}');
   });
 }
 
@@ -420,4 +470,15 @@ Rect? boxRectForPrefix(WidgetTester tester, String prefix) {
       w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith(prefix));
   if (boxes.evaluate().isEmpty) return null;
   return tester.getRect(boxes.first);
+}
+
+/// Vài dòng stack đủ để biết lỗi nở ra từ đâu. `ci/report.py` cắt giữa log và raw log không tải
+/// được, nên manifest + các dòng in của chính test này là kênh chẩn đoán duy nhất còn sống.
+String _stackHint(StackTrace st) {
+  final List<String> rows =
+      st.toString().split('\n').where((String l) => l.trim().isNotEmpty).toList();
+  final List<String> mine =
+      rows.where((String l) => l.contains('board_previews_test.dart')).take(2).toList();
+  final List<String> chosen = mine.isEmpty ? rows.take(2).toList() : mine;
+  return chosen.join(' | ');
 }

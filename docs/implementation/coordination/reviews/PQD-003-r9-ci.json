@@ -1,0 +1,160 @@
+{
+  "review": "PQD-003-r9",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "reviewed_tested_sha": "8647916223bc5168a81ca9ea30cf3e6b28be6e09",
+  "counterpart_proposed_sha": "0661523457dfd5b22acd6a2326390a1fbce6b92b",
+  "proposed_app_tree_identical": true,
+  "run_id": 38937509150,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38937509150",
+  "report_check_id": 117099178577,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 10.7,
+  "ordinary": {
+    "passed": 319,
+    "failed": 19
+  },
+  "render_passed": 10,
+  "apk": "skipped",
+  "flutter": "3.47.7",
+  "dart": "3.13.5",
+  "known_failure_names_count": 4,
+  "unavailable_failure_names_count": 15,
+  "full_log_retrieved": false,
+  "log_limitation": "Full signed log download returned EOF; report truncated; report annotations empty.",
+  "current_board_preview_count": 0,
+  "historical_images": [
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r3/historical-dc2fd3e/board-mq1_01_s2-b1-code-highlight-390x844-font1.0-en.jpg",
+      "check_ids": [
+        117076594141
+      ],
+      "head_sha": "dc2fd3ea0e2db99ebcfbe462e55177de2b5ba88a",
+      "sha256": "cac2171e0d0a1094c1380fa2678cb8d46a7b711baa2766a6560351dbf4e43e58",
+      "bytes": 25166,
+      "visually_inspected": false,
+      "historical": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r3/historical-dc2fd3e/board-mq1_01_s2-b1-code-highlight-390x844-font1.0-vi.jpg",
+      "check_ids": [
+        117076599786
+      ],
+      "head_sha": "dc2fd3ea0e2db99ebcfbe462e55177de2b5ba88a",
+      "sha256": "28a4bf4168a8512386bbacc159e9f960dee40bc00cb15efc7ac2a0bdb5a63e87",
+      "bytes": 24937,
+      "visually_inspected": true,
+      "historical": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r3/historical-dc2fd3e/board-mq1_01_s2-b1-code-highlight-390x844-font2.0-en.jpg",
+      "check_ids": [
+        117076605175,
+        117076610726
+      ],
+      "head_sha": "dc2fd3ea0e2db99ebcfbe462e55177de2b5ba88a",
+      "sha256": "c5a4460e2ffc400d3ca5fd8233656b035aa238de9d7c54689170e86ff127636b",
+      "bytes": 50817,
+      "visually_inspected": false,
+      "historical": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r3/historical-dc2fd3e/board-mq1_01_s2-b1-code-highlight-390x844-font2.0-vi.jpg",
+      "check_ids": [
+        117076616195,
+        117076621034
+      ],
+      "head_sha": "dc2fd3ea0e2db99ebcfbe462e55177de2b5ba88a",
+      "sha256": "8cb210adb00b3b8dc4f5d01acbd9b557a70a7a3bfd84dcb7c668247f08ee12fd",
+      "bytes": 50558,
+      "visually_inspected": false,
+      "historical": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r3/historical-dc2fd3e/board-mq1_01_s2-b2-quote-tokens-390x844-font1.0-en.jpg",
+      "check_ids": [
+        117076626050
+      ],
+      "head_sha": "dc2fd3ea0e2db99ebcfbe462e55177de2b5ba88a",
+      "sha256": "7eb953afb827c9e068db37136faa04e718946090dfccb84bc31f46853302a2c1",
+      "bytes": 27968,
+      "visually_inspected": false,
+      "historical": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r3/historical-dc2fd3e/board-mq1_01_s2-b2-quote-tokens-390x844-font1.0-vi.jpg",
+      "check_ids": [
+        117076631483
+      ],
+      "head_sha": "dc2fd3ea0e2db99ebcfbe462e55177de2b5ba88a",
+      "sha256": "d6e0dbac717b590512cda678c7d3190ff1bf319e97bc0e89b1668fd23b24a209",
+      "bytes": 29199,
+      "visually_inspected": false,
+      "historical": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r3/historical-dc2fd3e/board-mq1_01_s2-b2-quote-tokens-390x844-font2.0-en.jpg",
+      "check_ids": [
+        117076637579,
+        117076643108
+      ],
+      "head_sha": "dc2fd3ea0e2db99ebcfbe462e55177de2b5ba88a",
+      "sha256": "e4047217ce7535ae9258a566736f9ad2aee5e36c6a87a3aeab7123f4a5112184",
+      "bytes": 57974,
+      "visually_inspected": true,
+      "historical": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r3/historical-dc2fd3e/board-mq1_01_s2-b2-quote-tokens-390x844-font2.0-vi.jpg",
+      "check_ids": [
+        117076648474,
+        117076653832
+      ],
+      "head_sha": "dc2fd3ea0e2db99ebcfbe462e55177de2b5ba88a",
+      "sha256": "b660ada631d2f3aa2cff29772a06334223ea2eec46e96abf1f51527582c8f908",
+      "bytes": 60293,
+      "visually_inspected": false,
+      "historical": true
+    }
+  ],
+  "historical_run_id": 38931215746,
+  "historical_report_check_id": 117077155500,
+  "historical_app_lib_identical": true,
+  "changed_paths": [
+    "app/lib/modules/tutor/board/board_layout.dart",
+    "app/lib/modules/tutor/board/board_models.dart",
+    "app/lib/modules/tutor/board/board_plan_codec.dart",
+    "app/lib/modules/tutor/board/board_validator.dart",
+    "app/lib/modules/tutor/board/board_view.dart",
+    "app/test/board/board_layout_test.dart",
+    "app/test/board/board_plan_codec_test.dart",
+    "app/test/board/board_previews_test.dart",
+    "app/test/board/board_view_test.dart",
+    "docs/implementation/coordination/EVIDENCE.md",
+    "docs/implementation/coordination/HANDOFF_TO_DESIGN.md",
+    "docs/implementation/coordination/TASK_BOARD.md",
+    "docs/implementation/coordination/reviews/PQC-010-r2/README.md",
+    "docs/implementation/coordination/reviews/PQC-010-r2/ci-report.md",
+    "docs/implementation/coordination/reviews/PQD-003-r8-ci.json",
+    "docs/implementation/coordination/reviews/PQD-003-r8.md",
+    "docs/implementation/coordination/tasks/PQC-010.md",
+    "docs/implementation/coordination/tasks/PQD-003.md"
+  ],
+  "local_flutter_tests_run": false,
+  "source_hashes": {
+    "app/lib/modules/tutor/board/board_layout.dart": "306d2d2102663c470148567cc905e727008db3c4f796fd490032b96037e4ebf1",
+    "app/lib/modules/tutor/board/board_models.dart": "9630b8d3f9e3d14093bbc70a1d35785ac6746cc98b3baca560297c912bc0e609",
+    "app/lib/modules/tutor/board/board_plan_codec.dart": "5df47559f5e38a12e40f2a4acc4d9d8e869a980b685f321146e21fcae8b883b4",
+    "app/lib/modules/tutor/board/board_validator.dart": "9ac446d949bfc6f90d2225317aa9e675434297fc19e2a3dd9832c87d6098327a",
+    "app/lib/modules/tutor/board/board_view.dart": "0dc379d5d29f4f139adc544cfdecf08dfbdbb67d37b5d853bbadb2bb0f434592",
+    "app/test/board/board_layout_test.dart": "2a992dd14dd6aa2118bc33d997adfa5edb74596785e17313d3f0825092168135",
+    "app/test/board/board_plan_codec_test.dart": "dbabe24ba0eec0cbf8c372a911d448b23b2b7b895c386c9601cdd630ba7cbc13",
+    "app/test/board/board_previews_test.dart": "632c05803c4a9730bb04aa3a8a8e9e4e8c151cadf86b8dee302d4bdeff880543",
+    "app/test/board/board_view_test.dart": "c75d0bc6b1b3c18f08ae3c39fe056748071bed725962ce0d782e54fa34678279"
+  }
+}

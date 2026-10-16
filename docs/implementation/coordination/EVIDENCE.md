@@ -945,3 +945,61 @@ Mọi con số pixel (kích thước ảnh, số cấp sáng, dải mực của 
 assertion trong `board_previews_test.dart`. Ảnh **không** phải bằng chứng chạy trên thiết bị hay
 TalkBack, và board **chưa** nối `LessonScreen`/AI/voice.
 
+
+---
+
+## EV-ID-026 · 2026-10-17 — nhập rev 9 `c04e688` và sửa vòng 4 trong allowlist `PQC-010`
+
+**Đầu vào, đọc từ git chứ không từ trí nhớ.** `git fetch` cho thấy origin của nhánh tôi vẫn là
+`8647916`, còn design đã đẩy `c04e688` (= PQD-003 **rev 9**, verdict `CHANGES_REQUESTED`, thứ tự vẫn
+`READY_FOR_CODE`). Bốn file r9 được nhập **nguyên văn** bằng `git cat-file blob c04e688:<đường dẫn>`
+và kiểm lại bằng hash blob (không phải "tôi chép lại nội dung"):
+`reviews/PQD-003-r9.md` = `dd5519c` (13105 B), `reviews/PQD-003-r9-ci.json` = `c4b0a30` (6732 B),
+`reviews/PQC-010-r3/README.md` = `d2ce4fa` (2252 B), `reviews/PQC-010-r3/ci-report.md` = `6751a1f`
+(9583 B) — cả bốn hash **bằng** hash trên design branch. `tasks/PQC-010.md` nhập lại kèm banner ghi rõ
+SHA design và 14 dòng design vừa appended (`## Review r9 / sửa vòng4`). Ảnh `historical-dc2fd3e/*.jpg`
+mà design để lại **không** import: chúng là ảnh lịch sử của `dc2fd3e`, đã có EV-ID-025 mô tả, nhập
+thêm chỉ làm phình repo. ACK rev 9: `python3 tools/coordination/pq_lead.py ack c04e688…` →
+`2026-10-16T17:43:39Z ACK design=c04e688 revision=9` (một ACK cho một revision, không có vòng ACK-only).
+
+**Bằng chứng CI của hai SHA gần nhất, nói đúng bản chất từng cái.** `0661523`: run `38937259219`
+trạng thái **cancelled** — bị chính push docs `8647916` của tôi cắt qua `concurrency:
+cancel-in-progress`, **không** phải đỏ vì code; tôi không dùng nó làm failure evidence. `8647916`: run
+`38937509150`, custom report check-run id `117099178577` → `analyze` **0 issues**, `test`
+**`+319 -19`**, `render` **`+10`**, và **0** ảnh board được đăng. Ba điều phải giữ đúng khi đọc các con
+số đó: `19` là **số khai báo test hỏng** chứ không phải 19 combo (một khai báo phủ nhiều combo);
+report là **bản tóm tắt** — `trim()` giữ đầu + đuôi và `Failing tests:` in tối đa 4 tên, nên **15 tên
+còn lại không khôi phục được** và tôi **không đoán**; `render +10` xanh là của **suite screen render**
+chung, không phải bằng chứng cho board preview.
+
+**Sửa gì, ở đâu (5 file, tất cả trong allowlist rev 6).**
+
+| Nhóm | File | Bản chất thay đổi |
+|---|---|---|
+| R9-A | `app/test/board/board_previews_test.dart` | `jobs` mang 6 field (thiếu `surface` ở index 3 làm `job[4]/job[5]` ném `RangeError` **trước** khi chụp → 0 ảnh, mất 36/40 diagnostic); `expect(job, hasLength(6))`; `failures` riêng mang `combo → ĐO HỎNG: exception \|\| stack hint`; `MANIFEST.txt` ghi + in **trước** aggregate assert; canary một combo chạy đầu, reuse đúng tên file của `jobs[0]`; smoke test pure-Dart cho hình dạng capture-entry |
+| R9-B | `app/lib/modules/tutor/board/board_view.dart` | resolve **một** cặp style (`base`/`codeStyle`/`proseStyle`) cho cả đo lẫn vẽ; `measureLineHeight(TextStyle)`; cao độ hộp lấy từ **số đã đo** (`codeHeightOf`, `outputHeaderHeightOf`), bỏ `codeSize * 1.35` danh nghĩa; **bỏ `FittedBox(scaleDown)`** → `softWrap: true` |
+| R9-B | `app/test/board/board_view_test.dart` | host ma trận có `ThemeData(fontFamily: PQFonts.body, scaffoldBackgroundColor: Colors.white)` + `setUpAll(loadAppFonts)` (trước đó 96 ca đo trên **Ahem** trong khi ảnh thật dùng font app); probe scale viết lại thành ba bằng chứng độc lập |
+| R9-D | `app/lib/modules/tutor/board/board_layout.dart` | `_statementStart` khớp **nguyên khối liên tiếp sau trim**; thêm `unresolvedStatements`; `fitOf` = `1.0`; `tokenRect` kẹp theo `inner`; output box dùng header đã đo |
+| R9-C | `board_view.dart` + `board_view_test.dart` + `board_layout_test.dart` | notice `board_code_mismatch` + `labels.codeMismatch` (vi **và** en) thay cho `continue` im lặng; `Semantics(container: true)` ở node op; `snippetNeedsBox` dựng lại điều kiện của layout để `codeSnippet` vào lại 96 combo; Tab từ **beat giữa** + ca riêng cho beat 0; ba ca layout mới cho mismatch/một phần/khớp ở dòng sau |
+
+**Probe scale — sửa lại chính assertion của tôi trước khi nó thành bằng chứng sai.** Bản đầu trong
+vòng này đọc `RichText.textScaler.scale(100)` và đòi `200`. Sai: `BoardTutorLayer.build` **tự** áp
+scale vào cỡ chữ (`scaler.scale(...)`, `board_view.dart:302-304`) rồi **tắt** kế thừa scaler cho subtree
+bằng `MediaQuery.withNoTextScaling` — đó chính là bản vá §R8-C mà design đã chấp nhận, nên paragraph
+trong board *buộc* phải mang `noScaling`. Assertion mới kiểm ba thứ bù trừ nhau: (a) `fontSize` của
+span đã tô = `13 × scale` (bắt "nuốt scale" và "mượn clamp 1.2" → 13 / 15.6), (b)
+`textScaler.scale(100) == 100` (bắt "áp hai lần"), (c) tỷ số cao độ của **một dòng ngắn chắc chắn
+không wrap** (`a = 1`) = `2.00 ± 0.02` (bắt reflow lẫn vào số đo — lỗi của bản cũ: so tổng cao độ ba
+hộp nên khi đổi sang font thật, tỷ số 1,832 đổi vì **wrap**, không vì scale). Kèm (d): hộp phải cao đủ
+cho đoạn đã xếp dòng.
+
+**Giới hạn, nói trước khi design đọc.** Sandbox **không có** Dart/Flutter toolchain: các sửa đổi trên
+mới qua kiểm tra cân bằng ngoặc và đối chiếu API bằng đọc mã nguồn, **chưa compile**, chưa `analyze`,
+chưa chạy test — `+xxx -yy`/`render`/số ảnh của SHA này **chỉ tồn tại sau khi CI của chính SHA đó
+chạy xong**, và sẽ được ghi ở EV-ID-027 kèm run id + report id (tôi không sao chép số của SHA khác).
+`.git/index` của workspace hiện chỉ còn **622 byte** (một phiên khác để lại): `git status`/`git diff HEAD`
+do đó in ra hàng trăm "deletion" **ảo** trong khi file vẫn trên đĩa (`ci.yml`, `PQD-003.md` đều EXISTS,
+`git ls-files -d` = 0). Tôi **không** sửa index chung đó, không `git add`/`stash`/`reset`; mọi commit
+của tôi đi qua temp index + `commit-tree`, và mọi delta kiểm bằng `git diff <A> <B> --stat` hoặc so
+hash blob. Board vẫn **chưa** nối `LessonScreen`/AI/voice; widget test **không** phải bằng chứng TalkBack
+trên thiết bị; `PQC-011/012/013` chưa mở.
