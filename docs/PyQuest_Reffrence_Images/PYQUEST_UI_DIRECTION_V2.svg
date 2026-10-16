@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" role="img" aria-labelledby="title desc">
+<title id="title">PyQuest UI Direction V2 — Adventure, Code, Rewards</title>
+<desc id="desc">A polished UI direction board inspired by the existing PyQuest reference images: a floating-island world map, a focused coding mission, and a celebratory results screen. Bright game-art illustration is paired with more mature interface hierarchy.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101B43"/><stop offset=".55" stop-color="#18295A"/><stop offset="1" stop-color="#34235F"/></linearGradient>
+  <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#5FE6D0"/><stop offset="1" stop-color="#18AFAE"/></linearGradient>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#67D9F6"/><stop offset="1" stop-color="#B6F3F0"/></linearGradient>
+  <linearGradient id="island" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#B6F278"/><stop offset=".45" stop-color="#58C985"/><stop offset="1" stop-color="#237C78"/></linearGradient>
+  <linearGradient id="rock" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7862B6"/><stop offset="1" stop-color="#2E376E"/></linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#FFEBA1"/><stop offset=".45" stop-color="#FFC84A"/><stop offset="1" stop-color="#F28B36"/></linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#25396D"/><stop offset="1" stop-color="#1A2853"/></linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#050B24" flood-opacity=".42"/></filter>
+  <filter id="glow"><feGaussianBlur stdDeviation="9"/></filter>
+  <pattern id="stars" width="94" height="88" patternUnits="userSpaceOnUse"><circle cx="12" cy="18" r="1.8" fill="#D9F8FF" opacity=".7"/><circle cx="68" cy="56" r="1.3" fill="#FBD77B" opacity=".8"/><path d="M43 7v8m-4-4h8" stroke="#C9F7FF" stroke-width="1.5" opacity=".6"/></pattern>
+  <g id="tree"><path d="M0 0v20" stroke="#7B512F" stroke-width="6" stroke-linecap="round"/><circle cx="-3" cy="-7" r="13" fill="#249B87"/><circle cx="7" cy="-13" r="12" fill="#58C986"/><circle cx="-10" cy="-16" r="9" fill="#8BDD87"/></g>
+  <g id="coin"><circle r="17" fill="#A85A20" opacity=".5" cy="3"/><circle r="16" fill="url(#gold)" stroke="#FFF0A6" stroke-width="2"/><path d="M0 -9l7 7-7 8-7-8z" fill="#FFF2B8"/></g>
+  <g id="node"><circle r="22" fill="#122653" stroke="#FFFFFF" stroke-opacity=".65" stroke-width="2"/><circle r="16" fill="url(#teal)"/><path d="M-7 0l5 6 10-12" fill="none" stroke="#103B59" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+</defs>
+<rect width="1600" height="1200" fill="url(#bg)"/><rect width="1600" height="1200" fill="url(#stars)" opacity=".8"/>
+<circle cx="1450" cy="80" r="180" fill="#6550C8" opacity=".16"/><circle cx="1400" cy="110" r="120" fill="#2ED7D0" opacity=".08"/>
+<text x="72" y="74" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="800" letter-spacing="4" fill="#70E7D6">PYQUEST / PRODUCT DESIGN</text>
+<text x="72" y="132" font-family="Inter,Arial,sans-serif" font-size="46" font-weight="900" fill="#FFFFFF">A world worth exploring.</text>
+<text x="74" y="169" font-family="Inter,Arial,sans-serif" font-size="19" fill="#B9C8F0">UI direction V2  •  Adventure maps × real coding challenges × satisfying rewards</text>
+<g transform="translate(72 208)">
+ <rect width="1456" height="1" fill="#6575A8" opacity=".55"/>
+ <text x="0" y="33" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="800" letter-spacing="2.5" fill="#92A5DA">01  EXPLORE</text>
+ <text x="490" y="33" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="800" letter-spacing="2.5" fill="#92A5DA">02  SOLVE</text>
+ <text x="980" y="33" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="800" letter-spacing="2.5" fill="#92A5DA">03  ACHIEVE</text>
+</g>
+<!-- Screen 1: world map -->
+<g transform="translate(72 270)" filter="url(#shadow)">
+ <rect width="438" height="790" rx="30" fill="#F7FAFF"/>
+ <path d="M0 30Q0 0 30 0H408Q438 0 438 30V210H0Z" fill="url(#sky)"/>
+ <circle cx="350" cy="52" r="28" fill="#FFF3B8" opacity=".75"/>
+ <path d="M0 150Q60 100 120 148T240 142T360 137T438 150V260H0Z" fill="#D9F7F5" opacity=".65"/>
+ <text x="28" y="42" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="900" letter-spacing="1.8" fill="#24506D">PYQUEST • WORLD 01</text>
+ <text x="28" y="78" font-family="Inter,Arial,sans-serif" font-size="27" font-weight="900" fill="#16395A">The Emerald Isles</text>
+ <rect x="28" y="94" width="150" height="30" rx="15" fill="#FFFFFF" opacity=".8"/><text x="43" y="114" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="800" fill="#2B6877">CHAPTER 1  /  8</text>
+ <!-- floating island -->
+ <path d="M32 293L65 253 112 238 160 249 205 229 250 244 300 234 350 255 401 288 390 337 350 369 316 423 266 463 227 496 180 477 135 452 94 418 53 384Z" fill="url(#rock)" stroke="#344879" stroke-width="3"/>
+ <path d="M30 286L66 251 114 235 160 246 205 226 250 241 300 231 350 252 401 285 385 314 350 333 315 369 266 405 226 433 180 417 135 395 94 372 54 343Z" fill="url(#island)" stroke="#D8F9A2" stroke-width="5"/>
+ <path d="M62 290C95 265 122 282 151 295S206 285 230 302 281 286 307 305 355 291 378 302" fill="none" stroke="#FFF4C2" stroke-width="9" stroke-linecap="round" opacity=".85"/>
+ <path d="M65 292C99 269 125 284 151 298S205 289 230 305 281 290 307 309 355 294 378 306" fill="none" stroke="#E4A85B" stroke-width="3" stroke-dasharray="5 7" stroke-linecap="round"/>
+ <use href="#tree" transform="translate(102 281) scale(.9)"/><use href="#tree" transform="translate(335 283) scale(.8)"/><use href="#tree" transform="translate(275 326) scale(.65)"/><use href="#tree" transform="translate(155 366) scale(.7)"/>
+ <!-- coding tower -->
+ <path d="M181 270l25-22 25 22v46h-50z" fill="#F7F5FF" stroke="#6755A9" stroke-width="3"/>
+ <path d="M173 270l33-30 33 30z" fill="#E9A34C" stroke="#8A552E" stroke-width="3"/>
+ <rect x="195" y="286" width="21" height="30" rx="10" fill="#5BD8DA" stroke="#245A7C" stroke-width="3"/>
+ <path d="M203 257v-18" stroke="#FFF3B0" stroke-width="4"/><circle cx="203" cy="235" r="6" fill="#FFE18A"/>
+ <use href="#node" transform="translate(89 326) scale(.9)"/>
+ <circle cx="228" cy="349" r="28" fill="#F5B94A" opacity=".2"/><circle cx="228" cy="349" r="22" fill="#FFFFFF" stroke="#F6B93F" stroke-width="4"/><path d="M219 349l7 7 13-16" fill="none" stroke="#3C9E85" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+ <circle cx="315" cy="353" r="23" fill="#FFFFFF" stroke="#8E7BE0" stroke-width="4"/><path d="M307 346l16 14m0-14l-16 14" stroke="#8E7BE0" stroke-width="3" stroke-linecap="round"/>
+ <use href="#coin" transform="translate(132 327) scale(.65)"/><use href="#coin" transform="translate(354 335) scale(.6)"/>
+ <!-- guide robot -->
+ <g transform="translate(321 374)"><ellipse cx="0" cy="23" rx="26" ry="7" fill="#1C4E61" opacity=".25"/><rect x="-21" y="-15" width="42" height="39" rx="12" fill="#F4FBFF" stroke="#477B99" stroke-width="3"/><rect x="-16" y="-9" width="32" height="20" rx="8" fill="#183E64"/><circle cx="-7" cy="0" r="3.5" fill="#70F2E0"/><circle cx="7" cy="0" r="3.5" fill="#70F2E0"/><path d="M-5 7q5 5 10 0" fill="none" stroke="#70F2E0" stroke-width="2.5" stroke-linecap="round"/><rect x="-12" y="23" width="8" height="8" rx="3" fill="#F4FBFF"/><rect x="4" y="23" width="8" height="8" rx="3" fill="#F4FBFF"/></g>
+ <!-- lower quest panel -->
+ <rect x="18" y="520" width="402" height="245" rx="22" fill="#FFFFFF" stroke="#E3EAF5" stroke-width="2"/>
+ <text x="40" y="557" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="900" letter-spacing="1.4" fill="#6C7F9D">YOUR NEXT QUEST</text>
+ <text x="40" y="590" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="900" fill="#1D3155">The Lost Sequence</text>
+ <text x="40" y="616" font-family="Inter,Arial,sans-serif" font-size="13" fill="#687B9C">Use loops to restore the island bridge.</text>
+ <rect x="40" y="639" width="358" height="9" rx="4.5" fill="#E8EEF7"/><rect x="40" y="639" width="142" height="9" rx="4.5" fill="url(#teal)"/>
+ <text x="40" y="672" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" fill="#6C7F9D">2 OF 5 MISSIONS COMPLETE</text>
+ <rect x="40" y="690" width="358" height="50" rx="15" fill="#173C66"/><text x="219" y="721" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="900" fill="#FFFFFF">CONTINUE ADVENTURE  →</text>
+</g>
+<!-- Screen 2: coding challenge -->
+<g transform="translate(581 270)" filter="url(#shadow)">
+ <rect width="438" height="790" rx="30" fill="#F7FAFF"/>
+ <rect width="438" height="202" rx="30" fill="#202D58"/><path d="M0 174H438V202H0Z" fill="#202D58"/>
+ <text x="28" y="40" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="900" letter-spacing="1.8" fill="#73E9D8">MISSION 03  •  LOOPS</text>
+ <text x="28" y="79" font-family="Inter,Arial,sans-serif" font-size="26" font-weight="900" fill="#FFFFFF">Power the portal</text>
+ <text x="28" y="106" font-family="Inter,Arial,sans-serif" font-size="13" fill="#C4D0F0">Guide your bot by repeating a sequence.</text>
+ <rect x="28" y="129" width="382" height="48" rx="14" fill="#334574"/>
+ <circle cx="51" cy="153" r="8" fill="#67E4D1"/><text x="69" y="158" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="800" fill="#FFFFFF">OBJECTIVE</text><text x="164" y="158" font-family="Inter,Arial,sans-serif" font-size="12" fill="#D9E4FF">Reach the glowing portal</text>
+ <!-- play field -->
+ <rect x="20" y="220" width="398" height="208" rx="20" fill="#DDF7F7"/>
+ <path d="M20 347Q85 319 145 347T270 339T418 346V408Q418 428 398 428H40Q20 428 20 408Z" fill="#B5E8CF"/>
+ <path d="M35 367L85 346 135 367 185 346 235 367 285 346 335 367 385 346" fill="none" stroke="#7CCDBA" stroke-width="3"/>
+ <g transform="translate(70 292)"><rect x="-21" y="-19" width="42" height="40" rx="12" fill="#F8FDFF" stroke="#527F9D" stroke-width="3"/><rect x="-16" y="-13" width="32" height="20" rx="7" fill="#163D62"/><circle cx="-7" cy="-3" r="3.5" fill="#68E8D8"/><circle cx="7" cy="-3" r="3.5" fill="#68E8D8"/><path d="M-4 5h8" stroke="#68E8D8" stroke-width="2.5" stroke-linecap="round"/><rect x="-16" y="20" width="10" height="8" rx="3" fill="#527F9D"/><rect x="6" y="20" width="10" height="8" rx="3" fill="#527F9D"/></g>
+ <path d="M105 292H157" stroke="#E6A646" stroke-width="7" stroke-linecap="round" stroke-dasharray="7 8"/><path d="M157 282l13 10-13 10" fill="none" stroke="#E6A646" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+ <g transform="translate(204 287)"><path d="M-22 17V-13L0-29 22-13V17Z" fill="#7E68D8" stroke="#4B4698" stroke-width="3"/><path d="M-14 17V-9L0-19 14-9V17Z" fill="#C2B5FF"/><rect x="-5" y="-2" width="10" height="19" rx="5" fill="#F7FBFF"/></g>
+ <g transform="translate(350 290)"><ellipse rx="32" ry="39" fill="#7AE9D8" opacity=".24" filter="url(#glow)"/><path d="M-25 23V-13Q0-47 25-13V23" fill="none" stroke="#27BFB9" stroke-width="6" stroke-linecap="round"/><path d="M-17 23V-9Q0-31 17-9V23" fill="none" stroke="#F7FFFF" stroke-width="4" stroke-linecap="round"/><path d="M-12 2l12 12 12-12" fill="none" stroke="#2DA9AC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+ <text x="38" y="405" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="800" fill="#447A85">START</text><text x="323" y="405" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="800" fill="#447A85">PORTAL</text>
+ <!-- instruction -->
+ <text x="28" y="467" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="900" letter-spacing="1.2" fill="#7284A0">BUILD YOUR CODE</text>
+ <rect x="20" y="485" width="398" height="168" rx="18" fill="#16233F"/>
+ <circle cx="42" cy="507" r="4" fill="#FF7D85"/><circle cx="56" cy="507" r="4" fill="#FFD46B"/><circle cx="70" cy="507" r="4" fill="#62DEB9"/>
+ <text x="35" y="539" font-family="monospace" font-size="12" fill="#7D92B8">01</text><text x="65" y="539" font-family="monospace" font-size="13" fill="#D8E4FF">for step in range(3):</text>
+ <text x="35" y="567" font-family="monospace" font-size="12" fill="#7D92B8">02</text><text x="65" y="567" font-family="monospace" font-size="13" fill="#70E5D3">    bot.move_forward()</text>
+ <text x="35" y="595" font-family="monospace" font-size="12" fill="#7D92B8">03</text><text x="65" y="595" font-family="monospace" font-size="13" fill="#F6C96B">    bot.collect_energy()</text>
+ <rect x="64" y="610" width="312" height="28" rx="8" fill="#293A5F" stroke="#52678F" stroke-dasharray="4 4"/><text x="220" y="628" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="10" font-weight="700" fill="#91A4C8">+ ADD A BLOCK</text>
+ <rect x="20" y="671" width="190" height="52" rx="15" fill="#E7EDF7"/><text x="115" y="703" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="900" fill="#435879">HINT  ◇</text>
+ <rect x="222" y="671" width="196" height="52" rx="15" fill="url(#teal)"/><text x="320" y="703" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="900" fill="#103E54">RUN CODE  ▶</text>
+ <text x="219" y="758" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="11" fill="#7B8AA4">Safe, guided practice • feedback after every run</text>
+</g>
+<!-- Screen 3: results -->
+<g transform="translate(1090 270)" filter="url(#shadow)">
+ <rect width="438" height="790" rx="30" fill="#F7FAFF"/>
+ <rect width="438" height="300" rx="30" fill="#202D58"/><path d="M0 270H438V300H0Z" fill="#202D58"/>
+ <circle cx="219" cy="122" r="76" fill="#F7C75A" opacity=".12"/><circle cx="219" cy="122" r="58" fill="#F7C75A" opacity=".14"/>
+ <path d="M219 66l16 31 35 5-25 24 6 34-32-16-32 16 6-34-25-24 35-5z" fill="url(#gold)" stroke="#FFF0B2" stroke-width="3"/>
+ <path d="M191 128l18 17 38-41" fill="none" stroke="#8D531C" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M130 80l-8-14m184 14 8-14M142 167l-14 8m168-8 14 8M219 42V26" stroke="#7FE5D6" stroke-width="4" stroke-linecap="round"/>
+ <text x="219" y="218" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">Portal restored!</text>
+ <text x="219" y="246" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="13" fill="#CAD6F4">You solved the loop challenge.</text>
+ <rect x="28" y="274" width="382" height="65" rx="17" fill="#FFFFFF" stroke="#E6ECF7" stroke-width="2"/>
+ <text x="52" y="300" font-family="Inter,Arial,sans-serif" font-size="10" font-weight="900" letter-spacing="1.3" fill="#8290AA">MISSION SCORE</text>
+ <text x="52" y="324" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="900" fill="#233B63">940 pts</text>
+ <text x="382" y="313" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="800" fill="#299C86">+120 bonus</text>
+ <!-- reward cards -->
+ <text x="28" y="385" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="900" letter-spacing="1.3" fill="#7284A0">REWARDS UNLOCKED</text>
+ <rect x="28" y="405" width="116" height="144" rx="17" fill="#FFF5D7" stroke="#F4DCA0" stroke-width="2"/>
+ <circle cx="86" cy="452" r="30" fill="#F7D46F"/><path d="M86 430l7 14 16 2-11 11 3 16-15-8-15 8 3-16-11-11 16-2z" fill="#FFF8CB" stroke="#D99737" stroke-width="2"/>
+ <text x="86" y="510" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="900" fill="#6D4B24">Loop badge</text><text x="86" y="529" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="10" fill="#96713C">New skill</text>
+ <rect x="161" y="405" width="116" height="144" rx="17" fill="#E2F7F5" stroke="#B6E8E2" stroke-width="2"/>
+ <circle cx="219" cy="452" r="30" fill="#8CE4D6"/><use href="#coin" transform="translate(219 452) scale(1.05)"/>
+ <text x="219" y="510" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="900" fill="#205E68">+80 energy</text><text x="219" y="529" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="10" fill="#4D8790">Keep exploring</text>
+ <rect x="294" y="405" width="116" height="144" rx="17" fill="#ECE9FF" stroke="#D5CFFF" stroke-width="2"/>
+ <circle cx="352" cy="452" r="30" fill="#B9ACFF"/><path d="M352 432l6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2z" fill="#FFF4C4" stroke="#8068CF" stroke-width="2"/>
+ <text x="352" y="510" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="900" fill="#4F438F">Star shard</text><text x="352" y="529" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="10" fill="#7B70B0">Collectible</text>
+ <!-- next path -->
+ <rect x="28" y="573" width="382" height="94" rx="18" fill="#EAF2FC"/>
+ <text x="48" y="602" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="900" letter-spacing="1.1" fill="#7388A8">NEXT UP</text>
+ <text x="48" y="628" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="900" fill="#20395E">The Crystal Caverns</text>
+ <text x="48" y="649" font-family="Inter,Arial,sans-serif" font-size="11" fill="#6F83A4">Learn conditions • 4 short missions</text>
+ <circle cx="370" cy="620" r="22" fill="#C8D8F5"/><path d="M361 620h18m-7-8 8 8-8 8" fill="none" stroke="#375989" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+ <rect x="28" y="687" width="382" height="50" rx="15" fill="#173C66"/><text x="219" y="718" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="900" fill="#FFFFFF">CONTINUE QUEST  →</text>
+ <text x="219" y="763" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="11" fill="#7B8AA4">Progress comes from learning, not grinding.</text>
+</g>
+<!-- footer -->
+<text x="72" y="1110" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="900" letter-spacing="2" fill="#70E7D6">DESIGN PRINCIPLES</text>
+<text x="72" y="1140" font-family="Inter,Arial,sans-serif" font-size="15" fill="#E2E9FF">Rich adventure art</text><text x="72" y="1164" font-family="Inter,Arial,sans-serif" font-size="12" fill="#9CAED8">Floating islands, portals, collectible worlds</text>
+<text x="560" y="1140" font-family="Inter,Arial,sans-serif" font-size="15" fill="#E2E9FF">Real coding stays central</text><text x="560" y="1164" font-family="Inter,Arial,sans-serif" font-size="12" fill="#9CAED8">Readable code, clear goals, safe feedback</text>
+<text x="1080" y="1140" font-family="Inter,Arial,sans-serif" font-size="15" fill="#E2E9FF">Rewards with restraint</text><text x="1080" y="1164" font-family="Inter,Arial,sans-serif" font-size="12" fill="#9CAED8">Strong hierarchy; no clutter or grind loops</text>
+</svg>
