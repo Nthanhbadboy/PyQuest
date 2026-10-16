@@ -612,7 +612,7 @@ BoardOp? _decodeOp(
     case BoardOpKind.highlightToken:
       _checkHighlight(c, opStatement, statement, token, tokenIds);
     case BoardOpKind.highlightLine:
-      _checkHighlightLine(c, opStatement, statement);
+      _checkHighlightLine(c, opStatement, statement, raw['line']);
     case BoardOpKind.output:
       if (opStatement.trim().isEmpty && (statement ?? '').trim().isEmpty) {
         c.add(BoardIssueCode.outputWithoutStatement, 'op output phải nêu statement nó mô tả');
@@ -695,13 +695,13 @@ void _checkHighlight(
   }
 }
 
-void _checkHighlightLine(_Collector c, String opStatement, String? beatStatement) {
+void _checkHighlightLine(_Collector c, String opStatement, String? beatStatement, Object? lineValue) {
   final String target = opStatement.trim().isNotEmpty ? opStatement.trim() : (beatStatement ?? '').trim();
   if (target.isEmpty) {
     c.add(BoardIssueCode.outputWithoutStatement, 'highlightLine không nêu câu lệnh nguồn');
     return;
   }
-  c.integer(raw['line'], 'line', max: _lineCount(target));
+  c.integer(lineValue, 'line', max: _lineCount(target));
 }
 
 void _collectBadKeys(Object? node, List<BoardIssue> issues, List<String> path) {
