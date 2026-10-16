@@ -358,6 +358,11 @@ GH run38881345619 head e98f826 success; check report chứa +157/+10 đã đọc
 `reviews/PQC-007/ci-evidence.json` ghi check IDs/hash. Xem trực tiếp j01 và j08;
 các ảnh còn lại chưa được nghiệm thu visual. Không có bộ after hay memory/device claim.
 
+Trạng thái PQC-007 của design (`tasks/PQC-007.md`: `REVIEWED_CHANGES_REQUESTED`, yêu cầu
+code lead **nhận patch** chứ không chỉ ghi ACK) đã được trả: patch docs được nhập thật
+(`reviews/PQC-007/**`, `tasks/PQC-007/008/009.md`, `EVIDENCE.md` bản đã sửa), `tasks/PQD-002.md`
+đã sửa số sai, board đã cập nhật — xem EV-ID-016.
+
 ## EV-ID-016 — PQC-009 (test-only) đã giao + nhập corrections PQC-007 có kiểm tra tính toàn vẹn
 
 **Corrections được nhập, không chép tay.** Từ `d321e98` chỉ lấy các file docs/coordination
@@ -396,3 +401,49 @@ EV-ID-011); chưa chạy `flutter analyze`/`flutter test` local (không có SDK 
 luận xanh/đỏ chỉ lấy từ run CI trên đúng commit; `git show` là cách đọc nhánh design, không
 merge; PQC-008 vẫn `BLOCKED` (runtime=no) và **không** được coi là xong vì PQC-009 đã characterize;
 PQC-002 + art P02 vẫn chờ người dùng duyệt.
+
+Kết quả CI của cùng lượt này (3 run, gồm 2 run đỏ và lý do từng cái) ở **EV-ID-017**.
+
+## EV-ID-017 — PQC-009 trên CI: 3 vòng, số liệu thật đọc ở commit cuối
+
+**Chuỗi CI (mỗi vòng là bằng chứng thật, không tường thuật suy đoán):**
+
+| Run | Commit | Kết quả | Đọc từ báo cáo check-run |
+|---|---|---|---|
+| `38886724385` | `a572aa9` | **đỏ** | `flutter analyze`: 8 issues — 4 `error • Undefined class 'SemanticsProperties'` + 1 `warning • unnecessary_non_null_assertion` + 3 info; `test` = `+124 -2` (hai file **không load được**, không phải test logic fail); `render` `+10` |
+| `38887445456` | `bb8cced` | **đỏ** | `analyze` = **No issues found!**; `test` = `+163 -1` (một test fail: `đã xong mq1_01+mq1_02: ...`); `render` `+10` |
+| `38888232576` | `0d609f7` | **xanh** | `analyze` **No issues found! (ran in 10.6s)** · `test` **`+166: All tests passed!`** · `render` **`+10`** (10/10, vẫn đủ `j00…j08`) |
+
+`+157 → +166` khớp đúng 9 test mới (7 của `lesson_route_regression_test.dart`, 2 của nhóm
+đo `RenderBox`), nên không có test nào bị mất/đổi thành skip. Flutter `3.47.7` / Dart `3.13.5`.
+
+**Hai bài học kỹ thuật đáng giữ (đều do CI dạy, không có SDK để thử local):**
+1. `SemanticsProperties` **không** được export từ `material.dart` của SDK này → không được
+   nêu tên type trong test; helper đọc `Semantics.properties` qua `dynamic` (`Semantics` thì
+   có thật). Trước đó tôi đoán tên API theo trí nhớ và cháy analyze.
+2. `openActivity` chèn toast reward vào **root overlay** sau 900 ms, mỗi toast sống 2.8 s
+   (`main_map_screen.dart:268-271`, `reward_toast.dart:20-27`). Một test assert "chạm vào
+   card khóa thì không có gì xảy ra" mà không canh cửa sổ này chỉ chứng minh... không có gì
+   chạm tới nơi. Fix: `pumpFor(5s)` trước khi đo `hitTestable()`/tap, và tách test gộp thành
+   ba test để **tên test** chỉ ra chỗ gãy (báo cáo check-run cắt giữa log, không đọc được
+   message).
+
+**Số đo characterization đã đứng trên CI:** `ChunkyButton.small` cao **48** (mặt 44 + depth 4
+bên trong hit area) ở cả textScale 1 và 2, rộng ≥44; `RoundIconButton(size:44)` rộng đúng 44
+và `height - width = 44*0.09`; sáu `hitBox` normalized nằm trong 0..1 **và** phần còn nhìn thấy
+sau cover crop ≥48×48 ở 360×640. Cache: per-key resolve+decode qua `AssetImage`, `entries ≥ 6`
+khi còn listener — **không** có số `live` (SDK không có `currentLiveImages`) và **không** trích
+được `entries/bytes` công bố, vì `test.txt` trong báo cáo bị cắt giữa (giới hạn đã ghi ở
+EV-ID-011; `actions/jobs/<id>/logs` redirect ra blob storage ngoài allowlist sandbox).
+
+**Route đã chứng minh (test 1–3 + 2 fixture, theo decisions §6):** map → `map_hit_bug_hunter`
+→ sheet khóa → `sheet_go_lesson` → `MainQuestHomeScreen` với card `mq1_03` được highlight
+(bằng chứng `openLessonId` tới screen, không phải chuỗi pop), **không** `LessonScreen`,
+**không** đổi `energy.current`, **không** phát `lessonCompleted`; fixture xong
+`mq1_01`+`mq1_02` → card hết khóa, tap card mới push `LessonScreen` và energy giảm đúng cost
+tính theo rule của `_open`; “Để sau” không phát `activityOpened`.
+
+**Không đổi gate:** `brief PQC-009` = ALLOWED(test), `brief PQC-008` vẫn BLOCKED(runtime=no);
+PQC-002/art P02 vẫn chờ người dùng. Diff của cả ba commit chỉ nằm trong `app/test/**` và
+`docs/implementation/coordination/**`; `audit.py` của design tái hiện khớp `facts.json` trên
+nhánh này và 9/9 ảnh import khớp sha256+bytes.

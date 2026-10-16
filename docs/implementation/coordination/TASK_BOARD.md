@@ -23,13 +23,13 @@ Trạng thái: `READY` · `QUEUED` · `BLOCKED` · `IN_PROGRESS` · `READY_FOR_R
 | PQC-005 | Regenerate `app/pubspec.lock` cho nhóm dependency audio | runtime (dependency) | sandbox không có SDK; `pub get` của CI tự resolve 14 gói → cần quyết định có commit lock hay không | `BLOCKED` | — |
 | PQC-007 | Đối chiếu feasibility P02 (bảng A.1–A.3) — phản biện độc lập từng `file:line` + số đo | coordination | design làm ở `arena/00838eb9-pyquest`; code **nhận corrections** và nhập `reviews/PQC-007/**` (audit tái hiện khớp, 9/9 ảnh khớp sha256) | `DONE` (verdict `CHANGES_REQUESTED` đã áp dụng; 4 over-claim bị rút — xem `tasks/PQD-002.md` §D, EV-ID-016) | — |
 | PQC-008 | Semantics/focus cho 6 ô landmark **trên thiết bị** (TalkBack, Tab/Enter/Space, focus-return, duplicate node) — rev 2 đã **tách** phần route lesson sang PQC-009 | **runtime** | `runtime=no`; prompt mới cấm snippet API chưa kiểm chứng (`Semantics(actionLabel:)`, `SemanticsController`) | `BLOCKED` — chưa ai authorized; PQC-009 characterize mức code xong, **không** được tính là PQC-008 xong | design bật gate runtime đúng allowlist |
-| PQC-009 | Route lesson thật + characterization geometry/cache/semantics (test-only, `app/test/**`) | test | rev 2 mở: `ALLOWED for scope=test` theo `brief PQC-009` | `READY_FOR_REVIEW` — `app/test/lesson_route_regression_test.dart` (5 test) + 3 nhóm sửa trong `activity_sheet_thumbnails_test.dart`; **chờ số CI trên đúng commit** rồi mới ghi `DONE` (EV-ID-016) | PQC-007 corrections ✅ |
+| PQC-009 | Route lesson thật + characterization geometry/cache/semantics (test-only, `app/test/**`) | test | rev 2 mở: `ALLOWED for scope=test` | `DONE` — CI `38888232576` @ `0d609f7`: `analyze` No issues, `test` `+166 All tests passed!`, `render` `+10`; 7 test route + 2 test đo `RenderBox` + cache per-key; 2 vòng đỏ trước (5 lỗi analyzer, 1 test fail vì toast) đã sửa và ghi ở EV-ID-016/-017 | PQC-007 corrections ✅ |
 | PQC-006 | Đồng bộ 1 dòng audience trong `docs/PyQuest_Reffrence_Images/VILLAGE_2_5D_REDESIGN_BRIEF.md` theo `PRODUCT_VISION.md:17` (under-12) | coordination | design đã sửa ở rev 3 trên tài liệu của họ và cho phép nhập đúng câu đó | `DONE` — **một dòng**, byte-identical với bản design (đã `diff` với `560106e`); không đổi ảnh, không đổi định vị | — |
 
 ## Delegate được ngay (mỗi dòng = một phiên agent khác, tự chặn nếu gate đóng)
 
 0. ~~**PQC-007**~~ **đã DONE** (design phản biện, code nhận corrections). Việc test-only
-   kế tiếp là **PQC-009** và đã giao ở lượt này; delegate mới **không** cần thiết cho phần đã
+   kế tiếp là **PQC-009** — đã DONE trên CI `38888232576`; delegate mới **không** cần thiết cho phần đã
    được giao (rev 2 ghi rõ: một phiên code đang chạy có thể nhận PQC-009 trực tiếp).
 1. **Đọc `IMPLEMENTATION_DECISIONS.md` @ `d321e98` rồi rà `EVIDENCE.md` tìm chỗ nói quá** —
    delegate đối chiếu từng mục trong
