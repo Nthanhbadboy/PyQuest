@@ -1,0 +1,264 @@
+# Custom report 117205013864 @ 3c2fe4b
+
+| phase key | exit |
+|---|---|
+| pub_get | 0 |
+| analyze | 0 |
+| test | 1 |
+| render | 0 |
+
+**Why not success**: phase key test=1
+### flutter_version.txt
+```
+Flutter 3.47.7 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision abaf9c5237 (8 days ago) • 2026-10-08 09:51:21 -0700
+Engine • hash d8a2d6c768c334d53e16277f837970ffa1e2de81 (revision deb287481e) (9 days ago) • 2026-10-07 17:09:12.000Z
+Tools • Dart 3.13.5 • DevTools 2.60.0
+
+```
+
+---
+
+### pub_get.txt
+```
+Resolving dependencies...
+Downloading packages...
+  code_assets 1.2.1 (2.1.0 available)
++ flutter_sound 9.30.0
++ flutter_sound_platform_interface 9.30.0 (10.3.8 available)
++ flutter_sound_web 9.30.0 (10.3.8 available)
+  hooks 2.0.2 (2.2.0 available)
++ logger 2.8.0
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.3 (1.19.0 available)
+  native_toolchain_c 0.19.2 (0.19.5 available)
+  objective_c 9.5.0 (9.6.2 available)
++ record 6.2.1 (7.1.2 available)
++ record_android 1.5.2 (2.2.0 available)
++ record_ios 1.2.1 (2.1.1 available)
++ record_linux 1.3.1 (2.1.3 available)
++ record_macos 1.2.2 (2.1.1 available)
++ record_platform_interface 1.6.0 (2.1.0 available)
+  record_use 0.6.0 (1.1.1 available)
++ record_web 1.3.0 (2.1.3 available)
++ record_windows 1.0.7 (2.3.0 available)
+  sqlite3 3.5.2 (3.7.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_math 2.4.0 (2.4.3 available)
+  vm_service 15.3.0 (15.4.0 available)
++ web_socket 1.0.1
++ web_socket_channel 3.0.3
+Changed 14 dependencies!
+21 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+```
+
+---
+
+### analyze.txt
+```
+Analyzing app...
+
+   info • The file name '00_board_semantics_dump_test.dart' isn't a lower_case_with_underscores identifier. Try changing the name to follow the lower_case_with_underscores style • test/00_board_semantics_dump_test.dart:1:1 • file_names
+   info • The import of 'package:flutter/rendering.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flutter_test/flutter_test.dart'. Try removing the import directive • test/00_board_semantics_dump_test.dart:2:8 • unnecessary_import
+
+2 issues found. (ran in 7.7s)
+
+```
+
+---
+
+### test.txt
+```
+00:00 +0: loading /home/runner/work/PyQuest/PyQuest/app/test/00_board_semantics_dump_test.dart
+00:00 +0: /home/runner/work/PyQuest/PyQuest/app/test/00_board_semantics_dump_test.dart: (setUpAll)
+00:00 +0: /home/runner/work/PyQuest/PyQuest/app/test/00_board_semantics_dump_test.dart: 00-D1-sem-diagnostic: dump actual semantics labels at output beat
+D1_SEMANTICS_LABELS=[, , , , , mq1_03 mq1_03_s2, 3/4, Phần "3 + 4" trong ngoặc kép ở dòng hai được tô nổi bật. Ô kết quả có hai dòng: 7, rồi đến nguyên chữ 3 + 4.
+Còn khi có ngoặc kép?
+Dòng hai bọc 3 + 4 trong ngoặc kép. Python giữ nguyên phần chữ, không cộng hai số.
+Dòng 1 tính toán. Dòng 2 in nguyên chữ.
+print(3 + 4)
+print("3 + 4"), Bảy viên đá gộp thành một nhóm, Ô kết quả có hai dòng: 7 rồi đến 3 + 4
+Kết quả chạy
+7
+3 + 4, Nét của con: 0
+Nét của con, Hoàn tác nét, Xóa nét của con, Trước, Trước, Xem lại từ đầu, Xem lại từ đầu, Tiếp, Tiếp]
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+A SemanticsHandle was active at the end of the test.
+All SemanticsHandle instances must be disposed by calling dispose() on the SemanticsHandle.
+
+When the exception was thrown, this was the stack:
+#0      WidgetTester._verifySemanticsHandlesWereDisposed (package:flutter_test/src/widget_tester.dart:1074:7)
+#1      WidgetTester._endOfTestVerifications (package:flutter_test/src/widget_tester.dart:1063:5)
+#2      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1969:22)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trac
+
+... [trimmed] ...
+
+ice] recv #2 userText=8ch
+00:50 +338 -4: /home/runner/work/PyQuest/PyQuest/app/test/tutor_voice_session_test.dart: the tutor must not hear itself an interruption clears the speech that has not been played but keeps the sentence
+[PyQuestVoice] recv #1 aiText=15ch
+[PyQuestVoice] recv #2 audio=5760B
+[PyQuestVoice] server audio chunks=1 bytes=5760 queued=0
+[PyQuestVoice] recv #3 interrupted
+[PyQuestVoice] server interrupted=true; queued audio dropped, assistant text kept
+[PyQuestVoice] pump: interrupted: queued audio dropped
+00:50 +339 -4: /home/runner/work/PyQuest/PyQuest/app/test/tutor_voice_session_test.dart: session state the tutor speaks, then listens again — the microphone is not left open
+[PyQuestVoice] recv #1 audio=1920B turnComplete
+[PyQuestVoice] server audio chunks=1 bytes=1920 queued=0
+[PyQuestVoice] server turnComplete audioBytes=1920 pumpFed=0 pumpDropped=0
+[PyQuestVoice] playback started bytes=0
+[PyQuestVoice] microphone reopened (turn played out)
+00:50 +340 -4: /home/runner/work/PyQuest/PyQuest/app/test/tutor_voice_session_test.dart: session state a session that is about to close leaves a readable conversation
+[PyQuestVoice] recv #1 aiText=16ch
+[PyQuestVoice] recv #2 userText=12ch
+[PyQuestVoice] recv #3 goAway=0s
+[PyQuestVoice] server goAway in 0s
+00:50 +341 -4: /home/runner/work/PyQuest/PyQuest/app/test/tutor_voice_session_test.dart: session state microphone gate: silent tutor only
+00:50 +342 -4: /home/runner/work/PyQuest/PyQuest/app/test/tutor_voice_session_test.dart: session state a server error is shown without ever leaking the key
+[PyQuestVoice] recv #1 error
+[PyQuestVoice] server ERROR #0 bad credential for wss://generativelanguage.googleapis.com/ws?key=•
+00:50 +343 -4: /home/runner/work/PyQuest/PyQuest/app/test/tutor_voice_session_test.dart: a development build without a key says so instead of pretending
+00:50 +344 -4: loading /home/runner/work/PyQuest/PyQuest/app/test/services_test.dart
+00:51 +344 -4: /home/runner/work/PyQuest/PyQuest/app/test/services_test.dart: energy regenerates over time, caps at max and never goes negative
+00:51 +345 -4: /home/runner/work/PyQuest/PyQuest/app/test/services_test.dart: level results keep the best score/stars and rewards are idempotent
+00:51 +346 -4: /home/runner/work/PyQuest/PyQuest/app/test/services_test.dart: lessons, badges and the chapter milestone
+00:51 +347 -4: /home/runner/work/PyQuest/PyQuest/app/test/services_test.dart: daily quests: three per day, progress, stamp, reset at local midnight
+00:51 +348 -4: /home/runner/work/PyQuest/PyQuest/app/test/services_test.dart: progress survives closing and reopening the database file
+00:51 +349 -4: Some tests failed.
+
+Failing tests:
+  /home/runner/work/PyQuest/PyQuest/app/test/00_board_semantics_dump_test.dart: 00-D1-sem-diagnostic: dump actual semantics labels at output beat
+  /home/runner/work/PyQuest/PyQuest/app/test/board/board_view_test.dart: R10-D1-sem-VI: output node contains the authored Vietnamese label
+  /home/runner/work/PyQuest/PyQuest/app/test/board/board_view_test.dart: R10-D2-sem: sau setLocale(en), semantic output cập nhật sang EN
+  /home/runner/work/PyQuest/PyQuest/app/test/board/board_view_test.dart: R10-D3-sem: sau advance và EN→VI, semantic output trở lại VI
+
+```
+
+---
+
+### render.txt
+```
+00:00 +0: loading /home/runner/work/PyQuest/PyQuest/app/test/render/render_screens_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: render A: first launch
+00:01 +1: render B: robot maze
+00:04 +2: render C: lesson flow
+00:05 +3: render D: arcade games
+00:06 +4: render E: house, bugs, sheets, playground
+00:08 +5: render F: small phone 360x640
+00:09 +6: render G: cast gallery
+00:09 +7: render H: tutor panel, offline build
+00:09 +8: render I: tutor panel with an AI answer (static preview provider)
+00:10 +9: render J: activity sheet before-set (six + locked)
+PQC-009 imageCache khi mở lần lượt sáu sheet (cache của engine trên máy CI, KHÔNG phải RAM/GPU thiết bị): j00=7entries/11501568B -> j01=7entries/11501568B -> j02=7entries/11501568B -> j03=7entries/11501568B -> j04=7entries/11501568B -> j05=7entries/11501568B
+00:14 +10: (tearDownAll)
+00:14 +10: All tests passed!
+
+```
+
+---
+
+### previews.txt
+```
+a00_welcome.png 2 chunk(s)
+a01_map_new_player.png 4 chunk(s)
+a02_sheet_locked.png 2 chunk(s)
+b00_map_progress.png 4 chunk(s)
+b01_sheet_maze.png 2 chunk(s)
+b02_maze_home.png 2 chunk(s)
+b03_maze_program_python.png 2 chunk(s)
+b04_maze_result.png 2 chunk(s)
+b05_maze_fail.png 2 chunk(s)
+b06_workshop.png 2 chunk(s)
+b07_workshop_code.png 2 chunk(s)
+b08_workshop_verified.png 2 chunk(s)
+board-mq1_01_s2-b1-code-highlight-390x844-font1.0-en.png 1 chunk(s)
+board-mq1_01_s2-b1-code-highlight-390x844-font1.0-vi.png 1 chunk(s)
+board-mq1_01_s2-b1-code-highlight-390x844-font2.0-en.png 2 chunk(s)
+board-mq1_01_s2-b1-code-highlight-390x844-font2.0-vi.png 2 chunk(s)
+board-mq1_01_s2-b2-quote-tokens-390x844-font1.0-en.png 1 chunk(s)
+board-mq1_01_s2-b2-quote-tokens-390x844-font1.0-vi.png 1 chunk(s)
+board-mq1_01_s2-b2-quote-tokens-390x844-font2.0-en.png 2 chunk(s)
+board-mq1_01_s2-b2-quote-tokens-390x844-font2.0-vi.png 2 chunk(s)
+board-mq1_01_s2-b3-connector-single-output-360x640-font2.0-en.png 2 chunk(s)
+board-mq1_01_s2-b3-connector-single-output-360x640-font2.0-vi.png 2 chunk(s)
+board-mq1_01_s2-b3-connector-single-output-390x844-font1.0-en.png 1 chunk(s)
+board-mq1_01_s2-b3-connector-single-output-390x844-font1.0-vi.png 1 chunk(s)
+board-mq1_01_s2-b3-connector-single-output-390x844-font2.0-en.png 2 chunk(s)
+board-mq1_01_s2-b3-connector-single-output-390x844-font2.0-vi.png 2 chunk(s)
+board-mq1_01_s2-b4-wait-task-360x640-font2.0-en.png 1 chunk(s)
+board-mq1_01_s2-b4-wait-task-360x640-font2.0-vi.png 1 chunk(s)
+board-mq1_01_s2-b4-wait-task-390x844-font1.0-en.png 1 chunk(s)
+board-mq1_01_s2-b4-wait-task-390x844-font1.0-vi.png 1 chunk(s)
+board-mq1_01_s2-b4-wait-task-390x844-font2.0-en.png 2 chunk(s)
+board-mq1_01_s2-b4-wait-task-390x844-font2.0-vi.png 2 chunk(s)
+board-mq1_03_s2-b1-groups-3-4-line-highlight-360x640-font2.0-en.png 2 chunk(s)
+board-mq1_03_s2-b1-groups-3-4-line-highlight-360x640-font2.0-vi.png 2 chunk(s)
+board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font1.0-en.png 1 chunk(s)
+board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font1.0-vi.png 1 chunk(s)
+board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font2.0-en.png 2 chunk(s)
+board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font2.0-vi.png 2 chunk(s)
+board-mq1_03_s2-b2-cleared-group-7-first-line-390x844-font1.0-en.png 1 chunk(s)
+board-mq1_03_s2-b2-cleared-group-7-first-line-390x844-font1.0-vi.png 1 chunk(s)
+board-mq1_03_s2-b2-cleared-group-7-first-line-390x844-font2.0-en.png 2 chunk(s)
+board-mq1_03_s2-b2-cleared-group-7-first-line-390x844-font2.0-vi.png 2 chunk(s)
+board-mq1_03_s2-b3-whole-run-two-lines-360x640-font2.0-en.png 1 chunk(s)
+board-mq1_03_s2-b3-whole-run-two-lines-360x640-font2.0-vi.png 1 chunk(s)
+board-mq1_03_s2-b3-whole-run-two-lines-390x844-font1.0-en.png 1 chunk(s)
+board-mq1_03_s2-b3-whole-run-two-lines-390x844-font1.0-vi.png 1 chunk(s)
+board-mq1_03_s2-b3-whole-run-two-lines-390x844-font2.0-en.png 2 chunk(s)
+board-mq1_03_s2-b3-whole-run-two-lines-390x844-font2.0-vi.png 2 chunk(s)
+board-mq1_03_s2-b4-shape-wait-390x844-font1.0-en.png 1 chunk(s)
+board-mq1_03_s2-b4-shape-wait-390x844-font1.0-vi.png 1 chunk(s)
+board-mq1_03_s2-b4-shape-wait-390x844-font2.0-en.png 2 chunk(s)
+board-mq1_03_s2-b4-shape-wait-390x844-font2.0-vi.png 2 chunk(s)
+c00_tower_new.png 2 chunk(s)
+c01_lesson_story.png 1 chunk(s)
+c02_lesson_example.png 2 chunk(s)
+c03_lesson_choice_wrong.png 2 chunk(s)
+c04_lesson_fill_correct.png 2 chunk(s)
+c05_lesson_code_error.png 2 chunk(s)
+c06_lesson_code_ok.png 2 chunk(s)
+c07_lesson_complete.png 2 chunk(s)
+d00_dragon_home.png 2 chunk(s)
+d01_dragon_shop.png 3 chunk(s)
+d02_dragon_play.png 1 chunk(s)
+d03_dragon_result.png 2 chunk(s)
+d04_stars_home.png 2 chunk(s)
+d05_star_atlas.png 1 chunk(s)
+d06_stars_play.png 1 chunk(s)
+e00_energy_sheet.png 2 chunk(s)
+e01_daily_quests.png 2 chunk(s)
+e02_settings.png 2 chunk(s)
+e03_house_badges.png 2 chunk(s)
+e04_house_wall.png 1 chunk(s)
+e05_bug_home.png 2 chunk(s)
+e06_bug_puzzle_run.png 2 chunk(s)
+e07_bug_fix_picker.png 2 chunk(s)
+e08_playground.png 2 chunk(s)
+f00_small_map.png 3 chunk(s)
+f01_small_maze.png 2 chunk(s)
+f02_small_lesson.png 2 chunk(s)
+f03_small_dragon_home.png 2 chunk(s)
+g00_cast_gallery.png 2 chunk(s)
+h00_tutor_offline_open.png 2 chunk(s)
+h01_tutor_offline_answer.png 2 chunk(s)
+h02_tutor_hint_ladder.png 2 chunk(s)
+i00_tutor_ai_answer.png 2 chunk(s)
+i01_lesson_with_tutor_button.png 1 chunk(s)
+j00_sheet_main_quest.png 2 chunk(s)
+j01_sheet_robot_maze.png 2 chunk(s)
+j02_sheet_dragon_jump.png 2 chunk(s)
+j03_sheet_catch_stars.png 2 chunk(s)
+j04_sheet_bug_hunter.png 2 chunk(s)
+j05_sheet_achievement_house.png 2 chunk(s)
+j06_sheet_bug_hunter_locked.png 2 chunk(s)
+j07_small_sheet_robot_maze.png 2 chunk(s)
+j08_small_sheet_bug_hunter_locked.png 2 chunk(s)
+
+```

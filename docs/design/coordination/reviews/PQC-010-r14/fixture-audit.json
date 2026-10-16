@@ -1,0 +1,83 @@
+{
+  "tested_code_commit": "3c2fe4b1edae63142b10804b3b45c1b0d4e7aeb5",
+  "fixture_path": "app/test/board/fixtures/board_plans.v1.json",
+  "fixture_sha256": "8a39e5ad21766cbff90bdc96dd83549505b8c777f51f317c634697954ea5d784",
+  "helper_path": "app/test/board/board_test_support.dart",
+  "helper_preserves_ops": true,
+  "plan_index": 1,
+  "beats": [
+    {
+      "index": 1,
+      "beatId": "mq1_03_s2.b2",
+      "ops_count": 3,
+      "ops": [
+        {
+          "index": 0,
+          "type": "clearTutorLayer",
+          "altText": {
+            "vi": "Xoá lớp của thầy để minh hoạ kết quả",
+            "en": "Clears the teacher layer to show the result"
+          }
+        },
+        {
+          "index": 1,
+          "type": "tokenGroup",
+          "tokenIds": [
+            "stone-1",
+            "stone-2",
+            "stone-3",
+            "stone-4",
+            "stone-5",
+            "stone-6",
+            "stone-7"
+          ],
+          "altText": {
+            "vi": "Bảy viên đá gộp thành một nhóm",
+            "en": "Seven stones joined into one group"
+          }
+        },
+        {
+          "index": 2,
+          "type": "output",
+          "statement": "print(3 + 4)",
+          "value": "7",
+          "altText": {
+            "vi": "Ô kết quả chỉ ghi dòng đầu: 7",
+            "en": "The result box shows only the first line: 7"
+          },
+          "objectId": "out-box"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "beatId": "mq1_03_s2.b3",
+      "ops_count": 2,
+      "ops": [
+        {
+          "index": 0,
+          "type": "highlightLine",
+          "statement": "print(3 + 4)\nprint(\"3 + 4\")",
+          "line": 2,
+          "altText": {
+            "vi": "Dòng hai in nguyên chữ 3 + 4 vì có ngoặc kép",
+            "en": "The second line prints 3 + 4 as text because of the quotes"
+          },
+          "objectId": "lit-text"
+        },
+        {
+          "index": 1,
+          "type": "output",
+          "statement": "print(3 + 4)\nprint(\"3 + 4\")",
+          "value": "7\n3 + 4",
+          "altText": {
+            "vi": "Ô kết quả có hai dòng: 7 rồi đến 3 + 4",
+            "en": "The result box has two lines: 7 then 3 + 4"
+          },
+          "objectId": "out-box"
+        }
+      ]
+    }
+  ],
+  "finding": "beats[2].ops[2] is out of range; target b3 output is ops[1]. No local Dart execution."
+}

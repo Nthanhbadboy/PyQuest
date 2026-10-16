@@ -32,26 +32,28 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision19: review2851793, authorization r6 giữ nguyên**.
-Đọc task003, `reviews/PQD-003-r19.md` và SDK lifecycle evidence r18 trong PQC-010-r12.
+Task hiện tại là **PQD-003 revision20: review3c2fe4b, authorization r6 giữ nguyên**.
+Đọc task003, `reviews/PQD-003-r20.md`, report/fixture audit PQC-010-r14 và SDK r18.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
-**Làm ngay, không ACK-only:**
-1. Run38965640169/report117193109204: analyze sạch8.5s,349pass/4fail,10renderpass.
-   Cả D1-sem-read/D1-sem-VI/D2-sem/D3-sem đỏ. Manual handle finding r18 chưa áp dụng.
-2. Bỏ ensureSemantics + addTearDown(handle.dispose) ở cả4 case, dùng testWidgets
-   managed handle (explicit semanticsEnabled:true nếu muốn rõ), hoặc try/finally
-   dispose trước callback return. Không double dispose. SDK mặc định bật semantics.
-   Read-only fail KHÔNG chứng minh getter throw vì end verifier có thể fail sau body.
-3. Khôi phục D1-sem-VI guard: expect(actual, isNot(contains(alt['en']! as String))).
-   Tách diagnostic không được bỏ negative guard. Không bắt buộc nonempty ở read-only
-   vì D1-sem-VI vẫn có positive label assertion riêng.
-4. Giữ getSemantics/locale assertions, không false/skip/property-only hoặc thêm split.
-   Không sửa runtime/renderer/scroll theo đoán. Chạy lại exact SHA sau lifecycle fix;
-   nếu còn đỏ lấy first actual exception/stack/label, không coi handle là sole cause.
-5. Giữ visible/ink roundtrip và fixes đã đóng. Trả SHA/run/report. Scope010/014/015
-   giữ nguyên;014 độc lập,015 sau014 xanh, dependency chỉ015. Không LessonScreen/
-   AI/voice/art/social/economy/P06/CI/publisher.
+**Làm ngay một patch tập trung, không ACK-only:**
+1. Run38969235815/report117205013864:349pass/4fail,10renderpass. Analyze exit0 nhưng
+   có2info, chưa sạch. Dump đã thu expected VI output label và actual exception
+   “A SemanticsHandle was active at the end of the test.” tại SDK verifier.
+2. Sửa lifecycle cả3semantic+dump: bỏ extra ensureSemantics/addTearDown, dùng
+   framework-managed handle/explicit semanticsEnabled:true hoặc try/finally dispose
+   trước callback return. Không false/skip/double dispose/nuốt exception.
+3. Sửa regression be27f66: beats[2]=b3 có2ops, output là[1]; [2] out-of-range.
+   Comment đang nhầm b2. Có thể chọn duy nhất type output/objectId out-box trong
+   đúng beatId b3, assert statement/value hai dòng. Không đổi fixture/beat để hợp index.
+4. Khôi phục D1 VI không chứa EN; giữ D2/D3 guards. Query node output đúng thay vì
+   chỉ findsWidgets trên toàn cây. Dump VI không chứng minh EN/roundtrip đã đúng.
+5. Chuyển root dump test về app/test/board/board_semantics_dump_test.dart đúng
+   allowlist; chỉnh relative imports, bỏ flutter/rendering.dart thừa, không ignore lint.
+6. Chạy CI exact SHA, trả actual nếu còn đỏ. Không thêm split/đoán renderer: runtime
+   explicitChildNodes đã revert, latest runtime/capture vẫn d18b3d4. Giữ visible/ink
+   và fixes đã đóng.010/014/015 giữ nguyên;014 độc lập,015 sau014 xanh. Không
+   LessonScreen/AI/voice/art/social/economy/P06/CI/publisher.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
