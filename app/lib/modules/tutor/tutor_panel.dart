@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -12,8 +13,10 @@ import '../../shared/theme/palette.dart';
 import '../../shared/widgets/chunky_button.dart';
 import '../../shared/widgets/code_widgets.dart';
 import '../../shared/widgets/common.dart';
+import 'gemini_live_voice.dart';
 import 'tutor_models.dart';
 import 'tutor_session.dart';
+import 'tutor_transcript.dart';
 
 /// Opens the tutor as a bottom sheet. Used from a Main Quest lesson (with the
 /// live exercise as context) and from the Main Map (island questions).
@@ -33,13 +36,6 @@ Future<void> showTutorPanel(
       startWithHint: startWithHint,
     ),
   );
-}
-
-/// One line of the on-screen transcript.
-class _Line {
-  _Line({required this.reply, this.question = ''});
-  final String question;
-  final TutorReply reply;
 }
 
 /// The tutor sheet: who is answering, what was asked, and what came back —
@@ -66,9 +62,21 @@ class _TutorPanelState extends State<TutorPanel> {
   final TextEditingController _input = TextEditingController();
   final FocusNode _focus = FocusNode();
   final ScrollController _scroll = ScrollController();
-  final List<_Line> _lines = [];
+
+  /// The conversation: one list, one role per line, typed and spoken alike.
+  final TutorTranscript _chat = TutorTranscript();
+
   bool _asking = false;
   bool _opened = false;
+
+  /// True while the opening greeting below is still the only thing on screen.
+  bool _greetingSeeded = false;
+  GeminiLiveVoice? _voice;
+  bool _voiceBusy = false;
+  CharacterId _voiceCharacter = CharacterId.kai;
+  VoicePhase _voicePhase = VoicePhase.off;
+  String _voiceStatus = '';
+  String _voiceError = '';
 
   /// Last question sent, so «Thử lại» resends it through the AI provider
   /// instead of leaving the child with the offline answer.
@@ -76,7 +84,18 @@ class _TutorPanelState extends State<TutorPanel> {
 
   PqStrings get _s => widget.services.settings.strings;
   PqLang get _lang => widget.services.settings.lang;
-  CastMember get _member => CastRegistry.of(widget.character);
+
+  /// A hands-free session owns the sheet: the microphone is open and the
+  /// tutor's answer is spoken. Driven by the session's own phase, so a dropped
+  /// socket returns the text tutor instead of hanging on a dead conversation.
+  bool get _voiceMode => _voicePhase.isLive;
+
+  /// Who the sheet is showing right now. During a voice turn the words come out
+  /// of the character picked in the chips, so the header, the portraits and the
+  /// transcript must all name that one character — two identities in one
+  /// conversation is how a greeting ends up attributed to the wrong speaker.
+  CharacterId get _speaker => _voiceMode ? _voiceCharacter : widget.character;
+  CastMember get _member => CastRegistry.of(_speaker);
 
   @override
   void didChangeDependencies() {
@@ -95,26 +114,269 @@ class _TutorPanelState extends State<TutorPanel> {
     final lessonId = widget.tutorContext.lessonId;
     final past = session.history.where((t) => t.lessonId == lessonId).toList();
     final recent = past.length > 12 ? past.sublist(past.length - 12) : past;
-    for (final turn in recent) {
-      _lines.add(_Line(
-        question: turn.question,
-        reply: TutorReply(
-          text: turn.answer,
-          source: turn.source,
-          character: turn.character,
-          hintLevel: turn.hintLevel,
-        ),
-      ));
+    if (recent.isEmpty) {
+      // The opening line of a fresh conversation, stored as an assistant line:
+      // the tutor greets the child, never the other way round.
+      _chat.say(
+        CastDialogue.line(_member.id, DialogueMoment.greet, _lang),
+        role: TutorSpeakerRole.assistant,
+        character: _member.id,
+      );
+      _greetingSeeded = true;
+      return;
     }
-    setState(() {});
+    for (final turn in recent) {
+      _chat.say(turn.question, role: TutorSpeakerRole.child);
+      _chat.say(
+        turn.answer,
+        role: TutorSpeakerRole.assistant,
+        character: turn.character,
+        source: turn.source,
+        hintLevel: turn.hintLevel,
+      );
+    }
   }
 
   @override
   void dispose() {
+    unawaited(_voice?.dispose());
+    unawaited(widget.services.audio.setTutorVoiceMode(false));
     _input.dispose();
     _focus.dispose();
     _scroll.dispose();
     super.dispose();
+  }
+
+  Future<void> _toggleVoice() async {
+    final voice = _voice ??= GeminiLiveVoice(
+      onStatus: (status) {
+        if (!mounted) return;
+        setState(() {
+          _voiceStatus = status.message;
+          _voicePhase = status.phase;
+          if (status.phase != VoicePhase.connecting) _voiceBusy = false;
+        });
+        // The phase, not the wording, decides: an ended or dropped session is
+        // the only moment the background music comes back.
+        if (status.phase == VoicePhase.off) {
+          unawaited(widget.services.audio.setTutorVoiceMode(false));
+        }
+      },
+      onTranscript: (utterance) {
+        if (!mounted) return;
+        if (utterance.seals) {
+          setState(() {
+            _chat.sealOpen();
+          });
+          return;
+        }
+        setState(() {
+          _chat.say(
+            utterance.text,
+            role: utterance.role,
+            character: utterance.role.isAssistant ? _voiceCharacter : null,
+            source: utterance.role.isAssistant ? TutorSource.ai : null,
+            isFinal: utterance.isFinal,
+            interrupted: utterance.interrupted,
+            spoken: true,
+          );
+          if (utterance.isFinal) _greetingSeeded = false;
+        });
+        _scrollToEnd();
+      },
+      onError: (message) {
+        if (!mounted) return;
+        setState(() {
+          _voiceError = message;
+          _voiceBusy = false;
+        });
+      },
+    );
+    if (voice.isRecording) {
+      setState(() {
+        _voiceBusy = true;
+        _voiceError = '';
+        _voicePhase = VoicePhase.closing;
+      });
+      await voice.stopListening();
+      return;
+    }
+    if (_voiceBusy) return;
+    // The scripted greeting is the offline tutor's line; from now on the
+    // character who speaks greets the child itself, so only one greeting shows.
+    if (_greetingSeeded) {
+      _chat.clear();
+      _greetingSeeded = false;
+    }
+    setState(() {
+      _voiceBusy = true;
+      _voiceError = '';
+      _voiceStatus = 'Đang bắt đầu…';
+      _voicePhase = VoicePhase.connecting;
+    });
+    await widget.services.audio.setTutorVoiceMode(true);
+    await voice.startListening(
+      characterName: _voiceCharacter.displayName,
+      language: _lang == PqLang.vi ? 'vi' : 'en',
+    );
+  }
+
+  Widget _voiceControls({bool compact = false}) {
+    final recording = _voiceMode;
+    final speaking = _voicePhase == VoicePhase.speaking;
+    final waiting = _voiceBusy && !recording;
+
+    // The regular tutor sheet also contains the transcript, quick actions,
+    // composer, and privacy notes. Keep idle voice controls compact on shorter
+    // phones; expand them only after voice mode starts.
+    if (compact) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: PQColors.parchment,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: PQColors.sea.withValues(alpha: 0.25)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                ChoiceChip(
+                  label: const Text('Kai'),
+                  selected: _voiceCharacter == CharacterId.kai,
+                  onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.kai),
+                  visualDensity: VisualDensity.compact,
+                ),
+                const SizedBox(width: 4),
+                ChoiceChip(
+                  label: const Text('Lumi'),
+                  selected: _voiceCharacter == CharacterId.lumi,
+                  onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.lumi),
+                  visualDensity: VisualDensity.compact,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: FilledButton.icon(
+                    key: const ValueKey('tutor_gemini_live_voice'),
+                    onPressed: waiting ? null : _toggleVoice,
+                    icon: Icon(recording ? Icons.stop_circle_rounded : Icons.mic_rounded),
+                    label: Text(_lang == PqLang.vi ? 'Trò chuyện' : 'Voice'),
+                  ),
+                ),
+              ],
+            ),
+            // A voice session that never started has to be visible where the
+            // child tapped, not only in the expanded layout that never appears.
+            if (_voiceError.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                  _voiceError,
+                  key: const ValueKey('tutor_voice_error'),
+                  style: const TextStyle(fontFamily: 'Nunito', fontSize: 11.5, color: PQColors.coralDeep),
+                ),
+              ),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: PQColors.parchment,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: PQColors.sea.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CharacterView(
+                id: CharacterId.kai,
+                size: 42,
+                mood: _voiceCharacter == CharacterId.kai
+                    ? (speaking ? Mood.happy : (recording ? Mood.surprised : Mood.neutral))
+                    : Mood.neutral,
+              ),
+              const SizedBox(width: 8),
+              ChoiceChip(
+                label: const Text('Kai'),
+                selected: _voiceCharacter == CharacterId.kai,
+                onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.kai),
+              ),
+              const SizedBox(width: 8),
+              ChoiceChip(
+                label: const Text('Lumi'),
+                selected: _voiceCharacter == CharacterId.lumi,
+                onSelected: _voiceBusy ? null : (_) => setState(() => _voiceCharacter = CharacterId.lumi),
+              ),
+              const SizedBox(width: 8),
+              CharacterView(
+                id: CharacterId.lumi,
+                size: 42,
+                mood: _voiceCharacter == CharacterId.lumi
+                    ? (speaking ? Mood.happy : (recording ? Mood.surprised : Mood.neutral))
+                    : Mood.neutral,
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Icon(
+                speaking
+                    ? Icons.volume_up_rounded
+                    : (recording ? Icons.graphic_eq_rounded : Icons.mic_rounded),
+                color: recording ? PQColors.coralDeep : PQColors.seaDeep,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _voiceStatus.isEmpty
+                      ? (_lang == PqLang.vi ? 'Chạm để bắt đầu trò chuyện rảnh tay' : 'Tap to start a hands-free conversation')
+                      : _voiceStatus,
+                  style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w700, color: PQColors.ink),
+                ),
+              ),
+              if (waiting)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          FilledButton.icon(
+            key: const ValueKey('tutor_gemini_live_voice'),
+            onPressed: waiting ? null : _toggleVoice,
+            icon: Icon(recording ? Icons.stop_circle_rounded : Icons.mic_rounded),
+            label: Text(
+              recording
+                  ? (_lang == PqLang.vi ? 'Dừng trò chuyện' : 'Stop conversation')
+                  : (_lang == PqLang.vi ? 'Bắt đầu trò chuyện với ${_voiceCharacter.displayName}' : 'Start talking with ${_voiceCharacter.displayName}'),
+            ),
+          ),
+          if (_voiceError.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(_voiceError, style: const TextStyle(color: PQColors.coralDeep, fontSize: 12)),
+          ],
+          const SizedBox(height: 4),
+          Text(
+            _lang == PqLang.vi
+                ? 'Trò chuyện rảnh tay: sau khi bắt đầu, tutor nghe và trả lời bằng giọng nói. Chạm Dừng để kết thúc.'
+                : 'Hands-free conversation: the tutor listens and replies aloud. Tap Stop to end.',
+            style: const TextStyle(fontSize: 10, color: PQColors.inkSoft),
+          ),
+        ],
+      ),
+    );
   }
 
   TutorRequest _request(String question, {TutorQuickAction? action}) => TutorRequest(
@@ -133,13 +395,25 @@ class _TutorPanelState extends State<TutorPanel> {
     setState(() {
       _asking = true;
       _lastRequest = request;
+      // The question is a line of its own, with the learner's role — exactly
+      // what a spoken utterance becomes, so both input paths look the same.
+      _chat.say(question, role: TutorSpeakerRole.child);
+      _greetingSeeded = false;
     });
+    _scrollToEnd();
     final session = widget.services.tutor;
     final reply = await session.askAndRemember(request);
     if (!mounted) return;
     setState(() {
       _asking = false;
-      _lines.add(_Line(question: question, reply: reply));
+      _chat.say(
+        reply.text,
+        role: TutorSpeakerRole.assistant,
+        character: reply.character,
+        source: reply.source,
+        hintLevel: reply.hintLevel,
+        failKind: reply.failKind,
+      );
     });
     _scrollToEnd();
   }
@@ -152,7 +426,15 @@ class _TutorPanelState extends State<TutorPanel> {
     if (!mounted) return;
     setState(() {
       _asking = false;
-      _lines.add(_Line(question: widget.tutorContext.stepPrompt, reply: reply));
+      _chat.say(
+        reply.text,
+        role: TutorSpeakerRole.assistant,
+        character: reply.character,
+        source: reply.source,
+        hintLevel: reply.hintLevel,
+        failKind: reply.failKind,
+      );
+      _greetingSeeded = false;
     });
     _scrollToEnd();
   }
@@ -167,7 +449,15 @@ class _TutorPanelState extends State<TutorPanel> {
     if (!mounted) return;
     setState(() {
       _asking = false;
-      _lines.add(_Line(question: last.question, reply: reply));
+      // The question is already on screen; only the new answer is added.
+      _chat.say(
+        reply.text,
+        role: TutorSpeakerRole.assistant,
+        character: reply.character,
+        source: reply.source,
+        hintLevel: reply.hintLevel,
+        failKind: reply.failKind,
+      );
     });
     _scrollToEnd();
   }
@@ -184,12 +474,16 @@ class _TutorPanelState extends State<TutorPanel> {
   }
 
   Mood get _mood {
-    if (_asking || widget.services.tutor.busy) return Mood.thinking;
-    final last = _lines.isEmpty ? null : _lines.last.reply;
+    if (_voicePhase == VoicePhase.speaking) return Mood.happy;
+    if (_voicePhase == VoicePhase.listening) return Mood.surprised;
+    if (_asking || widget.services.tutor.busy || _voiceBusy) return Mood.thinking;
+    final last = _chat.last;
     if (last == null) return Mood.happy;
+    if (last.interrupted) return Mood.confused;
     if (last.hintLevel == TutorHintLevel.full) return Mood.surprised;
     return Mood.happy;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -199,13 +493,17 @@ class _TutorPanelState extends State<TutorPanel> {
       builder: (context, _) {
         final session = widget.services.tutor;
         final busy = _asking || session.busy;
+        final voiceMode = _voiceMode;
         return Padding(
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               _header(session),
-              if (!widget.services.tutor.hasAi) ...[
+              // The regular text tutor may be offline while Gemini Live voice
+              // is connected directly. Don't show the unrelated text-provider
+              // warning over the active voice conversation.
+              if (!voiceMode && !widget.services.tutor.hasAi) ...[
                 const SizedBox(height: 8),
                 _FallbackNotice(
                   key: const ValueKey('tutor_no_ai_banner'),
@@ -216,15 +514,21 @@ class _TutorPanelState extends State<TutorPanel> {
                 ),
               ],
               const SizedBox(height: 10),
-              Flexible(
-                child: _transcript(busy),
-              ),
-              const SizedBox(height: 10),
-              _quickActions(),
+              // One transcript for both modes: the child always sees who said
+              // what, whether it was typed or spoken.
+              Flexible(child: _transcript(busy, voiceMode: voiceMode)),
+              if (!voiceMode) ...[
+                const SizedBox(height: 10),
+                _quickActions(),
+              ],
               const SizedBox(height: 8),
-              _composer(busy),
-              const SizedBox(height: 8),
-              _footer(session),
+              _voiceControls(compact: !voiceMode),
+              if (!voiceMode) ...[
+                const SizedBox(height: 8),
+                _composer(busy),
+                const SizedBox(height: 8),
+                _footer(session),
+              ],
             ],
           ),
         );
@@ -232,12 +536,13 @@ class _TutorPanelState extends State<TutorPanel> {
     );
   }
 
+
   Widget _header(TutorSession session) {
     final strings = _s;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CharacterView(id: widget.character, size: 62, mood: _mood),
+        CharacterView(id: _speaker, size: 62, mood: _mood),
         const SizedBox(width: 10),
         Expanded(
           child: Column(
@@ -295,15 +600,20 @@ class _TutorPanelState extends State<TutorPanel> {
     );
   }
 
-  Widget _transcript(bool busy) {
-    if (_lines.isEmpty && !busy) {
-      return Align(
-        alignment: Alignment.topLeft,
-        child: SpeechBubble(
-          character: widget.character,
-          mood: _mood,
-          showPortrait: false,
-          text: CastDialogue.line(_member.id, DialogueMoment.greet, _lang),
+  /// The conversation itself: every line carries its own speaker, so the child
+  /// and the tutor are always both visible and never swapped.
+  Widget _transcript(bool busy, {required bool voiceMode}) {
+    final lines = _chat.lines;
+    if (lines.isEmpty && !busy) {
+      return Center(
+        child: Text(
+          voiceMode
+              ? (_lang == PqLang.vi
+                  ? '${_voiceCharacter.displayName} đang nghe em nói…'
+                  : '${_voiceCharacter.displayName} is listening for your voice…')
+              : (_lang == PqLang.vi ? 'Viết câu hỏi của em vào ô bên dưới nhé.' : 'Type your question in the box below.'),
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontFamily: 'Nunito', fontSize: 13, color: PQColors.inkSoft),
         ),
       );
     }
@@ -312,112 +622,173 @@ class _TutorPanelState extends State<TutorPanel> {
       controller: _scroll,
       shrinkWrap: true,
       padding: const EdgeInsets.only(bottom: 4),
-      itemCount: _lines.length + (busy ? 1 : 0),
+      itemCount: lines.length + (busy ? 1 : 0),
       itemBuilder: (context, i) {
-        if (i >= _lines.length) return _thinkingBubble();
-        final line = _lines[i];
+        if (i >= lines.length) return _thinkingBubble();
+        final line = lines[i];
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (line.question.trim().isNotEmpty) _questionBubble(line.question),
-              _answerBubble(line.reply, i),
-            ],
-          ),
+          child: line.role.isChild ? _childBubble(line) : _assistantBubble(line, i),
         );
       },
     );
   }
 
-  Widget _questionBubble(String question) => Padding(
-        padding: const EdgeInsets.only(left: 46, bottom: 6),
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-            decoration: BoxDecoration(
-              color: PQColors.parchmentDeep,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-                bottomLeft: Radius.circular(16),
-                bottomRight: Radius.circular(4),
+  /// What the learner said. Typed or spoken, it stays on the learner's side and
+  /// under the learner's name — a line can only get here from the child.
+  Widget _childBubble(TutorLine line) => Align(
+        alignment: Alignment.centerRight,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.78),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 6, bottom: 3),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (line.spoken) ...[
+                      const Icon(Icons.mic_rounded, size: 13, color: PQColors.inkFaint),
+                      const SizedBox(width: 4),
+                    ],
+                    Text(
+                      _s.childLabel,
+                      style: const TextStyle(
+                        fontFamily: 'Baloo2',
+                        fontWeight: FontWeight.w800,
+                        fontSize: 12,
+                        color: PQColors.inkSoft,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              border: Border.all(color: PQColors.parchmentEdge, width: 2),
-            ),
-            child: Text(
-              question,
-              style: const TextStyle(fontFamily: 'Nunito', fontSize: 14, color: PQColors.ink),
-            ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                decoration: BoxDecoration(
+                  color: PQColors.parchmentDeep,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(4),
+                  ),
+                  border: Border.all(color: PQColors.parchmentEdge, width: 2),
+                ),
+                child: Text(
+                  line.text,
+                  style: const TextStyle(fontFamily: 'Nunito', fontSize: 14, color: PQColors.ink),
+                ),
+              ),
+            ],
           ),
         ),
       );
 
-  Widget _answerBubble(TutorReply reply, int index) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CharacterView(id: widget.character, size: 40, mood: Mood.happy, animate: false),
-        const SizedBox(width: 6),
-        Expanded(
-          child: PQPanel(
-            key: ValueKey('tutor_answer_$index'),
-            color: PQColors.cream,
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+  /// What a cast member answered, with the portrait of the one who answered and
+  /// an honest tag for where the sentence came from.
+  Widget _assistantBubble(TutorLine line, int index) {
+    final speaker = line.character ?? widget.character;
+    final source = line.source;
+    return Padding(
+      padding: const EdgeInsets.only(right: 40),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CharacterView(
+            id: speaker,
+            size: 40,
+            mood: line.interrupted ? Mood.confused : Mood.happy,
+            animate: false,
+          ),
+          const SizedBox(width: 6),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (reply.hintLevel != null) ...[
-                  _Tag(
-                    key: ValueKey('tutor_hint_level_$index'),
-                    text: '${_s.hintLadder}: ${reply.hintLevel!.label(_lang)}',
-                    colour: PQColors.grapeDeep,
-                  ),
-                  const SizedBox(height: 6),
-                ],
-                TutorAnswerText(
-                  key: ValueKey('tutor_answer_text_$index'),
-                  text: reply.text,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    _Tag(
-                      key: ValueKey('tutor_source_$index'),
-                      text: reply.isAi
-                          ? '${_s.labelAiWritten} · ${_member.name}'
-                          : reply.source.label(_s),
-                      colour: reply.isAi ? PQColors.seaDeep : PQColors.inkSoft,
+                Padding(
+                  padding: const EdgeInsets.only(left: 6, bottom: 3),
+                  child: Text(
+                    speaker.displayName,
+                    style: const TextStyle(
+                      fontFamily: 'Baloo2',
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12,
+                      color: PQColors.inkSoft,
                     ),
-                  ],
-                ),
-                if (reply.source.isOffline) ...[
-                  const SizedBox(height: 8),
-                  _FallbackNotice(
-                    key: ValueKey('tutor_fallback_$index'),
-                    text: reply.failKind == null
-                        ? _s.offlineNoFakeAi
-                        : '${reply.failKind!.message(_s)}\n${_s.offlineNoFakeAi}',
-                    canRetry: reply.failKind != null &&
-                        reply.failKind != TutorFailKind.notConfigured &&
-                        widget.services.tutor.hasAi,
-                    retryLabel: _s.retry,
-                    onRetry: _retryLast,
                   ),
-                ],
+                ),
+                PQPanel(
+                  key: ValueKey('tutor_answer_$index'),
+                  color: PQColors.cream,
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (line.hintLevel != null) ...[
+                        _Tag(
+                          key: ValueKey('tutor_hint_level_$index'),
+                          text: '${_s.hintLadder}: ${line.hintLevel!.label(_lang)}',
+                          colour: PQColors.grapeDeep,
+                        ),
+                        const SizedBox(height: 6),
+                      ],
+                      TutorAnswerText(
+                        key: ValueKey('tutor_answer_text_$index'),
+                        text: line.text,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: [
+                          if (source != null)
+                            _Tag(
+                              key: ValueKey('tutor_source_$index'),
+                              text: source.isAi
+                                  ? '${_s.labelAiWritten} · ${speaker.displayName}${line.spoken ? ' · ${_s.spokenTag}' : ''}'
+                                  : source.label(_s),
+                              colour: source.isAi ? PQColors.seaDeep : PQColors.inkSoft,
+                            ),
+                          if (line.interrupted)
+                            _Tag(
+                              key: ValueKey('tutor_interrupted_$index'),
+                              text: _s.interruptedTag,
+                              colour: PQColors.coralDeep,
+                            ),
+                        ],
+                      ),
+                      if (source != null && source.isOffline) ...[
+                        const SizedBox(height: 8),
+                        _FallbackNotice(
+                          key: ValueKey('tutor_fallback_$index'),
+                          text: line.failKind == null
+                              ? _s.offlineNoFakeAi
+                              : '${line.failKind!.message(_s)}\n${_s.offlineNoFakeAi}',
+                          canRetry: _lastRequest != null &&
+                              line.failKind != null &&
+                              line.failKind != TutorFailKind.notConfigured &&
+                              widget.services.tutor.hasAi,
+                          retryLabel: _s.retry,
+                          onRetry: _retryLast,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _thinkingBubble() {
     return Row(
       children: [
-        CharacterView(id: widget.character, size: 40, mood: Mood.thinking),
+        CharacterView(id: _speaker, size: 40, mood: Mood.thinking),
         const SizedBox(width: 6),
         PQPanel(
           color: PQColors.cream,

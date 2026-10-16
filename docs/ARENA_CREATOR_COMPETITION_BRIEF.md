@@ -269,6 +269,56 @@ Cách thể hiện phù hợp:
 - Danh hiệu thành tích phải kiếm được bằng điều kiện tương ứng. Danh hiệu mang tính xã hội được tặng có thể hiển thị riêng, không giả làm chứng nhận người nhận đã hoàn thành thử thách mà họ chưa đạt.
 - Mọi điểm cộng vào tổng sắp cần có luật chống cày lặp, giới hạn/hệ số phù hợp và không để một hoạt động duy nhất lấn át mọi chuyên môn.
 
+### 9.4. AI Tutor — cảnh mở đầu, nhân vật đồng hành và hội thoại có thiết kế
+
+#### Mục tiêu trải nghiệm
+- AI Tutor là một trong những trải nghiệm đầu tiên người chơi thực sự gặp, không phải một nút chat phụ được thêm vào sau. Cảnh mở đầu phải sống động, giàu biểu cảm và có chất lượng hình ảnh như game thương mại; tránh phong cách sách giáo khoa, màn hình biểu mẫu khô cứng hoặc nhân vật chỉ đứng cạnh một bong bóng thoại tĩnh.
+- Cảnh mở đầu giới thiệu Tutor qua một khoảnh khắc tương tác ngắn trong thế giới PyQuest: nhân vật xuất hiện, chào người chơi, phản ứng bằng biểu cảm/hoạt ảnh và mời người chơi cùng bắt đầu hành trình. Phải có tương tác thật (chạm, chọn hoặc trả lời), không chỉ là đoạn phim dài không thể bỏ qua.
+- Mục tiêu là tạo cảm giác có một người bạn đồng hành thông minh, vui vẻ và đáng tin, đồng thời cho trẻ hiểu ngay Tutor có thể giúp việc gì: giải thích, gợi ý khi bí, cùng khám phá cách giải và ăn mừng tiến bộ.
+- Thiết kế cảnh mở đầu trước khi mở rộng hàng loạt sang các màn khác. Dựng một mẫu hoàn chỉnh gồm hình ảnh, chuyển động, lời thoại, lựa chọn phản hồi, trạng thái chuyển tiếp và cách mở lại Tutor; chỉ nhân rộng khi mẫu đã được duyệt.
+
+#### Nhịp hội thoại đầu tiên
+1. Tutor xuất hiện trong một cảnh thuộc thế giới PyQuest, có hoạt ảnh vào cảnh, ánh mắt/biểu cảm và phản ứng với thao tác của trẻ.
+2. Tutor chào bằng tiếng Việt tự nhiên, câu ngắn, thân thiện, không dùng giọng giáo điều hoặc kiểu đọc bài giảng. Lời chào có thể được đọc thành tiếng nếu âm thanh được bật.
+3. Trẻ được chọn cách tương tác đơn giản, chẳng hạn chọn một câu trả lời gợi ý hoặc nhập/nói câu ngắn; không buộc trẻ nhập thông tin cá nhân để tiếp tục.
+4. Tutor minh họa một khả năng hữu ích bằng một tương tác ngắn: đưa ra câu đố nhỏ, cho trẻ thử, phản hồi theo câu trả lời và gợi ý một bước nếu trẻ gặp khó.
+5. Tutor giải thích rằng trẻ có thể gọi mình từ các màn học/chơi để xin gợi ý, hiểu lỗi hoặc tìm cách giải khác. Sau đó dẫn trẻ vào game chính một cách tự nhiên.
+6. Cảnh có nút bỏ qua và có thể xem lại; không kéo dài phần giới thiệu, không khóa trẻ trong hội thoại bắt buộc hoặc lặp lại mỗi lần mở ứng dụng.
+
+#### Nhân vật Tutor có thể chọn và sưu tầm
+- Tutor có một bộ nhân vật được thiết kế nghệ thuật đồng bộ nhưng mỗi nhân vật có hình dáng, cá tính, biểu cảm, chuyển động và âm sắc riêng. Các hướng nhân vật có thể gồm **cún, mèo, rồng, búp bê** và các nhân vật nguyên bản khác phù hợp thế giới PyQuest.
+- Có một nhân vật mặc định miễn phí, đủ đẹp và có đầy đủ khả năng Tutor. Trẻ có thể đổi nhân vật trong khu vực tùy chỉnh; nhân vật đang dùng phải xuất hiện nhất quán ở cảnh mở đầu, trong màn chơi, khi đưa gợi ý và khi chúc mừng.
+- Có thể bán nhân vật bổ sung dưới dạng nội dung tùy chọn. Giao dịch chỉ thay đổi ngoại hình, hoạt ảnh, biểu cảm, phụ kiện hoặc gói giọng đọc đã mô tả rõ; **không khóa chất lượng giải thích, độ thông minh, số gợi ý cần thiết hoặc quyền được trợ giúp cốt lõi sau paywall**.
+- Mỗi nhân vật trả phí phải được thiết kế cẩn thận trước khi đưa vào cửa hàng: silhouette dễ nhận ra ở kích thước nhỏ, biểu cảm đọc được, hoạt ảnh idle/talk/listen/think/celebrate/error-support, cách hiển thị trong các tỉ lệ màn hình khác nhau và khả năng tiếp cận. Không chỉ đổi màu hoặc thay một icon rồi coi là nhân vật mới.
+- Có thể cho trẻ xem trước nhân vật và hoạt ảnh thực tế trước khi mua. Giá, nội dung nhận được và việc mua một lần hay có điều kiện khác phải hiển thị rõ; không dùng đồng hồ đếm ngược, khan hiếm giả hoặc lời thoại khiến trẻ cảm thấy Tutor sẽ buồn nếu không được mua.
+- Mua nhân vật không mua được tình cảm của Tutor, quan hệ đặc biệt, danh hiệu kỹ năng hoặc lợi thế thi đấu. Mối quan hệ trong game phát triển qua tương tác và tiến bộ, không phụ thuộc tiền trả.
+- Việc chọn nhân vật là tùy chọn; không bắt trẻ phải mua hoặc chọn một nhân vật mới để bắt đầu học. Cần tính tới xác nhận mua hàng/phụ huynh và quy định mua hàng trong ứng dụng dành cho trẻ em theo nền tảng/thị trường.
+
+#### Tutor đồng hành theo ngữ cảnh trong toàn game
+- Tutor không phải một chatbot tách rời khỏi gameplay. Khi được gọi từ một màn cụ thể, hệ thống cần cung cấp ngữ cảnh tối thiểu có liên quan như mục tiêu nhiệm vụ, câu hỏi hiện tại, câu trả lời của trẻ, số lần thử, gợi ý đã đưa và khái niệm đang học; không gửi toàn bộ lịch sử hoặc dữ liệu không cần thiết.
+- Tutor phải hỗ trợ **gợi ý theo từng nấc**: trước hết hướng trẻ chú ý tới dữ kiện; tiếp theo gợi ý một bước; sau đó minh họa hoặc giải thích cách làm nếu trẻ vẫn cần. Không mặc định bật mí đáp án ngay ở lần sai đầu tiên.
+- Khi trẻ trả lời đúng, Tutor giải thích ngắn vì sao cách làm hiệu quả. Khi trẻ sai, phản hồi không chê bai, không làm trẻ xấu hổ và đưa ra bước tiếp theo cụ thể. Có thể thay đổi cách giải thích hoặc ví dụ nếu trẻ chưa hiểu.
+- Với bài có đáp án chuẩn hoặc kết quả mô phỏng xác định được, hệ thống bài học/mô phỏng là nguồn sự thật về đáp án. AI có thể giải thích và gợi ý nhưng không được tự ý thay đổi đáp án, quy tắc chấm hoặc kết quả trận.
+- Phản hồi cần phù hợp lứa tuổi và ngôn ngữ đã chọn; tránh nội dung đáng sợ, tình dục, bạo lực không phù hợp, thao túng cảm xúc, yêu cầu giữ bí mật với người lớn, xin thông tin cá nhân hoặc khuyến khích lệ thuộc vào Tutor.
+- Hội thoại tự do bằng văn bản/giọng nói, nếu được hỗ trợ, phải có giới hạn an toàn và cơ chế thoát dễ thấy. Không mặc định triển khai voice chat mở không kiểm soát chỉ vì có nhân vật biết nói.
+
+#### Kiến trúc AI, chi phí và quyền riêng tư
+- Trước khi chọn nhà cung cấp/model, xác định yêu cầu chất lượng tiếng Việt, độ trễ, khả năng gợi ý theo từng bước, chi phí mỗi phiên và phương án khi dịch vụ lỗi. Có thể đánh giá các nhà cung cấp như Gemini hoặc lựa chọn khác, nhưng không khóa kiến trúc vào một nhà cung cấp trước khi có thử nghiệm và quyết định được ghi nhận.
+- Khóa API và thông tin bí mật phải nằm ở backend/service an toàn; không nhúng khóa bí mật của nhà cung cấp vào ứng dụng client, file cấu hình phát hành hoặc repository.
+- Dùng giới hạn token/thời lượng, rate limit, quota và theo dõi chi phí; không để một tài khoản có thể tạo chi phí không giới hạn. Cần thiết kế thông báo lỗi và phương án trợ giúp không dùng AI khi mạng yếu, quota hết hoặc nhà cung cấp không khả dụng.
+- Chỉ gửi dữ liệu tối thiểu cần thiết cho nhiệm vụ. Không yêu cầu tên thật, địa chỉ, trường học, số điện thoại, ảnh, vị trí hoặc thông tin nhạy cảm để dùng Tutor. Quy định lưu trữ, thời hạn xóa, quyền phụ huynh và sự đồng ý cần được xác định trước phát hành.
+- Xác định rõ phần nào chạy cục bộ, phần nào gửi đến dịch vụ bên ngoài; thông báo dễ hiểu cho phụ huynh về việc dùng AI/giọng nói và dữ liệu được xử lý. Không tuyên bố hội thoại hoàn toàn riêng tư hoặc không được lưu nếu kiến trúc nhà cung cấp chưa chứng minh điều đó.
+- Kiểm thử bằng bộ tình huống dành riêng cho trẻ: câu trả lời sai liên tiếp, câu hỏi ngoài chủ đề, nội dung không an toàn, yêu cầu tiết lộ dữ liệu, prompt injection, câu trả lời AI sai, ngắt mạng, timeout, hết quota và chuyển sang trợ giúp không AI.
+
+#### Tiêu chí nghiệm thu cho mẫu đầu tiên
+- Cảnh mở đầu có hình ảnh và chuyển động đủ chất lượng để đại diện cho phong cách PyQuest mới; không phải chỉ là màn chat với ảnh đại diện.
+- Người chơi có thể tương tác, nhận phản hồi phù hợp và vào game; có thể bỏ qua hoặc xem lại.
+- Ít nhất một nhân vật mặc định hoàn chỉnh; hệ thống thiết kế cho phép thêm cún/mèo/rồng/búp bê mà không phải viết lại luồng hội thoại.
+- Mua nhân vật chỉ thay đổi phần mỹ thuật/đã công bố; Tutor miễn phí vẫn có đủ năng lực hỗ trợ học tập cốt lõi.
+- Tutor sử dụng đúng ngữ cảnh bài hiện tại, đưa gợi ý theo nấc và không tự ghi đè đáp án chuẩn.
+- Có giới hạn an toàn, xử lý lỗi dịch vụ, kiểm soát chi phí và quy tắc dữ liệu trước khi đưa AI thật tới người dùng.
+- Thiết kế hình ảnh và hội thoại phải được duyệt bằng một mẫu chơi thực tế trước khi mở rộng toàn game. Đây là thứ tự triển khai ưu tiên, không phải lý do loại bỏ tầm nhìn Tutor đồng hành dài hạn.
+
 ## 10. Vòng lặp dài hạn — dễ bắt đầu, luôn có điều tiếp theo để khám phá
 
 PyQuest học hỏi nguyên tắc sản phẩm từ các ứng dụng học tập có sức bền dài hạn: bắt đầu đơn giản, tạo mục tiêu ngắn dễ hiểu và mở ra con đường tiến bộ dài. Không sao chép máy móc cơ chế của sản phẩm khác; thiết kế vòng lặp phù hợp với game thế giới mở và trẻ em.

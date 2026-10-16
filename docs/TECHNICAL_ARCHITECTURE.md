@@ -7,8 +7,8 @@
 > và **không** định nghĩa lại triết lý sản phẩm (xem `PRODUCT_VISION.md`).
 >
 > Thuật ngữ (**Home Map**, **Main Map**, **Main Quest**, **Mini-game Play Mode**,
-> **Mini-game Creator Mode**, **Side Maps**, **Nhà Thành Tích**, **Adventure Recap**)
-> dùng theo định nghĩa tại `PRODUCT_VISION.md`.
+> **Mini-game Creator Mode**, **Side Maps**, **Nhà Thành Tích**, **Adventure Recap**,
+> **Arena**, **Creator Pro League**, **Tutor**) dùng theo định nghĩa tại `PRODUCT_VISION.md`.
 
 ---
 
@@ -25,6 +25,9 @@
 | **Kiến trúc** | Module hóa, giao tiếp qua interface rõ ràng |
 | **Trạng thái dùng chung** | Một nguồn sự thật duy nhất cho tiến trình hoạt động, năng lượng, thành tích và quyền mở khóa |
 | **XP/cấp độ toàn cục** | **Không dùng**; không có bảng XP/level hay công thức tăng cấp. Main Map chỉ điều hướng/mở hoạt động theo điều kiện trực tiếp |
+| **Arena** | Các bộ môn là module độc lập; điểm/danh hiệu là lớp liên kết chung |
+| **AI Tutor** | Dịch vụ AI qua backend/service an toàn; không nhúng khóa bí mật vào client |
+| **Cộng đồng/quà tặng** | Module xã hội tách biệt, triển khai theo giai đoạn |
 
 **Nguyên tắc chốt:** làm một **lát cắt dọc hoàn chỉnh** trước khi mở rộng.
 Mở app → chơi một mini-game → lưu kết quả → thoát ra mở lại vẫn còn kết quả.
@@ -226,6 +229,29 @@ abstract class AchievementService {
   bộ trên máy người chơi và chỉ đồng bộ phần kết quả cần thiết khi một game cụ thể
   thực sự cần.
 
+### 3.5. Arena là các module độc lập trong cùng lớp gameplay
+
+- Arena gồm nhiều bộ môn (đối kháng trực tiếp, tích lũy sản phẩm/bộ sưu tập sáng tạo, giải đồng đội, Creator Pro League). Mỗi bộ môn là một module gameplay độc lập với luật chơi, điều kiện thắng, cách chấm điểm và phần thưởng riêng.
+- Lớp dùng chung chỉ cung cấp hồ sơ, điểm đóng góp, danh hiệu, mở khóa kiến thức và thành tích. Không ép các bộ môn dùng chung một công thức điểm.
+- Điểm realtime/thanh tiến độ là dữ liệu runtime của trận; chỉ lưu kết quả có ý nghĩa (thắng/thua, điểm, thứ hạng, danh hiệu) vào lớp chung theo luật của bộ môn.
+- Creator Pro League cần module mô phỏng để chạy sản phẩm; kết quả mô phỏng là nguồn sự thật cho các chỉ số khách quan. AI đánh giá chỉ hỗ trợ tiêu chí sáng tạo/chất lượng, không thay thế dữ liệu mô phỏng.
+- Không giả mạo người thật trong bảng xếp hạng luyện tập; dữ liệu thi đấu thật và dữ liệu luyện tập phải được phân biệt ở tầng dữ liệu và giao diện.
+
+### 3.6. Thế giới làng PyQuest — mỗi ngôi nhà là một module
+
+- Màn hình chính là thế giới có thể khám phá; các ngôi nhà/công trình/cổng là điểm vào module gameplay.
+- Ví dụ module: Thư viện Python/Tutor, tòa nhà Main Quest, Đấu trường, Xưởng sáng tạo, Bảo tàng/Bộ sưu tập, cổng Side Maps, Nhà bạn bè (khi triển khai).
+- Mỗi module có vòng lặp chơi, giao diện, luật, tiến trình, phần thưởng và nội dung mở rộng riêng.
+- Có thể thêm module mới mà không viết lại module cũ; chỉ kết nối qua interface/event.
+
+### 3.7. AI Tutor là dịch vụ có ngữ cảnh, không phải chatbot tách rời
+
+- Tutor được gọi từ các màn học/chơi với ngữ cảnh tối thiểu: mục tiêu nhiệm vụ, câu hỏi hiện tại, câu trả lời của trẻ, số lần thử, gợi ý đã đưa, khái niệm đang học.
+- Không gửi toàn bộ lịch sử hoặc dữ liệu không cần thiết.
+- Hệ thống bài học/mô phỏng là nguồn sự thật về đáp án; AI giải thích/gợi ý nhưng không ghi đè đáp án, quy tắc chấm hoặc kết quả trận.
+- Gợi ý theo từng nấc: hướng chú ý → gợi ý một bước → minh họa/giải thích. Không mặc định bật mí đáp án ngay ở lần sai đầu tiên.
+- Phản hồi phải phù hợp lứa tuổi/ngôn ngữ; có giới hạn an toàn và cơ chế thoát dễ thấy.
+
 ---
 
 ## 4. Lưu dữ liệu
@@ -253,6 +279,9 @@ abstract class AchievementService {
 | Achievements | `achievements` | Huy hiệu đã mở, thời điểm mở |
 | Purchases | `purchases` | Bản ghi mua hàng + trạng thái **xác minh** (không phải bằng chứng quyền sở hữu cuối cùng) |
 | Settings | `settings` | Ngôn ngữ, âm thanh, nhạc nền, `schema_version` |
+| Arena (khi triển khai) | `arena_results`, `arena_titles`, `leaderboard_contributions` | Kết quả trận/thử thách, danh hiệu, điểm đóng góp theo luật bộ môn |
+| Social (khi triển khai) | `friends`, `teams`, `gifts`, `social_titles` | Quan hệ bạn bè, đội, quà tặng, danh hiệu xã hội |
+| AI Tutor (khi triển khai) | `tutor_preferences`, `tutor_context_cache` (nếu cần) | Nhân vật Tutor đang dùng, cài đặt; không lưu dữ liệu nhạy cảm |
 
 ### 4.3. Schema mẫu
 
@@ -338,7 +367,7 @@ CREATE TABLE achievements (
 ### 4.6. Chống cộng trùng & khôi phục sau khi mở lại app
 
 Mục tiêu: các sự kiện hoàn thành lặp lại hoặc việc **thoát/mở lại app** không
-được cộng phần thưởng "một lần" hai lần (xem quy tắc ở `GAME_DESIGN.md` mục 4.4).
+được cộng phần thưởng "một lần" hai lần (xem quy tắc ở `GAME_DESIGN.md` mục 4.3).
 
 **Cơ chế:**
 
@@ -410,6 +439,13 @@ class StandardEvent {
 **Nguyên tắc:** thêm game mới không phải viết lại hệ thống huy hiệu —
 chỉ cần phát sự kiện đúng chuẩn.
 
+### 5.4. Arena và thành tích
+
+- Arena phát sự kiện chuẩn khi hoàn thành trận/thử thách: `arena_match_completed`, `arena_challenge_completed`, `title_unlocked`.
+- `achievement_engine` kiểm tra điều kiện danh hiệu theo luật bộ môn.
+- Điểm đóng góp vào tổng sắp được tính theo quy tắc đã công bố; không để một nhánh cày lặp vô hạn thống trị bảng.
+- Bảng xếp hạng người thật và bảng luyện tập phải được phân biệt ở tầng dữ liệu.
+
 ---
 
 ## 6. Quảng cáo
@@ -453,6 +489,8 @@ Callback:
 - **Không** hiển thị quảng cáo cho trẻ chưa được parental consent (nếu cần).
 - **Chỉ** cộng thưởng sau khi SDK xác nhận hợp lệ.
 - Ghi log lượt xem để giới hạn 3 lần/ngày.
+- Quảng cáo phải xuất hiện ở điểm dừng tự nhiên, không ép xem giữa màn chơi, không chặn việc học kiến thức cốt lõi của Main Quest.
+- Mỗi hạng mục có hạn mức riêng: lượt miễn phí, số lượt có thể nhận thêm qua quảng cáo, khoảng thời gian áp dụng và thời điểm làm mới hạn mức.
 
 ### 6.4. Trạng thái Pro & nguồn năng lượng qua quảng cáo
 
@@ -488,7 +526,7 @@ tới quyền học, không khóa nội dung cốt lõi.
 
 | Loại | Ví dụ | Ghi chú |
 |---|---|---|
-| **In-app purchase (không tiêu hao)** | Side Maps, Pro | Mua một lần, dùng mãi |
+| **In-app purchase (không tiêu hao)** | Side Maps, Pro, nhân vật Tutor, quà tặng | Mua một lần, dùng mãi |
 | **Không** dùng subscription | — | Tránh áp lực định kỳ với trẻ |
 
 ### 7.3. Luồng mua hàng
@@ -518,14 +556,11 @@ Xác minh với server (hoặc Google Play nếu chưa có server)
 - Luôn xác minh qua billing token.
 - Có cơ chế **khôi phục giao dịch** khi trẻ đổi thiết bị.
 - Nếu chưa có server: dùng Google Play Billing query để xác minh.
-- Ghi log giao dịch để debug.
-
-### 7.5. Parental gate
-
-- Trước khi vào màn hình mua hàng: yêu cầu **parental gate**
-  (ví dụ: giải phép tính đơn giản).
+- Parental gate trước màn hình mua hàng.
 - Không hiển thị giá bằng tiền thật cho trẻ mà không có gate.
 - Không dùng ngôn ngữ gây áp lực ("chỉ còn hôm nay", "mua ngay").
+- Mua nhân vật Tutor chỉ thay đổi phần mỹ thuật/đã công bố; không khóa chất lượng giải thích, độ thông minh, số gợi ý cần thiết hoặc quyền được trợ giúp cốt lõi sau paywall.
+- Mua quà/danh hiệu xã hội không mua được thứ hạng, điểm thi đấu hay chứng nhận kỹ năng.
 
 ---
 
@@ -552,6 +587,12 @@ app/
 │   │   │   ├── robot_maze/
 │   │   │   ├── dragon_jump/
 │   │   │   └── ...
+│   │   ├── arena/
+│   │   │   ├── direct_duel/
+│   │   │   ├── creator_pro_league/
+│   │   │   └── team_tournament/
+│   │   ├── tutor/
+│   │   ├── social/
 │   │   ├── energy/
 │   │   ├── ads/
 │   │   ├── achievements/
@@ -579,25 +620,53 @@ app/
 - **Không** gọi database trực tiếp từ UI — qua repository.
 - **Không** gọi module khác trực tiếp — qua interface.
 - **Không** tạo tầng trung gian chỉ để trông "chuẩn kiến trúc".
+- **Không** nhúng khóa bí mật của nhà cung cấp AI vào ứng dụng client, file cấu hình phát hành hoặc repository.
+- **Không** tạo bảng XP/level toàn cục.
 
 ---
 
-## 9. Kiểm thử
+## 9. AI Tutor — kiến trúc và an toàn
 
 ### 9.1. Nguyên tắc
+
+- Trước khi chọn nhà cung cấp/model, xác định yêu cầu chất lượng tiếng Việt, độ trễ, khả năng gợi ý theo từng bước, chi phí mỗi phiên và phương án khi dịch vụ lỗi. Có thể đánh giá các nhà cung cấp như Gemini hoặc lựa chọn khác, nhưng không khóa kiến trúc vào một nhà cung cấp trước khi có thử nghiệm và quyết định được ghi nhận.
+- Khóa API và thông tin bí mật phải nằm ở backend/service an toàn.
+- Dùng giới hạn token/thời lượng, rate limit, quota và theo dõi chi phí; không để một tài khoản có thể tạo chi phí không giới hạn.
+- Chỉ gửi dữ liệu tối thiểu cần thiết cho nhiệm vụ. Không yêu cầu tên thật, địa chỉ, trường học, số điện thoại, ảnh, vị trí hoặc thông tin nhạy cảm để dùng Tutor.
+- Xác định rõ phần nào chạy cục bộ, phần nào gửi đến dịch vụ bên ngoài; thông báo dễ hiểu cho phụ huynh về việc dùng AI/giọng nói và dữ liệu được xử lý.
+- Không tuyên bố hội thoại hoàn toàn riêng tư hoặc không được lưu nếu kiến trúc nhà cung cấp chưa chứng minh điều đó.
+
+### 9.2. Kiểm thử AI Tutor
+
+Kiểm thử bằng bộ tình huống dành riêng cho trẻ: câu trả lời sai liên tiếp, câu hỏi ngoài chủ đề, nội dung không an toàn, yêu cầu tiết lộ dữ liệu, prompt injection, câu trả lời AI sai, ngắt mạng, timeout, hết quota và chuyển sang trợ giúp không AI.
+
+### 9.3. Tiêu chí nghiệm thu mẫu đầu tiên
+
+- Cảnh mở đầu có hình ảnh và chuyển động đủ chất lượng để đại diện cho phong cách PyQuest mới; không phải chỉ là màn chat với ảnh đại diện.
+- Người chơi có thể tương tác, nhận phản hồi phù hợp và vào game; có thể bỏ qua hoặc xem lại.
+- Ít nhất một nhân vật mặc định hoàn chỉnh; hệ thống thiết kế cho phép thêm cún/mèo/rồng/búp bê mà không phải viết lại luồng hội thoại.
+- Mua nhân vật chỉ thay đổi phần mỹ thuật/đã công bố; Tutor miễn phí vẫn có đủ năng lực hỗ trợ học tập cốt lõi.
+- Tutor sử dụng đúng ngữ cảnh bài hiện tại, đưa gợi ý theo nấc và không tự ghi đè đáp án chuẩn.
+- Có giới hạn an toàn, xử lý lỗi dịch vụ, kiểm soát chi phí và quy tắc dữ liệu trước khi đưa AI thật tới người dùng.
+
+---
+
+## 10. Kiểm thử
+
+### 10.1. Nguyên tắc
 
 Với PyQuest, phần lớn module độc lập, chủ yếu ghi và đọc trạng thái.
 **Không** biến việc phát triển thành dự án chạy hàng đống test.
 Ưu tiên kiến trúc đơn giản, luồng chơi thật, kiểm tra tổng thể ở cuối.
 
-### 9.2. Không test tràn lan
+### 10.2. Không test tràn lan
 
 - Không viết unit test cho từng hàm nhỏ, getter/setter, thao tác lưu đơn giản.
 - Không cố định từng pixel, khoảng cách, màu sắc, animation bằng test.
 - Không dựng mock phức tạp cho module vốn độc lập.
 - Không chạy toàn bộ test sau mỗi lần sửa giao diện.
 
-### 9.3. Điểm kiểm tra bắt buộc
+### 10.3. Điểm kiểm tra bắt buộc
 
 Không cần nhiều test, nhưng **phải** có điểm kiểm tra đủ sức phát hiện lỗi nghiêm trọng:
 
@@ -608,7 +677,7 @@ Không cần nhiều test, nhưng **phải** có điểm kiểm tra đủ sức 
 | **Vượt giới hạn Python** | Chạy code gây vòng lặp vô hạn, kiểm tra dừng an toàn |
 | **Xác nhận Pro sai** | Mô phỏng purchase token giả, kiểm tra không mở nội dung |
 
-### 9.4. Test cuối theo chuyến phiêu lưu
+### 10.4. Test cuối theo chuyến phiêu lưu
 
 Thay vì hàng trăm test nhỏ, xây dựng kịch bản đại diện:
 
@@ -630,9 +699,9 @@ dựng ngay framework test nặng nề.
 
 ---
 
-## 10. Hiệu năng & tài nguyên
+## 11. Hiệu năng & tài nguyên
 
-### 10.1. Mục tiêu
+### 11.1. Mục tiêu
 
 | Chỉ số | Mục tiêu |
 |---|---|
@@ -642,29 +711,30 @@ dựng ngay framework test nặng nề.
 | Dung lượng app | < 150 MB (không tính asset tải thêm) |
 | Bộ nhớ khi chạy | < 200 MB |
 
-### 10.2. Chiến lược asset
+### 11.2. Chiến lược asset
 
 - Ảnh: dùng định dạng nén tốt (WebP).
 - Âm thanh: OGG cho nhạc nền, WAV ngắn cho hiệu ứng.
 - Asset lớn (Side Maps): tải theo gói khi mua, không nhúng hết vào app.
+- Nhân vật Tutor trả phí: xem trước hoạt ảnh thực tế trước khi mua; cần thiết kế silhouette/hoạt ảnh phù hợp nhiều tỉ lệ màn hình.
 
 ---
 
-## 11. Bảo mật & quyền riêng tư
+## 12. Bảo mật & quyền riêng tư
 
-### 11.1. Dữ liệu trẻ em
+### 12.1. Dữ liệu trẻ em
 
 - **Không** thu thập dữ liệu cá nhân ngoài mức cần thiết.
 - **Không** yêu cầu đăng ký tài khoản ở giai đoạn đầu.
 - **Không** gửi dữ liệu lên server nếu chưa có parental consent.
 - Tuân thủ **COPPA** (Mỹ) và **GDPR-K** (EU) nếu phát hành ở các thị trường đó.
 
-### 11.2. Lưu trữ cục bộ
+### 12.2. Lưu trữ cục bộ
 
 - Toàn bộ tiến trình lưu cục bộ ở giai đoạn đầu.
 - Nếu thêm cloud sync sau: mã hóa khi truyền, xin consent rõ ràng.
 
-### 11.3. Interpreter
+### 12.3. Interpreter
 
 - Interpreter mô phỏng **không** có quyền truy cập file hệ thống hay mạng.
 - Không cho phép import module hệ thống.
@@ -672,27 +742,35 @@ dựng ngay framework test nặng nề.
 - Nếu sau này nhúng Python thật: chạy trong sandbox, áp dụng lại các kiểm soát và
   đánh giá rủi ro bảo mật trước khi phát hành.
 
+### 12.4. Cộng đồng và an toàn
+
+- Nội dung do người chơi tạo và lời nhắn phải có cơ chế báo cáo/kiểm duyệt phù hợp.
+- Không mặc định cho phép giao dịch điểm, danh hiệu thành tích hoặc tài khoản giữa người chơi.
+- Mọi mua hàng/quà tặng trả phí phải hiển thị rõ giá, vật phẩm nhận được và xác nhận trước giao dịch.
+- Thiết kế theo độ tuổi và rà soát các yêu cầu pháp lý/nền tảng trước khi phát hành.
+
 ---
 
-## 12. Quyết định còn để mở
+## 13. Quyết định còn để mở
 
 Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 
 | Quyết định | Khi nào chốt |
 |---|---|
 | Python thật hay mô phỏng sau này | Sau khi mô phỏng chứng minh giá trị sư phạm |
-| Có cần server backend không | Khi cần cloud sync hoặc xác minh purchase tập trung |
+| Có cần server backend không | Khi cần cloud sync, AI Tutor an toàn hoặc xác minh purchase tập trung |
 | Có dùng Firebase không | Khi cần analytics, crash reporting, remote config |
 | Có hỗ trợ iOS ngay không | Sau khi Android ổn định |
 | Localization sang ngôn ngữ nào | Trước giai đoạn hoàn thiện |
 | Người dùng Pro có được xem quảng cáo thưởng không | Quyết định sản phẩm (xem 6.4) |
 | Giá trị cụ thể của ngân sách bước, trần collection, mục tiêu bộ nhớ | Sau khi đo thực tế interpreter (xem 2.3) |
 | Hệ thống bạn bè/cộng đồng và đồng bộ thi đấu | Chỉ khi một game cụ thể cần; không dựng trước (xem 3.4) |
-
+| Nhà cung cấp/model AI Tutor | Sau thử nghiệm chất lượng tiếng Việt, độ trễ, chi phí |
+| Cơ chế kiểm duyệt nội dung do người chơi tạo | Trước khi bật tính năng cộng đồng |
 
 ---
 
-## 13. Tóm tắt quyết định chốt
+## 14. Tóm tắt quyết định chốt
 
 | Hạng mục | Chốt |
 |---|---|
@@ -706,6 +784,8 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 | Mở rộng nhánh mới | Thêm module + interface/event; không sửa nền tảng (xem 3.4) |
 | Kiểm thử | Không tràn lan, tập trung điểm rủi ro cao |
 | Lát cắt dọc đầu tiên | Mở app → chơi mini-game → lưu → mở lại vẫn còn |
+| AI Tutor | Dịch vụ qua backend/service an toàn, ngữ cảnh tối thiểu |
+| XP/cấp độ toàn cục | Không dùng |
 
 ---
 
@@ -715,3 +795,45 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 - [`GAME_DESIGN.md`](GAME_DESIGN.md) — luật chơi, năng lượng, mở khóa hoạt động và cân bằng độ khó.
 - [`ROADMAP.md`](ROADMAP.md) — giai đoạn triển khai và tiêu chí nghiệm thu.
 - [`../README.md`](../README.md) — điểm vào dự án.
+- [`ARENA_CREATOR_COMPETITION_BRIEF.md`](ARENA_CREATOR_COMPETITION_BRIEF.md) — nguồn bổ sung về Arena, Creator League và trải nghiệm thi đấu.
+
+---
+
+## 15. Trạng thái triển khai hiện tại và UI Direction V2
+
+### 15.1. Module đã có trong source
+
+- `activity_registry` và `MainMapScreen` cho bản đồ đảo và các địa điểm hoạt động.
+- Main Quest, mini-game, achievements, energy, daily quests và progress tracker.
+- Trợ giảng (`lib/modules/tutor/`) tách theo trách nhiệm, mỗi tầng một file để test được độc lập:
+  `tutor_session.dart` (chọn AI/ngoại tuyến, hạn mức, lịch sử), `tutor_provider.dart`
+  (gọi relay OpenAI-compatible), `offline_tutor.dart` (soạn từ nội dung bài + thang
+  gợi ý), `tutor_transcript.dart` (mô hình tin nhắn có vai: trẻ / trợ giảng, partial
+  hay đã chốt, bị ngắt lời), `tutor_panel.dart` (UI dùng chung cho câu gõ và câu nói).
+- Giọng nói Gemini Live (`gemini_live_wire.dart` giao thức, `live_audio_output.dart`
+  vòng đời loa PCM + `PcmTurnPump`, `gemini_live_voice.dart` bắt lượt và micro
+  half-duplex). Ba tầng này không gọi `TutorSession`: phiên voice nói chuyện trực
+  tiếp với Live, còn câu hỏi gõ đi qua relay.
+- Relay mẫu `tools/ai_relay/relay.py` giữ key phía server (allowlist model, giới
+  hạn body/token, rate limit, không log nội dung) và có test chạy bằng Python thuần.
+- SQLite cục bộ với các bảng theo module; không có bảng XP/level toàn cục.
+
+### 15.2. Asset và tài liệu thiết kế
+
+- Ảnh tham khảo và SVG V2 là tài liệu thiết kế, không phải asset runtime của app.
+- 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/`, `PYQUEST_UI_DIRECTION_V2.svg`,
+  `PYQUEST_VILLAGE_2_5D_CONCEPT.svg` và `docs/design/kai-lumi-character-reference.svg`
+  đã có trong checkout; đó là bằng chứng thị giác chuẩn khi đánh giá màn hình.
+- Không đưa API key, token hoặc thông tin bí mật vào tài liệu, log hay commit.
+  Đường chuẩn cho trợ giảng văn bản là **relay giữ key ở server**
+  (`tools/ai_relay/relay.py`, `RELAY_API_KEY`), app chỉ cấu hình endpoint
+  (`AI_TUTOR_ENDPOINT` hoặc `assets/config/ai_tutor_config.json`).
+- Giọng nói Gemini Live hiện chỉ có đường cấu hình `--dart-define=GEMINI_API_KEY=...`
+  cho **build thử nghiệm**: value nằm trong APK nên nó chỉ dành cho bản internal,
+  tuyệt đối không commit key, không in key vào log, và phải đổi sang token ngắn hạn
+  qua server trước khi phát hành. App đã gỡ bỏ key khỏi log bằng
+  `GeminiLiveWire.redactSecrets`.
+
+### 15.3. UI Direction V2
+
+UI V2 chưa được triển khai vào source. Việc áp dụng phải đi qua đánh giá màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime.

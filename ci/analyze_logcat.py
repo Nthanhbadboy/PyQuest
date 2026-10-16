@@ -15,11 +15,7 @@ Usage:
     python3 ci/analyze_logcat.py <log-file> [<log-file> ...]
 
 Output goes to stdout only; the CI step redirects it to
-emulator-log-analysis.txt, which is uploaded with the diagnostics. With
-`--app-evidence <path>` it also writes a short extract (what happened to
-com.pyquest.pyquest) that is small enough to be printed whole in the CI report,
-so the check page can answer "did the app crash, get killed or restart?" without
-anybody downloading the artifact.
+emulator-log-analysis.txt, which is uploaded with the diagnostics.
 """
 
 import re
@@ -77,22 +73,6 @@ PATTERNS = [
      r"Long monitor contention|Timeout executing service"),
 ]
 
-# The two patterns that decide what happened to the app itself. Matching them on
-# the package name keeps unrelated processes out: a restart, an ANR or a crash of
-# com.pyquest.pyquest is what makes `flutter drive` lose its isolate, and it is
-# the first thing anybody looks for when the journey dies mid-test.
-APP_RE = APP.replace(".", r"\.")
-
-PATTERNS += [
-    ("APP ON THE DEVICE", "app process start / death (system buffer)",
-     r"(am_proc_start|am_proc_died|Start proc|Force stopping|Process)"
-     r"[^\n]{0,90}%s" % APP_RE),
-    ("APP ON THE DEVICE", "app killed / ANR / crash",
-     r"(%s[^\n]{0,90}(died|has died|killed|ANR|Exception))|"
-     r"((ANR in|Killing|lmkd|LowMemoryKiller|FATAL EXCEPTION|AndroidRuntime)"
-     r"[^\n]{0,90}%s)" % (APP_RE, APP_RE)),
-]
-
 # App-side lines worth keeping next to the system evidence.
 APP_PATTERNS = [
     ("APP EVENTS (pid-filtered)", "flutter test runner progress",
@@ -109,15 +89,9 @@ APP_PATTERNS = [
 TS = re.compile(r"^\s*(\d\d-\d\d \d\d:\d\d:\d\d\.\d+|\d{4}-\d\d-\d\d[T ]\d\d:\d\d:\d\d)")
 BUCKET = re.compile(r"^-{5,} beginning of (\w+)")
 SECTION_ORDER = [
-    "APP ON THE DEVICE",       # first: this is the "why did the test lose the app" answer
     "ACTIVITY LIFECYCLE", "CONFIGURATION CHANGES", "RELAUNCH",
     "ANR / SYSTEM SERVER", "APP EVENTS (pid-filtered)",
 ]
-APP_HEADING = "APP ON THE DEVICE"
-APP_EVIDENCE_LIMIT = 45      # lines in the small extract the report prints
-APP_EVIDENCE_WIDTH = 220     # characters per line, so the extract stays small
-APP_LABELS = ("app process start / death (system buffer)",
-              "app killed / ANR / crash")
 
 
 def read_lines(path):
@@ -160,64 +134,12 @@ def windows(lines, pattern, limit=MAX_PER_PATTERN):
     return len(hits), shown
 
 
-def write_app_evidence(path, blocks):
-    """A few dozen lines that say what happened to com.pyquest.pyquest.
-
-    The check page has a text budget shared by several files, so the decisive
-    lines are kept separate from the full analysis: this file is small enough to
-    be printed whole in the report (see ci/job_summary.py), which means the
-    question "did the app crash, get killed, or restart?" is answerable without
-    downloading the artifact. Absent evidence is reported as 0 matches instead of
-    being left out, so "nothing was found" cannot be mistaken for "not checked".
-    """
-    lines = []
-    for (source, lines_count, first, last, counts, matched) in blocks:
-        lines.append("APP ON THE DEVICE: %s" % APP)
-        lines.append("  source: %s (%d lines, %s .. %s)"
-                     % (source, lines_count, first or "(no timestamps)",
-                        last or "(none)"))
-        lines.append("  (system buffer; the full logcat dump is in the artifact)")
-        for label in APP_LABELS:
-            shown = [(text, matched_line) for text, matched_line in matched.get(label, [])
-                     if text.strip()]
-            lines.append("  [%s]  %d match(es)" % (label, counts.get(label, 0)))
-            if not shown:
-                continue
-            lines.append("    \"> \" marks a matched line; the rest is context")
-            for text, matched_line in shown:
-                if len(lines) >= APP_EVIDENCE_LIMIT:
-                    lines.append("    ... [more matches in emulator-log-analysis.txt]")
-                    break
-                lines.append(("    > " if matched_line else "      ")
-                             + text.strip()[:APP_EVIDENCE_WIDTH])
-    if not lines:
-        lines = ["APP ON THE DEVICE: %s" % APP,
-                 "  no logcat dump was read, so there is nothing to say about the app"]
-    with open(path, "w", encoding="utf-8") as handle:
-        handle.write("\n".join(lines) + "\n")
-    return path
-
-
-def split_args(argv):
-    """(<log files>, <app-evidence path or None>) without argparse noise."""
-    paths, evidence, index = [], None, 0
-    while index < len(argv):
-        if argv[index] == "--app-evidence" and index + 1 < len(argv):
-            evidence = argv[index + 1]
-            index += 2
-            continue
-        paths.append(argv[index])
-        index += 1
-    return paths, evidence
-
-
 def main():
-    paths, evidence = split_args(sys.argv[1:])
+    paths = sys.argv[1:]
     if not paths:
-        print("usage: analyze_logcat.py [--app-evidence <out>] <log-file> ...")
+        print("usage: analyze_logcat.py <log-file> [<log-file> ...]")
         return 2
     out = []
-    blocks = []
     say = out.append
     for path in paths:
         try:
@@ -234,7 +156,6 @@ def main():
             say("  NOTE: no system/events buffer in this file - ANR and config-change"
                 " evidence lives there.")
         counts = {}
-        app_matched = {label: [] for label in APP_LABELS}
         for heading in SECTION_ORDER:
             entries = [(label, pat) for where, label, pat in PATTERNS + APP_PATTERNS
                        if where == heading]
@@ -259,17 +180,12 @@ def main():
                         say("  ...")
                     else:
                         say(("  > " if matched else "    ") + text[:400])
-                    if heading == APP_HEADING:
-                        app_matched.setdefault(label, []).append((text, matched))
-        blocks.append((path, len(lines), first, last, counts, app_matched))
         say("")
         say("-" * 78)
         say("COUNTS (matches per pattern; 0 means the evidence is absent)")
         for label, _ in [(l, p) for _, l, p in PATTERNS + APP_PATTERNS]:
             say("  %4d  %s" % (counts.get(label, 0), label))
     print("\n".join(out))
-    if evidence:
-        write_app_evidence(evidence, blocks)
     return 0
 
 
