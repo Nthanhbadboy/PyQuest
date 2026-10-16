@@ -32,25 +32,26 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision18: review5bf44fa, authorization r6 giữ nguyên**.
-Đọc task003, `reviews/PQD-003-r18.md`, receipt r18 và SDK evidence trong PQC-010-r12.
+Task hiện tại là **PQD-003 revision19: review2851793, authorization r6 giữ nguyên**.
+Đọc task003, `reviews/PQD-003-r19.md` và SDK lifecycle evidence r18 trong PQC-010-r12.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
 **Làm ngay, không ACK-only:**
-1. Run38964109149/report117188237347: analyze sạch10.8s,349pass/3fail,10renderpass.
-   Chỉ D1-sem/D2-sem/D3-sem đỏ; visible/checkpoints và D3-visible ink roundtrip qua.
-2. SDK abaf9c5237 mặc định testWidgets semanticsEnabled:true: bỏ manual handle KHÔNG
-   tắt semantics. Đã đối chiếu source verifier chạy trước package:test teardown.
-   Ba -sem tests vẫn có extra ensureSemantics + addTearDown(handle.dispose), quá muộn.
-3. Bỏ cặp manual handle ở ba test, dùng framework-managed handle (explicit
-   semanticsEnabled:true nếu muốn rõ). Hoặc dispose handle riêng trong try/finally
-   trước callback return, không double dispose. Giữ getSemantics, expected VI/EN,
-   negative stale-locale assertions và hành trình; không false/skip/property-only.
-4. Không sửa runtime/renderer/scroll theo đoán. Source lifecycle finding không phải
-   full CI trace; chạy lại exact SHA, lấy actual first failure nếu vẫn đỏ. Giữ ink
-   roundtrip đã qua và groupX/scale/output/Tab/capture đã đóng. Không thêm test split.
-5. Trả exact SHA/run/report. Scope010/014/015 giữ nguyên;014 độc lập,015 sau014 xanh,
-   dependency chỉ015. Không LessonScreen/AI/voice/art/social/economy/P06/CI/publisher.
+1. Run38965640169/report117193109204: analyze sạch8.5s,349pass/4fail,10renderpass.
+   Cả D1-sem-read/D1-sem-VI/D2-sem/D3-sem đỏ. Manual handle finding r18 chưa áp dụng.
+2. Bỏ ensureSemantics + addTearDown(handle.dispose) ở cả4 case, dùng testWidgets
+   managed handle (explicit semanticsEnabled:true nếu muốn rõ), hoặc try/finally
+   dispose trước callback return. Không double dispose. SDK mặc định bật semantics.
+   Read-only fail KHÔNG chứng minh getter throw vì end verifier có thể fail sau body.
+3. Khôi phục D1-sem-VI guard: expect(actual, isNot(contains(alt['en']! as String))).
+   Tách diagnostic không được bỏ negative guard. Không bắt buộc nonempty ở read-only
+   vì D1-sem-VI vẫn có positive label assertion riêng.
+4. Giữ getSemantics/locale assertions, không false/skip/property-only hoặc thêm split.
+   Không sửa runtime/renderer/scroll theo đoán. Chạy lại exact SHA sau lifecycle fix;
+   nếu còn đỏ lấy first actual exception/stack/label, không coi handle là sole cause.
+5. Giữ visible/ink roundtrip và fixes đã đóng. Trả SHA/run/report. Scope010/014/015
+   giữ nguyên;014 độc lập,015 sau014 xanh, dependency chỉ015. Không LessonScreen/
+   AI/voice/art/social/economy/P06/CI/publisher.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
