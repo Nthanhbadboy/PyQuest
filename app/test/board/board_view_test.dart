@@ -520,7 +520,7 @@ void main() {
         reason: 'altText không được thành chữ nhìn thấy: đó là kênh riêng');
 
     controller.setLocale('en');
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(controller.beatIndex, 2, reason: 'đổi ngôn ngữ không được đưa trẻ về beat khác');
     expect(controller.learner.strokes, <String>['net-cua-tre'], reason: 'nét của trẻ không liên quan locale');
     final List<String> en = allBoardTexts(tester);
@@ -542,7 +542,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(nodeText(tester, 'board_prose_3_0'), startsWith('Look before'));
     controller.setLocale('vi');
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(controller.beatIndex, 3);
     expect(allBoardTexts(tester), contains('Tiếp'));
     expect(realSemanticsLabel(tester, 'board_output_2_1_label'), contains(viAlt),
@@ -733,7 +733,7 @@ void main() {
       testWidgets(
         '§R10-D: scale một dòng không wrap, không lẫn reflow, $sizeName/$locale',
         (WidgetTester tester) async {
-          Future<(double, TextScaler, double)> measureAt(double scale) async {
+          Future<(double, TextScaler, double, double)> measureAt(double scale) async {
             await pumpBoard(tester,
                 planIndex: 0,
                 surface: surface,
@@ -748,11 +748,20 @@ void main() {
                 .first;
             final RichText painted = tester.widget<RichText>(line);
             final TextSpan root = painted.text as TextSpan;
-            return (root.style!.fontSize!, painted.textScaler, tester.getSize(line).height);
+            final TextPainter expected = TextPainter(
+              text: painted.text,
+              textDirection: painted.textDirection,
+              textScaler: painted.textScaler,
+            )..layout(maxWidth: double.infinity);
+            final double expectedHeight = expected.height;
+            expected.dispose();
+            return (root.style!.fontSize!, painted.textScaler, tester.getSize(line).height, expectedHeight);
           }
 
-          final (double sizeOne, TextScaler scalerOne, double heightOne) = await measureAt(1.0);
-          final (double sizeTwo, TextScaler scalerTwo, double heightTwo) = await measureAt(2.0);
+          final (double sizeOne, TextScaler scalerOne, double heightOne, double expectedHeightOne) =
+              await measureAt(1.0);
+          final (double sizeTwo, TextScaler scalerTwo, double heightTwo, double expectedHeightTwo) =
+              await measureAt(2.0);
           expect(sizeOne, closeTo(13.0, 0.01), reason: '$sizeName/$locale: cỡ chữ ở 1.0 = $sizeOne');
           expect(sizeTwo, closeTo(26.0, 0.01),
               reason: '$sizeName/$locale: cỡ chữ ở 2.0 = $sizeTwo — 13 = scale bị nuốt, '
@@ -761,10 +770,11 @@ void main() {
               reason: '$sizeName/$locale: paragraph không được tự nhân scale lần hai');
           expect(scalerTwo.scale(100), closeTo(100.0, 0.01),
               reason: '$sizeName/$locale: scale đã áp ở cỡ chữ rồi, paragraph phải mang noScaling');
-          expect(heightTwo / heightOne, closeTo(2.0, 0.02),
-              reason: '$sizeName/$locale: một dòng không wrap đổi cao độ $heightOne -> $heightTwo '
-                  '(tỷ số ${(heightTwo / heightOne).toStringAsFixed(3)}; ~4 = áp hai lần, '
-                  '~1 = nuốt scale, ~1.2 = clamp)');
+          expect(heightOne, closeTo(expectedHeightOne, 0.5),
+              reason: '$sizeName/$locale: line 1 actual=$heightOne expected TextPainter=$expectedHeightOne');
+          expect(heightTwo, closeTo(expectedHeightTwo, 0.5),
+              reason: '$sizeName/$locale: line 2 actual=$heightTwo expected TextPainter=$expectedHeightTwo; '
+                  'fontSize=$sizeTwo scaler=${scalerTwo.scale(100)}');
           // (d) wrap được phép, tràn thì không: hộp phải cao đủ cho đoạn chữ đã xếp dòng.
           final Size box = tester.getSize(find.byKey(const ValueKey<String>('board_code_line_0')));
           final Size text = tester.getSize(find
