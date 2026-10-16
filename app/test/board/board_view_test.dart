@@ -280,6 +280,105 @@ void main() {
     expect(find.byKey(const ValueKey<String>('board_caption')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('r7 §R7-C: cùng BoardView, đổi locale đổi nhãn + op prose + semantics, giữ output',
+      (WidgetTester tester) async {
+    final BoardController controller = await pumpBoard(tester, planIndex: 1, locale: 'vi');
+    controller.learner.addStroke('net-cua-tre');
+    controller.next();
+    controller.next();
+    await tester.pump();
+    expect(controller.beatIndex, 2, reason: 'beat numbers b3: có ô kết quả hai dòng');
+
+    final List<String> vi = allBoardTexts(tester);
+    final List<String> viSemantics = semanticLabels(tester, find.byType(BoardView));
+    expect(vi, contains('Tiếp'), reason: 'chưa đổi gì, nhãn phải là tiếng Việt: $vi');
+    expect(vi, contains('Kết quả chạy'));
+    expect(vi.any((String t) => t.contains('Ô kết quả có hai dòng')), isTrue,
+        reason: 'prose/altText của op lấy từ bản vi: $vi');
+    expect(viSemantics.any((String l) => l.contains('Ô kết quả có hai dòng')), isTrue);
+
+    controller.setLocale('en');
+    await tester.pump();
+    expect(controller.beatIndex, 2, reason: 'đổi ngôn ngữ không được đưa trẻ về beat khác');
+    expect(controller.learner.strokes, <String>['net-cua-tre']);
+    final List<String> en = allBoardTexts(tester);
+    final List<String> enSemantics = semanticLabels(tester, find.byType(BoardView));
+    expect(en, contains('Next'), reason: 'nhãn điều khiển phải resolve trong builder đang rebuild: $en');
+    expect(en, isNot(contains('Tiếp')));
+    expect(en, contains('Run output'));
+    expect(en, isNot(contains('Kết quả chạy')));
+    expect(en.any((String t) => t.contains('The result box has two lines')), isTrue,
+        reason: 'op prose phải sang en thật, không phải kế thừa vi: $en');
+    expect(en.any((String t) => t.contains('Ô kết quả')), isFalse);
+    expect(enSemantics.any((String l) => l.contains('The result box has two lines')), isTrue);
+    expect(enSemantics.any((String l) => l.contains('Ô kết quả có hai dòng')), isFalse,
+        reason: 'semantics phải theo cùng locale với chữ nhìn thấy: $enSemantics');
+    // Code, output và chữ của trẻ là nội dung **không** dịch.
+    for (final List<String> texts in <List<String>>[vi, en]) {
+      expect(texts.any((String t) => t.contains('7\n3 + 4')), isTrue,
+          reason: 'output của engine giữ nguyên khi đổi locale: $texts');
+    }
+
+    controller.setLocale('vi');
+    await tester.pump();
+    final List<String> back = allBoardTexts(tester);
+    expect(back, contains('Tiếp'));
+    expect(back, contains('Kết quả chạy'));
+    expect(back.any((String t) => t.contains('Ô kết quả có hai dòng')), isTrue,
+        reason: 'vi -> en -> vi phải trở về đúng bản gốc, không dính en lẫn vi');
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('r7 §R7-C: fallback notice lưu MÃ, câu chữ theo locale hiện hành', (WidgetTester tester) async {
+    final Map<String, dynamic> plan = composedPlan(0);
+    final BoardController controller = BoardController(
+      sessionId: 'locale-fallback-session',
+      locale: 'vi',
+      lessonId: plan['lessonId']! as String,
+      stepId: plan['stepId']! as String,
+    );
+    addTearDown(controller.dispose);
+    expect(controller.applyPlan(controller.currentToken, validateComposed(0)), BoardApplyOutcome.applied);
+    final BoardValidation broken = validateComposed(
+      0,
+      source: mutatedSource(0, <Object>['beats', 0, 'ops', 1, 'token'], 'printf'),
+    );
+    expect(broken.accepted, isFalse);
+    // Lỗi xảy ra lúc board đang ở VI.
+    expect(controller.applyPlan(controller.currentToken, broken), BoardApplyOutcome.rejectedPlan);
+    setSurface(tester, const Size(360, 640));
+    await tester.pumpWidget(boardHost(BoardView(controller: controller), textScale: 1.0));
+    expect(controller.fallbackReason, BoardFallbackReason.rejectedPlan);
+    expect(allBoardTexts(tester).any((String t) => t.contains('Bảng tác giả không hợp lệ')), isTrue);
+
+    controller.setLocale('en');
+    await tester.pump();
+    final List<String> en = allBoardTexts(tester);
+    expect(en.any((String t) => t.contains('The authored board was rejected')), isTrue,
+        reason: 'notice phải được dịch lại theo locale mới, không treo câu tiếng cũ: $en');
+    expect(en.any((String t) => t.contains('Bảng tác giả không hợp lệ')), isFalse);
+    // Controller không giữ chuỗi đã dịch — chỉ giữ mã.
+    expect(controller.fallbackReason!.name, 'rejectedPlan');
+    expect(tester.takeException(), isNull);
+  });
+}
+
+/// Mọi chữ nhìn thấy được trong cây: `Text.data` và cả `RichText` (TextSpan nhiều đoạn),
+/// vì renderer hợp lệ có thể tô sáng bằng span thay vì một chuỗi duy nhất.
+List<String> allBoardTexts(WidgetTester tester) {
+  final List<String> out = <String>[];
+  for (final Element e in find.byType(Text).evaluate()) {
+    final Text w = e.widget as Text;
+    final String? data = w.data;
+    if (data != null) out.add(data);
+  }
+  for (final Element e in find.byType(RichText).evaluate()) {
+    final dynamic w = e.widget;
+    final dynamic inline = w.text;
+    out.add(inline.toPlainText() as String);
+  }
+  return out;
 }
 
 Future<BoardController> controllerOf(WidgetTester tester) async =>

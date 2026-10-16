@@ -37,6 +37,11 @@ BoardValidation validateBoardDocument(
   );
 }
 
+/// Đường vào **đã có kiểm cấu trúc**: `plan` phải là kết quả của [decodePlan] (hoặc
+/// [validateBoardDocument]). Đây là tầng ngữ nghĩa — đối chiếu output với reference, kiểm
+/// scope/layer/limit — chứ không phải tầng an toàn JSON: nó giả định mọi field đã đúng kiểu
+/// và đã qua trần độ dài, nên host **không** được tự dựng [TeachingPlan] bằng tay rồi gọi
+/// thẳng vào đây để "vẽ nhanh". [validateBoardDocument] là đường duy nhất cho JSON bên ngoài.
 BoardValidation validatePlan(
   TeachingPlan plan, {
   required DeterministicReference reference,
@@ -135,12 +140,29 @@ BoardValidation validatePlan(
         case BoardOpKind.unknown:
           break;
       }
-      if (op.altText.trim().isEmpty) {
+      // Rev 7 §R7-A/§R7-C: altText của op bị kiểm **theo từng locale** — cả trần code point
+      // lẫn "không rỗng" — vì renderer đọc đúng chuỗi này cho cả chữ nhìn thấy lẫn nhãn
+      // accessibility. Chỉ kiểm rỗng là để lọt một khối 5.000 ký tự vào semantic label.
+      if (op.altTexts.isEmpty) {
         issues.add(BoardIssue(BoardIssueCode.missingAltText, 'op ${op.kind.wire} thiếu altText',
             beatIndex: b, opIndex: i));
       }
-      if (op.kind == BoardOpKind.text && op.text.runes.length > BoardLimits.maxOpText) {
-        issues.add(BoardIssue(BoardIssueCode.payloadTooLarge, 'text op quá dài', beatIndex: b, opIndex: i));
+      for (final MapEntry<String, String> e in op.altTexts.entries) {
+        if (e.value.trim().isEmpty) {
+          issues.add(BoardIssue(BoardIssueCode.missingAltText, 'op ${op.kind.wire} altText rỗng ở ${e.key}',
+              beatIndex: b, opIndex: i));
+        }
+        if (e.value.runes.length > BoardLimits.maxCopyField) {
+          issues.add(BoardIssue(BoardIssueCode.copyTooLong,
+              'op ${op.kind.wire} altText ${e.value.runes.length} code point vượt ${BoardLimits.maxCopyField}',
+              beatIndex: b, opIndex: i));
+        }
+      }
+      for (final MapEntry<String, String> e in op.text.entries) {
+        if (e.value.runes.length > BoardLimits.maxOpText) {
+          issues.add(BoardIssue(BoardIssueCode.payloadTooLarge, 'text op quá dài ở ${e.key}',
+              beatIndex: b, opIndex: i));
+        }
       }
     }
     if (outputs > 1 && beat.outputScope == BoardOutputScope.singleStatement) {

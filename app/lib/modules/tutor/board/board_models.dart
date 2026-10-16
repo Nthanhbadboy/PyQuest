@@ -83,6 +83,12 @@ abstract final class BoardLimits {
   /// Cả tài liệu plan: một payload khổng lồ phải bị từ chối **trước** khi parse sâu.
   static const int maxDocumentChars = 32 * 1024;
 
+  /// Rev 7 §R7-A: mỗi op phải có schema rõ — trần độ dài đoạn chữ mà highlight tô lên code.
+  static const int maxTokenLiteral = 40;
+
+  /// Những hình renderer thực sự vẽ được. Hình lạ không được âm thầm thành rectangle.
+  static const List<String> shapeAllowlist = <String>['circle', 'rect', 'roundedRect'];
+
   /// Hình học: tọa độ chuẩn hóa 0..1, bán kính/độ dày trong (0..1].
   static const double maxGeometry = 1.0;
 }
@@ -129,8 +135,9 @@ enum BoardOutputScope {
 class BoardOp {
   const BoardOp({
     required this.kind,
-    required this.altText,
-    this.text = '',
+    required this.altTexts,
+    this.text = const <String, String>{},
+    this.token = '',
     this.statement = '',
     this.objectId,
     this.fromId,
@@ -148,9 +155,15 @@ class BoardOp {
   final BoardOpKind kind;
 
   /// Mỗi op phải tự mô tả được — op không có mô tả thì plan bị reject.
-  final String altText;
+  /// Rev 7 §R7-C: mô tả và chữ hiển thị là **per-locale** (board không được để lại câu
+  /// Việt không dấu trong plan English), và mỗi bản ghi chịu trần 600 code point.
+  final Map<String, String> altTexts;
 
-  final String text;
+  /// Chữ op hiển thị, theo locale. Rỗng = op không có phần chữ (hình/connector).
+  final Map<String, String> text;
+
+  /// Đoạn chữ mà `highlightToken` tô trên code nguồn (R7-B: tô thật lên code, không in mô tả).
+  final String token;
 
   /// Câu lệnh/source mà op bám vào (highlight, output) — để đối chiếu deterministic.
   final String statement;
@@ -161,12 +174,18 @@ class BoardOp {
   final String shape;
   final String value;
 
-  /// Hình học chuẩn hóa 0..1.
+  /// Hình học chuẩn hóa 0..1 (bắt buộc có với `simpleShape` — R7-A: không mặc định 0).
   final double x;
   final double y;
   final double width;
   final double height;
   final int line;
+
+  /// Tra theo locale đang hiển thị. Codec đã bắt đủ mọi locale yêu cầu, nên thiếu ở đây
+  /// là bug lập trình chứ không phải dữ liệu người dùng — trả '' để bug lộ ra ảnh/test.
+  String proseFor(String locale) => text[locale] ?? '';
+
+  String altFor(String locale) => altTexts[locale] ?? '';
 }
 
 /// Một beat: một ý ngắn + các thao tác bảng + có chờ người học hay không.
@@ -273,6 +292,15 @@ enum BoardIssueCode {
   documentTooLarge('documentTooLarge'),
   foreignKey('foreignKey'),
   invalidJson('invalidJson'),
+  /// Trường có mặt nhưng sai kiểu (string thay vì mảng, chữ thay vì số): phải reject,
+  /// không ném type error và không âm thầm chuẩn hóa về 0/1 — làm vậy là sửa nội dung giảng.
+  wrongType('wrongType'),
+  /// Op thiếu trường bắt buộc theo kind của nó (connector thiếu đầu mút, shape thiếu hộp…).
+  missingOpField('missingOpField'),
+  /// Op khai hình dạng không có trong bảng vẽ được của renderer.
+  unknownShape('unknownShape'),
+  /// Highlight không khớp code nguồn: token không tồn tại, số lần ≠ tokenIds, dòng ngoài đoạn.
+  badHighlightRange('badHighlightRange'),
   staleToken('staleToken'),
   wrongSession('wrongSession'),
   wrongTurn('wrongTurn'),
@@ -326,4 +354,21 @@ enum BoardApplyOutcome {
 
   /// Board của phiên đã bị dispose: không nhận gì, không notify.
   disposed,
+
+  /// Plan hợp lệ và token đúng, nhưng là của **bài/bước khác** (rev 7 §R7-D): bảng của
+  /// phiên này không nhận nội dung bước khác, và bảng cũ còn nguyên.
+  foreignLesson,
+}
+
+/// Lý do board đang hiển thị nội dung dự phòng. Rev 7 §R7-C: controller chỉ giữ **mã**;
+/// việc diễn thành câu là của view/locale. Lưu sẵn câu đã dịch thì lỗi xảy ra ở locale cũ
+/// sẽ vẫn treo câu của tiếng cũ sau khi đổi ngôn ngữ.
+enum BoardFallbackReason {
+  staleReply('staleReply'),
+  rejectedPlan('rejectedPlan'),
+  foreignLesson('foreignLesson');
+
+  const BoardFallbackReason(this.wire);
+
+  final String wire;
 }

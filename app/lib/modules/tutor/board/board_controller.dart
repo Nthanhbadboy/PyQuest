@@ -72,7 +72,7 @@ class BoardController extends ChangeNotifier {
   int _beatIndex = 0;
   List<BoardIssue> _lastIssues = const <BoardIssue>[];
   BoardApplyOutcome? _lastOutcome;
-  String? _fallbackNotice;
+  BoardFallbackReason? _fallbackReason;
 
   final LearnerLayer learner = LearnerLayer();
 
@@ -85,9 +85,10 @@ class BoardController extends ChangeNotifier {
   List<BoardIssue> get lastIssues => _lastIssues;
   BoardApplyOutcome? get lastOutcome => _lastOutcome;
 
-  /// Nhãn fallback **có nguồn gốc rõ**: hiện khi plan bị reject, để trẻ không thấy bảng trắng
-  /// và reviewer biết đây là authored fallback chứ không phải "AI đã giảng".
-  String? get fallbackNotice => _fallbackNotice;
+  /// Mã lý do fallback: hiện khi plan bị từ chối, để trẻ không thấy bảng trắng và reviewer
+  /// biết đây là authored fallback chứ không phải "AI đã giảng". View mới là chỗ dịch ra câu
+  /// theo locale **hiện hành** (rev 7 §R7-C).
+  BoardFallbackReason? get fallbackReason => _fallbackReason;
 
   bool get isWaitingForLearner => _awaitingLearner;
   bool get hasPlan => _plan != null;
@@ -118,10 +119,12 @@ class BoardController extends ChangeNotifier {
   }
 
   /// Stop/barge-in: turn cũ mất hiệu lực, và **không** có beat mới nào được bắt đầu.
+  /// Rev 7 §R7-D: `waitForLearner` là thuộc tính của **beat**, không phải của lượt phát —
+  /// ngắt audio hoặc hu reply không phải "con đã làm xong", nên wait vẫn còn. Trẻ vẫn phải
+  /// bấm nút của mình để đi tiếp; biến stop thành skip là bỏ qua đúng beat chờ.
   void cancelTurn() {
     if (_disposed) return;
     _turnId++;
-    _awaitingLearner = false;
     notifyListeners();
   }
 
@@ -136,21 +139,63 @@ class BoardController extends ChangeNotifier {
     // widget đã gỡ khỏi cây không còn ai nghe.
     if (_disposed) return BoardApplyOutcome.disposed;
     if (!_tokenMatches(token)) {
-      _fallbackNotice = _notice('stale');
+      _fallbackReason = BoardFallbackReason.staleReply;
       return _finish(BoardApplyOutcome.tokenRejected);
     }
     if (!validation.accepted) {
       _lastIssues = validation.issues;
-      _fallbackNotice = _notice('invalid');
+      _fallbackReason = BoardFallbackReason.rejectedPlan;
       return _finish(BoardApplyOutcome.rejectedPlan);
     }
-    final TeachingPlan incoming = validation.plan!;
+    final TeachingPlan? incoming = validation.plan;
+    if (incoming == null) {
+      // `accepted` mà không có plan là bug ở tầng validate, không phải dữ liệu trẻ:
+      // reject atomic chứ không deref `!`.
+      _fallbackReason = BoardFallbackReason.rejectedPlan;
+      return _finish(BoardApplyOutcome.rejectedPlan);
+    }
+    // Rev 7 §R7-D: token đúng mà plan của bài/bước khác vẫn phải bị chặn ở đây. Host có
+    // quyền validate với `expectedLessonId` của nó, nhưng board là biên cuối trước pixel —
+    // tự đối chiếu owner để một reply lạc không ghi chữ bài 3 lên bảng bài 1.
+    if (incoming.lessonId != lessonId || incoming.stepId != stepId) {
+      _fallbackReason = BoardFallbackReason.foreignLesson;
+      return _finish(BoardApplyOutcome.foreignLesson);
+    }
     _plan = incoming;
     _beatIndex = 0;
     _awaitingLearner = incoming.beats.isNotEmpty && incoming.beats.first.waitForLearner;
     _lastIssues = const <BoardIssue>[];
-    _fallbackNotice = null;
+    _fallbackReason = null;
     return _finish(BoardApplyOutcome.applied);
+  }
+
+  /// Còn beat phía trước không. View dùng nó để bật/tắt nút — một nút bấm không có phản hồi
+  /// là lỗi UI (rev 7 §R7-D).
+  bool get canAdvance {
+    final TeachingPlan? p = _plan;
+    return p != null && p.beats.isNotEmpty && _beatIndex + 1 < p.beats.length;
+  }
+
+  /// Nút "Tiếp" có việc để làm hay không: hoặc còn beat, hoặc đang chờ con xác nhận.
+  bool get canGoNext => !_disposed && (canAdvance || _awaitingLearner);
+  bool get canGoPrevious => !_disposed && _beatIndex > 0;
+
+  /// **Ý định của trẻ** (rev 4 §D3 + rev 7 §R7-D): beat đang chờ thì cái bấm này là
+  /// `learnerActed`, rồi mới tiến nếu còn beat. Tách khỏi [next] — đường advance nội bộ
+  /// (AI/auto) vẫn bị wait chặn, nên board không bao giờ tự nhảy qua phần trẻ chưa làm.
+  bool learnerAdvance() {
+    if (_disposed) return false;
+    if (!canGoNext) return false;
+    if (_awaitingLearner) _awaitingLearner = false;
+    if (!canAdvance) {
+      notifyListeners();
+      return false;
+    }
+    _beatIndex++;
+    final TeachingPlan? p = _plan;
+    _awaitingLearner = p != null && p.beats[_beatIndex].waitForLearner;
+    notifyListeners();
+    return true;
   }
 
   bool next() {
@@ -191,15 +236,15 @@ class BoardController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Đổi locale: **giữ** plan/beat/ink/code của trẻ, chỉ thay copy đang hiển thị (rev 4 §D5).
-  /// Đồng thời bump revision: mọi reply đang bay của locale cũ bị chặn ở `_tokenMatches`.
+  /// Đổi locale: **giữ** plan/beat/ink/code của trẻ và cả trạng thái chờ, chỉ thay copy đang
+  /// hiển thị (rev 4 §D5, rev 7 §R7-D). Đồng thời bump revision: mọi reply đang bay của locale
+  /// cũ bị chặn ở `_tokenMatches`.
   void setLocale(String next) {
     if (_disposed) return;
     if (_locale == next) return;
     _locale = next;
     _contextRevision++;
     _turnId++;
-    _awaitingLearner = false;
     notifyListeners();
   }
 
@@ -222,17 +267,4 @@ class BoardController extends ChangeNotifier {
     return outcome;
   }
 
-  String _notice(String kind) {
-    final bool vi = _locale.startsWith('vi');
-    switch (kind) {
-      case 'stale':
-        return vi
-            ? 'Trợ giảng đang soạn cho bước khác, nên bảng giữ nguyên bước này.'
-            : 'The tutor was answering an older step, so the board stayed on this step.';
-      default:
-        return vi
-            ? 'Bảng tác giả không hợp lệ nên thầy dùng bước cũ. Đây là nội dung soạn sẵn, không phải AI.'
-            : 'The authored board was rejected, so the previous step stays. This is authored content, not AI.';
-    }
-  }
 }

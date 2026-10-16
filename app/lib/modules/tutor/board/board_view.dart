@@ -18,6 +18,7 @@ import 'board_models.dart';
 /// để test độc lập với phần còn lại của app (và **không** hardcode mọi bài thành một nhân vật).
 class BoardLabels {
   const BoardLabels({
+    required this.fallbacks,
     required this.previous,
     required this.next,
     required this.replay,
@@ -31,6 +32,7 @@ class BoardLabels {
   });
 
   static const BoardLabels vi = BoardLabels(
+    fallbacks: _viFallback,
     previous: 'Trước',
     next: 'Tiếp',
     replay: 'Xem lại từ đầu',
@@ -43,7 +45,29 @@ class BoardLabels {
     fallbackPrefix: 'Bảng soạn sẵn',
   );
 
+  /// Ba câu fallback, theo locale. Rev 7 §R7-C: controller giữ **mã** lỗi, còn câu chữ nằm ở
+  /// bảng nhãn này, nên một lỗi sinh ra trước khi đổi ngôn ngữ vẫn được đọc bằng ngôn ngữ
+  /// hiện hành thay vì treo câu tiếng cũ.
+  static const Map<BoardFallbackReason, String> _viFallback = <BoardFallbackReason, String>{
+    BoardFallbackReason.staleReply:
+        'Trợ giảng đang soạn cho bước khác, nên bảng giữ nguyên bước này.',
+    BoardFallbackReason.rejectedPlan:
+        'Bảng tác giả không hợp lệ nên thầy dùng bước cũ. Đây là nội dung soạn sẵn, không phải AI.',
+    BoardFallbackReason.foreignLesson:
+        'Bảng nhận được thuộc về bài khác nên bị chặn; bảng đang hiển thị không bị ghi đè.',
+  };
+
+  static const Map<BoardFallbackReason, String> _enFallback = <BoardFallbackReason, String>{
+    BoardFallbackReason.staleReply:
+        'The tutor was answering an older step, so the board stayed on this step.',
+    BoardFallbackReason.rejectedPlan:
+        'The authored board was rejected, so the previous step stays. This is authored content, not AI.',
+    BoardFallbackReason.foreignLesson:
+        'A board for another lesson was blocked; what is on the board was not overwritten.',
+  };
+
   static const BoardLabels en = BoardLabels(
+    fallbacks: _enFallback,
     previous: 'Back',
     next: 'Next',
     replay: 'Replay from start',
@@ -57,6 +81,14 @@ class BoardLabels {
   );
 
   static BoardLabels of(String locale) => locale.startsWith('vi') ? vi : en;
+
+  /// Câu fallback đầy đủ cho một mã lý do; `null` khi không có fallback.
+  String? fallbackFor(BoardFallbackReason? reason) =>
+      reason == null ? null : fallbacks[reason];
+
+  /// Bảng câu fallback của **chính locale này** — không suy ra bằng cách so `this == vi`,
+  /// vì host tương lai có thể truyền một bảng nhãn riêng.
+  final Map<BoardFallbackReason, String> fallbacks;
 
   final String previous;
   final String next;
@@ -82,10 +114,14 @@ class BoardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BoardLabels labels = this.labels ?? BoardLabels.of(controller.locale);
     return AnimatedBuilder(
       animation: Listenable.merge(<Listenable>[controller, controller.learner]),
       builder: (BuildContext context, Widget? child) {
+        // Rev 7 §R7-C: **mọi** thứ phụ thuộc locale phải resolve bên trong builder đang nghe
+        // controller. Tính `labels` ở ngoài thì `setLocale` chỉ rebuild subtree trong, còn nhãn
+        // điều khiển / ô kết quả vẫn là tiếng cũ khi host không dựng lại parent.
+        final BoardLabels labels = this.labels ?? BoardLabels.of(controller.locale);
+        final String? fallbackText = labels.fallbackFor(controller.fallbackReason);
         final BoardBeat? beat = controller.currentBeat;
         final BoardBeatCopy? copy = beat?.copyFor(controller.locale);
         return SingleChildScrollView(
@@ -101,15 +137,20 @@ class BoardView extends StatelessWidget {
                 beatCount: controller.beatCount,
               ),
               const SizedBox(height: 8),
-              if (controller.fallbackNotice != null)
+              if (fallbackText != null)
                 _Notice(
                   key: const ValueKey<String>('board_fallback'),
-                  text: '${labels.fallbackPrefix}: ${controller.fallbackNotice}',
+                  text: '${labels.fallbackPrefix}: $fallbackText',
                 ),
               if (beat == null)
                 const SizedBox(height: 8)
               else
-                _TutorLayer(beat: beat, copy: copy, labels: labels),
+                _TutorLayer(
+                  beat: beat,
+                  copy: copy,
+                  labels: labels,
+                  locale: controller.locale,
+                ),
               const SizedBox(height: 8),
               _LearnerLayerView(layer: controller.learner, labels: labels),
               const SizedBox(height: 12),
@@ -139,14 +180,16 @@ class BoardControls extends StatelessWidget {
       spacing: 4,
       runSpacing: 4,
       children: <Widget>[
-        _control(labels.previous, 'board_previous', () => controller.previous()),
+        _control(labels.previous, 'board_previous', controller.canGoPrevious ? controller.previous : null),
         _control(labels.replay, 'board_replay', controller.replay),
-        _control(labels.next, 'board_next', () => controller.next()),
+        // Nút Tiếp là **ý định của trẻ**: nó nhả `waitForLearner` rồi mới tiến (rev 7 §R7-D),
+        // và bị tắt khi vừa hết beat vừa không chờ gì — không có nút.enabled mà bấm vô ích.
+        _control(labels.next, 'board_next', controller.canGoNext ? controller.learnerAdvance : null),
       ],
     );
   }
 
-  Widget _control(String label, String key, VoidCallback onTap) {
+  Widget _control(String label, String key, VoidCallback? onTap) {
     return Semantics(
       button: true,
       label: label,
@@ -194,11 +237,19 @@ class _ScaffoldLayer extends StatelessWidget {
 }
 
 class _TutorLayer extends StatelessWidget {
-  const _TutorLayer({required this.beat, required this.copy, required this.labels});
+  const _TutorLayer({
+    required this.beat,
+    required this.copy,
+    required this.labels,
+    required this.locale,
+  });
 
   final BoardBeat beat;
   final BoardBeatCopy? copy;
   final BoardLabels labels;
+
+  /// Locale đang hiển thị, do [BoardView] lấy từ controller trong builder đang rebuild.
+  final String locale;
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +265,7 @@ class _TutorLayer extends StatelessWidget {
       visible.add(op);
     }
     for (int i = 0; i < visible.length; i++) {
-      children.add(_opWidget(visible[i], i));
+      children.add(_opWidget(visible[i], i, locale));
     }
     return Semantics(
       container: true,
@@ -233,17 +284,17 @@ class _TutorLayer extends StatelessWidget {
     );
   }
 
-  Widget _opWidget(BoardOp op, int index) {
+  Widget _opWidget(BoardOp op, int index, String locale) {
     final Key key = ValueKey<String>('board_op_${op.kind.wire}_$index');
     switch (op.kind) {
       case BoardOpKind.text:
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Semantics(label: op.altText, child: Text(op.text, key: key)),
+          child: Semantics(label: op.altFor(locale), child: Text(op.proseFor(locale), key: key)),
         );
       case BoardOpKind.codeSnippet:
         return Semantics(
-          label: op.altText,
+          label: op.altFor(locale),
           child: Container(
             key: key,
             padding: const EdgeInsets.all(8),
@@ -251,15 +302,15 @@ class _TutorLayer extends StatelessWidget {
               color: const Color(0x11000000),
               border: Border.all(color: const Color(0x33000000)),
             ),
-            child: Text(op.text, style: const TextStyle(fontFamily: 'monospace')),
+            child: Text(op.proseFor(locale), style: const TextStyle(fontFamily: 'monospace')),
           ),
         );
       case BoardOpKind.highlightToken:
       case BoardOpKind.highlightLine:
         return Semantics(
-          label: op.altText,
+          label: op.altFor(locale),
           child: Text(
-            '→ ${op.statement.isEmpty ? op.text : op.statement}',
+            '→ ${op.statement.isEmpty ? op.proseFor(locale) : op.statement}',
             key: key,
             style: const TextStyle(fontStyle: FontStyle.italic),
           ),
@@ -281,12 +332,12 @@ class _TutorLayer extends StatelessWidget {
           spacing: 4,
           children: <Widget>[
             for (final String token in op.tokenIds)
-              Semantics(label: op.altText, child: Text('[$token]')),
+              Semantics(label: op.altFor(locale), child: Text('[$token]')),
           ],
         );
       case BoardOpKind.simpleShape:
         return Semantics(
-          label: op.altText,
+          label: op.altFor(locale),
           child: Container(
             key: key,
             width: 24,
@@ -300,7 +351,7 @@ class _TutorLayer extends StatelessWidget {
         );
       case BoardOpKind.connector:
         return Semantics(
-          label: op.altText,
+          label: op.altFor(locale),
           child: Text('↔ ${op.fromId ?? ''} → ${op.toId ?? ''}', key: key),
         );
       case BoardOpKind.clearTutorLayer:
