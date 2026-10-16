@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1120" viewBox="0 0 1800 1120">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1426"/><stop offset="1" stop-color="#152b43"/></linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#0e6670"/><stop offset="1" stop-color="#123b57"/></linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1c3049"/><stop offset="1" stop-color="#132238"/></linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7ae0b2"/><stop offset="1" stop-color="#37a989"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffd77c"/><stop offset="1" stop-color="#e99c3d"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="14" stdDeviation="15" flood-color="#030914" flood-opacity=".5"/></filter>
+    <style>
+      .ui{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}.muted{fill:#9db3c8}.white{fill:#f4f1e8}.small{font-size:13px}.label{font-size:16px;font-weight:650;letter-spacing:.2px}.heading{font-size:24px;font-weight:750}.pill{font-size:12px;font-weight:750;letter-spacing:1px}
+    </style>
+  </defs>
+  <rect width="1800" height="1120" fill="url(#bg)"/>
+  <circle cx="1600" cy="60" r="300" fill="#236f75" opacity=".12"/><circle cx="90" cy="1040" r="340" fill="#5f67a6" opacity=".1"/>
+  <text x="78" y="78" class="ui" fill="#76d8b0" font-size="14" font-weight="800" letter-spacing="4">PYQUEST / PRODUCT DESIGN DIRECTION</text>
+  <text x="78" y="132" class="ui white" font-size="42" font-weight="800">A world worth exploring.</text>
+  <text x="80" y="166" class="ui muted" font-size="18">UI reference for curious learners · ages 8–12 · confident, adventurous, never preschool</text>
+  <g class="ui" transform="translate(1420 65)">
+    <rect width="300" height="74" rx="18" fill="#14283d" stroke="#2c4b62"/>
+    <circle cx="25" cy="25" r="6" fill="#68d7a8"/><text x="42" y="29" class="white" font-size="12" font-weight="700">DIRECTION</text>
+    <text x="22" y="53" class="muted" font-size="13">Atmospheric · legible · rewarding</text>
+  </g>
+  <!-- screen 1 -->
+  <g transform="translate(75 220)" filter="url(#shadow)">
+    <rect width="510" height="800" rx="34" fill="#08111e" stroke="#3a5669" stroke-width="2"/>
+    <rect x="12" y="12" width="486" height="776" rx="26" fill="url(#sea)"/>
+    <path d="M12 315 C110 285 150 344 242 315 S395 280 498 315 L498 775 Q498 788 485 788 L25 788 Q12 788 12 775Z" fill="#0c5362" opacity=".75"/>
+    <path d="M25 440 C115 395 166 460 245 421 S390 388 485 433" fill="none" stroke="#5db4a6" stroke-width="2" opacity=".28"/>
+    <text x="36" y="52" class="white" font-size="20" font-weight="800">PYQUEST</text>
+    <text x="36" y="76" class="muted small">THE ARCHIPELAGO OF IDEAS</text>
+    <rect x="344" y="28" width="124" height="36" rx="18" fill="#173248" stroke="#47717d"/>
+    <path d="M361 46 l7 -8 7 8 -7 8Z" fill="#ffd36c"/><text x="382" y="50" fill="#f8e9c9" font-size="13" font-weight="700">120 energy</text>
+    <text x="36" y="125" class="white" font-size="26" font-weight="800">Choose your next trail</text>
+    <text x="36" y="150" class="muted" font-size="13">Every island hides a new skill.</text>
+    <!-- island land masses -->
+    <path d="M60 315 Q44 283 83 265 L150 248 Q188 250 204 278 L229 309 L212 345 L140 362 L76 346Z" fill="#287b70" stroke="#6bc5a1" stroke-width="2"/>
+    <path d="M78 302 L104 277 L145 274 L173 297 L155 322 L111 330Z" fill="#3d9a7b"/>
+    <path d="M252 285 Q238 245 278 223 L345 210 Q390 218 403 256 L386 298 L322 319 L272 309Z" fill="#5d766e" stroke="#b2c4a2" stroke-width="2"/>
+    <path d="M267 266 L294 234 L339 231 L366 255 L346 279 L302 288Z" fill="#839783"/>
+    <path d="M317 222 L331 193 L345 222Z" fill="#d5c39b"/><path d="M329 201 L337 214 L323 214Z" fill="#f5eee0"/>
+    <path d="M115 495 Q92 457 127 434 L184 418 Q223 427 234 460 L218 500 L161 517 L126 510Z" fill="#345f72" stroke="#78b5bd" stroke-width="2"/>
+    <path d="M136 467 L155 444 L192 443 L211 463 L191 484 L153 489Z" fill="#4e8590"/>
+    <path d="M292 467 Q272 430 310 410 L370 396 Q411 404 425 441 L405 481 L346 497 L304 485Z" fill="#9a6f45" stroke="#e4bb7b" stroke-width="2"/>
+    <path d="M309 445 L331 420 L369 418 L396 443 L375 465 L335 469Z" fill="#bd8c56"/>
+    <!-- location icons -->
+    <circle cx="143" cy="295" r="24" fill="#10283a" stroke="#b2e3c4" stroke-width="2"/><path d="M133 302 L143 281 L153 302Z" fill="#f6d37c"/><rect x="139" y="294" width="8" height="11" rx="2" fill="#f6d37c"/>
+    <circle cx="331" cy="255" r="24" fill="#10283a" stroke="#d2d8c3" stroke-width="2"/><circle cx="331" cy="255" r="12" fill="none" stroke="#b6d3c4" stroke-width="2"/><path d="M331 240 V270 M316 255 H346" stroke="#b6d3c4" stroke-width="2"/>
+    <circle cx="170" cy="464" r="24" fill="#10283a" stroke="#8ad6d7" stroke-width="2"/><path d="M160 459 L170 449 L180 459 L170 478Z" fill="#6fd1c5"/>
+    <circle cx="353" cy="442" r="24" fill="#10283a" stroke="#f0c887" stroke-width="2"/><path d="M342 449 L347 432 L359 432 L364 449Z" fill="#f5bd63"/><path d="M347 432 L353 425 L359 432" fill="none" stroke="#f5bd63" stroke-width="2"/>
+    <!-- labels -->
+    <rect x="74" y="352" width="138" height="30" rx="15" fill="#102c3a" stroke="#3e807b"/><text x="143" y="371" text-anchor="middle" class="white" font-size="12" font-weight="700">CODE GROVE</text>
+    <rect x="260" y="316" width="142" height="30" rx="15" fill="#102c3a" stroke="#607e79"/><text x="331" y="335" text-anchor="middle" class="white" font-size="12" font-weight="700">ORBITAL LAB</text>
+    <rect x="103" y="523" width="134" height="30" rx="15" fill="#102c3a" stroke="#477f8c"/><text x="170" y="542" text-anchor="middle" class="white" font-size="12" font-weight="700">LOGIC COVE</text>
+    <rect x="286" y="502" width="135" height="30" rx="15" fill="#102c3a" stroke="#9a8059"/><text x="353" y="521" text-anchor="middle" class="white" font-size="12" font-weight="700">ROBOT FORGE</text>
+    <!-- bottom mission card -->
+    <rect x="28" y="596" width="454" height="128" rx="22" fill="url(#panel)" stroke="#36536b"/>
+    <rect x="46" y="615" width="42" height="42" rx="13" fill="#245d61"/><path d="M57 636 L67 624 L77 636 L67 647Z" fill="#76d9b1"/>
+    <text x="101" y="625" class="muted small">TODAY'S EXPEDITION</text><text x="101" y="650" class="white label">Teach the signal drone</text><text x="101" y="670" class="muted small">Complete 2 short coding challenges</text>
+    <rect x="46" y="686" width="418" height="7" rx="3.5" fill="#2a4258"/><rect x="46" y="686" width="132" height="7" rx="3.5" fill="url(#mint)"/>
+    <text x="448" y="716" text-anchor="end" fill="#75d9b0" font-size="12" font-weight="800">1 / 3</text>
+    <rect x="28" y="742" width="454" height="32" rx="16" fill="#0d2638" stroke="#31556a"/><text x="255" y="763" text-anchor="middle" fill="#b7d4de" font-size="12" font-weight="700">MAP   ·   QUESTS   ·   INVENTORY   ·   PROFILE</text>
+  </g>
+  <!-- screen 2 -->
+  <g transform="translate(645 220)" filter="url(#shadow)">
+    <rect width="510" height="800" rx="34" fill="#08111e" stroke="#3a5669" stroke-width="2"/>
+    <rect x="12" y="12" width="486" height="776" rx="26" fill="#101c30"/>
+    <text x="36" y="50" class="muted small">CODE GROVE / CHAPTER 02</text><text x="36" y="84" class="white" font-size="25" font-weight="800">Loops make patterns</text>
+    <rect x="36" y="104" width="438" height="8" rx="4" fill="#263a50"/><rect x="36" y="104" width="174" height="8" rx="4" fill="url(#mint)"/>
+    <rect x="36" y="135" width="438" height="176" rx="20" fill="#162a42" stroke="#2e4a62"/>
+    <rect x="53" y="153" width="40" height="40" rx="12" fill="#244e5d"/><text x="73" y="179" text-anchor="middle" fill="#7de0b7" font-size="21" font-weight="800">{ }</text>
+    <text x="108" y="163" class="white label">Your mission</text><text x="108" y="186" class="muted small">Send three beacons into orbit.</text>
+    <g class="ui" font-size="16" font-weight="650">
+      <rect x="55" y="212" width="398" height="76" rx="12" fill="#0b1627" stroke="#30465b"/>
+      <text x="73" y="239" fill="#718ba3">1</text><text x="99" y="239" fill="#f4c777">for</text><text x="133" y="239" fill="#8bd6c1">beacon</text><text x="197" y="239" fill="#f4c777">in</text><text x="219" y="239" fill="#8bd6c1">range(3):</text>
+      <text x="73" y="266" fill="#718ba3">2</text><text x="99" y="266" fill="#8ba9c6">    launch(beacon)</text>
+    </g>
+    <text x="38" y="344" class="muted small">LIVE PREVIEW</text>
+    <rect x="36" y="360" width="438" height="174" rx="20" fill="#0b2638" stroke="#28566a"/>
+    <circle cx="255" cy="445" r="63" fill="none" stroke="#32657a" stroke-dasharray="5 8" stroke-width="2"/><circle cx="255" cy="445" r="40" fill="none" stroke="#32657a" stroke-width="2"/>
+    <circle cx="255" cy="445" r="11" fill="#f4c777"/><path d="M255 426 L261 441 L255 445 L249 441Z" fill="#fff0c9"/>
+    <circle cx="255" cy="382" r="10" fill="#72d9b2"/><circle cx="310" cy="477" r="10" fill="#72d9b2"/><circle cx="200" cy="477" r="10" fill="#72d9b2"/>
+    <path d="M255 396 V418 M302 471 L276 456 M208 471 L234 456" stroke="#72d9b2" stroke-width="2" stroke-dasharray="4 4"/>
+    <rect x="54" y="550" width="438" height="75" rx="18" fill="#172d42" stroke="#34546a"/>
+    <circle cx="82" cy="577" r="13" fill="#245e58"/><path d="M76 577 L81 582 L89 571" fill="none" stroke="#8ce1b9" stroke-width="2.5"/>
+    <text x="105" y="576" class="white label">Think like a programmer</text><text x="105" y="598" class="muted small">A loop repeats the same instruction.</text>
+    <rect x="36" y="646" width="438" height="58" rx="18" fill="url(#mint)"/><text x="255" y="681" text-anchor="middle" fill="#082c2d" font-size="16" font-weight="850">RUN CODE   →</text>
+    <text x="255" y="744" text-anchor="middle" class="muted small">HINTS ARE AVAILABLE · MISTAKES ARE PART OF THE QUEST</text>
+  </g>
+  <!-- screen 3 -->
+  <g transform="translate(1215 220)" filter="url(#shadow)">
+    <rect width="510" height="800" rx="34" fill="#08111e" stroke="#3a5669" stroke-width="2"/>
+    <rect x="12" y="12" width="486" height="776" rx="26" fill="#101c30"/>
+    <text x="36" y="50" class="muted small">FIELD GUIDE / ALWAYS CURIOUS</text><text x="36" y="84" class="white" font-size="25" font-weight="800">Meet your AI guide</text>
+    <rect x="36" y="108" width="438" height="192" rx="22" fill="#142d43" stroke="#31556a"/>
+    <circle cx="255" cy="185" r="55" fill="#174d5a" stroke="#56bda2" stroke-width="2"/>
+    <path d="M218 167 L226 131 L245 154 M292 167 L284 131 L265 154" fill="#4b9b91" stroke="#83e0bd" stroke-width="2"/>
+    <path d="M224 180 Q255 147 286 180 L281 211 Q255 240 229 211Z" fill="#a8d9cc" stroke="#d8f1de" stroke-width="2"/>
+    <rect x="234" y="180" width="42" height="18" rx="9" fill="#17354a"/><circle cx="245" cy="189" r="4" fill="#f8d078"/><circle cx="265" cy="189" r="4" fill="#f8d078"/>
+    <path d="M245 209 Q255 217 265 209" fill="none" stroke="#24655e" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="255" y="266" text-anchor="middle" class="white label">PIP · YOUR FIELD PARTNER</text><text x="255" y="285" text-anchor="middle" class="muted small">Explains the why, not just the answer.</text>
+    <rect x="36" y="322" width="350" height="90" rx="18" fill="#1b3047" stroke="#2d4c64"/>
+    <text x="54" y="348" class="white" font-size="14">Why did the loop run three times?</text><text x="54" y="373" class="muted small">Look at the number inside range(3).</text><text x="54" y="392" class="muted small">What do you think would change with 5?</text>
+    <rect x="148" y="428" width="326" height="72" rx="18" fill="#184b4b" stroke="#3b9e87"/>
+    <text x="166" y="453" fill="#d7f5e8" font-size="14">It would launch five beacons?</text><text x="166" y="476" fill="#9bdac8" font-size="12">You · just now</text>
+    <rect x="36" y="516" width="400" height="86" rx="18" fill="#1b3047" stroke="#2d4c64"/>
+    <text x="54" y="542" class="white" font-size="14">Exactly. You predicted the pattern.</text><text x="54" y="566" class="muted small">Try changing the code, then run it.</text>
+    <rect x="36" y="622" width="438" height="68" rx="18" fill="#0b1727" stroke="#36516a"/>
+    <text x="55" y="648" class="muted small">Ask a question or request a hint…</text><circle cx="442" cy="656" r="18" fill="url(#gold)"/><path d="M435 656 L448 649 L445 664Z" fill="#4c3820"/>
+    <text x="255" y="730" text-anchor="middle" class="muted small">GUIDED DISCOVERY · SAFE BY DEFAULT · AGE-APPROPRIATE</text>
+    <rect x="36" y="746" width="438" height="28" rx="14" fill="#14283d"/><text x="255" y="764" text-anchor="middle" fill="#b5cedd" font-size="11" font-weight="700">LESSON   ·   ASK PIP   ·   NOTES   ·   PROGRESS</text>
+  </g>
+</svg>
