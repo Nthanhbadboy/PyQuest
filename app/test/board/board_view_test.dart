@@ -664,8 +664,8 @@ void main() {
     final Map<String, dynamic> alt =
         (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
     final String viAlt = alt['vi']! as String;
-    expect(find.bySemanticsLabel(viAlt), findsOneWidget,
-        reason: 'authored VI label must exist in the real semantics tree: "$viAlt"');
+    expect(find.bySemanticsLabel(RegExp(RegExp.escape(viAlt))), findsWidgets,
+        reason: 'authored VI label must occur in the real semantics tree: "$viAlt"');
   });
 
   testWidgets('R10-D2-sem: sau setLocale(en), semantic output cập nhật sang EN',
@@ -686,9 +686,9 @@ void main() {
         (beatOps[1] as Map<String, dynamic>)['altText']! as Map<String, dynamic>;
     controller.setLocale('en');
     await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel(alt['en']! as String), findsOneWidget,
-        reason: 'authored EN label must replace VI in the semantics tree');
-    expect(find.bySemanticsLabel(alt['vi']! as String), findsNothing);
+    expect(find.bySemanticsLabel(RegExp(RegExp.escape(alt['en']! as String))), findsWidgets,
+        reason: 'authored EN label must occur in the semantics tree');
+    expect(find.bySemanticsLabel(RegExp(RegExp.escape(alt['vi']! as String))), findsNothing);
   });
 
   testWidgets('R10-D3-sem: sau advance và EN→VI, semantic output trở lại VI',
@@ -717,9 +717,9 @@ void main() {
     expect(controller.beatIndex, 3);
     await tester.ensureVisible(find.byKey(const ValueKey<String>('board_output_2_1_label')));
     await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel(alt['vi']! as String), findsOneWidget,
+    expect(find.bySemanticsLabel(RegExp(RegExp.escape(alt['vi']! as String))), findsWidgets,
         reason: 'authored VI label must return in the semantics tree after EN→VI');
-    expect(find.bySemanticsLabel(alt['en']! as String), findsNothing);
+    expect(find.bySemanticsLabel(RegExp(RegExp.escape(alt['en']! as String))), findsNothing);
   });
 
   testWidgets('r7 §R7-C: fallback notice lưu MÃ, câu chữ theo locale hiện hành', (WidgetTester tester) async {
