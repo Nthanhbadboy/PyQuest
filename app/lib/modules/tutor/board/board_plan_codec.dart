@@ -348,7 +348,7 @@ BoardBeat? _decodeBeat(
     }
   }
 
-  if (!issues.isEmpty) return null;
+  if (issues.isNotEmpty) return null;
   return BoardBeat(
     beatId: beatId,
     copy: copy,
@@ -474,14 +474,17 @@ void _collectBadKeys(Object? node, List<BoardIssue> issues, List<String> path) {
       if (_forbiddenKeys.contains(entry.key)) {
         issues.add(BoardIssue(
           BoardIssueCode.foreignKey,
-          'khóa ngoài hợp đồng: ${<String>[...path, entry.key].join('.')}',
+          'khóa ngoài hợp đồng: ' + _pathOf(path, entry.key),
         ));
       }
       final Object? value = entry.value;
       if (value is String) {
         for (final String bad in _forbiddenSubstrings) {
           if (value.contains(bad)) {
-            issues.add(BoardIssue(BoardIssueCode.markupInText, 'chuỗi có "$bad" ở ${<String>[...path, entry.key].join('.")}'));
+            issues.add(BoardIssue(
+              BoardIssueCode.markupInText,
+              'chuỗi có ' + bad + ' ở ' + _pathOf(path, entry.key),
+            ));
             break;
           }
         }
@@ -494,6 +497,9 @@ void _collectBadKeys(Object? node, List<BoardIssue> issues, List<String> path) {
     }
   }
 }
+
+/// Đường dẫn JSON cho message, để reviewer trỏ đúng chỗ hỏng.
+String _pathOf(List<String> path, String key) => <String>[...path, key].join('.');
 
 String _str(Object? value) => value is String ? value : '';
 

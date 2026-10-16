@@ -59,8 +59,8 @@ List<String> _codeLines(String path) {
     if (line.startsWith('///') || line.startsWith('//')) continue;
     if (line.startsWith('*')) continue;
     if (blockStart >= 0) {
-      final int? end = line.indexOf('*/', blockStart);
-      if (end == null) {
+      final int end = line.indexOf('*/', blockStart);
+      if (end < 0) {
         inBlock = true;
         line = line.substring(0, blockStart).trim();
       } else {

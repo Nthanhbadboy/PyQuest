@@ -50,11 +50,11 @@ class LearnerLayer extends ChangeNotifier {
 class BoardController extends ChangeNotifier {
   BoardController({
     required this.sessionId,
-    required this.locale,
+    required String locale,
     required this.lessonId,
     required this.stepId,
     this.reduceMotion = false,
-  });
+  }) : _locale = locale;
 
   final String sessionId;
   final String lessonId;

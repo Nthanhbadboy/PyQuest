@@ -204,15 +204,21 @@ void main() {
     expect(tester.getSemantics(find.byKey(const ValueKey<String>('board_scaffold'))).toString(),
         contains('1/4'));
 
+    // Enter được đo trên chính nút `board_next`: ở beat 0 thì `previous`/`replay` là no-op
+    // hợp lệ, nên chỉ có `next` mới cho bằng chứng "activation thật bằng bàn phím".
     final int beatBefore = controller.beatIndex;
-    await tester.sendKeyDownEvent(LogicalKeyboardKey.tab);
-    await tester.sendKeyUpEvent(LogicalKeyboardKey.tab);
-    await tester.pump();
-    expect(focusedBoardControlKey(), isNotNull);
+    String? focused;
+    for (int i = 0; i < 6 && focused != 'board_next'; i++) {
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      focused = focusedBoardControlKey();
+    }
+    expect(focused, 'board_next', reason: 'không tab tới được nút Tiếp sau 6 lần');
     await tester.sendKeyDownEvent(LogicalKeyboardKey.enter);
     await tester.sendKeyUpEvent(LogicalKeyboardKey.enter);
     await tester.pump();
-    expect(controller.beatIndex, isNot(equals(beatBefore)),
+    expect(controller.beatIndex, beatBefore + 1,
         reason: 'nút được focus phải điều khiển được bằng bàn phím, không chỉ bằng chạm');
     expect(tester.takeException(), isNull);
   });

@@ -87,7 +87,7 @@ class BoardView extends StatelessWidget {
       animation: Listenable.merge(<Listenable>[controller, controller.learner]),
       builder: (BuildContext context, Widget? child) {
         final BoardBeat? beat = controller.currentBeat;
-        final BoardBeatCopy? copy = beat == null ? null : beat.copyFor(controller.locale);
+        final BoardBeatCopy? copy = beat?.copyFor(controller.locale);
         return SingleChildScrollView(
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -160,7 +160,6 @@ class BoardControls extends StatelessWidget {
 
 class _ScaffoldLayer extends StatelessWidget {
   const _ScaffoldLayer({
-    super.key,
     required this.lessonId,
     required this.stepId,
     required this.characterId,
@@ -191,7 +190,7 @@ class _ScaffoldLayer extends StatelessWidget {
 }
 
 class _TutorLayer extends StatelessWidget {
-  const _TutorLayer({required this.beat, required this.copy, required this.labels, super.key});
+  const _TutorLayer({required this.beat, required this.copy, required this.labels});
 
   final BoardBeat beat;
   final BoardBeatCopy? copy;
@@ -308,7 +307,7 @@ class _TutorLayer extends StatelessWidget {
 }
 
 class _LearnerLayerView extends StatelessWidget {
-  const _LearnerLayerView({required this.layer, required this.labels, super.key});
+  const _LearnerLayerView({required this.layer, required this.labels});
 
   final LearnerLayer layer;
   final BoardLabels labels;
@@ -328,6 +327,7 @@ class _LearnerLayerView extends StatelessWidget {
             children: <Widget>[
               for (final String stroke in layer.strokes)
                 Container(
+                  key: ValueKey<String>('board_ink_$stroke'),
                   width: 10,
                   height: 10,
                   decoration: const BoxDecoration(

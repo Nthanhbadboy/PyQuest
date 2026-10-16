@@ -104,7 +104,7 @@ Object removed() => const _Removed();
 
 /// Reference **không** do plan khai: chạy từng câu qua engine thật của app, lấy output thật.
 DeterministicReference referenceFor(Iterable<String> statements) {
-  final PythonRuntime runtime = SimulatedPythonRuntime();
+  final SimulatedPythonRuntime runtime = SimulatedPythonRuntime();
   final Map<String, String> out = <String, String>{};
   for (final String statement in statements.toSet()) {
     final ExecutionResult whole = runtime.executeSync(statement);
@@ -122,16 +122,17 @@ DeterministicReference referenceFor(Iterable<String> statements) {
 /// Reference cho một plan cụ thể: code của bước + mọi statement mà plan hoặc op nêu.
 DeterministicReference referenceForPlan(int index) {
   final Map<String, dynamic> plan = composedPlan(index);
-  final List<String> statements = <String>[
-    kExampleSteps[plan['stepId']! as String]!,
-    for (final dynamic raw in plan['beats']! as List<dynamic>)
-      if ((raw as Map<String, dynamic>)['sourceStatement'] != null)
-        (raw as Map<String, dynamic>)['sourceStatement']! as String,
-    for (final dynamic raw in plan['beats']! as List<dynamic>)
-      for (final dynamic opRaw in (raw as Map<String, dynamic>)['ops']! as List<dynamic>)
-        if ((opRaw as Map<String, dynamic>)['statement'] != null)
-          (opRaw as Map<String, dynamic>)['statement']! as String,
-  ];
+  final List<String> statements = <String>[kExampleSteps[plan['stepId']! as String]!];
+  for (final Object? raw in plan['beats']! as List<dynamic>) {
+    final Map<String, dynamic> beat = raw! as Map<String, dynamic>;
+    final Object? source = beat['sourceStatement'];
+    if (source is String) statements.add(source);
+    for (final Object? opRaw in beat['ops']! as List<dynamic>) {
+      final Map<String, dynamic> op = opRaw! as Map<String, dynamic>;
+      final Object? statement = op['statement'];
+      if (statement is String) statements.add(statement);
+    }
+  }
   return referenceFor(statements);
 }
 
@@ -160,14 +161,4 @@ List<BoardIssueCode> codesOf(BoardValidation validation) =>
 
 /// String có **ít nhất** `count` code point, mỗi code point là một emoji ngoài BMP
 /// (1 code point = 2 UTF-16 unit) nên phép đếm theo code point khác hẳn theo `.length`.
-String codePointsOfLength(int count) {
-  final StringBuffer buffer = StringBuffer();
-  while (buffer.runes.length < count) {
-    buffer.write('😀');
-  }
-  String value = buffer.toString();
-  while (value.runes.length - 2 >= count) {
-    value = value.substring(0, value.length - 2);
-  }
-  return value;
-}
+String codePointsOfLength(int count) => '😀' * count;

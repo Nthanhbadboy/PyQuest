@@ -117,7 +117,7 @@ void main() {
 
     test('ops vượt trần mỗi beat', () {
       final List<Object> ops = <Object>[
-        for (int i = 0; i < BoardLimits.maxOpsPerBeat; i++)
+        for (int i = 0; i <= BoardLimits.maxOpsPerBeat; i++)
           <String, Object>{'type': 'text', 'text': 'dòng $i', 'altText': 'chữ $i'},
       ];
       final BoardValidation validation =

@@ -650,6 +650,56 @@ không fake leaderboard/reward, không đổi economy trong patch board/locale. 
 ghi rõ để rev sau của các bạn không phải nghi ngờ dữ liệu mình giao.
 Đã làm theo §V1: assertion per-Tab (down+up), `trace` thành `expect`, Enter characterization kèm
 giới hạn "traversal ≠ activation". Đã sửa 2 overclaim (toán rect vs RenderBox; dự phóng vs đo thật)
-ngay trong tài liệu cũ, không để câu sai tồn tại. Gate `runtime=no` giữ nguyên: `PQC-010/014/015`
-vẫn chờ authorize, `U1/U2/U4/U5` vẫn chờ người dùng.
+ngay trong tài liệu cũ, không để câu sai tồn tại. Gate `runtime=no` giữ nguyên **ở thời điểm rev 5**:
+`PQC-010/014/015` vẫn chờ authorize, `U1/U2/U4/U5` vẫn chờ người dùng.
+*(Cập nhật rev 6 @ `5c69046`: ba gói `PQC-010/014/015` đã được người dùng authorize **runtime** theo
+`AUTHORIZATION_2026-10-16_FOUNDATION.md`, dependency chỉ mở cho `PQC-015` phần locale — câu trên là
+bối cảnh lịch sử của rev 5, không còn là gate hiện hành. `U1/U2/U4/U5` vẫn chờ người dùng.)*
 
+
+
+## EV-ID-022 — rev 6 (`5c69046`) + vòng `PQC-010` đầu tiên: guard, code, và **một run đỏ vì tôi đoán API**
+
+**Intake (số tái hiện được).** Patch gate của design: `git show 5c69046:docs/design/coordination/patches/scoped-runtime-r6.patch`
+→ sha256 `1912b45e560418567f835bb57c6c5113fa38fb021ea8d2c237b754779328bb12` **khớp** con số design công bố;
+`git apply --check` sạch rồi `git apply` (chỉ `tools/coordination/pq_lead.py` + `test_pq_lead.py`);
+`python3 tools/coordination/test_pq_lead.py` → `Ran 37 tests … OK`. Guard thử cả hai chiều trên đơn hàng thật:
+`brief PQC-010/014/015` → `ALLOWED for scope=runtime: explicit order, task and dependency scope matched`;
+`brief PQC-008` · `brief PQC-005` → `BLOCKED … work order not in explicit runtime allowlist`;
+`brief PQC-011` → không có file order ⇒ fail-closed. `ack 5c69046…` → `marked processed: design 5c69046 revision 6`.
+
+**Commit `26d9dba`** = 22 file, đúng allowlist `PQC-010` (`app/lib/modules/tutor/board/**` 5 file,
+`app/test/board/**` 5 file + fixture ops, docs coordination, và **hai file `tools/coordination`** là patch
+gate mà rev 6 yêu cầu áp trước khi code — không phải code app).
+
+**Run đỏ `38903497361` @ `26d9dba` — đọc nguyên văn, không giảm nhẹ.** `FAILED: analyze=1, test=1`;
+`render=0`; `test` **`+182 -3`** (baseline 175 **không mất test nào**; 3 ca đỏ là *load failure* của
+`board_controller_test` / `board_plan_codec_test` / `board_view_test` vì chúng import file hỏng, còn
+`board_boundaries_test` đã chạy và PASS trên CI thật). Analyzer nêu **20 issue**, trong đó lỗi của tôi:
+
+| Lỗi | Nguyên nhân thật | Cách sửa |
+|---|---|---|
+| `not_initialized_non_nullable_instance_field` + `initializing_formal_for_non_existent_field` (`board_controller.dart:51/53`) | tôi viết `required this.locale` trong khi trường là `String _locale` + getter `locale` | `required String locale` + `: _locale = locale` |
+| `expected_string_literal` / `unterminated_string_literal` / cascade `expected_executable` (`board_plan_codec.dart:484/500/501`) | chuỗi message dạng `'…${…join('.')}'` lồng nháy đơn — tôi tưởng Dart cho lồng vô hạn | tách helper `_pathOf(path, key)`, message ghép bằng `+` |
+| `undefined_method executeSync` (`board_test_support.dart:110/115`) | **đoán API lần nữa**: `executeSync` chỉ có trên `SimulatedPythonRuntime`, không có trên interface `PythonRuntime` | khai báo biến là `SimulatedPythonRuntime` |
+| `undefined_getter runes` trên `StringBuffer` (`:165`) | assuming `StringBuffer.runes` tồn tại | `codePointsOfLength(n) => '\U0001F600' * n` (1 emoji = 1 code point = 2 UTF-16 unit) |
+| `unused_element_parameter` ×3 (`board_view.dart:163/194/311`) | tôi thêm `super.key` "cho an toàn" vào 3 private widget không ai truyền key — chính cái thêm đó thành warning **fatal** | bỏ `super.key` ở `_ScaffoldLayer`/`_TutorLayer`/`_LearnerLayerView` (riêng `_Notice` có truyền key nên giữ) |
+| `unused_local_variable stroke` (`board_view.dart:329`) | vòng `for` lấy `stroke` rồi không dùng | dot của trẻ giờ mang `ValueKey('board_ink_$stroke')` |
+| `unnecessary_cast` ×2, `prefer_is_not_empty`, `prefer_null_aware_operators`, `unnecessary_brace_in_string_interps`, `unnecessary_nullable_for_final_variable_declarations` | kiểu/info còn sót | viết lại theo kiểu tường minh, `beat?.copyFor`, `end < 0` |
+
+**Hai chỗ tôi sửa vì test của tôi sai, không phải data sai:** (1) `expectOnly('ops vượt trần')` dựng đúng
+`maxOpsPerBeat` phần tử nên **không** vượt trần — phải `+1`; (2) test Enter bấm `tab` một lần rồi đòi
+`beatIndex` đổi, trong khi nút đầu theo thứ tự đọc là `board_previous` (no-op hợp lệ ở beat 0) ⇒ phải tab
+tới đúng `board_next` rồi mới đo activation. Đây là bài học cũ (đoán thay vì đọc) nhưng ở tầng assertion,
+không phải tầng API.
+
+**Boundary test chạy thật trên CI (`board_boundaries_test`, 7 ca PASS)** chứng minh trên nguồn: không
+`score/quota/energy/reward/lessonCompleted/http/provider/voice/audio`, không `Timer`/`Future.delayed`/`await`,
+import chỉ `dart:convert` + flutter chuẩn + nội bộ board, op không có trường `layer`, view không
+`Tween/CurvedAnimation/AnimationController/Html/Text.rich`, và trần hợp đồng khớp bảng rev 4
+(1..12 beat · 8 op · 600 code point · 12 token · 4 group · 8 shape · 8 connector · schema 1 · 9 op kind).
+
+**Chưa xong:** commit sửa tiếp theo đây phải có `analyze` No issues + `test` xanh với toàn bộ số test mới,
+`số CI xanh` sẽ ghi thành EV-ID-022.1 ngay khi run về, kèm 16 ảnh `board-*.png` mà `publish_previews.py`
+đăng từ `build/previews` (chụp bằng test thường, **không** tag `render` vì `ci.yml` chỉ quét `--tags render
+test/render` — tag ra ngoài thư mục đó sẽ thành bằng chứng giả).

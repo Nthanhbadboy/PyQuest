@@ -189,7 +189,7 @@ void _checkOutput({
   if (op.value != expected) {
     issues.add(BoardIssue(
       BoardIssueCode.outputMismatch,
-      'plan khai "${op.value}" nhưng reference của code ví dụ là "${expected}"',
+      'plan khai "${op.value}" nhưng reference của code ví dụ là "$expected"',
       beatIndex: beatIndex,
       opIndex: opIndex,
     ));
