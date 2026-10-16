@@ -767,3 +767,34 @@ CI ⇒ ảnh "có" mà không ai chụp); ảnh này là **nội dung tác giả
 `số CI xanh` sẽ ghi thành EV-ID-022.1 ngay khi run về, kèm 16 ảnh `board-*.png` mà `publish_previews.py`
 đăng từ `build/previews` (chụp bằng test thường, **không** tag `render` vì `ci.yml` chỉ quét `--tags render
 test/render` — tag ra ngoài thư mục đó sẽ thành bằng chứng giả).
+
+### EV-ID-022.1 — `PQC-010` vòng 1 **xanh trên CI thật** (số để design đối chiếu, không phải lời tôi)
+
+`38910292250` @ `117651be4cf6204992baaef50ae15a8699812336` (check-run `117006041656`, `TITLE: All steps passed`):
+
+- `flutter analyze` → **`No issues found! (ran in 11.0s)`** (đi từ 20 issue → 3 info → 1 info → 0).
+- `flutter test --exclude-tags render` → **`00:46 +255: All tests passed!`** = baseline **175** giữ nguyên
+  + đúng **80** test mới trong `app/test/board/` (`board_plan_codec_test` + `board_controller_test` +
+  `board_view_test` + `board_boundaries_test` + `board_previews_test`), **không** test nào bị đổi thành
+  `skip` (tôi từng có `skip: false` thừa, đã bỏ — không phải tắt test).
+- `flutter test --tags render test/render` → **`+10`** và dòng characterization `j00..j05 = 7entries/11501568 B`
+  **không đổi** so với năm run trước ⇒ board không làm lệch cache/nền render cũ.
+- `ci/publish_previews.py` → **16 file** `board-mq1_01_s2-*` và `board-mq1_03_s2-*` ×
+  {`360x640`, `390x844`} × {`font1.0`, `font2.0`} × {`vi`, `en`}, mỗi file 1 chunk; test từ chối ảnh < 2 KB
+  nên đây là ảnh có nội dung chữ, không phải nền trắng. Ảnh mang nhãn "nội dung tác giả, **chưa** nối
+  LessonScreen/AI/voice".
+
+**Bằng chứng đã đóng trong phạm vi allowlist** (tên test là chữ ký, không phải mô tả): reject nguyên plan
+cho từng mã lỗi `schemaVersion/emptyPlan/unknownOpKind/unknownObject/layerViolation/missingAltText/
+genericAltText/missingCopy/copyTooLong/badGeometry/malformedId/duplicateId/outputMismatch/
+outputWithoutStatement/outputScopeMismatch/foreignKey/markupInText/tooManyCodeLines/tooManyOps/
+tooManyTokens/tooManyBeats/documentTooLarge/invalidJson`; stale/future/turn/locale/session/token sai ⇒
+`tokenRejected` và **plan cũ còn nguyên**; `disposed` ⇒ không notify; `waitForLearner` chặn `next`;
+`clearTutorLayer` không xóa ink; `setLocale` giữ beat+ink và chặn reply cũ; control ≥ 48 px ở 360×640
+font 2.0; Tab có assertion trong từng vòng và Enter kích hoạt `board_next`; semantics đọc từ
+`Semantics.properties`; biên nguồn chặn `score/quota/energy/reward/lessonCompleted/Timer/await/Http`.
+
+**Chưa chứng minh — vẫn mở:** thiết bị thật (TalkBack/Android), đọc bởi screen reader thật, hiệu năng bộ
+nhớ 512 px, và mọi thứ thuộc `PQC-011` (nối lesson) / `PQC-012` (đồng bộ cue) / `PQC-013` (AI plan).
+Widget test **không** phải bằng chứng thiết bị; `flutter test` **không** phải bằng chứng board đã chạy
+trong bài học. Đó là lý do tôi không tự đóng `PQC-010`, chỉ chuyển `READY_FOR_REVIEW`.

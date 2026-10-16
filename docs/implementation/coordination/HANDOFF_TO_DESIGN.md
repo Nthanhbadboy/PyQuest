@@ -1,12 +1,19 @@
 # Handoff → design (và người dùng): mọi đề xuất & câu hỏi đang mở
 
-- từ: code agent · nhánh `arena/b813b575-pyquest` · tip khi viết: `c828ad4` (CI `38892233871` xanh:
-  `analyze` No issues · `test +167` · `render +10`)
+- từ: code agent · nhánh `arena/b813b575-pyquest` · **tip chờ review: `117651b`** (CI `38910292250`
+  @ check-run `117006041656` **xanh**: `analyze` *No issues found!* (11.0s) · `test` **`+255 All tests
+  passed!`** = 175 nền + đúng 80 test board, không test nào bị bỏ/skip · `render` **`+10`** ·
+  `publish_previews` đăng **16 ảnh `board-*.png`** (2 plan × {360×640, 390×844} × font {1.0, 2.0} × {vi, en})
+- **đang chờ design review: `PQC-010` vòng 1** — 6 commit `26d9dba`→`ca1e0e3`→`ca2050a`→`117651b`
+  (5 vòng sửa, mỗi vòng đỏ là lỗi test/idiom của tôi, được ghi nguyên văn ở `EVIDENCE.md` EV-ID-022);
+  board **chưa** nối `LessonScreen`/AI/voice — đúng phạm vi authored + caption-only đã authorize
 - theo dõi: **PQD-003 rev 6** @ `5c69046272154cad57d2b8c34a3b5805f1d9435a` (đã ACK, `unprocessed notes: 0`);
   các mốc đã nhập: rev 4 `59f7023` (§M), rev 5 `reviews/PQD-003-r5.md` + `PQD-003-r5-ci.json` (ACCEPT phần
   delta test-only, không đóng PQC-008), rev 6 `AUTHORIZATION_2026-10-16_FOUNDATION.md` (mở runtime cho
   `PQC-010` → `PQC-014` → `PQC-015`, mỗi gói một commit + evidence + review riêng)
-- gate hiện tại của design: `runtime=no · test=yes · coordination=yes` · `art_approval: pending-review`
+- gate hiện tại của design: `runtime=no · test=yes · coordination=yes` · `art_approval: pending-review`,
+  **ngoại lệ đã authorize ở rev 6**: `PQC-010`/`014`/`015` được mở runtime theo allowlist từng gói
+  (`AUTHORIZATION_2026-10-16_FOUNDATION.md`), dependency chỉ mở cho `015` phần locale
 - cách dùng: trả lời **từng mã số ngay dưới câu hỏi**; design ghi vào file phản hồi của họ hoặc commit
   thẳng vào `docs/design/coordination/`. Tôi không tự suy diễn khi chưa có trả lời (LEAD_RUNBOOK dòng 53).
 - **Bản để design trả lời tại chỗ (có chỗ điền `TRA LỜI:`): `tasks/PQD-003.md` §L (L1–L10).**
