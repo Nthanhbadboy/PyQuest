@@ -9,6 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # PQC-015: framework VI/EN delegates + generated app-localizations foundation.
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.3
   sqflite: ^2.4.0
   path: ^1.9.0
   audioplayers: ^6.1.0
@@ -28,6 +32,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # PQC-015: `flutter pub get` runs `flutter gen-l10n` from l10n.yaml into
+  # .dart_tool/flutter_gen (synthetic package, not committed).
+  generate: true
 
   assets:
     - assets/config/

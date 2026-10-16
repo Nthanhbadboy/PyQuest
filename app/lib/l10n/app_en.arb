@@ -1,0 +1,24 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "PyQuest",
+  "@appTitle": {
+    "description": "Name handed to the OS task switcher and to the localization foundation."
+  },
+
+  "foundationGreeting": "Hello {name}!",
+  "@foundationGreeting": {
+    "description": "Typed-placeholder greeting used to prove the generated delegate resolves per locale.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Pip"
+      }
+    }
+  },
+
+  "foundationFollowsDevice": "This build follows your device language.",
+  "@foundationFollowsDevice": {
+    "description": "Shown while the app is following the OS language list."
+  }
+}

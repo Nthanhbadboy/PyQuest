@@ -1,8 +1,14 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' show Locale, PlatformDispatcher;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// PQC-015: generated localization foundation (synthetic `flutter_gen` package, built by
+// `flutter pub get` from app/l10n.yaml — see the task handoff).
+// ignore: depend_on_referenced_packages
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../modules/main_map/main_map_screen.dart';
 import '../shared/characters/characters.dart';
@@ -11,6 +17,7 @@ import '../shared/theme/palette.dart';
 import '../shared/widgets/chunky_button.dart';
 import 'app_scope.dart';
 import 'app_services.dart';
+import 'locale_binding.dart';
 
 typedef ServicesFactory = Future<AppServices> Function(AssetBundle bundle);
 
@@ -24,14 +31,44 @@ class PyQuestApp extends StatefulWidget {
   State<PyQuestApp> createState() => _PyQuestAppState();
 }
 
-class _PyQuestAppState extends State<PyQuestApp> {
+class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
+  /// Framework + generated delegates, shared by the splash and the loaded app so a
+  /// framework string never silently falls back while the preference is still unknown.
+  static const List<LocalizationsDelegate<dynamic>> _delegates = <LocalizationsDelegate<dynamic>>[
+    AppLocalizations.delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ];
+
   AppServices? _services;
+  AppLocaleBinding? _localeBinding;
   Object? _error;
+  List<Locale> _systemLocales = PlatformDispatcher.instance.locales;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _boot();
+  }
+
+  /// The OS list changed while we run (or the app resumed with a new one): re-push it.
+  /// An explicit preference is untouched — the resolver keeps it — and nothing is written.
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    super.didChangeLocales(locales);
+    _systemLocales = PlatformDispatcher.instance.locales;
+    _localeBinding?.syncSystemLocales();
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _localeBinding?.dispose();
+    _localeBinding = null;
+    super.dispose();
   }
 
   Future<void> _boot() async {
@@ -42,7 +79,18 @@ class _PyQuestAppState extends State<PyQuestApp> {
         factory(rootBundle),
         Future<void>.delayed(widget.minSplash),
       ]);
-      if (mounted) setState(() => _services = results.first as AppServices);
+      final AppServices services = results.first as AppServices;
+      if (!mounted) return;
+      // Before this point no OS list reached the settings service, so its `lang` still
+      // followed the legacy row; pushing the real list here is what makes cast dialogue
+      // and the live tutor voice follow the device language.
+      final AppLocaleBinding binding = AppLocaleBinding(settings: services.settings)
+        ..syncSystemLocales();
+      setState(() {
+        _services = services;
+        _localeBinding?.dispose();
+        _localeBinding = binding;
+      });
     } catch (e, st) {
       debugPrint('PyQuest failed to start: $e\n$st');
       if (mounted) setState(() => _error = e);
@@ -53,23 +101,36 @@ class _PyQuestAppState extends State<PyQuestApp> {
   Widget build(BuildContext context) {
     final theme = buildPyQuestTheme();
     final s = _services;
+    final List<Locale> supportedLocales = AppLocalizations.supportedLocales;
     if (s == null) {
+      // Splash: the OS list only, but the delegates are already here.
       return MaterialApp(
         title: 'PyQuest',
         debugShowCheckedModeBanner: false,
         theme: theme,
+        locale: AppLocaleBinding.bootstrapLocale(_systemLocales),
+        supportedLocales: supportedLocales,
+        localizationsDelegates: _delegates,
         home: SplashScreen(error: _error, onRetry: _boot),
       );
     }
+    final AppLocaleBinding binding = _localeBinding!;
     return AppScope(
       services: s,
-      child: MaterialApp(
-        title: 'PyQuest',
-        debugShowCheckedModeBanner: false,
-        theme: theme,
-        // Respect the system text size, but cap it so game layouts stay intact.
-        builder: (context, child) => MediaQuery.withClampedTextScaling(maxScaleFactor: 1.2, child: child!),
-        home: const MainMapScreen(),
+      child: AnimatedBuilder(
+        animation: binding,
+        builder: (BuildContext context, Widget? _) => MaterialApp(
+          title: 'PyQuest',
+          debugShowCheckedModeBanner: false,
+          theme: theme,
+          locale: binding.locale,
+          supportedLocales: supportedLocales,
+          localizationsDelegates: _delegates,
+          // Respect the system text size, but cap it so game layouts stay intact.
+          builder: (context, child) =>
+              MediaQuery.withClampedTextScaling(maxScaleFactor: 1.2, child: child!),
+          home: const MainMapScreen(),
+        ),
       ),
     );
   }

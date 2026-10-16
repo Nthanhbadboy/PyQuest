@@ -1,0 +1,9 @@
+{
+  "@@locale": "vi",
+
+  "appTitle": "PyQuest",
+
+  "foundationGreeting": "Xin chào {name}!",
+
+  "foundationFollowsDevice": "Bản này theo ngôn ngữ của thiết bị."
+}
