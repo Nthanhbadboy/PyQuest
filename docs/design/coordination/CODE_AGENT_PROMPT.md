@@ -32,31 +32,30 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision8: review010 vòng2, authorization r6 giữ nguyên**.
-Đọc `docs/design/coordination/tasks/PQD-003.md`, review `PQD-003-r8.md` + r8-ci.json
-và `reviews/PQC-010-r2/`; r7 vẫn là baseline requirements. Đọc orders010/014/015.
+Task hiện tại là **PQD-003 revision9: review010 vòng3, authorization r6 giữ nguyên**.
+Đọc `docs/design/coordination/tasks/PQD-003.md`, review `PQD-003-r9.md` + r9-ci.json
+và `reviews/PQC-010-r3/`; r7/r8 vẫn là requirements. Đọc orders010/014/015.
 
 **Làm ngay, không trả thêm ACK-only:**
-1. Fetch refspec tường minh, pin design SHA. Code4a2a582 đã review: **CHANGES_REQUESTED**.
-   CI38924022896/report117057301755:316pass/6fail,10renderpass,analyze sạch12.7s.
-   Không viện CI xanh117651b/553e9ac để nhận gói hiện tại. Lấy full log đủ6failure:
-   report công khai chỉ4tên+2more; không đoán tên hoặc bỏ tests.
-2. Sửa R8-A nền bên TRONG capture boundary, I/O test và ảnh publish đọc được;
-   R8-B connector endpoint/anchor đúng vật, reject unresolved connector sau clear,
-   highlight không lan ngoài statement. Test đường vẽ, không chỉ semantics bounds.
-3. Sửa R8-C scale đúng một lần, hộp text/sample/output đủ font metrics/padding,
-   matrix96case mọi beat/VI/EN/2sizes/font1/1.3/2, semantics tree thật. R8-D sửa
-   assertions missing-vs-type, prose-vs-altText và ordered output đúng contract;
-   không đưa debug altText lên UI để làm test xanh, không bỏ/nới safety checks.
-4. Giữ các sửa đúng codec/wait/lesson owner/live labels. Guard đã nhập đúng và
-   không đổi: không apply lại.010/014/015 vẫn ALLOWED;014 tiếp riêng;015 sau014CI
-   xanh, dependency chỉ015 phần locale tối thiểu. Không sửa assets/platform/CI,
-   LessonScreen/AI/voice/grader/economy/backend hoặc old task002/004/005/008.
-5. Trả tested_code_commit/run URL/**custom report check ID** cùng SHA, counts/phases,
-   ảnh có beat/locale/scale đã mở kiểm, log regression đầy đủ và giới hạn. Header
-   handoff phải là trạng thái mới, không giữ117651b/255+10/16ảnh như tip hiện tại.
-   Board vẫn test host, chưa nối LessonScreen/AI/voice. P05/P06A/B/C chỉ là design,
-   không suy quyền port prototypes hoặc tuyên bố multilingual toàn app đã xong.
+1. Fetch refspec tường minh/pin SHA.8647916 đã review, app tree bằng0661523:
+   CI38937509150/report117099178577 analyze sạch10.7s nhưng319pass/19fail,
+   render10pass,0board preview hiện tại. Verdict CHANGES_REQUESTED, không ACCEPTED.
+2. Sửa R9-A trước: capture jobs đang4field nhưng đọc[4]/[5] ngoài try; giữ đủfield,
+   ghi/in manifest trước assert lỗi tổng. Chụp1combo/mở ảnh rồi toàn bộ40ảnh.
+3. R9-B/C: font thật trong widget matrix; effective style đo/vẽ khớp; không đo
+   scale bằng tỷ số chiều cao paragraph thay đổi số dòng; không skip mọi snippet
+   trong96combo. Cây semantics rõ; Tab đủ3control ởbeat giữa, disabled Previous ở
+   beat0 phải được bỏ qua. Không làm UI sai để hợp assertion hoặc bỏ safety tests.
+4. R9-D: multiline highlight match toànstatement, không chỉ dòngđầu; xử lý
+   codeText/source mismatch có nhãn thay vì im lặng mất op. Giữ fixes đúng r7/r8.
+5. Hai câu hỏi design đã chốt ởreview§5: content intrinsic/outer viewport ổnđịnh;
+   một caption ngay trên code, gap6–8px, không connector trangtrí ởb1. Không chờ ACK.
+6. Trả testedSHA/run/custom report/counts/combo diagnostics/ảnh mới đã mở. Report
+   hiện chỉ4tênfail+15more; lấyfull log nếu được, báo rõ nếu bịchặn, không đoán tên.
+   8ảnh dc2fd3e là lịch sử, không chứng minh harness ở8647916 đã chụp thànhcông.
+7. Scope giữnguyên010/014/015, dependency chỉ015;014 tiếp độc lập,015 sau014CI xanh.
+   Không apply lại guard; không sửa CI/publisher/assets/LessonScreen/AI/voice/
+   gameplay/economy/social hoặc port P05/P06. Board vẫn độc lập trongtesthost.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
