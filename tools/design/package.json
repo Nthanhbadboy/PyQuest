@@ -4,7 +4,9 @@
   "scripts": {
     "test": "node smoke_gallery.cjs",
     "test:prototype:unit": "node --test test_first_play.mjs",
-    "test:prototype:browser": "node smoke_first_play.cjs"
+    "test:prototype:browser": "node smoke_first_play.cjs",
+    "test:tutor:unit": "node --test test_tutor_board.mjs",
+    "test:tutor:browser": "node smoke_tutor_board.cjs"
   },
   "devDependencies": {
     "playwright-core": "1.64.1",

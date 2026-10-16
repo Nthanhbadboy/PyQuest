@@ -178,3 +178,12 @@ nhầm lẫn, nhu cầu trợ giúp và nhận xét; chưa tổ chức test thì
   thông báo, hitbox và trạng thái thật trước những hạt sáng trang trí.
 - Tài liệu này không tự chuyển task sang `READY_FOR_CODE`; gate và phạm vi ở từng
   task vẫn có hiệu lực. Mọi cập nhật cần đi theo protocol hai nhánh.
+
+## Bổ sung ưu tiên — Tutor có phương tiện giảng giải (P03)
+
+Theo phản hồi trực tiếp mới: Tutor dẫn từ đầu và phải có bảng viết/vẽ trong bài học.
+P02 chưa giải quyết đủ; không tiếp tục dùng chat panel như lesson UX chính. Đọc
+`TUTOR_TEACHING_BOARD.md` và `tutor-board-prototype/README.md`. Slice mới có hai ví dụ
+source, learner annotation, pause/replay và thử code cục bộ; AI/voice vẫn chưa tích hợp.
+Làng thử một mèo ambient, không mở rộng NPC trước khi vòng Tutor → hiểu → tự thử tốt.
+Đây là ưu tiên mới trong redesign toàn app, không xóa các nhánh free-play/Creator.

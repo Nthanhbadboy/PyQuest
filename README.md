@@ -116,6 +116,9 @@ Ba tầng, và app luôn nói rõ câu trả lời đến từ tầng nào:
 
 ## Thiết kế & hình ảnh gốc
 
+**Mẫu Tutor + bảng giảng:** [P03 — viết, vẽ, chỉ từng bước và cho người chơi thử](docs/design/tutor-board-prototype/README.md)
+— prototype có tương tác, chưa kết nối AI/voice hoặc tích hợp Flutter.
+
 **Mẫu first-play mới:** [Robo → làng → thử thách → chơi/sửa lỗi → kết quả](docs/design/first-play-prototype/README.md)
 — prototype HTML có tương tác, **chưa tích hợp Flutter**.
 

@@ -32,20 +32,19 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task active là **PQD-002 revision2, CHANGES_REQUESTED**; PQD-001 r4 đã nhận milestone cũ.
-Đọc theo thứ tự:
-1. `docs/design/coordination/tasks/PQD-002.md`.
-2. `docs/implementation/coordination/reviews/PQC-007/REVIEW.md` + facts/CI evidence.
-3. `docs/design/first-play-prototype/IMPLEMENTATION_DECISIONS.md` (trả đủ các câu design).
-4. `docs/implementation/coordination/tasks/PQC-009.md` (READY, scope test).
+Task ưu tiên hiện tại là **PQD-003 revision1, Tutor-first + bảng giảng**.
+Đọc `docs/design/coordination/tasks/PQD-003.md`, `docs/design/TUTOR_TEACHING_BOARD.md`
+và `docs/design/tutor-board-prototype/README.md`. Chạy mẫu để hiểu vì sao đây không
+phải chat reskin. PQC-009 vừa có bàn giao code8a8af34; giữ kết quả/test đã làm, không làm lại. Design
+đã đọc tóm tắt nhưng chưa full-review suite mới; trả evidence đúng SHA khi được hỏi.
 
-Nhận có chọn lọc patch docs review từ commit 789e1fc; không đè mất phản hồi mới nếu
-nhánh code đã tiến thêm. Cập nhật board/PQC-007, nhận PQC-008 đã sửa scope; làm009 route
-test trước. Tool `brief` dùng flags theo scope: runtime=no **không chặn test=yes**.
-Không ACK-only khi đã có việc test làm được. Không thêm một orchestration framework.
+Trong scope test/coordination: source-map, fixture/contract negative tests, đề xuất
+implementation allowlist nhỏ cho board trước/AI sau/audio cue sync sau. Không bật
+runtime/đổi provider/roster/voice chỉ vì có UI demo. Không thêm orchestration framework.
 
 Mục tiêu vẫn là redesign toàn app theo `FULL_APP_REDESIGN_CHARTER.md`, không dừng ở
-thumbnail. Ghi delta task mới vào `docs/implementation/coordination/tasks/PQD-002.md`.
+thumbnail. Ghi phản hồi bảng giảng vào `docs/implementation/coordination/tasks/PQD-003.md`;
+không ghi đè handoff PQD-002/PQC-009 đã xuất bản.
 
 Runtime chỉ được thay khi READY_FOR_CODE + runtime=yes và gate của task đạt.
 Test/coordination có flag và allowlist riêng; không suy từ đó ra quyền thay art/lib.
@@ -73,5 +72,5 @@ chuyển từng lời giữa hai bên. Tuy nhiên khi phiên kết thúc, bạn 
 vì commit mới: ghi trạng thái chờ rồi dừng, lần được gọi tiếp theo fetch trước.
 Không chạy vòng lặp chờ vô hạn hoặc khẳng định đã cài cơ chế tự động khi chưa có runner.
 
-Bắt đầu bằng fetch, đọc `PQD-002` revision hiện tại, nhận bàn giao và thực hiện task đúng scope. Nếu bị chặn bởi
+Bắt đầu bằng fetch, đọc `PQD-003` revision hiện tại, nhận bàn giao và thực hiện task đúng scope. Nếu bị chặn bởi
 quyền commit/push hoặc môi trường, ghi rõ điều gì đã làm và điều gì còn phải đợi.

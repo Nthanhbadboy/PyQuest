@@ -707,9 +707,11 @@ PyQuest cần có hệ thống vinh danh nhiều tầng. Không ép mọi thành
 
 ---
 
-## 14. AI Tutor — cảnh mở đầu, nhân vật đồng hành và hội thoại có thiết kế
+## 14. AI Tutor — dẫn đường, bảng giảng và nhân vật đồng hành
 
 ### 14.1. Mục tiêu trải nghiệm
+
+- **Tutor-first, không chat-first:** Tutor dẫn dắt từ đầu hành trình. Khi vào bài học, giao diện chính là bảng giảng tương tác để Tutor viết code/chữ, vẽ minh họa, tô sáng và giải thích từng bước; người chơi có thể đánh dấu chỗ vướng rồi tự thử. Khung chat/lịch sử là phần phụ, không thay thế phương tiện giảng giải.
 
 - AI Tutor là một trong những trải nghiệm đầu tiên người chơi thực sự gặp, không phải một nút chat phụ được thêm vào sau. Cảnh mở đầu phải sống động, giàu biểu cảm và có chất lượng hình ảnh như game thương mại; tránh phong cách sách giáo khoa, màn hình biểu mẫu khô cứng hoặc nhân vật chỉ đứng cạnh một bong bóng thoại tĩnh.
 - Cảnh mở đầu giới thiệu Tutor qua một khoảnh khắc tương tác ngắn trong thế giới PyQuest: nhân vật xuất hiện, chào người chơi, phản ứng bằng biểu cảm/hoạt ảnh và mời người chơi cùng bắt đầu hành trình. Phải có tương tác thật (chạm, chọn hoặc trả lời), không chỉ là đoạn phim dài không thể bỏ qua.
@@ -762,6 +764,21 @@ PyQuest cần có hệ thống vinh danh nhiều tầng. Không ép mọi thành
 - Tutor sử dụng đúng ngữ cảnh bài hiện tại, đưa gợi ý theo nấc và không tự ghi đè đáp án chuẩn.
 - Có giới hạn an toàn, xử lý lỗi dịch vụ, kiểm soát chi phí và quy tắc dữ liệu trước khi đưa AI thật tới người dùng.
 - Thiết kế hình ảnh và hội thoại phải được duyệt bằng một mẫu chơi thực tế trước khi mở rộng toàn game. Đây là thứ tự triển khai ưu tiên, không phải lý do loại bỏ tầm nhìn Tutor đồng hành dài hạn.
+
+### 14.7. Bảng giảng chung của Tutor và người học
+
+- Tutor có công cụ có cấu trúc để viết/vẽ/đánh dấu/nối ý, liên hệ code với kết quả và
+  đổi ví dụ khi trẻ chưa hiểu; không chỉ gửi một đoạn văn hoặc ảnh minh họa tĩnh.
+- Bảng chia lớp nội dung bài, nét của Tutor và nét/ghi chú của người học. Tutor không
+  được xóa hoặc ghi đè việc trẻ đang làm; giữ state qua mở/đóng trợ giúp và retry.
+- Có dừng, xem lại, đi từng bước và cách thao tác không cần vẽ/không cần bật mic.
+  Voice nếu bật phải gắn đúng bước trình bày; barge-in/background hủy cue cũ an toàn.
+- AI đề xuất kế hoạch bảng qua schema/allowlist được kiểm tra; không render mã/URL
+  tùy ý, không tự chạy code hay quyết định điểm. Engine bài học là nguồn đáp án.
+- Làng có thể có mèo/NPC đi lại để tạo sự sống nhưng không cạnh tranh với Tutor,
+  không chặn tương tác, tôn trọng reduced motion và lifecycle.
+- Thiết kế và mẫu tương tác: `docs/design/TUTOR_TEACHING_BOARD.md`, P03. Prototype
+  scripted không đồng nghĩa đã tích hợp AI/voice hoặc qua kiểm nghiệm trẻ em.
 
 ---
 

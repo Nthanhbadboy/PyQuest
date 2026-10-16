@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PyQuest · Tutor có bảng để giảng</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="site-header"><a class="brand" href="#village" aria-label="PyQuest, về làng"><span>✦</span> PyQuest</a><nav aria-label="Mẫu trải nghiệm"><button id="village-nav" aria-current="page">01 · Gặp Tutor</button><button id="lesson-nav" disabled>02 · Học cùng nhau</button></nav><label class="motion-toggle"><input type="checkbox" id="calm"> Ít chuyển động</label></header>
+<div class="prototype-note">P03 · Mẫu tương tác theo kịch bản · Chưa kết nối AI/giọng nói/tiến trình Flutter</div>
+<main>
+<section id="village" class="village-screen">
+ <div class="village-copy"><span class="eyebrow">MỘT THẾ GIỚI CÓ NGƯỜI ĐỒNG HÀNH</span><h1>Không chỉ trả lời.<br><em>Mình cùng bạn<br>tìm ra cách làm.</em></h1><p>Tutor đón bạn ở làng, dẫn vào bài học và mở bảng để cùng viết, vẽ, thử một ý tưởng.</p><div class="welcome-guide"><img src="art/robo.svg" alt="Robo, Tutor minh họa của mẫu"><div><strong>Robo <span>TUTOR MẪU</span></strong><p>“Muốn máy tính chào một câu? Đi cùng mình nhé — mình sẽ chỉ trên bảng.”</p></div></div><button class="primary" id="begin" disabled>Cùng Robo mở bảng <span>↗</span></button><button class="text-button" id="skip" disabled>Bỏ qua lời chào · xem bảng ngay</button><small>Mèo chỉ làm làng thêm sống động. Tutor mới là người dẫn đường.</small></div>
+ <div class="village-scene"><div class="map-art"><img class="island" src="art/village.webp" alt="Làng 2.5D với Tháp Python, đường nhỏ và sáu địa điểm"><span class="scene-label">ĐẢO KHỞI ĐẦU</span><div class="walking-cat" aria-hidden="true"><img src="art/cat.svg" alt=""></div><img class="village-robo" src="art/robo.svg" alt=""><div class="destination">✦ Tháp Python <span>Bảng giảng của chúng mình</span></div></div></div>
+</section>
+<section id="classroom" class="classroom" hidden>
+ <header class="lesson-heading"><div><span class="eyebrow">THÁP PYTHON / HỌC CÙNG TUTOR</span><h1 id="lesson-title">Một dòng code, một lời chào</h1></div><div class="subject-tabs" aria-label="Chọn bài mẫu"><button data-topic="print" aria-pressed="true">Chữ & lời chào</button><button data-topic="numbers" aria-pressed="false">Số & phép cộng</button></div></header>
+ <div class="learning-layout">
+ <section class="board-station" aria-label="Bảng giảng tương tác">
+  <div class="board-bar"><span><i></i> BẢNG CỦA CHÚNG MÌNH</span><span id="beat-number">Bước 1 / 4</span></div>
+  <div class="chalkboard" id="chalkboard"><div id="board-content"></div><svg id="student-ink" viewBox="0 0 1000 650" preserveAspectRatio="none" aria-hidden="true"></svg><span class="chalk chalk-one" aria-hidden="true"></span><span class="chalk chalk-two" aria-hidden="true"></span></div>
+  <div class="board-tools"><div class="ink-tools"><button id="pen" aria-pressed="false" title="Vẽ bằng chuột, bút hoặc ngón tay">✎ Khoanh chỗ này</button><button id="undo-ink" aria-label="Hoàn tác nét vẽ của bạn">↶</button><button id="clear-ink">Xóa nét của bạn</button></div><span class="ink-key"><i></i> Nét riêng của bạn · bước này</span></div>
+  <label class="note-label" for="board-note">Không muốn vẽ? Ghi chỗ bạn chưa hiểu <input id="board-note" maxlength="160" placeholder="Ví dụ: vì sao cần dấu ngoặc kép?"></label>
+  <div class="transport"><button id="previous" aria-label="Bước giảng trước">←</button><button class="play" id="play">▶ Xem từng bước</button><button id="next" aria-label="Bước giảng tiếp theo">→</button><button class="text-button" id="replay">↺ Xem lại từ đầu</button></div>
+ </section>
+ <aside class="learning-side">
+  <section class="tutor-card" aria-label="Tutor giảng bài"><div class="tutor-identity"><img src="art/robo.svg" alt="Robo"><div><strong>Robo</strong><span id="tutor-status">ĐANG CHỈ TRÊN BẢNG</span></div><span class="script-badge">Kịch bản mẫu</span></div><h2 id="beat-title"></h2><p id="tutor-say" aria-live="polite"></p><div class="help-actions"><button id="slower">Chậm lại nhé</button><button id="another">Giải thích cách khác</button></div><div id="help-answer" role="status" hidden></div></section>
+  <section class="practice-card"><div class="section-top"><span class="eyebrow">ĐẾN LƯỢT BẠN</span><span>⌘</span></div><h2 id="practice-title">Gửi một lời chào</h2><p id="practice-goal"></p><label for="student-code">Một dòng code của bạn</label><textarea id="student-code" rows="2" maxlength="140" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea><button class="primary" id="run">▶ Chạy thử dòng này</button><div class="practice-output" aria-live="polite"><span>KẾT QUẢ CỦA BẠN</span><pre id="student-output">Chưa chạy</pre><p id="student-feedback"></p></div><small>Sandbox nhỏ: print với chữ hoặc phép cộng. Không phải trình chạy Python đầy đủ.</small></section>
+  <details class="transcript"><summary>Xem lời giảng bằng chữ <span>↗</span></summary><ol id="transcript-lines"></ol><p>Đây là bản đọc lại, không phải trung tâm bài học. Không có mic hoặc âm thanh đang được ghi/phát.</p></details>
+ </aside>
+ </div>
+ <footer class="lesson-footer"><span>✧ Quan sát → cùng làm → tự thử</span><span>Bảng mẫu lưu trong phiên này · Tải lại sẽ xóa nét vẽ và code</span></footer>
+</section>
+</main><noscript>Mẫu cần JavaScript để mở bảng. Xem README và ảnh evidence để review.</noscript><script type="module" src="app.mjs"></script>
+</body></html>

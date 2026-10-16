@@ -1,0 +1,178 @@
+{
+  "prototype_only": true,
+  "source_path": "app/assets/data/main_quest_ch1.json",
+  "source_commit": "bb8cced8094d7204498bc002f4571b821f48e711",
+  "source_sha256": "bead251d9f290db0b8fa4475f7413976324b00e7b0f498c633a25a5e6392f8b8",
+  "plans": [
+    {
+      "id": "print",
+      "lesson_id": "mq1_01",
+      "title": "Một dòng code, một lời chào",
+      "skill": "print() & chuỗi chữ",
+      "version": 1,
+      "source_step": "mq1_01_s2",
+      "beats": [
+        {
+          "title": "Mình viết một lệnh",
+          "say": "Muốn máy tính gửi lời chào, mình dùng print. Nhìn phần mình vừa tô trên bảng nhé.",
+          "ops": [
+            {
+              "type": "code",
+              "text": "print(\"Xin chào!\")"
+            },
+            {
+              "type": "focus",
+              "line": 0,
+              "token": "print"
+            },
+            {
+              "type": "caption",
+              "text": "print → đưa nội dung ra màn hình"
+            }
+          ]
+        },
+        {
+          "title": "Đặt chữ vào trong ngoặc kép",
+          "say": "Hai dấu ngoặc kép cho Python biết đây là chữ. Chúng không phải phần của lời chào được in ra.",
+          "ops": [
+            {
+              "type": "focus",
+              "line": 0,
+              "token": "\"Xin chào!\""
+            },
+            {
+              "type": "caption",
+              "text": "“ ” đánh dấu phần chữ · ( ) chứa nội dung của lệnh"
+            }
+          ]
+        },
+        {
+          "title": "Nối code với kết quả",
+          "say": "Mũi tên chỉ từ lệnh tới màn hình. Chữ Xin chào! xuất hiện; dấu ngoặc kép không đi theo.",
+          "ops": [
+            {
+              "type": "arrow",
+              "visible": true
+            },
+            {
+              "type": "output",
+              "text": "Xin chào!"
+            },
+            {
+              "type": "caption",
+              "text": "Code là chỉ dẫn. Ô bên dưới là điều máy tính in ra."
+            }
+          ]
+        },
+        {
+          "title": "Bây giờ đến lượt bạn",
+          "say": "Bạn thử đổi lời chào nhé. Nếu bị vướng, khoanh chỗ đó trên bảng hoặc chọn “Giải thích cách khác”.",
+          "ops": [
+            {
+              "type": "focus",
+              "line": 0,
+              "token": ""
+            },
+            {
+              "type": "caption",
+              "text": "Mục tiêu bài tập nguồn: in ra Robo thông minh"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "numbers",
+      "lesson_id": "mq1_03",
+      "title": "Cùng dấu cộng, khác kết quả",
+      "skill": "Số & chuỗi chữ",
+      "version": 1,
+      "source_step": "mq1_03_s2",
+      "beats": [
+        {
+          "title": "Ba viên và bốn viên",
+          "say": "Bên trái có ba viên đá, bên phải có bốn viên. Không có ngoặc kép, Python sẽ làm phép cộng.",
+          "ops": [
+            {
+              "type": "code",
+              "text": "print(3 + 4)\nprint(\"3 + 4\")"
+            },
+            {
+              "type": "focus",
+              "line": 0,
+              "token": "3 + 4"
+            },
+            {
+              "type": "tokens",
+              "left": 3,
+              "right": 4,
+              "merged": false
+            },
+            {
+              "type": "caption",
+              "text": "Mình dùng vật đếm để nhìn thấy phép cộng."
+            }
+          ]
+        },
+        {
+          "title": "Gộp lại và đếm",
+          "say": "Gộp hai nhóm: một, hai, ba, bốn, năm, sáu, bảy. Dòng đầu in ra số 7.",
+          "ops": [
+            {
+              "type": "tokens",
+              "left": 3,
+              "right": 4,
+              "merged": true
+            },
+            {
+              "type": "arrow",
+              "visible": true
+            },
+            {
+              "type": "output",
+              "text": "7"
+            },
+            {
+              "type": "caption",
+              "text": "3 + 4 = 7 · phép tính với các con số"
+            }
+          ]
+        },
+        {
+          "title": "Còn khi có ngoặc kép?",
+          "say": "Dòng hai bọc 3 + 4 trong ngoặc kép. Python giữ nguyên phần chữ, không cộng hai số.",
+          "ops": [
+            {
+              "type": "focus",
+              "line": 1,
+              "token": "\"3 + 4\""
+            },
+            {
+              "type": "output",
+              "text": "7\n3 + 4"
+            },
+            {
+              "type": "caption",
+              "text": "Dòng 1 tính toán. Dòng 2 in nguyên chữ."
+            }
+          ]
+        },
+        {
+          "title": "Thử và so sánh",
+          "say": "Bạn thử thêm hoặc bỏ ngoặc kép trong ô code bên cạnh, rồi nhìn kết quả thay đổi nhé.",
+          "ops": [
+            {
+              "type": "focus",
+              "line": 1,
+              "token": ""
+            },
+            {
+              "type": "caption",
+              "text": "Quan sát trước khi kết luận: số và chữ không giống nhau."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

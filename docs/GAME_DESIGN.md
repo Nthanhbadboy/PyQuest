@@ -580,7 +580,7 @@ Kết quả thử nghiệm sẽ quyết định điều chỉnh cụ thể.
 - Main Quest mở khóa theo tiến trình học; không dùng XP/cấp độ toàn cục.
 - Energy hồi theo thời gian, quảng cáo thưởng có giới hạn và lưu trong database.
 - Daily quests, achievements, màn tổng kết và Adventure Recap dùng dữ liệu đã lưu.
-- AI Tutor trong bài học: câu hỏi gõ hoặc câu nói đều vào cùng một transcript, mỗi dòng mang vai rõ ràng (Bé / nhân vật trả lời), câu chào thuộc về trợ giảng, trạng thái loading – đang nghe – đang nói – lỗi – bị ngắt lời hiển thị đúng như phiên thật, và câu trả lời luôn kèm nhãn cho biết nó do AI soạn hay do trợ giảng ngoại tuyến.
+- AI Tutor trong bài học: **bảng giảng tương tác là vùng chính** để viết/vẽ/tô sáng và cho người chơi thử; transcript là phần hỏi/lịch sử phụ, không phải toàn bộ trải nghiệm. Câu hỏi gõ hoặc câu nói đều vào cùng một transcript, mỗi dòng mang vai rõ ràng (Bé / nhân vật trả lời), câu chào thuộc về trợ giảng, trạng thái loading – đang nghe – đang nói – lỗi – bị ngắt lời hiển thị đúng như phiên thật, và câu trả lời luôn kèm nhãn cho biết nó do AI soạn hay do trợ giảng ngoại tuyến.
 
 ### 16.2. UI Direction V2
 

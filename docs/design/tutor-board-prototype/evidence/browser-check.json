@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "kind": "HTML scripted prototype, not Flutter/AI/voice/device evidence",
+  "viewports": [
+    "1440x1100",
+    "390x844",
+    "360x640"
+  ],
+  "checks": [
+    "village to teaching board",
+    "text highlight and output arrow",
+    "per-beat drawing retained across navigation",
+    "student note and code survive topic switching",
+    "wrong input explained then valid input evaluated",
+    "seven object diagram",
+    "string versus addition output",
+    "pause and route change cancel playback",
+    "OS reduced motion honored",
+    "no horizontal overflow",
+    "selected primary targets >=48 CSS px",
+    "keyboard transport activation",
+    "no page/HTTP errors"
+  ]
+}
