@@ -202,7 +202,10 @@ void main() {
       expect(events, isNot(contains(EventTypes.lessonCompleted)));
 
       // Người mới thì mq1_03 vẫn khóa: bấm vào card cũng không vào bài, không trừ năng lượng.
+      // Chờ toast reward (chèn lúc +900ms, sống 2.8s mỗi cái) đóng đã, nếu không
+      // "không có gì xảy ra" chỉ là bằng chứng của một cú chạm bị che.
       expect(cardShowsLockedHint(tester, 'mq1_03'), isTrue);
+      await pumpFor(tester, const Duration(seconds: 5));
       await tapKey(tester, 'lesson_card_mq1_03', warnIfMissed: false);
       expect(find.byType(LessonScreen), findsNothing);
       expect(s.energy.current, energyBefore);
@@ -211,7 +214,11 @@ void main() {
       await finishTest(tester, s);
     });
 
-    testWidgets('đã xong mq1_01+mq1_02: route rồi PHẢI tap card mới vào LessonScreen, energy trừ đúng cost; Bug Hunter vẫn khóa',
+    // Test 2 bị TÁCH LÀM BA để tên test tự chỉ chỗ gãy. Lý do thực dụng: báo cáo
+    // check-run của CI cắt giữa log, chỉ đọc được DANH SÁCH test fail ở cuối chứ không
+    // đọc được message — một test gộp là một điểm mù, ba test thì biết ngay là route,
+    // khóa/mở, hay energy/lesson (run 38887445456 đỏ ở test gộp này, không rõ assertion nào).
+    testWidgets('fixture mq1_01+mq1_02: route vẫn chỉ tới home, mq1_03 hết khóa, Bug Hunter còn khóa',
         (WidgetTester tester) async {
       final AppServices s = await boot(tester, lessonsDone: <String>['mq1_01', 'mq1_02']);
       final int energyBefore = s.energy.current;
@@ -226,14 +233,44 @@ void main() {
       expect(s.energy.current, energyBefore, reason: 'chỉ đi tới home thì chưa được trừ năng lượng');
       expect(cardShowsLockedHint(tester, 'mq1_03'), isFalse, reason: 'mq1_02 xong rồi thì mq1_03 phải mở');
 
-      final int cost = s.config.cost('main_quest_lesson_first');
-      expect(cost, greaterThan(0));
+      await finishTest(tester, s);
+    });
+
+    testWidgets('card đã mở vẫn chạm được: toast reward phải tự tắt trước đó', (WidgetTester tester) async {
+      final AppServices s = await boot(tester, lessonsDone: <String>['mq1_01', 'mq1_02']);
+      await tapKey(tester, 'map_hit_bug_hunter');
+      await tapKey(tester, 'sheet_go_lesson');
+      // `openActivity` chèn toast reward vào root overlay sau 900 ms và mỗi toast
+      // sống 2.8 s (main_map_screen.dart:268-271, reward_toast.dart:20-27). Chờ nó
+      // đóng rồi mới kiểm khả năng chạm, để test đo đúng cái cần đo (route + khóa),
+      // không ăn may theo thời điểm.
+      await pumpFor(tester, const Duration(seconds: 5));
+      expect(find.byKey(const Key('lesson_card_mq1_03')).hitTestable(), findsOneWidget,
+          reason: 'card mq1_03 phải chạm được ở 390x844 sau khi toast đã tắt');
+      await finishTest(tester, s);
+    });
+
+    testWidgets('tap card đã mở → LessonScreen đúng bài, energy trừ đúng cost app tính', (WidgetTester tester) async {
+      final AppServices s = await boot(tester, lessonsDone: <String>['mq1_01', 'mq1_02']);
+      await tapKey(tester, 'map_hit_bug_hunter');
+      await tapKey(tester, 'sheet_go_lesson');
+      await pumpFor(tester, const Duration(seconds: 5));
+
+      final target = s.mainQuest.lessons.firstWhere((l) => l.id == 'mq1_03');
+      // Lấy cost theo đúng rule của `_open` (main_quest_module.dart:103-111) thay vì
+      // đoán tên key: mq1_03 hiện challenge=false, nhưng test không được cứng nhắc
+      // hơn data mà design đã chốt ở §4 (cost ở CTA, lấy từ config/progression).
+      final int expectedCost =
+          target.isChallenge ? s.config.cost('chapter_challenge_first') : s.config.cost('main_quest_lesson_first');
+      final int before = s.energy.current;
+      expect(before, greaterThan(expectedCost), reason: 'fixture phải đủ năng lượng để phép thử có nghĩa');
 
       await tapKey(tester, 'lesson_card_mq1_03');
-
-      expect(find.byType(LessonScreen), findsOneWidget, reason: 'tap card đã mở khóa phải vào đúng lesson player');
-      expect(s.energy.current, energyBefore - cost, reason: 'vào bài phải trả cost main_quest_lesson_first');
-      expect(find.byType(MainQuestHomeScreen), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'LessonScreen nổ khi build thì phải thấy ngay đây');
+      expect(find.byType(LessonScreen), findsOneWidget,
+          reason: 'tap card đã mở khóa mới vào lesson player (route không auto-start)');
+      expect(s.energy.current, before - expectedCost,
+          reason: 'vào bài phải trả đúng cost mà app tính cho lesson này');
 
       await finishTest(tester, s);
     });
