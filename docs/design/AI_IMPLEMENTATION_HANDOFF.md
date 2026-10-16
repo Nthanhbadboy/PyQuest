@@ -93,14 +93,16 @@ Nếu thay đúng tên đích, không cần sửa đường dẫn Dart hay thêm
 
 ### Baseline và test không được vô tình ghi đè
 
-`tools/design/export_village_kit.py` hiện copy thumbnail từ `app/assets/images/`
-vào `baseline/`; `test_baselines_unchanged` hiện đối chiếu với app chưa thay art.
+Bản vá design đi cùng PQD-001 revision 3 đã bảo vệ baseline:
 
-**Sau khi áp dụng art mới, không chạy exporter hiện tại một cách mù quáng:** nó sẽ
-biến baseline cũ thành ảnh mới. Trước đó phải chỉnh exporter giữ baseline bất biến
-(không ghi đè file có sẵn, xác minh hash đã lưu), và đổi test sang kiểm tra baseline
-với hash cũ trong manifest thay vì yêu cầu app vẫn dùng ảnh cũ. Thêm kiểm tra riêng
-rằng sáu ảnh runtime khớp export được chọn. Không chỉ xóa test đang fail.
+- `baseline-lock.json` pin hash/đường dẫn của sáu ảnh trước thay đổi từ `c8b2029`.
+- Exporter preflight toàn bộ baseline trước khi ghi, không đọc/copy thumbnail runtime;
+  thiếu/hỏng baseline hoặc manifest mâu thuẫn thì fail, không tự “refresh”.
+- Test baseline đối chiếu lock, không yêu cầu runtime mãi giống ảnh cũ. Test inventory
+  chỉ cho runtime thuộc bộ cũ hoặc export 512 đã biết; **không phải dấu duyệt art**.
+- Agent code bổ sung test khớp chính xác export đã chọn khi được phép thay runtime.
+  Không xóa test để né lỗi. Tạo baseline mới cần kit/version được review riêng.
+- Giữ baseline nguyên vẹn nếu lấy tool mới: cần cả exporter/test và `baseline-lock.json`.
 
 ### Kiểm thử tối thiểu
 

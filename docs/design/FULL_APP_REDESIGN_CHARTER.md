@@ -25,8 +25,9 @@ Tài liệu này cụ thể hóa yêu cầu redesign; nguồn sự thật sản 
 ## 2. Thiết kế cho ai và theo tiêu chuẩn nào?
 
 `PRODUCT_VISION.md` §1 xác định **trẻ dưới 12 tuổi**, mobile Android trước.
-Câu “older children and teens” trong village brief là điểm không nhất quán với
-định vị gốc; không tự đổi đối tượng sản phẩm sang teen/người lớn. Ở đợt này, “chín
+Câu “older children and teens” trước đây trong village brief không nhất quán với
+định vị gốc; đã sửa brief ở lượt review PQD-001 revision 3 để khớp đối tượng dưới 12,
+không thay đổi định vị sản phẩm sang teen/người lớn. Ở đợt này, “chín
 hơn” được hiểu là phân cấp và chất lượng mỹ thuật tốt hơn, không phải đổi nhóm tuổi.
 Việc chốt phân nhóm tuổi/khả năng đọc cụ thể để user test cần người phụ trách sản phẩm.
 

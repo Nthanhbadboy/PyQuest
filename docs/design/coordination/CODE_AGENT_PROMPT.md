@@ -30,22 +30,19 @@ báo người dùng kết nối GitHub cần được xử lý; không xin token
 `dafde39` nhập từ code cũ, không phải bản cập nhật code dành cho bạn. Chỉ lấy đúng
 asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đích trước khi ghi.
 
-## 2. Nhiệm vụ đầu tiên: intake, chưa sửa runtime
+## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Làm theo revision mới nhất của `PQD-001`. Revision 2 vẫn là `READY_FOR_INTAKE`:
-kiểm tra bộ 6 thumbnail, hash/mapping, source hiện tại, test/SDK, gate Tutor và việc
-bảo vệ baseline. Đọc thêm `docs/design/FULL_APP_REDESIGN_CHARTER.md`: mục tiêu cuối
-là redesign toàn app và thực hiện tầm nhìn sản phẩm, không dừng ở sáu thumbnail.
-Định hướng toàn app không tự mở rộng phạm vi task đang nhận. Ghi ACK, blocker và kế hoạch vào:
+Revision 3 của `PQD-001` là `CHANGES_REQUESTED`: intake r1/r2 đã được design review.
+Đọc `docs/design/coordination/reviews/PQD-001-r3.md` để nhận PQC-003 test/evidence
+và bản sửa coordinator. Được sửa test/tool trong allowlist, **không sửa runtime**.
+Không tiếp tục chỉ ACK rồi chờ khi có việc đã được giao rõ phạm vi.
 
-`docs/implementation/coordination/tasks/PQD-001.md`
+Mục tiêu vẫn là redesign toàn app theo `FULL_APP_REDESIGN_CHARTER.md`; sáu thumbnail
+không phải đích cuối. Ghi delta, test và blocker vào:
+`docs/implementation/coordination/tasks/PQD-001.md`.
 
-ACK ghi `design_revision`, `design_commit`, nhánh/commit code, test thực chạy,
-thiếu gì, `status` và `next_actor`. Agent design sẽ đọc file này để trả lời.
-
-Chỉ triển khai khi task đã sang `READY_FOR_CODE` và các gate của task đạt. Khi đó
-lát cắt đầu chỉ là sáu thumbnail, không thay map/gameplay/Tutor. Nếu thiếu thiết kế
-hoặc có xung đột, báo BLOCKED thay vì tự đổi phong cách hoặc mở rộng scope.
+Runtime chỉ được thay khi READY_FOR_CODE + runtime=yes và gate của task đạt.
+Test/coordination có flag và allowlist riêng; không suy từ đó ra quyền thay art/lib.
 
 ## 3. Commit, trả kết quả và chủ động theo dõi
 

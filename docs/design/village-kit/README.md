@@ -10,7 +10,7 @@ Xem nhanh [bảng tổng hợp](evidence/asset-review.jpg).
 
 - `source/`: 6 PNG gốc, 1024×1024, do AI tạo mới cho dự án; đây là **raster master**, không phải vector chỉnh lớp hay model 3D.
 - `exports/`: 12 WebP RGB (mỗi ảnh có bản 256 và 512 px), tổng **156.030 bytes (~152 KiB)**.
-- `baseline/`: bản sao byte-for-byte của 6 thumbnail app trước khi thay thiết kế, chỉ phục vụ so sánh.
+- `baseline/`: bản sao bất biến của 6 thumbnail trước thay thiết kế. `baseline-lock.json` pin hash và source commit `c8b2029`; exporter không lấy lại từ runtime.
 - `art-direction.json`: hướng mỹ thuật, mô tả chủ thể/prompt recipe, mapping module và activity ID. Recipe ghi lại ý đồ tạo ảnh, không phải bản log nguyên văn đầy đủ của mỗi tool call.
 - `manifest.json`: kích thước, dung lượng, SHA-256, provenance, file nguồn và trạng thái.
 - `evidence/asset-review.jpg`: bảng bàn giao artwork; **không phải screenshot app đang chạy**.
@@ -86,6 +86,9 @@ python3 -m http.server 8000 --bind 0.0.0.0 --directory docs/design/village-kit
 Mở URL server/preview được môi trường cung cấp. Gallery cần HTTP để đọc JSON;
 không mở bằng `file://`. Không có dependency JS/CDN, link tải trỏ file thật.
 Export dùng Pillow và Nunito đã có trong app, giữ nguyên các file `app/assets/`.
+Trước khi ghi, exporter xác minh toàn bộ baseline theo lock; thiếu/hỏng thì dừng,
+không tự lấy art mới từ app làm ảnh cũ. Khôi phục baseline từ Git nếu hỏng.
+Bộ test có regression chạy export khi runtime đã đổi và kiểm tra xuất lặp không đổi kết quả.
 
 Smoke test trình duyệt (server gallery phải đang chạy):
 
@@ -117,5 +120,5 @@ HTTP cần kiểm tra. Test ghi screenshot vào `evidence/gallery-desktop.png` v
 Xem [báo cáo đồng bộ nhánh và kiểm tra](../BRANCH_IMPORT_AND_ASSET_AUDIT.md).
 
 **Giao cho AI khác:** đọc [hướng dẫn triển khai, prompt bàn giao và danh sách thiết kế tiếp](../AI_IMPLEMENTATION_HANDOFF.md).
-Lưu ý mục bảo vệ baseline trước khi thay thumbnail: exporter hiện lấy baseline từ
-app, nên không được chạy lại không kiểm soát sau khi app đã dùng artwork mới.
+Bản vá PQD-001 revision 3 giữ baseline độc lập runtime. Khi lấy tool, lấy cả
+`baseline-lock.json`; không tự cập nhật hash baseline để làm test xanh.

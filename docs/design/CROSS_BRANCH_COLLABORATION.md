@@ -60,6 +60,8 @@ trong giới hạn nhánh được phiên của agent đó cho phép.
   `ACCEPTED` hoặc `BLOCKED`. `READY_FOR_INTAKE` chỉ cho phép nhận bàn giao/kiểm tra
   gate, không có nghĩa được bỏ qua duyệt thiết kế để sửa app.
 - Phạm vi được duyệt, gate còn thiếu, file được phép sửa và phần không được sửa.
+  `test_change_authorized_by_this_revision` và `coordination_change_authorized_by_this_revision`
+  chỉ mở scope được liệt kê tương ứng; không thay thế `runtime_change_authorized_by_this_revision`.
 - Asset paths + manifest/hash; mapping màn/state; tiêu chí nghiệm thu.
 - Review: trỏ đúng revision, code commit và evidence đã xem; phân biệt nhận xét
   mỹ thuật với lỗi chức năng. Không kết luận animation đúng từ một ảnh tĩnh.
@@ -99,7 +101,9 @@ hoặc thỏa thuận chuyển revision; không âm thầm trộn hai bộ asset
 - Khi nhận prompt, fetch remote, kiểm tra `docs/design/coordination/tasks/PQD-001.md`
   và pin SHA thực tế. Nếu chưa fetch được commit/file, báo `WAITING_FOR_DESIGN_COMMIT`;
   không suy ra rằng một bản local đã được push.
-- Task đầu là tiếp nhận và báo gate; **chờ revision `READY_FOR_CODE` trước khi sửa app**.
+- Task đầu đã nhận ACK. Revision 3 giao test-only và sửa coordinator; **chờ
+  `READY_FOR_CODE` + runtime=yes trước khi sửa runtime**. Test có flag và allowlist
+  riêng không đồng nghĩa được đổi app/lib hoặc assets.
 - Agent code phải được cung cấp quy ước này và xác nhận tham gia. Viết tài liệu một
   phía không đồng nghĩa phía kia đã đọc, ACK hoặc bắt đầu chạy.
 - Sáu thumbnail là lát cắt đầu đề xuất. Việc duyệt art, gate Tutor và bảo vệ baseline

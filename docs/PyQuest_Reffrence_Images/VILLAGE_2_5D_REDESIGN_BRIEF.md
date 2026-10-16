@@ -4,7 +4,7 @@ Status: design direction / future implementation scope. Visual concept committed
 
 ## Product intent
 
-The current village feels cramped and visually flat. Redesign it as a larger, explorable-feeling **2.5D learning world** for older children and teens—not a preschool playroom. The village should reward exploration and make the learning journey feel alive, while the actual lessons, Python editor, Arena and AI Tutor remain readable and task-focused.
+The current village feels cramped and visually flat. Redesign it as a larger, explorable-feeling **2.5D learning world** for children under 12, consistent with `PRODUCT_VISION.md` §1—not a preschool playroom. Visual maturity means stronger hierarchy, craftsmanship and usability; it does not change the product audience to teens or adults. The village should reward exploration and make the learning journey feel alive, while the actual lessons, Python editor, Arena and AI Tutor remain readable and task-focused.
 
 ## Visual direction
 

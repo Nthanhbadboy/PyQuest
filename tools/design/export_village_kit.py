@@ -8,7 +8,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[2]
 KIT = ROOT / 'docs/design/village-kit'
@@ -23,9 +23,42 @@ def font(size, bold=False):
     return ImageFont.truetype(str(ROOT / 'app/assets/fonts' / name), size)
 
 
+def validate_baselines(kit, assets):
+    """Fail before writing anything; current runtime must never become the before-set."""
+    lock = json.loads((kit / 'baseline-lock.json').read_text())
+    locked = {a['id']: a for a in lock['assets']}
+    ids = [a['id'] for a in assets]
+    if (len(locked) != len(lock['assets']) or len(set(ids)) != len(ids)
+            or set(ids) != set(locked)):
+        raise ValueError('Baseline lock and asset IDs do not match')
+    manifest_path = kit / 'manifest.json'
+    recorded = {}
+    if manifest_path.exists():
+        previous = json.loads(manifest_path.read_text())['assets']
+        recorded = {a['id']: a for a in previous}
+        if len(recorded) != len(previous) or set(recorded) != set(locked):
+            raise ValueError('Existing manifest asset IDs do not match baseline lock')
+    for asset in assets:
+        aid = asset['id']
+        entry = locked[aid]
+        expected_path = f'baseline/{aid}.webp'
+        expected_source = f"app/assets/images/{asset['baseline']}"
+        if entry['path'] != expected_path or entry['source_path'] != expected_source:
+            raise ValueError(f'Baseline path mismatch: {aid}')
+        path = kit / expected_path
+        if not path.is_file() or digest(path) != entry['sha256']:
+            raise ValueError(f'Missing or corrupted immutable baseline: {aid}. Restore from Git; do not copy runtime.')
+        if recorded and (recorded[aid]['baseline_sha256'] != entry['sha256']
+                         or recorded[aid]['baseline_path'] != expected_path
+                         or recorded[aid]['baseline_source'] != expected_source):
+            raise ValueError(f'Manifest disagrees with baseline lock: {aid}')
+    return locked
+
+
 def export():
     spec = json.loads((KIT / 'art-direction.json').read_text())
-    for folder in ['exports', 'baseline', 'evidence']:
+    locked = validate_baselines(KIT, spec['assets'])
+    for folder in ['exports', 'evidence']:
         (KIT / folder).mkdir(exist_ok=True)
     manifest = {k: v for k, v in spec.items() if k != 'assets'}
     manifest['assets'] = []
@@ -43,16 +76,15 @@ def export():
                 variants.append({'path': str(path.relative_to(KIT)),
                                  'width': size, 'height': size,
                                  'bytes': path.stat().st_size, 'sha256': digest(path)})
-        baseline_source = ROOT / 'app/assets/images' / asset['baseline']
-        baseline = KIT / 'baseline' / f'{aid}.webp'
-        # Exact copy of existing app thumbnail: clear distinction from new art.
-        baseline.write_bytes(baseline_source.read_bytes())
+        # Baseline metadata is pinned independently of the regenerable manifest.
+        # Never read or write app thumbnails here, even after runtime integration.
+        baseline = locked[aid]
         manifest['assets'].append({**asset,
             'source': str(source.relative_to(KIT)), 'source_sha256': digest(source),
             'source_size': [1024, 1024], 'alpha': False,
-            'baseline_source': str(baseline_source.relative_to(ROOT)),
-            'baseline_path': str(baseline.relative_to(KIT)),
-            'baseline_sha256': digest(baseline),
+            'baseline_source': baseline['source_path'],
+            'baseline_path': baseline['path'],
+            'baseline_sha256': baseline['sha256'],
             'variants': variants, 'anchor': None,
             'review_notes': 'Background and shadow baked in. Do not use as a walkable maze, hitbox or layered terrain tile.'})
     (KIT / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')
