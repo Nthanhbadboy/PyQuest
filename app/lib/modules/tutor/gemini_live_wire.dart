@@ -210,6 +210,60 @@ class GeminiLiveWire {
     return '$said $next';
   }
 
+  /// Lower-cases [text] and turns everything that is not a letter or a digit
+  /// into a single space, so two transcriptions of the same words compare equal
+  /// whatever punctuation each one happened to get.
+  static String normalizeWords(String text) {
+    final b = StringBuffer();
+    for (final rune in text.toLowerCase().runes) {
+      b.write(_isWordChar(rune) ? String.fromCharCode(rune) : ' ');
+    }
+    return b.toString().replaceAll(RegExp(' +'), ' ').trim();
+  }
+
+  /// True for the characters a spoken word is made of.
+  ///
+  /// Letters are kept by code point rather than by a Unicode property escape,
+  /// because Vietnamese diacritics have to survive for the comparison to mean
+  /// anything, and punctuation ranges are excluded so that an em dash or curly
+  /// quotes never look like a word.
+  static bool _isWordChar(int rune) {
+    if (rune >= 0x30 && rune <= 0x39) return true; // 0-9
+    if (rune >= 0x41 && rune <= 0x5a) return true; // A-Z
+    if (rune >= 0x61 && rune <= 0x7a) return true; // a-z
+    if (rune < 0xA1) return false; // ASCII punctuation, space, NBSP
+    if (rune >= 0x2000 && rune <= 0x206F) return false; // general punctuation: — “ ” …
+    if (rune >= 0x2E00 && rune <= 0x2E7F) return false; // supplemental punctuation
+    if (rune >= 0x3000 && rune <= 0x303F) return false; // CJK punctuation
+    if (rune >= 0xFE30 && rune <= 0xFE4F) return false; // CJK presentation forms
+    if (rune >= 0xFF00 && rune <= 0xFF65) return false; // full-width punctuation
+    return true; // Latin-1.1, Greek, Cyrillic, Vietnamese and other letters
+  }
+
+  /// True when [heard] is almost certainly the tutor's own voice arriving again
+  /// through the microphone instead of the child speaking.
+  ///
+  /// Android only runs acoustic echo cancellation on the voice-communication
+  /// capture path, and even then a phone can hear its own loudspeaker. The
+  /// model then transcribes its own greeting as the child's words, which is how
+  /// «Chào bạn!» came back labelled as the learner. Only short utterances that
+  /// are made of what the tutor just said count as echo, so a child who
+  /// repeats a word after the tutor is still heard.
+  static bool looksLikeEcho({required String heard, required String spoken}) {
+    final heardWords = normalizeWords(heard).split(' ').where((String w) => w.isNotEmpty).toList();
+    if (heardWords.isEmpty || heardWords.length > maxEchoWords) return false;
+    final spokenWords = normalizeWords(spoken).split(' ').where((String w) => w.isNotEmpty).toSet();
+    if (spokenWords.isEmpty) return false;
+    final repeated = heardWords.where(spokenWords.contains).length;
+    return repeated / heardWords.length >= _echoOverlap;
+  }
+
+  /// How long an utterance may be and still plausibly be a playback echo.
+  static const int maxEchoWords = 8;
+
+  /// How much of it must have been said by the tutor already.
+  static const double _echoOverlap = 0.6;
+
   /// The child-facing instruction that opens a conversation.
   static String greetingPrompt({required String characterName, required String language}) =>
       'Start a friendly voice conversation with the child now. Briefly greet them, '

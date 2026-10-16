@@ -247,4 +247,36 @@ void main() {
       expect(GeminiLiveWire.mergeTranscript('đã xong', '   '), 'đã xong');
     });
   });
+
+  group('playback echo', () {
+    test('the tutor’s own words heard back from the speaker are echo', () {
+      const spoken = 'Chào bạn! Mình là Kai. Hôm nay bạn muốn học gì?';
+      expect(GeminiLiveWire.looksLikeEcho(heard: 'Chào bạn', spoken: spoken), isTrue);
+      // Punctuation and case differ between the two transcriptions of one voice.
+      expect(GeminiLiveWire.looksLikeEcho(heard: 'chào  bạn, mình là kai!', spoken: spoken), isTrue);
+      expect(GeminiLiveWire.looksLikeEcho(heard: 'Hôm nay bạn muốn học gì?', spoken: spoken), isTrue);
+    });
+
+    test('the child’s own sentence is never called echo', () {
+      const spoken = 'Chào bạn! Mình là Kai. Hôm nay bạn muốn học gì?';
+      expect(GeminiLiveWire.looksLikeEcho(heard: 'Vì sao print chạy hai lần', spoken: spoken), isFalse);
+      expect(GeminiLiveWire.looksLikeEcho(heard: 'in ra số 7 nhé', spoken: spoken), isFalse);
+      expect(GeminiLiveWire.looksLikeEcho(heard: 'Chào bạn', spoken: ''), isFalse,
+          reason: 'nothing was spoken yet, so nothing can echo it');
+      expect(GeminiLiveWire.looksLikeEcho(heard: '   ', spoken: spoken), isFalse);
+    });
+
+    test('a long sentence is kept even when it repeats the tutor', () {
+      const spoken = 'Biến lưu giá trị.';
+      const long = 'Biến lưu giá trị trong bộ nhớ để mình dùng lại nó về sau nhé';
+      expect(long.split(RegExp('\\s+')).length, greaterThan(GeminiLiveWire.maxEchoWords));
+      expect(GeminiLiveWire.looksLikeEcho(heard: long, spoken: spoken), isFalse,
+          reason: 'a whole answer is not a playback echo');
+    });
+
+    test('normalizing keeps letters, drops punctuation', () {
+      expect(GeminiLiveWire.normalizeWords('  In ra, số 7!  '), 'in ra số 7');
+      expect(GeminiLiveWire.normalizeWords('Chào bạn — mình là Kai.'), 'chào bạn mình là kai');
+    });
+  });
 }

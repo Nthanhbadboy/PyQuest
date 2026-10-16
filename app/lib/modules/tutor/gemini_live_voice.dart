@@ -6,6 +6,65 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'gemini_live_wire.dart';
 import 'live_audio_output.dart';
+import 'tutor_transcript.dart';
+
+/// Where the live voice conversation is, in the session's own words.
+///
+/// The panel used to read this out of the human-readable status string
+/// (`status.contains('đang nói')`), which meant a wording change could make
+/// the app claim the tutor was speaking when it was not.
+enum VoicePhase {
+  /// No session: the text tutor answers.
+  off,
+
+  /// Socket, microphone permission and speaker are being acquired.
+  connecting,
+
+  /// Microphone open, waiting for the child.
+  listening,
+
+  /// The tutor's own audio is being played.
+  speaking,
+
+  /// The last turn is being played out before the session closes.
+  closing;
+
+  bool get isLive => this == VoicePhase.listening || this == VoicePhase.speaking;
+}
+
+/// One status update of a voice session: a phase for the UI logic and a
+/// sentence for the child.
+class TutorVoiceStatus {
+  const TutorVoiceStatus(this.phase, this.message);
+
+  final VoicePhase phase;
+  final String message;
+
+  @override
+  String toString() => '${phase.name}: $message';
+}
+
+/// One utterance produced by a live session, already tagged with who said it.
+class VoiceUtterance {
+  const VoiceUtterance({
+    required this.role,
+    required this.text,
+    this.isFinal = true,
+    this.interrupted = false,
+  });
+
+  final TutorSpeakerRole role;
+  final String text;
+
+  /// False while a transcription can still be revised by the server.
+  final bool isFinal;
+
+  /// The assistant stopped mid-sentence because the child interrupted it.
+  final bool interrupted;
+
+  @override
+  String toString() => '${role.name}(${isFinal ? 'final' : 'partial'}): $text';
+}
 
 /// Experimental hands-free Gemini Live conversation for development builds.
 ///
@@ -32,6 +91,10 @@ class GeminiLiveVoice {
   /// the tail of its voice is not heard as a new question.
   static const Duration _listenAgainGuard = Duration(milliseconds: 220);
 
+  /// How long after the tutor's voice a short transcription is still treated as
+  /// playback echo instead of as the child speaking.
+  static const Duration _echoGrace = Duration(milliseconds: 1200);
+
   /// Hard limit for "the tutor is still speaking" before the session is torn
   /// down anyway. A stuck speaker must never freeze a lesson.
   static const Duration _stopGrace = Duration(seconds: 8);
@@ -40,8 +103,8 @@ class GeminiLiveVoice {
   /// must still be handed to the child.
   static const Duration _greetingGuard = Duration(seconds: 12);
 
-  final void Function(String status) onStatus;
-  final void Function(String text, {required bool fromUser}) onTranscript;
+  final void Function(TutorVoiceStatus status) onStatus;
+  final void Function(VoiceUtterance utterance) onTranscript;
   final void Function(String message) onError;
 
   /// Created on first use: constructing it talks to the platform plugin, and a
@@ -63,6 +126,7 @@ class GeminiLiveVoice {
   Completer<void> _setupComplete = Completer<void>();
   String _outputText = '';
   String _turnUserText = '';
+  String _lastSpokenText = '';
   String _characterName = 'Kai';
 
   bool _recording = false;
@@ -71,6 +135,7 @@ class GeminiLiveVoice {
   bool _stopAfterResponse = false;
   bool _disposed = false;
   DateTime _resumeListeningAt = DateTime.fromMillisecondsSinceEpoch(0);
+  DateTime _echoUntil = DateTime.fromMillisecondsSinceEpoch(0);
   Timer? _stopTimeout;
   Timer? _openEarTimer;
 
@@ -83,8 +148,16 @@ class GeminiLiveVoice {
   int _turnAudioBytes = 0;
   int _serverEvents = 0;
   int _errors = 0;
+  int _echoDropped = 0;
 
   bool get isRecording => _recording;
+
+  /// The session's own view of what is happening, so the UI never has to guess
+  /// from a sentence.
+  /// Kept as a field rather than derived, because a derived phase is a guess
+  /// and a guessed phase is how a UI starts claiming the tutor is speaking.
+  VoicePhase get phase => _disposed ? VoicePhase.off : _phase;
+  VoicePhase _phase = VoicePhase.off;
 
   @visibleForTesting
   PcmTurnPump get pump => _pump;
@@ -94,6 +167,25 @@ class GeminiLiveVoice {
   /// without a network, a microphone or an API key.
   @visibleForTesting
   void handleServerMessageForTest(Object? message) => _handleServerMessage(message);
+
+  /// The recorder settings of a voice turn.
+  ///
+  /// `echoCancel` alone is not enough on Android: the platform only runs
+  /// acoustic echo cancellation on the voice-communication capture path, so a
+  /// phone with the default mic source records the tutor's own greeting and the
+  /// model hears it as the child's speech. That is the second half of the
+  /// "the tutor is mute / talks to itself" failure, and it needs no permission
+  /// the app does not already have.
+  @visibleForTesting
+  static RecordConfig recorderConfig() => const RecordConfig(
+        encoder: AudioEncoder.pcm16bits,
+        sampleRate: GeminiLiveWire.inputSampleRate,
+        numChannels: 1,
+        autoGain: true,
+        echoCancel: true,
+        noiseSuppress: true,
+        androidConfig: AndroidRecordConfig(audioSource: AndroidAudioSource.voiceCommunication),
+      );
 
   /// The half-duplex rule on its own, so the timing can be tested without a
   /// microphone: frames are forwarded only while the tutor is silent and the
@@ -123,17 +215,29 @@ class GeminiLiveVoice {
   @visibleForTesting
   DateTime get resumeListeningAt => _resumeListeningAt;
 
+  /// True while a short transcription is plausibly the tutor's own voice coming
+  /// back through the microphone.
+  @visibleForTesting
+  bool get echoSuspect =>
+      _tutorSpeaking || DateTime.now().isBefore(_echoUntil) || _pump.isSpeaking;
+
+  /// How many utterances were dropped as echo. Diagnostics only: the child's
+  /// words are never counted, kept or printed anywhere.
+  @visibleForTesting
+  int get echoDropped => _echoDropped;
+
   Future<void> startListening({required String characterName, required String language}) async {
     if (_disposed || _recording || _channel != null) return;
     if (_apiKey.trim().isEmpty) {
       onError('Thiếu GEMINI_API_KEY. Hãy build thử nghiệm với --dart-define=GEMINI_API_KEY=...');
+      _status(VoicePhase.off, 'Voice chưa kết nối');
       return;
     }
     _characterName = characterName;
     _closing = false;
     try {
       debugPrint('[PyQuestVoice] startListening character=$characterName language=$language model=$_model');
-      onStatus('Đang kết nối Gemini Live…');
+      _status(VoicePhase.connecting, 'Đang kết nối Gemini Live…');
       // WebSocketChannel.connect only accepts ws:// or wss:// URIs.
       // Uri.https() creates an https:// URI and fails before the Live session
       // can be established.
@@ -150,7 +254,7 @@ class GeminiLiveVoice {
         _handleServerMessage,
         onError: (Object error) {
           if (!_setupComplete.isCompleted) _setupComplete.completeError(error);
-          onError('Kết nối voice lỗi: ${GeminiLiveWire.redactSecrets('$error')}');
+          _fail('Kết nối voice lỗi: ${GeminiLiveWire.redactSecrets('$error')}');
         },
         onDone: () {
           if (!_setupComplete.isCompleted) {
@@ -158,7 +262,7 @@ class GeminiLiveVoice {
           }
           if (!_disposed && _recording) {
             _recording = false;
-            onStatus('Đã ngắt kết nối');
+            _status(VoicePhase.off, 'Đã ngắt kết nối');
           }
         },
       );
@@ -190,23 +294,18 @@ class GeminiLiveVoice {
       _serverAudioBytes = 0;
       _serverEvents = 0;
       _errors = 0;
+      _echoDropped = 0;
       _outputText = '';
       _turnUserText = '';
+      _lastSpokenText = '';
       _stopTimeout?.cancel();
       _stopAfterResponse = false;
       _tutorSpeaking = false;
 
-      final stream = await _recorder.startStream(const RecordConfig(
-        encoder: AudioEncoder.pcm16bits,
-        sampleRate: GeminiLiveWire.inputSampleRate,
-        numChannels: 1,
-        autoGain: true,
-        echoCancel: true,
-        noiseSuppress: true,
-      ));
+      final stream = await _recorder.startStream(recorderConfig());
       _recording = true;
       debugPrint('[PyQuestVoice] microphone stream started: PCM16 mono ${GeminiLiveWire.inputSampleRate}Hz');
-      onStatus('Đang trò chuyện… Hãy nói tự nhiên, không cần nhấn giữ micro');
+      _status(VoicePhase.listening, 'Đang trò chuyện… Hãy nói tự nhiên, không cần nhấn giữ micro');
       _micSubscription = stream.listen((chunk) {
         if (!_recording || _channel == null) return;
         _micChunkCount++;
@@ -224,7 +323,7 @@ class GeminiLiveVoice {
         _channel!.sink.add(GeminiLiveWire.micAudio(chunk));
       }, onError: (Object error) {
         debugPrint('[PyQuestVoice] microphone stream ERROR: $error');
-        onError('Không đọc được micro: $error');
+        _fail('Không đọc được micro: $error');
       }, onDone: () {
         debugPrint('[PyQuestVoice] microphone stream done chunks=$_micChunkCount bytes=$_micByteCount');
       });
@@ -243,8 +342,8 @@ class GeminiLiveVoice {
     } catch (error, stackTrace) {
       debugPrint('[PyQuestVoice] startListening ERROR: ${GeminiLiveWire.redactSecrets('$error')}\n$stackTrace');
       await _stopRecorder();
-      onError('Không thể bắt đầu voice: ${GeminiLiveWire.redactSecrets('$error')}');
-      onStatus('Voice chưa kết nối');
+      _fail('Không thể bắt đầu voice: ${GeminiLiveWire.redactSecrets('$error')}');
+      _status(VoicePhase.off, 'Voice chưa kết nối');
       await _pump.stop();
       await _closeSocket();
     }
@@ -255,13 +354,13 @@ class GeminiLiveVoice {
     debugPrint('[PyQuestVoice] stop requested micChunks=$_micChunkCount blockedChunks=$_micBlockedCount serverAudioChunks=$_serverAudioChunks');
     _recording = false;
     _stopAfterResponse = true;
-    onStatus('Đang chờ $_characterName nói nốt…');
+    _status(VoicePhase.closing, 'Đang chờ $_characterName nói nốt…');
     await _stopRecorder();
     try {
       _channel?.sink.add(GeminiLiveWire.audioStreamEnd());
       debugPrint('[PyQuestVoice] sent audioStreamEnd');
     } catch (error) {
-      onError('Không gửi được đoạn âm thanh: $error');
+      _fail('Không gửi được đoạn âm thanh: $error');
     }
 
     // The tutor should finish its current turn; never leave the UI waiting
@@ -283,10 +382,25 @@ class GeminiLiveVoice {
     _openEarTimer?.cancel();
     _openEarTimer = null;
     _stopAfterResponse = false;
-    debugPrint('[PyQuestVoice] session closing events=$_serverEvents audioChunks=$_serverAudioChunks audioBytes=$_serverAudioBytes errors=$_errors');
-    onStatus('Đã dừng trò chuyện');
+    debugPrint('[PyQuestVoice] session closing events=$_serverEvents audioChunks=$_serverAudioChunks '
+        'audioBytes=$_serverAudioBytes errors=$_errors echoDropped=$_echoDropped');
+    _sealOpenTranscripts();
+    _status(VoicePhase.off, 'Đã dừng trò chuyện');
     await _pump.stop();
     await _closeSocket();
+  }
+
+  /// A session that ends mid-sentence must leave a readable conversation
+  /// behind, not a bubble that is still "partial" forever.
+  void _sealOpenTranscripts() {
+    if (_turnUserText.trim().isNotEmpty) {
+      onTranscript(VoiceUtterance(role: TutorSpeakerRole.child, text: _turnUserText.trim()));
+    }
+    if (_outputText.trim().isNotEmpty) {
+      onTranscript(VoiceUtterance(role: TutorSpeakerRole.assistant, text: _outputText.trim()));
+    }
+    _turnUserText = '';
+    _outputText = '';
   }
 
   void _onSpeakStarted() {
@@ -294,7 +408,7 @@ class GeminiLiveVoice {
     _openEarTimer = null;
     _tutorSpeaking = true;
     _resumeListeningAt = DateTime.fromMillisecondsSinceEpoch(0);
-    if (!_disposed) onStatus('$_characterName đang nói…');
+    if (!_disposed) _status(VoicePhase.speaking, '$_characterName đang nói…');
     debugPrint('[PyQuestVoice] playback started bytes=$_turnAudioBytes');
   }
 
@@ -311,14 +425,28 @@ class GeminiLiveVoice {
     _openEarTimer = null;
     if (!_tutorSpeaking) return;
     _tutorSpeaking = false;
-    _resumeListeningAt = DateTime.now().add(_listenAgainGuard);
+    final now = DateTime.now();
+    _resumeListeningAt = now.add(_listenAgainGuard);
+    // The audio that was already buffered keeps playing for a moment after the
+    // pump is done with it, and the room carries it back into the microphone.
+    _echoUntil = now.add(_echoGrace);
     debugPrint('[PyQuestVoice] microphone reopened ($reason)');
     if (_disposed || _stopAfterResponse) return;
-    onStatus('Đang nghe bé nói…');
+    _status(VoicePhase.listening, 'Đang nghe bé nói…');
   }
 
   void _onPlaybackFailure(String message) {
     if (_disposed) return;
+    onError(message);
+  }
+
+  void _status(VoicePhase phase, String message) {
+    _phase = phase;
+    onStatus(TutorVoiceStatus(phase, message));
+  }
+
+  void _fail(String message) {
+    _errors++;
     onError(message);
   }
 
@@ -328,7 +456,7 @@ class GeminiLiveVoice {
       event = GeminiLiveWire.decode(raw);
     } on Object catch (error) {
       debugPrint('[PyQuestVoice] server message parse ERROR: ${GeminiLiveWire.redactSecrets('$error')}');
-      onError('Không đọc được phản hồi Gemini Live.');
+      _fail('Không đọc được phản hồi Gemini Live.');
       return;
     }
     _serverEvents++;
@@ -339,28 +467,36 @@ class GeminiLiveVoice {
       return;
     }
     if (event.errorText != null) {
-      _errors++;
       debugPrint('[PyQuestVoice] server ERROR #$_errors ${event.errorText}');
-      onError('Gemini Live: ${event.errorText}');
+      _fail('Gemini Live: ${event.errorText}');
       return;
     }
     if (event.goAwaySeconds != null) {
       debugPrint('[PyQuestVoice] server goAway in ${event.goAwaySeconds}s');
-      onStatus('Phiên trò chuyện sắp kết thúc…');
+      // Whatever was still being transcribed becomes a finished line: the
+      // socket is closing, so no turnComplete will ever seal it.
+      _sealOpenTranscripts();
+      _status(VoicePhase.closing, 'Phiên trò chuyện sắp kết thúc…');
       return;
     }
 
     final userText = event.userText;
     if (userText != null && userText.isNotEmpty) {
-      // One cumulative line per utterance, so a partial revision updates the
-      // child's bubble instead of adding a second one.
-      _turnUserText = GeminiLiveWire.mergeTranscript(_turnUserText, userText);
-      onTranscript(_turnUserText, fromUser: true);
+      _heardFromMicrophone(userText);
     }
 
     final assistantText = event.assistantText;
     if (assistantText != null && assistantText.isNotEmpty) {
       _outputText = GeminiLiveWire.mergeTranscript(_outputText, assistantText);
+      // Shown while it arrives: an answer that only appears on turnComplete
+      // disappears altogether when the turn is interrupted, and then the
+      // tutor's own words are the only line left in the chat — labelled as the
+      // child's.
+      onTranscript(VoiceUtterance(
+        role: TutorSpeakerRole.assistant,
+        text: _outputText.trim(),
+        isFinal: false,
+      ));
     }
 
     if (event.hasAudio) {
@@ -374,34 +510,67 @@ class GeminiLiveVoice {
     }
 
     if (event.interrupted) {
-      debugPrint('[PyQuestVoice] server interrupted=true; queued audio dropped');
-      _outputText = '';
-      _turnUserText = '';
-      _turnAudioBytes = 0;
+      // The child cut in. Keep what the tutor had already said — it was heard,
+      // so it must stay in the conversation, marked as cut short.
+      debugPrint('[PyQuestVoice] server interrupted=true; queued audio dropped, assistant text kept');
       _pump.interrupt();
+      _finishAssistantTurn(interrupted: true);
+      _turnUserText = '';
+      _openEarForChild('bị ngắt lời');
+      return;
     }
 
     if (event.turnComplete) {
       debugPrint('[PyQuestVoice] server turnComplete audioBytes=$_turnAudioBytes pumpFed=${_pump.bytesFed} pumpDropped=${_pump.slicesDropped}');
-      if (event.audioBytes == 0 && _turnAudioBytes == 0) {
+      if (event.audioBytes == 0 && _turnAudioBytes == 0 && _outputText.trim().isNotEmpty) {
         // Worth a line on the child's screen: a text-only turn is what makes
         // the tutor look mute, and it is the server's choice, not the player's.
-        debugPrint('[PyQuestVoice] turnComplete without audio for this turn '
-            '(text=${_outputText.trim().length}ch)');
-        if (_outputText.trim().isNotEmpty) {
-          onStatus('$_characterName chỉ trả lời bằng chữ cho câu này…');
-        }
+        debugPrint('[PyQuestVoice] turnComplete without audio for this turn (text=${_outputText.length}ch)');
+        _status(VoicePhase.listening, '$_characterName chỉ trả lời bằng chữ cho câu này…');
       }
       _turnAudioBytes = 0;
-      if (_outputText.trim().isNotEmpty) {
-        onTranscript(_outputText.trim(), fromUser: false);
-        _outputText = '';
-      }
+      _finishAssistantTurn();
       _turnUserText = '';
       // The turn is only over once the audio has actually played out; the pump
       // tells us (or the stop grace timer does).
       _pump.endTurn();
     }
+  }
+
+  /// One utterance the microphone produced, after the playback-echo filter.
+  ///
+  /// Returns nothing and changes nothing when the words are the tutor's own: a
+  /// tutor greeting must never become the learner's line.
+  void _heardFromMicrophone(String heard) {
+    final candidate = GeminiLiveWire.mergeTranscript(_turnUserText, heard);
+    final tutorSaid = _lastSpokenText.isNotEmpty ? _lastSpokenText : _outputText;
+    if (echoSuspect && GeminiLiveWire.looksLikeEcho(heard: candidate, spoken: tutorSaid)) {
+      _echoDropped++;
+      _turnUserText = '';
+      debugPrint('[PyQuestVoice] dropped a ${candidate.split(' ').length}-word transcription as '
+          'playback echo (count=$_echoDropped) — not shown as the child’s line');
+      return;
+    }
+    _turnUserText = candidate;
+    onTranscript(VoiceUtterance(
+      role: TutorSpeakerRole.child,
+      text: candidate.trim(),
+      isFinal: false,
+    ));
+  }
+
+  /// Ends the assistant's turn: the text it produced becomes one final line.
+  void _finishAssistantTurn({bool interrupted = false}) {
+    final said = _outputText.trim();
+    _turnAudioBytes = 0;
+    _outputText = '';
+    if (said.isEmpty) return;
+    _lastSpokenText = said;
+    onTranscript(VoiceUtterance(
+      role: TutorSpeakerRole.assistant,
+      text: said,
+      interrupted: interrupted,
+    ));
   }
 
   Future<void> _stopRecorder() async {

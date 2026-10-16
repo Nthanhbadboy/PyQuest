@@ -49,6 +49,11 @@ class PqStrings {
   String get askPlaceholder =>
       isVi ? 'Hỏi bất cứ điều gì về bài này…' : 'Ask anything about this lesson…';
 
+  // who is speaking in the tutor conversation (never inferred from the text)
+  String get childLabel => isVi ? 'Bé' : 'You';
+  String get interruptedTag => isVi ? 'bị ngắt lời' : 'interrupted';
+  String get spokenTag => isVi ? 'qua giọng nói' : 'by voice';
+
   // labels that keep verified facts apart from generated explanations
   String get labelRanCode => isVi ? 'Kết quả chạy thật' : 'Real run result';
   String get labelAiWritten => isVi ? 'Do AI soạn' : 'AI-written';
