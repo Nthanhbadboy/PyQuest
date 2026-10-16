@@ -14,6 +14,7 @@ class SettingsService extends ChangeNotifier {
   final SettingsRepository _repo;
   Map<String, String> _values = <String, String>{};
   List<String> _systemLocales = <String>[];
+  bool _systemLocaleInputProvided = false;
   LocalePreference _localePreference = LocalePreference.system;
   LocaleResolution _localeResolution = LocaleResolver.resolve(preference: LocalePreference.system);
   Object? _localeLoadError;
@@ -23,8 +24,9 @@ class SettingsService extends ChangeNotifier {
   /// Loads raw settings and migrates a valid legacy language without deleting it.
   ///
   /// OS locales are supplied by the caller; this service does not read platform APIs.
-  Future<void> load({Iterable<String> systemLocales = const <String>[]}) async {
-    _systemLocales = List<String>.unmodifiable(systemLocales);
+  Future<void> load({Iterable<String>? systemLocales}) async {
+    _systemLocaleInputProvided = systemLocales != null;
+    _systemLocales = List<String>.unmodifiable(systemLocales ?? const <String>[]);
     _loaded = false;
     _localeLoadError = null;
     late final Map<String, String> loadedValues;
@@ -98,13 +100,20 @@ class SettingsService extends ChangeNotifier {
       _loaded && _localePreferenceSaveError == null &&
       _values[localePreferenceKey] == _localePreference.storageValue;
 
-  /// Effective language for the existing cast/tutor adapter. In system mode this may be English
-  /// fallback, but the stored preference remains `system`.
-  PqLang get lang => PqLang.fromCode(_localeResolution.languageCode);
+  /// Existing PqLang consumers keep their legacy behavior until the app root supplies OS locales
+  /// in PQC-015. The separate [localeResolution] already reports the correct system match/fallback;
+  /// this compatibility path does not turn VI into a stored explicit preference.
+  PqLang get lang {
+    if (_localePreference == LocalePreference.system && !_systemLocaleInputProvided) {
+      return PqLang.fromCode(_values[legacyLanguageKey]);
+    }
+    return PqLang.fromCode(_localeResolution.languageCode);
+  }
   PqStrings get strings => PqStrings.of(lang);
 
   /// Change OS locale input for this session. This never writes the preference.
   void updateSystemLocales(Iterable<String> systemLocales) {
+    _systemLocaleInputProvided = true;
     _systemLocales = List<String>.unmodifiable(systemLocales);
     _refreshResolution();
     notifyListeners();

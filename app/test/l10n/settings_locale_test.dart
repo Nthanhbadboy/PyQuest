@@ -85,6 +85,21 @@ void main() {
       expect(settings.raw(SettingsService.legacyLanguageKey), 'vi');
     });
 
+    test('legacy PqLang adapter remains unchanged until the root supplies OS locales', () async {
+      final _Fixture fixture = await _openFixture(<String, String>{});
+      addTearDown(fixture.close);
+      final SettingsService settings = fixture.service();
+      addTearDown(settings.dispose);
+
+      await settings.load();
+      expect(settings.localePreference, LocalePreference.system);
+      expect(settings.localeResolution.languageCode, 'en');
+      expect(settings.localeResolution.usedEnglishFallback, isTrue);
+      expect(settings.lang, PqLang.vi, reason: 'existing consumers retain the pre-015 adapter default');
+      expect(settings.raw(SettingsService.localePreferenceKey), isNull,
+          reason: 'adapter fallback must not become a persisted explicit VI choice');
+    });
+
     test('present-invalid new preference wins as system over valid legacy English', () async {
       final _Fixture fixture = await _openFixture(<String, String>{
         SettingsService.localePreferenceKey: 'xx',
