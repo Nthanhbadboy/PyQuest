@@ -70,7 +70,9 @@ void main() {
                 boundary.currentContext!.findRenderObject()! as RenderRepaintBoundary;
             final ui.Image image =
                 (await tester.runAsync(() async => render.toImage(pixelRatio: 2.0)))!;
-            final ByteData? bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+            // Không nêu tên type `ByteData`: SDK của CI không export nó qua material
+            // (đây chính là lý do run trước đỏ ở `undefined_class`) — để suy luận kiểu.
+            final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
             image.dispose();
             expect(bytes, isNotNull, reason: '$name: không encode được PNG');
             final File file = File('${outDir.path}/$name.png');

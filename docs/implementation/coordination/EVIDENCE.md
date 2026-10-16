@@ -741,6 +741,19 @@ baseline 175 nguyên). Ba việc làm ở vòng này, và một việc **phươn
   tự xóa, 1 test bấm nút, 1 test Tab, 1 test Enter, 1 test semantics, 1 test fallback) và **ảnh chụp
   tách sang `board_previews_test.dart`** để lỗi cấu trúc không che mất bằng chứng render.
 
+**Run đỏ thứ tư `ca1e0e3` — `test +253 -2` (78/80 test board PASS, baseline 175 nguyên), hai đỏ còn lại
+đều là **API/idiom của chính test**, không phải hợp đồng board:**
+1. `analyze`: `undefined_class ByteData` ở `board_previews_test.dart` — `ByteData` không được export qua
+   `material.dart` trong SDK này. Sửa bằng cách để trình biên dịch **suy luận kiểu** (`final bytes = ...`)
+   thay vì nêu tên type.
+2. `test`: `semantics: altText của design vào cây…` — tôi dùng `find.bySemanticsLabel` + `ensureSemantics`
+   (huy động cây semantics) trong khi repo **đã có idiom an toàn** cho đúng việc này ở
+   `lesson_route_regression_test.dart:133-143`: đọc `Semantics.properties.label` từ widget tree, không nêu
+   `SemanticsProperties`, không phụ thuộc trạng thái bật semantics của binding. Đây là bài học cũ bị bỏ
+   quên (PQC-007 từng trả giá vì đoán type này) — ghi lại để lần sau tra repo trước.
+Test semantics mới đòi ba điều: altText đã duyệt **là** nhãn của một node, không có node nào mang nhãn
+chung kiểu "Ảnh minh họa", và vị trí beat (`1/4`) đọc được.
+
 **Chưa xong:** commit sửa tiếp theo đây phải có `analyze` No issues + `test` xanh với toàn bộ số test mới,
 `số CI xanh` sẽ ghi thành EV-ID-022.1 ngay khi run về, kèm 16 ảnh `board-*.png` mà `publish_previews.py`
 đăng từ `build/previews` (chụp bằng test thường, **không** tag `render` vì `ci.yml` chỉ quét `--tags render

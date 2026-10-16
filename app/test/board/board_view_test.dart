@@ -223,13 +223,21 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('semantics: altText của design vào cây, không phải nhãn chung',
+  testWidgets('semantics: altText của design là nhãn thật, không phải nhãn chung',
       (WidgetTester tester) async {
-    final SemanticsHandle handle = tester.ensureSemantics();
-    addTearDown(handle.dispose);
     await pumpBoard(tester, planIndex: 0);
-    expect(find.bySemanticsLabel(RegExp('Tên lệnh print được tô nổi bật')), findsWidgets);
-    expect(find.bySemanticsLabel(RegExp('1/4')), findsWidgets);
+    final Map<String, dynamic> pack = copyPackByBeat()['mq1_01_s2.b1']!;
+    final Map<String, dynamic> vi =
+        (pack['copy']! as Map<String, dynamic>)['vi']! as Map<String, dynamic>;
+    final String alt = vi['altText']! as String;
+    final List<String> labels = semanticLabels(tester, find.byType(BoardView));
+    expect(labels, isNotEmpty, reason: 'board phải tự khai semantics, không trông vào Text');
+    expect(labels.any((String l) => l.contains(alt)), isTrue,
+        reason: 'altText đã duyệt của design phải là nhãn của một node: $labels');
+    expect(labels.any((String l) => _genericLabel.hasMatch(l.trim())), isFalse,
+        reason: 'không được lấy "Ảnh minh họa" làm nhãn: $labels');
+    expect(labels.any((String l) => l.contains('1/4')), isTrue,
+        reason: 'vị trí beat phải đọc được bởi reader: $labels');
     expect(tester.takeException(), isNull);
   });
 
@@ -277,3 +285,23 @@ void main() {
 
 Future<BoardController> controllerOf(WidgetTester tester) async =>
     tester.widget<BoardView>(find.byType(BoardView)).controller;
+
+final RegExp _genericLabel = RegExp(r'^(ảnh|hình|image|illustration|graphic)(\s*minh\s*h[ọo]a)?\.?$',
+    caseSensitive: false);
+
+/// Nhãn của mọi node `Semantics` trong `subtree`.
+///
+/// Đây là idiom **đã có trong repo** (`lesson_route_regression_test.dart:133-143`): đọc
+/// `Semantics.properties` từ widget tree, không nêu tên type `SemanticsProperties` (SDK của CI
+/// không export nó) và không dùng `find.bySemanticsLabel` — cách đó cần cây semantics đang bật và
+/// đã làm chính test này đỏ ở run `ca1e0e3`.
+List<String> semanticLabels(WidgetTester tester, Finder subtree) => find
+    .descendant(of: subtree, matching: find.byType(Semantics))
+    .evaluate()
+    .map((Element e) {
+      final dynamic w = e.widget;
+      final dynamic label = w.properties.label;
+      return label is String ? label : '';
+    })
+    .where((String s) => s.isNotEmpty)
+    .toList();
