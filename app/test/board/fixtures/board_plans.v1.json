@@ -11,6 +11,7 @@
  },
  "plans": [
   {
+   "schemaVersion": 1,
    "planId": "mq1-01-s2.board.v1",
    "lessonId": "mq1_01",
    "stepId": "mq1_01_s2",
@@ -84,6 +85,7 @@
       },
       {
        "type": "output",
+       "statement": "print(\"Xin chào!\")",
        "value": "Xin chào!",
        "altText": "O ket qua hien Xin chao! va khong co dau ngoac kep"
       }
@@ -111,6 +113,7 @@
    ]
   },
   {
+   "schemaVersion": 1,
    "planId": "mq1-03-s2.board.v1",
    "lessonId": "mq1_03",
    "stepId": "mq1_03_s2",
@@ -195,6 +198,7 @@
       },
       {
        "type": "output",
+       "statement": "print(3 + 4)",
        "value": "7",
        "altText": "Bay vien da gop thanh mot nhom; day la ket qua cua DONG DAU ma thoi"
       }
@@ -218,6 +222,7 @@
       },
       {
        "type": "output",
+       "statement": "print(3 + 4)\nprint(\"3 + 4\")",
        "value": "7\n3 + 4",
        "altText": "O ket qua co hai dong: 7 roi den 3 + 4"
       }

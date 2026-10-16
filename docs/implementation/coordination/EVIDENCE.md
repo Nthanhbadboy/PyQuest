@@ -699,6 +699,28 @@ import chỉ `dart:convert` + flutter chuẩn + nội bộ board, op không có 
 `Tween/CurvedAnimation/AnimationController/Html/Text.rich`, và trần hợp đồng khớp bảng rev 4
 (1..12 beat · 8 op · 600 code point · 12 token · 4 group · 8 shape · 8 connector · schema 1 · 9 op kind).
 
+**Run đỏ thứ hai `38905423800` @ `ea1d7fd` — `analyze` SẠCH, `render=0`, `test +203 -46`.** Lần này là
+lỗi **hợp đồng dữ liệu**, không phải lỗi CI: hai nguyên nhân gốc, cả hai đều do tôi tin một phía.
+
+1. Fixture `board_plans.v1.json` **thiếu `schemaVersion`** (tôi tạo file bằng script, quên khóa này) ⇒
+   codec từ chối cả hai plan ⇒ mọi test phụ thuộc plan đỏ theo. Sửa: thêm `"schemaVersion": 1`.
+2. Tôi đặt **hai rule chồng nhau** cho cùng một việc: codec bắt `op.output` phải có `statement`, còn
+   validator đã bắt `beat.sourceStatement`. Fixture chỉ khai ở beat ⇒ `outputWithoutStatement` cho mọi
+   op output. Cách sửa **không** phải nới kiểm tra: bỏ rule ở codec, để validator sở hữu một chỗ, và cho
+   `op.statement` **quyền ưu tiên** (beat chỉ là fallback) — tức là mỗi ô kết quả phải tự nói nó mô tả
+   câu nào, đúng ý rev 4 §D5 "output do engine xác nhận, không phải lời plan tự khai".
+3. Một ca tiêu cực của tôi **chỉ target sai chỗ**: 'codeSnippet quá số dòng' mutate `numbers.b1.ops[0]`
+   trong khi op đó là `highlightLine` ⇒ không bao giờ đỏ. Đổi target sang op `codeSnippet` thật.
+
+Để khỏi phải đoán CI lần nữa, tôi port đúng bộ rule sang Python và chạy **dry-run toàn bộ bảng ca**
+(trước khi commit): 4 ca positive (2 plan × {vi,en}) ra `[]`; mỗi ca tiêu cực ra **đúng một mã** như
+test mong đợi — `schemaVersion/emptyPlan/unknownOpKind/unknownObject×2/layerViolation/missingAltText/
+genericAltText/missingCopy/copyTooLong/badGeometry/malformedId/outputMismatch/outputWithoutStatement/
+outputScopeMismatch/foreignKey/markupInText/tooManyOps/tooManyTokens/tooManyBeats/duplicateId/
+documentTooLarge/foreignKey(lesson)`, và caption 450 emoji được **chấp nhận** (chứng minh đếm code point).
+Dry-run này chỉ có giá trị phát hiện lệch rule giữa codec/validator — nó **không** thay bằng chứng
+Flutter; widget/semantics/focus vẫn chỉ do CI thật đo.
+
 **Chưa xong:** commit sửa tiếp theo đây phải có `analyze` No issues + `test` xanh với toàn bộ số test mới,
 `số CI xanh` sẽ ghi thành EV-ID-022.1 ngay khi run về, kèm 16 ảnh `board-*.png` mà `publish_previews.py`
 đăng từ `build/previews` (chụp bằng test thường, **không** tag `render` vì `ci.yml` chỉ quét `--tags render

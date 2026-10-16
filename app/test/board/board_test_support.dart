@@ -75,6 +75,26 @@ String composedPlanSource(int index) => jsonEncode(composedPlan(index));
 /// Sửa sâu một giá trị trong **plan đã ghép** để tạo ca tiêu cực; file fixture không đổi.
 String mutatedSource(int index, List<Object> path, Object? value) {
   final Map<String, dynamic> plan = composedPlan(index);
+  _applyAt(plan, path, value);
+  return jsonEncode(plan);
+}
+
+/// Hai phép sửa cùng lúc, cho ca tiêu cực mà một mình nó chưa đủ (vd. xóa cả statement của op
+/// lẫn của beat để không còn gì để đối chiếu).
+String mutatedSource2(
+  int index,
+  List<Object> p1,
+  Object? v1,
+  List<Object> p2,
+  Object? v2,
+) {
+  final Map<String, dynamic> plan = composedPlan(index);
+  _applyAt(plan, p1, v1);
+  _applyAt(plan, p2, v2);
+  return jsonEncode(plan);
+}
+
+void _applyAt(Map<String, dynamic> plan, List<Object> path, Object? value) {
   Object? node = plan;
   for (int i = 0; i < path.length - 1; i++) {
     final Object key = path[i];
@@ -92,7 +112,6 @@ String mutatedSource(int index, List<Object> path, Object? value) {
   } else {
     (node! as Map<String, dynamic>)[last as String] = value;
   }
-  return jsonEncode(plan);
 }
 
 class _Removed {

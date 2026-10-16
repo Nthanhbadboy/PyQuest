@@ -72,8 +72,12 @@ void main() {
   });
 
   group('tiêu cực — một lỗi là reject nguyên plan', () {
-    void expectOnly(int index, List<Object> path, Object? value, BoardIssueCode code) {
-      final BoardValidation validation = validateComposed(index, source: mutatedSource(index, path, value));
+    void expectOnly(int index, List<Object> path, Object? value, BoardIssueCode code,
+        {List<Object?>? also}) {
+      final String source = also == null
+          ? mutatedSource(index, path, value)
+          : mutatedSource2(index, path, value, also[0]! as List<Object>, also[1]);
+      final BoardValidation validation = validateComposed(index, source: source);
       expect(validation.accepted, isFalse, reason: 'phải reject: $code');
       expect(validation.plan, isNull, reason: 'reject mà còn trả plan là rò một nửa plan');
       expect(validation.codes, equals(<BoardIssueCode>{code}),
@@ -104,15 +108,23 @@ void main() {
     test('id không hợp lệ', () => expectOnly(0, <Object>['planId'], 'Bad ID!', BoardIssueCode.malformedId));
     test('output tự khai khác engine', () =>
         expectOnly(1, <Object>['beats', 1, 'ops', 1, 'value'], '8', BoardIssueCode.outputMismatch));
-    test('output không có statement để đối chiếu', () =>
-        expectOnly(0, <Object>['beats', 2, 'sourceStatement'], null, BoardIssueCode.outputWithoutStatement));
+    test('output không còn gì để đối chiếu (mất cả statement của op lẫn của beat)', () => expectOnly(
+        0,
+        <Object>['beats', 2, 'ops', 1, 'statement'],
+        '',
+        BoardIssueCode.outputWithoutStatement,
+        also: <Object?>[
+          <Object>['beats', 2, 'sourceStatement'],
+          null,
+        ],
+    ));
     test('sai outputScope (hai dòng mà khai one line)', () => expectOnly(
         1, <Object>['beats', 2, 'outputScope'], 'singleStatement', BoardIssueCode.outputScopeMismatch));
     test('khóa chấm điểm/answer lọt vào plan', () => expectOnly(
         0, <Object>['beats', 0, 'expectedOutput'], 'Xin chào!', BoardIssueCode.foreignKey));
     test('markup/JS lọt vào chuỗi display', () => expectOnly(
         0, <Object>['beats', 0, 'ops', 0, 'text'], '<script>alert(1)</script>', BoardIssueCode.markupInText));
-    test('codeSnippet quá số dòng', () => expectOnly(1, <Object>['beats', 0, 'ops', 0, 'text'],
+    test('codeSnippet quá số dòng', () => expectOnly(0, <Object>['beats', 0, 'ops', 0, 'text'],
         List<String>.filled(30, 'print(1)').join('\n'), BoardIssueCode.tooManyCodeLines));
 
     test('ops vượt trần mỗi beat', () {

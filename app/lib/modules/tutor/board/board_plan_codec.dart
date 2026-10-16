@@ -444,10 +444,6 @@ BoardOp? _decodeOp(
           beatIndex: beatIndex, opIndex: opIndex));
     }
   }
-  if (kind == BoardOpKind.output && statement.trim().isEmpty) {
-    issues.add(BoardIssue(BoardIssueCode.outputWithoutStatement, 'op output phải nêu statement nó mô tả',
-        beatIndex: beatIndex, opIndex: opIndex));
-  }
 
   return BoardOp(
     kind: kind,

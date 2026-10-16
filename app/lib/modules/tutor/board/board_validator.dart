@@ -162,10 +162,14 @@ void _checkOutput({
   required int beatIndex,
   required int opIndex,
 }) {
-  final String? statement = beat.sourceStatement;
-  if (statement == null || statement.trim().isEmpty) {
+  // Op phải tự nói nó mô tả câu nào; `beat.sourceStatement` chỉ là fallback. Cả hai trống thì
+  // không có gì để đối chiếu => lỗi, vì một ô "kết quả" vô chủ chính là chỗ plan bịa số.
+  String statement = op.statement.trim();
+  if (statement.isEmpty) statement = (beat.sourceStatement ?? '').trim();
+  if (statement.isEmpty) {
     issues.add(BoardIssue(BoardIssueCode.outputWithoutStatement,
-        'op output cần beat.sourceStatement để đối chiếu', beatIndex: beatIndex, opIndex: opIndex));
+        'op output cần statement của riêng nó hoặc beat.sourceStatement để đối chiếu',
+        beatIndex: beatIndex, opIndex: opIndex));
     return;
   }
   final String expected;
