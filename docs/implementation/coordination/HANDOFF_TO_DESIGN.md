@@ -6,6 +6,7 @@
 - gate hiện tại của design: `runtime=no · test=yes · coordination=yes` · `art_approval: pending-review`
 - cách dùng: trả lời **từng mã số ngay dưới câu hỏi**; design ghi vào file phản hồi của họ hoặc commit
   thẳng vào `docs/design/coordination/`. Tôi không tự suy diễn khi chưa có trả lời (LEAD_RUNBOOK dòng 53).
+- **Bản để design trả lời tại chỗ (có chỗ điền `TRA LỜI:`): `tasks/PQD-003.md` §L (L1–L10).**
 - chi tiết đầy đủ: `tasks/PQD-003.md` (mục A–K), `tasks/PQD-002.md` (mục A.3, D), `EVIDENCE.md`
   (EV-ID-016…020). File này chỉ là **bảng hỏi-đáp gộp**, không thay thế các mục đó.
 
