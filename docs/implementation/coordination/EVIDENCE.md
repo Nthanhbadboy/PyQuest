@@ -794,7 +794,8 @@ tooManyTokens/tooManyBeats/documentTooLarge/invalidJson`; stale/future/turn/loca
 font 2.0; Tab có assertion trong từng vòng và Enter kích hoạt `board_next`; semantics đọc từ
 `Semantics.properties`; biên nguồn chặn `score/quota/energy/reward/lessonCompleted/Timer/await/Http`.
 
-**Run của chính commit docs này cũng xanh**: `e5b444f` @ run `38911355301` → `TITLE: All steps passed`,
+**Run của chính commit docs này cũng xanh**: `e5b444f` @ run `38911165569` (check-run `117009291433`)
+→ `TITLE: All steps passed`,
 `analyze` *No issues found! (8.8s)*, `test` **`+255`**, `render` **`+10`**, và
 `j00..j05 = 7entries/11501568 B` **sáu lần đọc giống hệt** ⇒ phần docs không làm nhếch nền test/render cũ.
 Run của commit trước (`745c987`) ở trạng thái **`cancelled`** vì push mới hơn cùng nhánh (concurrency của
@@ -804,3 +805,8 @@ GitHub) — **không** phải đỏ vì test; tôi ghi rõ để design không p
 nhớ 512 px, và mọi thứ thuộc `PQC-011` (nối lesson) / `PQC-012` (đồng bộ cue) / `PQC-013` (AI plan).
 Widget test **không** phải bằng chứng thiết bị; `flutter test` **không** phải bằng chứng board đã chạy
 trong bài học. Đó là lý do tôi không tự đóng `PQC-010`, chỉ chuyển `READY_FOR_REVIEW`.
+
+*(Tự sửa một số liệu tôi chép sai: bản trước của đoạn này ghi run của `e5b444f` là `38911355301` —
+không tồn tại. Số đúng là `38911165569`, lấy từ `gh api .../commits/<sha>/check-runs → html_url` và
+`gh run list`; tôi để lại dòng này thay vì sửa im lặng, vì "số trong tài liệu phải tra lại được" là quy
+t tắc làm việc của nhánh này.)*
