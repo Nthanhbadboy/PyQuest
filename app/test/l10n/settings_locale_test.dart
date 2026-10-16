@@ -199,6 +199,8 @@ void main() {
       expect(settings.lang, PqLang.vi);
       expect(settings.localePreferenceSaveError, isNotNull);
       expect(settings.localePreferenceSaved, isFalse);
+      await expectLater(settings.setLang(PqLang.vi), throwsA(isA<DatabaseException>()));
+      expect(settings.lang, PqLang.vi);
       expect((await fixture.repository.all())[SettingsService.localePreferenceKey], 'en');
 
       final SettingsService restarted = fixture.service();

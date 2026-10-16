@@ -144,7 +144,9 @@ class SettingsService extends ChangeNotifier {
   Future<void> setLang(PqLang value) async {
     final LocalePreference preference =
         value == PqLang.en ? LocalePreference.en : LocalePreference.vi;
-    await setLocalePreference(preference);
+    if (await setLocalePreference(preference)) return;
+    final Object error = localePreferenceSaveError ?? StateError('Could not save locale preference');
+    Error.throwWithStackTrace(error, StackTrace.current);
   }
 
   void _refreshResolution() {
