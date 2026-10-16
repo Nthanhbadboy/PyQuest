@@ -185,6 +185,10 @@ class PcmTurnPump {
   /// Never feeds less than this, or the device starves between two chunks.
   static const int _minSliceBytes = 2;
 
+  /// How many failed starts are tolerated before audio is handed to the device
+  /// anyway, without a confirmed "playing" state.
+  static const int _optimisticAfterFeeds = 5;
+
   final PcmAudioOutput output;
   final int sampleRate;
   final Duration tick;
@@ -231,6 +235,7 @@ class PcmTurnPump {
   int _slicesFed = 0;
   int _slicesDropped = 0;
   int _failures = 0;
+  int _unavailable = 0;
 
   /// Bytes handed to the device so far (diagnostics only).
   int get bytesFed => _fedBytes;
@@ -263,6 +268,7 @@ class PcmTurnPump {
     _reference = _elapsed();
     _lastAudioAt = _reference;
     _fedBytes = 0;
+    _unavailable = 0;
     await output.open();
   }
 
@@ -306,6 +312,7 @@ class PcmTurnPump {
   Future<void> stop() async {
     _stopped = true;
     _running = false;
+    _unavailable = 0;
     _clearQueue();
     _turnOpen = false;
     _draining = false;
@@ -364,9 +371,17 @@ class PcmTurnPump {
     }
 
     if (!await output.ensureStreaming()) {
+      _unavailable++;
       _noteFailure('audio output unavailable');
       _maybeGiveUpOnTurn();
-      return;
+      // Last resort after a few failed starts: hand the audio over anyway.
+      // A device that never reports "playing" is unusual, and feeding it is
+      // what the first version of this tutor did — better a possible answer
+      // than a session that decided to stay quiet.
+      if (_unavailable < _optimisticAfterFeeds) return;
+      onDiagnostic?.call('feeding without a confirmed playing state');
+    } else {
+      _unavailable = 0;
     }
     final slice = sliceBytes;
     for (var i = 0; i < _maxSlicesPerTick && _pendingBytes > 0; i++) {

@@ -168,6 +168,21 @@ void main() {
     expect(output.audioBytesWritten - before, 2 * _slice, reason: 'the next answer still plays');
   });
 
+  test('after repeated failed starts the audio is handed over anyway', () async {
+    await pump.prepare();
+    output.streaming = false;
+    output.restartWorks = false;
+    pump.push(audio(1));
+    pump.endTurn();
+    for (var i = 0; i < 6; i++) {
+      await pump.pumpOnce();
+      advance(10);
+    }
+    expect(output.droppedByDevice, greaterThan(0),
+        reason: 'a device that never confirms its state must still be offered the audio');
+    expect(pump.pendingBytes, 0);
+  });
+
   test('the stream is kept alive with silence between turns', () async {
     await pump.prepare();
     await playTurn(1);
