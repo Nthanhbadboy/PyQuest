@@ -102,16 +102,24 @@ def relaunch_evidence(root, limit=45):
     return lines
 
 
-def app_evidence(root, limit=50):
+def app_evidence(root, limit=50, failed=True):
     """What the system buffers said about com.pyquest.pyquest itself.
 
     ci/analyze_logcat.py writes this small extract next to the full analysis. It
     answers the question a journey failure asks - did the app crash, get killed,
     or restart - and it is short enough to be printed here, so the answer is on
     the check page instead of only inside the artifact.
+
+    The journey only dumps logcat when something failed, so on a green run the
+    extract says nothing but that - and a section that only says "no evidence,
+    because there was no failure" is noise, so it is dropped there. When anything
+    failed, the placeholder is printed: "we found no app events" must never look
+    like "we did not look".
     """
     lines = read_lines(os.path.join(root, "emulator-app-evidence.txt"))
     if not lines:
+        return None
+    if not failed and len(lines) == 1 and lines[0].startswith("no logcat dump"):
         return None
     if len(lines) > limit:
         lines = lines[:limit] + [
@@ -367,7 +375,7 @@ def report(args, root):
     out.append("")
 
     # --- what the device said about the app ---------------------------------
-    app_state = app_evidence(root)
+    app_state = app_evidence(root, failed=(state == "failed"))
     if app_state:
         out.append("### The app on the device (from the logcat)")
         out.append("")

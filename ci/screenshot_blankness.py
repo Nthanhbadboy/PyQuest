@@ -198,6 +198,9 @@ def read_frame(path):
         return _fail("%s holds only %d bytes" % (path, len(data)))
     if data.startswith(PNG_SIGNATURE):
         return read_png(data)
+    if data.startswith(b"\xff\xd8\xff"):
+        return _fail("%s is a JPEG (the shrunk screenshot), not a capture frame - "
+                     "measure the PNG that screencap wrote" % path)
     return read_raw(data)
 
 
