@@ -137,6 +137,9 @@ class _TutorPanelState extends State<TutorPanel> {
             _voiceBusy = false;
           }
         });
+        if (status == 'Đã dừng trò chuyện' || status == 'Voice chưa kết nối') {
+          unawaited(widget.services.audio.setTutorVoiceMode(false));
+        }
       },
       onTranscript: (text, {required fromUser}) {
         if (!mounted) return;
