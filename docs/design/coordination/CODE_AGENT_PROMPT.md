@@ -32,29 +32,27 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task ưu tiên hiện tại là **PQD-003 revision4: review bàn giao codedb9b59f, board + locale contract**.
-Đọc `docs/design/coordination/tasks/PQD-003.md`,
-**`docs/design/coordination/reviews/PQD-003-r4.md`** (trả từng D/U/V/L; ưu tiên hơn
-proposal code), `docs/design/TUTOR_TEACHING_BOARD.md`
-và `docs/design/tutor-board-prototype/README.md`. Xem thêm
-`docs/design/LIVING_WORLD_DIRECTION.md` / P04 nối world với bảng, không ưu tiên NPC
-trước board. Đọc thêm `docs/design/LANGUAGE_AND_LOCALIZATION.md` và
-`docs/design/shared-l10n/README.md`: mặc định theo hệ thống, Settings override lưu lại,
-locale của UI/Tutor/board/voice thống nhất, giữ code/ink và loại stale reply. Đề xuất
-allowlist foundation locale/migration và coverage toàn app, không port DOM adapter
-hoặc coi cast/Tutor vi/en cũ là đã đa ngôn ngữ hoàn chỉnh. Chạy mẫu để hiểu vì sao đây không
-phải chat reskin. Design đã audit độc lập CI38890785888@e546f9b và38892233871@c828ad4:
-167+10 tests, phases0, ImageCache số thật. **PQC-009 còn delta keyboard**: assert sau
-mỗi Tab thay vì chỉ sau6 lần; không làm lại route/cache. Sửa wording bộ512 là dự phóng,
-không đo thật. Việc test/coordination này làm ngay được; runtime gates chưa thay.
-Giao content `tutor-board-prototype/authored-copy.v1.json` (8beat VI+EN); không copy
-đè nguồn chấm điểm. Có `EVIDENCE_DIR` để chạy browser smoke vào thư mục riêng.
-Giữ bạn bè/Arena/phần thưởng/động viên/mini-game trong scope sản phẩm, không rút thành
-app học. Không triển khai online/backend hoặc đổi economy trong patch board/locale.
+Task hiện tại là **PQD-003 revision5: nghiệm thu delta code4315d39; chờ quyền implementation**.
+Đọc `docs/design/coordination/tasks/PQD-003.md` và
+`docs/design/coordination/reviews/PQD-003-r5.md` (CI JSON kèm theo).
+PQC-009 test-only đã **ACCEPTED**:175+10 tại38897787848@41752fd, app tree khớp4315d39,
+per-Tab assertions đạt;8content tests/fixture hash đã nhận. **Không làm lại intake,
+route/cache/keyboard hoặc tạo thêm ACK-only commit.**
 
-Trong scope test/coordination: source-map, fixture/contract negative tests, đề xuất
-implementation allowlist nhỏ cho board trước/AI sau/audio cue sync sau. Không bật
-runtime/đổi provider/roster/voice chỉ vì có UI demo. Không thêm orchestration framework.
+Các quyết định D/U/V/L trong `reviews/PQD-003-r4.md` vẫn là contract canonical;
+§M trên nhánh code đã nhận. Housekeeping docs ghép vào lần làm việc tiếp theo, không
+phải một vòng commit mới để xin nghiệm thu lại. Giữ copied pack byte-identical.
+
+Ba gói đã đề xuất:010 board độc lập authored/caption-only;014 resolver/migration;
+015 delegates/ARB foundation. Hiện runtime/dependency **chưa được cấp**; không tự
+bắt đầu vì verdict test xanh. Chờ authorization có allowlist cụ thể, không tự mở
+002/art512,004/device voice,005/dependency cũ hoặc008/a11y runtime. Không hỏi lại thiết
+kế đã chốt, không thêm framework điều phối. Khi không còn việc trong scope, ghi chờ
+quyền và dừng; không làm test lặp chỉ để giữ phiên bận.
+
+Giữ bạn bè/Arena/phần thưởng/động viên/mini-game là trụ cột song song theo charter;
+không rút thành app học, không gom backend social/online hoặc đổi economy vào patch
+board/locale. Mẫu HTML, copy pack và widget CI không là bằng chứng AI/TTS/device.
 
 Mục tiêu vẫn là redesign toàn app theo `FULL_APP_REDESIGN_CHARTER.md`, không dừng ở
 thumbnail. Ghi phản hồi bảng giảng vào `docs/implementation/coordination/tasks/PQD-003.md`;
