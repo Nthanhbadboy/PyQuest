@@ -218,20 +218,36 @@ void main() {
       }
     });
 
-    test('hai ví dụ là in/out đúng cặp được nói tới ở rev 4 §D5 (scope statement cho output)', () {
-      // numbers beat 2 minh họa **dòng đầu** (`print(3 + 4)` -> 7), không phải output của cả
-      // hai lệnh. Test này giữ yêu cầu "phải có scope statement/output-prefix rõ" ở mức dữ
-      // liệu: caption/altText của beat đó phải nhắc tới ngoặc kép, tức không được gán 7 cho
-      // cả hai dòng.
+    test('rev 4 §D5: beat minh họa output phải tự khai scope, beat ngoặc kép phải nói rõ', () {
+      // `numbers`: `print(3 + 4)` in ra 7 và `print("3 + 4")` in nguyên chữ. Rev 4 yêu cầu
+      // "scope statement/output-prefix rõ; không gán 7 là full output của cả hai lệnh".
+      // Bản đầu của test này chỉ điểm SAI beat (đoán rằng ngoặc nằm ở b2) — CI đỏ và dữ liệu
+      // của design đúng: b2 mang scope "dòng đầu", b3 mới là beat ngoặc kép. Sửa theo dữ liệu,
+      // không nới assertion thành trivial.
       final Map<String, dynamic> pack = readPack();
-      final Map<String, dynamic> numbers = plansOf(pack)
-          .firstWhere((Map<String, dynamic> p) => p['id'] == 'numbers');
-      final Map<String, dynamic> beat2 = beatsOf(numbers)[1];
+      final Map<String, dynamic> numbers =
+          plansOf(pack).firstWhere((Map<String, dynamic> p) => p['id'] == 'numbers');
+      final List<Map<String, dynamic>> beats = beatsOf(numbers);
+      expect(beats, hasLength(4));
       for (final String lang in <String>['vi', 'en']) {
-        final Map<String, dynamic> fields = fieldsFor(copyOf(beat2), lang);
-        final String joined = '${fields['caption']} ${fields['altText']}'.toLowerCase();
-        expect(joined, anyOf(contains('ngoặc'), contains('quote')),
-            reason: '$lang: beat 2 phải nói rõ dòng nào in ra gì, nếu không validator sẽ nhận sai');
+        final Map<String, dynamic> b2 = fieldsFor(copyOf(beats[1]), lang);
+        final String scope = '${b2['caption']} ${b2['altText']}'.toLowerCase();
+        expect(scope, anyOf(contains('dòng đầu'), contains('first line')),
+            reason: '$lang: beat 2 phải nói rõ nó chỉ minh họa dòng đầu, nếu không validator sẽ gán 7 cho cả hai dòng');
+
+        final Map<String, dynamic> b3 = fieldsFor(copyOf(beats[2]), lang);
+        final String quoted = '${b3['caption']} ${b3['altText']}'.toLowerCase();
+        expect(quoted, anyOf(contains('ngoặc'), contains('quote')),
+            reason: '$lang: beat 3 phải chỉ ra chữ có ngoặc kép in nguyên văn, đó là điểm dễ nhầm của bài');
+      }
+      // Beat chờ người học phải là lời mời thật, không phải nhãn kỹ thuật.
+      for (final Map<String, dynamic> plan in plansOf(pack)) {
+        for (final String lang in <String>['vi', 'en']) {
+          final Map<String, dynamic> last = fieldsFor(copyOf(beatsOf(plan).last), lang);
+          final String say = '${last['caption']} ${last['altText']}'.toLowerCase();
+          expect(say, anyOf(contains('đến lượt'), contains('your turn')),
+              reason: '${plan['id']}: beat cuối waitForLearner=true phải mời trẻ làm bằng lời');
+        }
       }
     });
   });
