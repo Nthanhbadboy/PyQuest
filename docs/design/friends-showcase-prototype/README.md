@@ -6,6 +6,12 @@ Ngày: 2026-10-16 · **Prototype thiết kế tương tác, chưa tích hợp Fl
 Nguồn sản phẩm: [PRODUCT_VISION §16](../../PRODUCT_VISION.md#16-cộng-đồng-bạn-bè-và-quà-tặng).
 Gói này không mở work order runtime, không đổi quyền PQC-010/014/015.
 
+**Bổ sung sau bàn giao `62627d5`:** đây là **lớp P06 A**, chưa phải toàn bộ không gian
+xã hội. [Thiết kế P06B](../experience-blueprint/P06B_LIVING_HOMES_ISLANDS_PETS.md) giữ
+mở rộng nhà/đất/đảo, thăm nhà có hoạt động chung, mua thú thông minh và hướng AI local
+như các trụ cột sản phẩm. P06B chưa có prototype; không coi profile hiện tại là thăm
+nhà multiplayer, hay lời thoại soạn sẵn là local AI.
+
 ![Sân bạn bè Bưu điện Mây](evidence/01-garden-desktop-vi.jpg)
 
 ## Bấm thử

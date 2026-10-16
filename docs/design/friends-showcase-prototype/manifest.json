@@ -7,8 +7,8 @@
   "sources": [
     {
       "path": "docs/PRODUCT_VISION.md",
-      "bytes": 83788,
-      "sha256": "fc86f518857d90707dd50b48e8a484af7a471348fb7872aa6fa7518dc98b5ff8"
+      "bytes": 90004,
+      "sha256": "bda209e8885bb252daeed675661dd9fd6319456254d19677196d9216a98636eb"
     },
     {
       "path": "docs/design/shared-l10n/locale-core.mjs",
@@ -128,5 +128,19 @@
     "Raster byte size is not decoded RAM/GPU budget; no device profiling"
   ],
   "code_branch_observed_at_close": "5fb7fffae4975c47bc707961ccf1ec07ef2348f2",
-  "code_review_note": "5fb7fff includes partial r7 fixes (1/2); observed only, not audited or accepted by P06."
+  "code_review_note": "5fb7fff includes partial r7 fixes (1/2); observed only, not audited or accepted by P06.",
+  "source_history": [
+    {
+      "path": "docs/PRODUCT_VISION.md",
+      "bytes": 83788,
+      "sha256": "fc86f518857d90707dd50b48e8a484af7a471348fb7872aa6fa7518dc98b5ff8",
+      "captured_for": "P06 A published at 62627d5; original prototype browser evidence"
+    }
+  ],
+  "vision_addendum": {
+    "path": "docs/design/experience-blueprint/P06B_LIVING_HOMES_ISLANDS_PETS.md",
+    "status": "Design proposal only; no P06B prototype, live visits, purchase or local inference implemented",
+    "change": "Owner clarified house/land/island expansion, meaningful house visits and purchasable intelligent pets with local AI research after 62627d5",
+    "evidence_scope": "Existing 414-layout browser receipt remains P06 A only; no new feature evidence claimed"
+  }
 }

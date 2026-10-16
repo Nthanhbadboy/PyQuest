@@ -2,6 +2,12 @@
 
 2026-10-16 · **HTML/CSS/JavaScript prototype, không phải screenshot Flutter.**
 
+Receipt/ảnh này thuộc **P06 A đã bàn giao ở `62627d5`**. Bổ sung Product Vision và
+brief P06B sau đó chỉ là thiết kế; không tái dùng 414 layout hay 18 axe audits để
+tuyên bố mở nhà/đất/đảo, thăm nhà realtime, mua thú hoặc local AI đã được kiểm.
+Manifest giữ hash Product Vision cũ trong `source_history` và hash văn bản mới
+trong `sources`; cập nhật nguồn không đồng nghĩa đổi prototype đã chụp.
+
 ## Kết quả có thể chạy lại
 
 - [model-tests.tap](model-tests.tap): **21/21 PASS**, Node test runner.

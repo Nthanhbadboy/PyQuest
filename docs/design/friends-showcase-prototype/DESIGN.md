@@ -2,6 +2,11 @@
 
 2026-10-16 · Design proposal; không phải tính năng social đã phát hành.
 
+**Phạm vi hiện tại là P06 A.** Theo bổ sung của chủ sản phẩm, P06 còn có [P06B — nhà,
+đất, đảo và thú cưng](../experience-blueprint/P06B_LIVING_HOMES_ISLANDS_PETS.md): không
+gian có thể mở rộng và thực sự đón bạn vào hoạt động, không chỉ thẻ hồ sơ. B chưa
+được prototype hoặc triển khai; brief dưới đây không thay thế nhánh đó.
+
 ## 1. Ý tưởng chủ đạo
 
 **Trẻ có điều muốn đem sang nhà bạn, trước khi có lý do mở danh sách bạn bè.**

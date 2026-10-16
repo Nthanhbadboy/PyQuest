@@ -3,6 +3,11 @@
 2026-10-16 · Đọc cùng [DESIGN](DESIGN.md), [README](README.md), [manifest](manifest.json).
 **Không tự cấp quyền triển khai Flutter/social/backend từ tài liệu này.**
 
+Bổ sung định hướng sau `62627d5`: [P06B](../experience-blueprint/P06B_LIVING_HOMES_ISLANDS_PETS.md)
+bao gồm nhà/đất/đảo mở rộng, visit session thật và thú mua được có hướng AI local.
+Đây là design/reference bổ sung; không mở quyền cài runtime/model AI, multiplayer,
+payments hoặc ghi ownership. Test A hiện tại không phải acceptance cho B.
+
 ## 1. Nguồn và phạm vi chính xác
 
 | Nguồn | Điều được dùng | Điều không suy ra |

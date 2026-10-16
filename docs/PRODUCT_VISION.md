@@ -54,6 +54,8 @@ khác dùng thuật ngữ này, nghĩa phải đúng như bảng sau.
 | **Mini-game Play Mode** | Chế độ chơi mini-game ngay, **không** bắt buộc đọc bài hay viết code trước. |
 | **Mini-game Creator Mode** | Chế độ xem/đổi luật chơi và dần học lập trình qua chính mini-game đó — **chỉ ở những game phù hợp**, không phải mọi game (xem mục 7.1). |
 | **Side Maps** | Bản đồ mở rộng **trả phí tùy chọn**, bổ sung chiều sâu — **không** bán quyền truy cập kiến thức Python cơ bản. |
+| **Nhà riêng / khu đất / đảo cá nhân** | Không gian sở hữu và sáng tạo có thể mở rộng, trang trí, nuôi thú và đón khách theo quyền. Là một nhánh hoạt động, không thay thế Main Map công cộng hoặc khóa Main Quest. |
+| **Thú cưng thông minh** | Cư dân đồng hành có hành vi và hoạt động chơi, có lựa chọn mua theo nội dung/quyền lợi công bố rõ; có thể tận dụng AI on-device khi thiết bị hỗ trợ, không chỉ là avatar hoặc khung chat. |
 | **Nhà Thành Tích** (Achievement House) | **Một địa điểm vật lý trong thế giới PyQuest** trưng bày huy hiệu, chiến tích, bộ sưu tập và game do trẻ tạo. |
 | **Adventure Recap** | Bản tổng kết **dựa trên dữ liệu thật** về các hoạt động đã hoàn thành và kỹ năng mới học được (không viết cố định). |
 | **Arena** | Trung tâm nhiều bộ môn thi đấu/thử thách của PyQuest: đối kháng trực tiếp, tích lũy sản phẩm/bộ sưu tập sáng tạo, giải đồng đội và các giải sáng tạo chuyên nghiệp. Không phải một trò chọn đáp án cú pháp. |
@@ -217,6 +219,14 @@ thường có cấp độ.
 
 ---
 
+### 3.4. Sở hữu, mở rộng không gian và mua thú cưng
+
+- Nhà riêng, đất/đảo cá nhân và thú cưng là một nhánh sở hữu/sáng tạo dài hạn. Có chức năng mua thú cưng thông minh; quà, ngoại trang và nội dung mở rộng là lựa chọn bổ sung, không chỉ vật trang trí giả lập trong hồ sơ.
+- Cách kiếm/mua phần mở rộng, giá, loại tiền và quyền lợi cụ thể cần được thiết kế riêng; chưa mặc định mọi phòng/mảnh đất/đảo đều trả phí. Không bán quyền vào Main Map, kiến thức Python cơ bản hoặc khả năng thắng trong thi đấu.
+- Mua thú phải công bố nội dung và khả năng AI trên thiết bị trước giao dịch, có xác nhận/kiểm soát phù hợp với trẻ, receipt và chính sách khôi phục/hỗ trợ. Không dùng gacha, lời nài nỉ của thú hoặc nỗi sợ mất thú để thúc ép mua.
+
+---
+
 ## 4. Cấu trúc thế giới game
 
 ### 4.1. Home Map — điểm khởi đầu sống động
@@ -287,6 +297,15 @@ Tutor là các nhân vật có tính cách, lĩnh vực và vai trò riêng. H�
 - Tính năng chưa triển khai vẫn thuộc tầm nhìn sản phẩm, không tự động bị coi là đã loại bỏ.
 - Các nhà độc lập về gameplay nhưng dùng chung lớp dịch vụ nền cần thiết: hồ sơ người chơi, điểm, danh hiệu, bạn bè/quyền riêng tư và các quy tắc mở khóa kiến thức có liên quan.
 - Không buộc người chơi phải đi qua mọi nhà. Người thích sáng tạo có thể tập trung sáng tạo; người thích thi đấu, khám phá, sưu tập hoặc giao lưu có thể theo đuổi nhánh mình yêu thích.
+
+### 4.5. Nhà riêng, đất và đảo có thể lớn lên cùng người chơi
+
+- Người chơi có không gian riêng để sắp xếp nội thất, trưng bày sản phẩm, nuôi thú và đón bạn. Có thể mở rộng nhà (hiên/phòng/gác), đất (vườn/hồ/sân/bến) và đảo (khu mới, cầu/thuyền, chủ đề và hoạt động mới).
+- Mở rộng phải tạo thêm khả năng chơi và sáng tạo, không chỉ tăng ô chứa đồ hoặc thay hình nền. Không yêu cầu chạy theo nhà lớn nhất; một căn nhà nhỏ vẫn là trải nghiệm đầy đủ và có giá trị.
+- Đây là một nhánh hoạt động độc lập; không biến Main Map miễn phí thành đất tư, không đồng nhất đảo cá nhân với Side Maps trả phí, không tạo XP/cấp độ toàn cục.
+- Thăm nhà phải cho khách đi quanh, khám phá và tương tác với các đồ vật/tác phẩm/thú được phép; khi chủ và khách cùng hiện diện phải dựa trên phiên đồng bộ thật. Trang hồ sơ chỉ là một lối vào, không thay cho trải nghiệm thăm nhà.
+- Phạm vi cho xem, cùng chơi và cùng sửa là các quyền khác nhau. Phòng riêng không tự mở vì đã kết bạn; chủ có thể thu hồi quyền và khách luôn có đường rời đi an toàn.
+
 
 ---
 
@@ -849,6 +868,26 @@ PyQuest học hỏi nguyên tắc sản phẩm từ các ứng dụng học tậ
 
 ---
 
+### 16.6. Đến nhà nhau là tương tác thực chất
+
+- Nhà/đất/đảo cá nhân là không gian chơi có vị trí, đồ vật và hoạt động; không chỉ hồ sơ có ảnh, lượt thích hoặc nút gửi quà.
+- Có thể thiết kế tham quan khi chủ vắng và ghé chơi cùng chủ. Chế độ chủ vắng phải nói rõ không có chủ online; chế độ cùng chơi cần hiện diện và hành động đồng bộ thật, không giả người thật bằng NPC/timer.
+- Những hoạt động chung có thể gồm thử mê cung tự tạo, làm thiệp, chơi với thú, khám phá một khu mới hoặc cùng trang trí vùng được cấp quyền. Không bắt buộc chat mở hay voice để tương tác có ý nghĩa.
+- Quyền khách/chủ/cùng sửa, phiên vào-ra, mất mạng, xung đột chỉnh sửa, chặn giữa phiên và kiểm duyệt mọi nội dung chia sẻ phải đi cùng thiết kế thăm nhà. Lời mời tới chơi không tự biến toàn bộ nhà thành công khai.
+
+### 16.7. Thú cưng thông minh và cơ hội dùng AI local
+
+- Thú cưng có thể được mua, có tính cách, hành vi, hoạt động và vai trò trong nhà/đảo: chơi, khám phá, chào khách, phản ứng với đồ vật hoặc tham gia sản phẩm người chơi tạo. Giữ nhánh thú cơ bản và nội dung cốt lõi miễn phí; không giảm thú thông minh thành món trang trí hoặc chỉ một chatbot.
+- Nghiên cứu AI chạy trên thiết bị để hiểu ý định, chọn phản ứng hoặc diễn đạt lời ngắn phù hợp tính cách; không mặc định mọi máy chạy được model sinh. Hành vi nền, di chuyển và hoạt ảnh vẫn hoạt động khi model chưa có, đang lỗi hoặc không được hỗ trợ.
+- AI chỉ đề xuất trong hành động cho phép; engine/dịch vụ có thẩm quyền quyết định quyền vào nhà, thay đổi thế giới, giao dịch và kết quả thi đấu. Thú không tự mua đồ, mở đất, cấp quyền cho khách hoặc đọc dữ liệu riêng của khách.
+- Ký ức chỉ dùng dữ liệu game cần thiết, có giới hạn và có thể xem/xóa/reset; không mặc định thu thập đời tư/hội thoại trẻ. Không gửi dữ liệu lên cloud âm thầm khi local lỗi; on-device AI không đồng nghĩa multiplayer và mọi dịch vụ đều offline.
+- Không khiến thú chết/mất tình cảm vì trẻ nghỉ chơi, không dùng thú gây áp lực mua hay tạo quan hệ lệ thuộc. Khả năng ngôn ngữ, độ trễ, RAM, pin/nhiệt, license và an toàn phải được kiểm trên thiết bị mục tiêu trước khi hứa với người dùng.
+
+Thiết kế chi tiết bổ sung: [P06B — nhà, đất, đảo và thú cưng](design/experience-blueprint/P06B_LIVING_HOMES_ISLANDS_PETS.md).
+Đây là tầm nhìn sản phẩm được giữ lại, **chưa chứng minh đã triển khai multiplayer, mua thú hoặc local AI**.
+
+---
+
 ## 17. Nguyên tắc tổng hợp không được làm mất khi cập nhật tài liệu
 
 1. **Mỗi nhà là một tính năng độc lập; điểm và danh hiệu là cầu nối thành tích chung.**
@@ -857,7 +896,8 @@ PyQuest học hỏi nguyên tắc sản phẩm từ các ứng dụng học tậ
 4. **Tặng quà là tự nguyện; tự vẽ tranh/thiệp và tự tạo quà phải được giữ như một phần của tầm nhìn sáng tạo.**
 5. **Vòng lặp dài hạn phải kết hợp mục tiêu ngắn, tiến trình lâu dài, nội dung mới và sự tôn trọng thời gian nghỉ.**
 6. **Tầm nhìn sản phẩm không đồng nghĩa roadmap phiên bản đầu.** Có thể triển khai từng phần, nhưng phải ghi rõ phần nào được giữ cho giai đoạn sau thay vì làm biến mất khỏi tài liệu.
-7. Khi rà soát hoặc viết lại tài liệu PyQuest, phải đối chiếu cả các mục mới 9–12 của brief, không chỉ Arena/Creator League. Không tự ý loại bỏ các tính năng xã hội, sáng tạo, quà tặng hoặc vòng lặp dài hạn vì lý do thu gọn phạm vi kỹ thuật.
+7. **Nhà/đất/đảo có thể mở rộng, thăm nhà có hoạt động thật và thú cưng thông minh (có lựa chọn mua, nghiên cứu AI local) là những nhánh phải bảo toàn.** Không thay bằng trang hồ sơ, hình nền hoặc thoại scripted rồi coi đã hoàn thành.
+8. Khi rà soát hoặc viết lại tài liệu PyQuest, phải đối chiếu cả các mục mới 9–12 của brief, không chỉ Arena/Creator League. Không tự ý loại bỏ các tính năng xã hội, sáng tạo, quà tặng hoặc vòng lặp dài hạn vì lý do thu gọn phạm vi kỹ thuật.
 
 ---
 

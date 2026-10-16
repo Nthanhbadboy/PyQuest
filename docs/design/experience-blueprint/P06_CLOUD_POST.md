@@ -4,6 +4,11 @@
 
 Gói chính: [friends-showcase-prototype/README](../friends-showcase-prototype/README.md).
 
+**Cập nhật theo chủ sản phẩm:** gói hiện tại là **P06 A — lớp giao lưu**, không phải
+toàn bộ P06. [P06B — không gian sống](P06B_LIVING_HOMES_ISLANDS_PETS.md) bổ sung mở rộng
+nhà/đất/đảo, thăm nhà có hoạt động thật, mua thú thông minh và nghiên cứu AI local.
+P06B mới là thiết kế; ảnh và test dưới đây không chứng minh các tính năng B đã chạy.
+
 ## Hành trình sâu của gói
 
 **Ghé thăm → nhìn kỹ tác phẩm → khen một điều cụ thể → tự làm thiệp → chọn người nhận → hộp thư và quyền từ chối.**
