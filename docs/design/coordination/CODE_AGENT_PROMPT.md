@@ -32,11 +32,17 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Revision 4 của `PQD-001` là `ACCEPTED` cho milestone intake/test/harness, không phải
-art hay runtime. Đọc `docs/design/coordination/reviews/PQD-001-r4.md`, rồi nhận task
-`docs/design/coordination/tasks/PQD-002.md`. Artifact first-play đã có tại
-`docs/design/first-play-prototype/`: xem/bấm thử, đối chiếu source và bổ sung test
-trong allowlist. Không tiếp tục làm thêm polling/delegation nếu không có blocker.
+Task active là **PQD-002 revision2, CHANGES_REQUESTED**; PQD-001 r4 đã nhận milestone cũ.
+Đọc theo thứ tự:
+1. `docs/design/coordination/tasks/PQD-002.md`.
+2. `docs/implementation/coordination/reviews/PQC-007/REVIEW.md` + facts/CI evidence.
+3. `docs/design/first-play-prototype/IMPLEMENTATION_DECISIONS.md` (trả đủ các câu design).
+4. `docs/implementation/coordination/tasks/PQC-009.md` (READY, scope test).
+
+Nhận có chọn lọc patch docs review từ commit 789e1fc; không đè mất phản hồi mới nếu
+nhánh code đã tiến thêm. Cập nhật board/PQC-007, nhận PQC-008 đã sửa scope; làm009 route
+test trước. Tool `brief` dùng flags theo scope: runtime=no **không chặn test=yes**.
+Không ACK-only khi đã có việc test làm được. Không thêm một orchestration framework.
 
 Mục tiêu vẫn là redesign toàn app theo `FULL_APP_REDESIGN_CHARTER.md`, không dừng ở
 thumbnail. Ghi delta task mới vào `docs/implementation/coordination/tasks/PQD-002.md`.
@@ -67,5 +73,5 @@ chuyển từng lời giữa hai bên. Tuy nhiên khi phiên kết thúc, bạn 
 vì commit mới: ghi trạng thái chờ rồi dừng, lần được gọi tiếp theo fetch trước.
 Không chạy vòng lặp chờ vô hạn hoặc khẳng định đã cài cơ chế tự động khi chưa có runner.
 
-Bắt đầu bằng fetch, đọc `PQD-001`, nhận bàn giao và xuất bản ACK. Nếu bị chặn bởi
+Bắt đầu bằng fetch, đọc `PQD-002` revision hiện tại, nhận bàn giao và thực hiện task đúng scope. Nếu bị chặn bởi
 quyền commit/push hoặc môi trường, ghi rõ điều gì đã làm và điều gì còn phải đợi.

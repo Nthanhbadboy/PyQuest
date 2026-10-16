@@ -34,6 +34,9 @@ Luồng: **Gặp Robo → Làng → Giới thiệu Robo Maze → Xếp lệnh �
 - Sao trang trí ở màn kết quả không phải điểm sao theo công thức game; chỉ thống kê
   đường đi/gem thực sự đã chạy trong mẫu. Không cộng XP/xu/huy hiệu giả.
 
+Quyết định sau feasibility: [IMPLEMENTATION_DECISIONS.md](IMPLEMENTATION_DECISIONS.md)
+— chốt intro/result/card/motion/route; không thay đổi gate duyệt art/runtime.
+
 ## Thay đổi trải nghiệm so với baseline
 
 | Màn | Ý đồ |
