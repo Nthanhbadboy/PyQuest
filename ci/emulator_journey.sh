@@ -518,6 +518,15 @@ dump_screen_state() {
     printf 'keep-awake / screen timeout: %s\n' \
       "$(adb_line "settings get global stay_on_while_plugged_in; settings get system screen_off_timeout")"
     printf 'app process: %s\n' "$(adb_line "pidof $PKG")"
+    # The captured frames carry a black strip in the system-bar area (63 of 1200
+    # rows in runs 38831247134 and 38834797960, none in 38824894610). These two
+    # lines say which bar it is and what colour the system believes it has, which
+    # is what tells an emulator rendering artefact apart from the app's own
+    # window/theme: nothing in app/lib paints black.
+    printf 'night mode (0=auto 1=no 2=yes): %s\n' \
+      "$(adb_line "settings get secure ui_night_mode")"
+    printf 'system bar attributes: %s\n' \
+      "$(adb_line "dumpsys window displays | grep -iE 'mSystemBarAttributes|statusBarColor|appearance=' | head -n 3")"
     printf 'relaunched app log (last 25 flutter/AndroidRuntime lines):\n'
     timeout -k 2 "$ADB_CMD_TIMEOUT" adb -s "$SERIAL" logcat -d -t 25 \
       flutter:V AndroidRuntime:E '*:S' 2>&1 | tr -d '\r' | sed 's/^/  /'
