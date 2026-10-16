@@ -6,6 +6,8 @@ không chờ board/locale xong mới nghĩ tới mini-game, bạn bè, thi đấ
 
 Sơ đồ tổng quan: [`experience-map.png`](experience-map.png).
 Gói gần nhất: [`P05_RESULT_TO_NEXT_ADVENTURE.md`](P05_RESULT_TO_NEXT_ADVENTURE.md).
+**Cập nhật:** [prototype P05 đã có để bấm thử](../result-adventure-prototype/README.md),
+kèm state switch, ảnh kiểm tra và handoff; chưa tích hợp Flutter.
 
 ## 1. Tầm nhìn chung: nhiều cách chơi, một thế giới
 
@@ -56,9 +58,10 @@ Mỗi gói chỉ mở một luồng thử sâu trước, không làm hàng chụ
 | **D-COPY — Nội dung & đa ngôn ngữ** | Copy VI/EN cho mọi state mới, Tutor khen/gợi ý theo kết quả, empty/error/a11y; thuật ngữ và slot tham số | Soạn pack theo semantic ID, giữ code/output/đáp án bất biến | Review nội dung với người đọc phù hợp độ tuổi và nối vào registry/ARB |
 | **D-WORLD — Đảo, nhà & nội dung dài hạn** | Bản đồ chức năng, chuyện của từng nơi, vai trò vật phẩm/danh hiệu, ý tưởng sự kiện | World bible + sơ đồ tuyến chơi gắn hoạt động thật | Content/gameplay khả dụng, navigation, streaming/memory, season operations |
 
-**Chưa làm ở gói blueprint này:** chưa dựng prototype P05/P06/P07/P08, chưa có bộ
-asset mới hay màn Flutter mới. Đã có cấu trúc trải nghiệm, backlog và brief P05 đủ
-để bắt đầu thiết kế cụ thể. P02/P03/P04 vẫn là các prototype đã bàn giao trước.
+**Cập nhật sau blueprint:** P05 đã có prototype HTML tương tác và hai SVG mới để
+review, chưa phải màn Flutter/asset được duyệt cho production. P06/P07/P08 vẫn ở
+backlog; nhánh chia sẻ của P05 chỉ là preview, không phải social backend.
+P02/P03/P04 vẫn là các prototype đã bàn giao trước.
 
 ## 4. Chuẩn bàn giao của mỗi gói
 

@@ -74,7 +74,7 @@ text(90, 571, 'Không fake bạn / thứ hạng • Không ép cày liên tục 
 text(64, 659, 'DESIGN LÀM NGAY  /  KHÔNG CHỜ BA GÓI NỀN CỦA CODE', 20, TEAL, True)
 
 packages = [
-    ('P05 / ƯU TIÊN ĐẦU', 'Kết quả & vinh danh', 'Thắng, thử lại, kỷ lục\nPhần thưởng và Nhà Thành Tích\nMột lựa chọn tiếp theo rõ ràng', 'Đã có brief • prototype là bước tiếp', '#dfebe0'),
+    ('P05 / ƯU TIÊN ĐẦU', 'Kết quả & vinh danh', 'Thắng, thử lại, kỷ lục\nPhần thưởng và Nhà Thành Tích\nMột lựa chọn tiếp theo rõ ràng', 'Đã có prototype • chưa port Flutter', '#dfebe0'),
     ('P06 / TIẾP THEO', 'Bạn bè & trưng bày', 'Hồ sơ, lời mời, thăm tác phẩm\nQuyền chia sẻ, chặn và báo cáo\nKhông có bạn vẫn chơi trọn vẹn', 'Thiết kế trước • online cần dịch vụ thật', '#e0eaf0'),
     ('P07 / TIẾP THEO', 'Arena & Creator League', 'Luyện tập khác thi đấu người thật\nĐối kháng, sáng tạo, đồng đội\nLuật, kết quả và bảng xếp hạng', 'Thiết kế trước • kết quả cần xác minh', '#fae8c2'),
 ]

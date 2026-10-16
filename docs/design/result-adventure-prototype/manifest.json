@@ -1,0 +1,110 @@
+{
+  "prototype": "P05 result-to-next-adventure",
+  "date": "2026-10-16",
+  "source_snapshot": "090b87d",
+  "implementation_authorization": false,
+  "sources": [
+    {
+      "path": "app/assets/data/robot_maze_levels.json",
+      "bytes": 4975,
+      "sha256": "0c0d728a067b99d47fe85c18ed5c80cecd36c026284b3a3d15a246a6f5747f39"
+    },
+    {
+      "path": "app/assets/config/game_config.json",
+      "bytes": 1086,
+      "sha256": "f7b9d1a80be65a49ad2bf7c68de46bbf33243b0a27cd5eb5e80d77467b5f15c5"
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_models.dart",
+      "bytes": 11351,
+      "sha256": "238cc06597a0010a3f8335e7b219f85deda0a53aa23c2e96b5c88a05315d9092"
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_play_screen.dart",
+      "bytes": 38868,
+      "sha256": "0a4b44d8d0bc7ff03e36742253a68222cedba33df94e508ec84ffda8592666c4"
+    },
+    {
+      "path": "app/lib/core/events.dart",
+      "bytes": 3550,
+      "sha256": "0f6cc29fca74e65d585126e052e5b11332ccb9b09a45162206ae9a328dcb2686"
+    },
+    {
+      "path": "app/lib/shared/widgets/result_screen.dart",
+      "bytes": 15831,
+      "sha256": "d84eb7ebdfa1b4761323e42fe5e3582d763ed7758762f463b18703cb4543bf21"
+    },
+    {
+      "path": "app/lib/modules/achievements/achievement_catalog.dart",
+      "bytes": 8222,
+      "sha256": "07d52e12d2552ddff0fb7786146184df421c8ad2267e57fbb1cb7c9ef6c67200"
+    },
+    {
+      "path": "app/lib/modules/daily_quests/daily_quest_service.dart",
+      "bytes": 5864,
+      "sha256": "06ec535dc64495759ef7c2dd16843464476bef10ad0d4ffa5458f21567d6ecdd"
+    },
+    {
+      "path": "app/lib/data/repositories/progress_repository.dart",
+      "bytes": 7890,
+      "sha256": "cb7960c854f7270f4e61e6082a47cb1e1ab90c88980cba5f178a952f4cf2765b"
+    }
+  ],
+  "assets": [
+    {
+      "path": "docs/design/result-adventure-prototype/art/arrival-island.svg",
+      "bytes": 3445,
+      "sha256": "55c25daf855db6a02faf6db74acba3af78fac2fe15ed8badf9ee14ceeab1b706",
+      "origin": "original code-authored SVG for P05, not stock or production-approved art"
+    },
+    {
+      "path": "docs/design/result-adventure-prototype/art/first-steps.svg",
+      "bytes": 1336,
+      "sha256": "75be4894a7e100cc1591e72bbc3d5f5fd0cf01b0a2b09ba4c66978186d8b1b4a",
+      "origin": "original code-authored SVG for P05, not stock or production-approved art"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/art/robo.svg",
+      "bytes": 2448,
+      "sha256": "7fd314b1b354405592b1d3c024db06767b33908f8b936307a5523c2d584f3ab6",
+      "origin": "reused original authored SVG; no character model or CastRegistry changes"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/art/village.webp",
+      "bytes": 112018,
+      "sha256": "b152f7e22fbb8c940ad1429786cd8481d1f69f0a12c13111bb43d00f2f281617",
+      "origin": "reused AI-generated P02/P03 village; illustration, not navigation geometry"
+    },
+    {
+      "path": "docs/design/village-kit/exports/robo_maze_512.webp",
+      "bytes": 23888,
+      "sha256": "b444be914ea22e7dd650fb9cc6004de40de45e9cfd31ef642ed8f2dbd4f27b5a",
+      "origin": "reused AI-generated village-kit thumbnail with baked background; not gameplay geometry"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/Nunito-Medium.ttf",
+      "bytes": 80904,
+      "sha256": "c5ac621e788f8acf1ae43518f45f5eb3b3dc1eede0cddbcabb67e468595bb687",
+      "origin": "reused Nunito / SIL OFL 1.1; license alongside fonts"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/Nunito-ExtraBold.ttf",
+      "bytes": 80784,
+      "sha256": "6aeac28bd008e77fe752c2c2c2ace44bf81c296534bfeb6bac582bb2d44b6347",
+      "origin": "reused Nunito / SIL OFL 1.1; license alongside fonts"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/OFL-Nunito.txt",
+      "bytes": 4385,
+      "sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
+      "origin": "reused Nunito / SIL OFL 1.1; license alongside fonts"
+    }
+  ],
+  "notes": [
+    "All outcome/receipt/social states are memory-only fixtures. No app writes or online delivery.",
+    "R09 assumes three_stars is active and not completed; notification only, no automatic claim.",
+    "R07end forces next=null for layout review; rm_01 normally has a next level.",
+    "Stage island is a decorative illustration, not rm_01 board geometry.",
+    "Only a subset of achievement catalog is shown; locked secret condition/title deliberately omitted."
+  ]
+}

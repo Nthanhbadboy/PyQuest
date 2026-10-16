@@ -1,6 +1,7 @@
 # P05 brief — Qua màn là mở ra một câu chuyện tiếp theo
 
-**Trạng thái: design brief + storyboard chữ; chưa có prototype tương tác/Flutter mới.**
+**Trạng thái: brief + storyboard đã có [prototype HTML tương tác](../result-adventure-prototype/README.md).
+Chưa có màn Flutter mới hoặc tích hợp backend.**
 Không giao code bỏ 010/014/015. Đây là gói design có thể chuẩn bị độc lập ngay.
 
 ## 1. Mục tiêu và lát cắt đầu
@@ -27,7 +28,7 @@ mới nếu có → lựa chọn tiếp. Nội dung cuộn, CTA không che con s
 | Kết quả | “Đã tới rương!”, số sao/kỷ lục có nguồn; phân biệt lần này với kỷ lục đã lưu |
 | Giải thích | Tối đa3 mục tiêu đúng activity; mỗi sao có lý do, không ép học thuật ngữ mới |
 | Ghi nhận | Chỉ hiển thị notices mới thật; nhiều phần thưởng gom vào một danh sách, không popup nối tiếp cưỡng bức |
-| Việc tiếp | Một CTA chính, tối đa2 lựa chọn phụ; cho chơi tiếp/chơi lại/về làng. Tốn năng lượng thì hiển thị cost thật trước thao tác |
+| Việc tiếp | Một CTA chính, tối đa 2 lựa chọn phụ; cho chơi tiếp/chơi lại/về làng. Tốn năng lượng thì hiển thị cost thật trước thao tác |
 
 Đề xuất animation để thử: host reaction 300–500ms, tổng ăn mừng khoảng 1–1.5s;
 **không bắt đợi animation để bấm tiếp**, không delay save tới hết animation. Đây là
@@ -109,7 +110,7 @@ Không khen trẻ vì online lâu, hơn bạn kém hơn, hay được Tutor “y
 Lời khen có thể đổi cách nói, nhưng chỉ ghi nhận điều dữ liệu chứng minh. Microcopy có
 tham số phải là message hoàn chỉnh, không nối mảnh câu theo trật tự tiếng Việt.
 
-## 7. Bàn giao tiếp theo của design
+## 7. Checklist thiết kế và tình trạng bàn giao
 
 - Dựng P05 tương tác bằng fixture rõ nhãn: 8 storyboard frames, tối thiểu R01–R10 có
   state switch; minh họa awards không ghi vào app DB và không fake multiplayer.
@@ -120,6 +121,10 @@ tham số phải là message hoàn chỉnh, không nối mảnh câu theo trật
 - Bàn giao screenshot/state matrix/data ownership để agent code port khi có work
   order mới; giữ PQC-010/014/015 không bị ngắt ngang bởi gói design này.
 
-**Chưa hoàn thành trong gói hiện tại:** UI prototype, asset badge mới, âm thanh, code
-Flutter result/hall, friend services hay điểm xếp hạng. Không báo hiệu quả retention
-khi chưa có thử nghiệm người dùng phù hợp và consent.
+**Đã dựng:** prototype HTML, huy hiệu SVG và cảnh ăn mừng SVG; 8 khung, 14 fixture
+thuộc 12 nhóm state, VI/EN/calm/text-scale, evidence trình duyệt. Xem README P05 để
+phân biệt mô phỏng và source thật.
+
+**Chưa hoàn thành:** art approval/export production, âm thanh, Flutter result/hall,
+friend services hay điểm xếp hạng. Không báo hiệu quả retention khi chưa có thử
+nghiệm người dùng phù hợp và consent.

@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "date": "2026-10-16",
+  "browser": "153.0.8010.0",
+  "scope": "HTML / JavaScript design prototype only; no Flutter, device, real persistence, AI or online social evidence",
+  "layoutChecks": 144,
+  "scenarios": 14,
+  "viewports": [
+    "1440x1100",
+    "390x844",
+    "360x640"
+  ],
+  "languages": [
+    "vi",
+    "en"
+  ],
+  "textScales": [
+    1,
+    1.3,
+    2
+  ],
+  "checks": [
+    "full result/badge/collection/next/rest journey",
+    "first_steps and quest notices keep separate kinds",
+    "pending/error/ack/reopen without duplicate mock writes",
+    "retry retains program; deterministic rm_01 replay",
+    "no repeat badge; saved best never falls (also unit-tested)",
+    "no secret title/condition exposed",
+    "insufficient energy and end-route states",
+    "locale and text changes preserve run/program",
+    "device and local reduced motion",
+    "144 frame/language/scale/viewport layouts without page or text clipping",
+    "visible buttons and selects >=48 CSS px height",
+    "real Tab/Enter/Space and modal Escape focus restoration",
+    "system locale/fallback/change and preference write error",
+    "no external requests or JS/HTTP errors"
+  ],
+  "limitations": [
+    "not a real-device or TalkBack test",
+    "no actual audio to test; sound is absent",
+    "CSS text scaling is not Flutter textScaleFactor",
+    "model ledger is in-memory only; reload resets it",
+    "frame layout checks do not assert every state at every scale"
+  ]
+}

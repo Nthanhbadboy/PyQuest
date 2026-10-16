@@ -11,7 +11,9 @@
     "test:world:browser": "node smoke_living_world.cjs",
     "test:locale:unit": "node --test test_locale.mjs",
     "test:locale:browser": "node smoke_locale.cjs",
-    "test:board-copy:unit": "node --test test_board_copy.mjs"
+    "test:board-copy:unit": "node --test test_board_copy.mjs",
+    "test:results:unit": "node --test test_results.mjs",
+    "test:results:browser": "node smoke_results.cjs"
   },
   "devDependencies": {
     "playwright-core": "1.64.1",

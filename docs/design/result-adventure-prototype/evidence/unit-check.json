@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "date": "2026-10-16",
+  "scope": "Node design-only tests: 14 P05 + 40 existing prototype/content/locale tests; not Flutter",
+  "tests": 54,
+  "pass": 54,
+  "fail": 0,
+  "cancelled": 0,
+  "skipped": 0,
+  "files": [
+    "tools/design/test_first_play.mjs",
+    "tools/design/test_tutor_board.mjs",
+    "tools/design/test_living_world.mjs",
+    "tools/design/test_locale.mjs",
+    "tools/design/test_board_copy.mjs",
+    "tools/design/test_results.mjs"
+  ]
+}
