@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: all 12 authored fixtures initialize, unknown fixtures reject
+ok 1 - all 12 authored fixtures initialize, unknown fixtures reject
+  ---
+  duration_ms: 1.760928
+  type: 'test'
+  ...
+# Subtest: private-first own showcase filters each selected item at viewer boundary
+ok 2 - private-first own showcase filters each selected item at viewer boundary
+  ---
+  duration_ms: 0.740805
+  type: 'test'
+  ...
+# Subtest: unaccepted or private profiles cannot be visited or receive compliments
+ok 3 - unaccepted or private profiles cannot be visited or receive compliments
+  ---
+  duration_ms: 1.437827
+  type: 'test'
+  ...
+# Subtest: held creations cannot receive compliments or play invitations
+ok 4 - held creations cannot receive compliments or play invitations
+  ---
+  duration_ms: 0.208594
+  type: 'test'
+  ...
+# Subtest: compliment replacement is one record, not an accumulating popularity count
+ok 5 - compliment replacement is one record, not an accumulating popularity count
+  ---
+  duration_ms: 0.347569
+  type: 'test'
+  ...
+# Subtest: only local sample code matches; friendship is not automatic on request
+ok 6 - only local sample code matches; friendship is not automatic on request
+  ---
+  duration_ms: 0.223395
+  type: 'test'
+  ...
+# Subtest: incoming accept, decline and outgoing cancel are separate terminal actions
+ok 7 - incoming accept, decline and outgoing cancel are separate terminal actions
+  ---
+  duration_ms: 0.220751
+  type: 'test'
+  ...
+# Subtest: offline and restricted mode retain private creation but refuse new interactions
+ok 8 - offline and restricted mode retain private creation but refuse new interactions
+  ---
+  duration_ms: 0.312871
+  type: 'test'
+  ...
+# Subtest: card slots stay bounded, invalid content is refused, undo restores visible work
+ok 9 - card slots stay bounded, invalid content is refused, undo restores visible work
+  ---
+  duration_ms: 0.530686
+  type: 'test'
+  ...
+# Subtest: all authored paper/sticker/message choices are usable
+ok 10 - all authored paper/sticker/message choices are usable
+  ---
+  duration_ms: 0.470954
+  type: 'test'
+  ...
+# Subtest: send is explicitly pending and same draft/recipient cannot produce duplicate letters
+ok 11 - send is explicitly pending and same draft/recipient cannot produce duplicate letters
+  ---
+  duration_ms: 0.198299
+  type: 'test'
+  ...
+# Subtest: queued card is an immutable snapshot of the draft, not live-linked to editing
+ok 12 - queued card is an immutable snapshot of the draft, not live-linked to editing
+  ---
+  duration_ms: 0.116936
+  type: 'test'
+  ...
+# Subtest: retry preserves receipt identity; delivered and declined never imply points
+ok 13 - retry preserves receipt identity; delivered and declined never imply points
+  ---
+  duration_ms: 0.213659
+  type: 'test'
+  ...
+# Subtest: play invite is deduplicated and is not a live room or competition result
+ok 14 - play invite is deduplicated and is not a live room or competition result
+  ---
+  duration_ms: 0.251275
+  type: 'test'
+  ...
+# Subtest: blocking cancels outstanding interactions and late acknowledgements cannot revive them
+ok 15 - blocking cancels outstanding interactions and late acknowledgements cannot revive them
+  ---
+  duration_ms: 0.247313
+  type: 'test'
+  ...
+# Subtest: permission changes are rechecked at send, retry and resolution, not just when UI opened
+ok 16 - permission changes are rechecked at send, retry and resolution, not just when UI opened
+  ---
+  duration_ms: 0.14384
+  type: 'test'
+  ...
+# Subtest: report remains local-only and does not require unblocking or being online
+ok 17 - report remains local-only and does not require unblocking or being online
+  ---
+  duration_ms: 0.150499
+  type: 'test'
+  ...
+# Subtest: no-friends state retains draft editing without inventing recipients
+ok 18 - no-friends state retains draft editing without inventing recipients
+  ---
+  duration_ms: 0.105527
+  type: 'test'
+  ...
+# Subtest: navigation and diagnostic snapshots never mutate social records or draft
+ok 19 - navigation and diagnostic snapshots never mutate social records or draft
+  ---
+  duration_ms: 0.33239
+  type: 'test'
+  ...
+# Subtest: VI/EN dictionaries cover identical parameters and reject missing values
+ok 20 - VI/EN dictionaries cover identical parameters and reject missing values
+  ---
+  duration_ms: 2.327257
+  type: 'test'
+  ...
+# Subtest: asset provenance and product-source hashes match manifest
+ok 21 - asset provenance and product-source hashes match manifest
+  ---
+  duration_ms: 4.672613
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 95.468641

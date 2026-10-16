@@ -1,0 +1,132 @@
+{
+  "prototype": "P06 — Bưu điện Mây / Cloud Post",
+  "date": "2026-10-16",
+  "source_snapshot": "a9ffa1c",
+  "code_branch_observed": "553e9acb2a8e701ae08880c74639630d2c103bfc",
+  "implementation_authorization": false,
+  "sources": [
+    {
+      "path": "docs/PRODUCT_VISION.md",
+      "bytes": 83788,
+      "sha256": "fc86f518857d90707dd50b48e8a484af7a471348fb7872aa6fa7518dc98b5ff8"
+    },
+    {
+      "path": "docs/design/shared-l10n/locale-core.mjs",
+      "bytes": 1554,
+      "sha256": "05b2feb083aedb25980dce3366512ada11f30306070d3d1e06143e76ca27fea7"
+    }
+  ],
+  "assets": [
+    {
+      "path": "docs/design/friends-showcase-prototype/art/cloud-post-garden.png",
+      "bytes": 1694001,
+      "sha256": "1f57ff450bbd88def40fd16e56a41b91798f4939a77244977ae758ff670cdb5c",
+      "origin": "Arena image generation, original P06 concept",
+      "usage": "Design review only; production art approval required",
+      "width": 1376,
+      "height": 768,
+      "layers": "Flattened decorative illustration; no interactive landmarks",
+      "pivot": "center",
+      "hit_targets": "None; use separate semantic HTML buttons"
+    },
+    {
+      "path": "docs/design/friends-showcase-prototype/art/cloud-post-garden.webp",
+      "bytes": 80748,
+      "sha256": "e02d428da6bfe1afb031149c1c1bb33eed5d8b03f5fde1ceba89d372f80d5367",
+      "origin": "Arena image generation, original P06 concept",
+      "usage": "Design review only; production art approval required",
+      "width": 1376,
+      "height": 768,
+      "layers": "Flattened decorative illustration; no interactive landmarks",
+      "pivot": "center",
+      "hit_targets": "None; use separate semantic HTML buttons"
+    },
+    {
+      "path": "docs/design/friends-showcase-prototype/art/fox.svg",
+      "bytes": 844,
+      "sha256": "02ffa5069f531c95af424cf4c6414f46f1c3d22f5fb63b7c29c02a1a205b0ac9",
+      "origin": "Original authored SVG for P06",
+      "usage": "Design review only; production art approval required",
+      "viewBox": "0 0 120 120"
+    },
+    {
+      "path": "docs/design/friends-showcase-prototype/art/owl.svg",
+      "bytes": 665,
+      "sha256": "a33f4085b74ff9e11ed0292b474dba19f42edf45c5e9faebc8de422d60a5e230",
+      "origin": "Original authored SVG for P06",
+      "usage": "Design review only; production art approval required",
+      "viewBox": "0 0 120 120"
+    },
+    {
+      "path": "docs/design/friends-showcase-prototype/art/paper-hello.svg",
+      "bytes": 1161,
+      "sha256": "68d357c34b9414f371a5c5a4670c9a2c15574790fc5364da32523b4f19f67025",
+      "origin": "Original authored SVG for P06",
+      "usage": "Design review only; production art approval required",
+      "viewBox": "0 0 400 260"
+    },
+    {
+      "path": "docs/design/friends-showcase-prototype/art/rabbit.svg",
+      "bytes": 757,
+      "sha256": "40df705b5d4e1e3ffe8764120d48e712f98b952dd2ac82b67f118f674eb94c41",
+      "origin": "Original authored SVG for P06",
+      "usage": "Design review only; production art approval required",
+      "viewBox": "0 0 120 120"
+    },
+    {
+      "path": "docs/design/friends-showcase-prototype/art/star-garden.svg",
+      "bytes": 1379,
+      "sha256": "d2e6505aeec00d2ee99c26b03bc1c9f356ed146b0c99ddb36db9863924da1188",
+      "origin": "Original authored SVG for P06",
+      "usage": "Design review only; production art approval required",
+      "viewBox": "0 0 600 400"
+    },
+    {
+      "path": "docs/design/result-adventure-prototype/art/arrival-island.svg",
+      "bytes": 3445,
+      "sha256": "55c25daf855db6a02faf6db74acba3af78fac2fe15ed8badf9ee14ceeab1b706",
+      "origin": "Original authored SVG from P05 (981ea85)",
+      "usage": "Fixed sample illustration / distinct sample achievement; not UGC or reward grant"
+    },
+    {
+      "path": "docs/design/result-adventure-prototype/art/first-steps.svg",
+      "bytes": 1336,
+      "sha256": "75be4894a7e100cc1591e72bbc3d5f5fd0cf01b0a2b09ba4c66978186d8b1b4a",
+      "origin": "Original authored SVG from P05 (981ea85)",
+      "usage": "Fixed sample illustration / distinct sample achievement; not UGC or reward grant"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/Nunito-Medium.ttf",
+      "bytes": 80904,
+      "sha256": "c5ac621e788f8acf1ae43518f45f5eb3b3dc1eede0cddbcabb67e468595bb687",
+      "origin": "Existing repository font pack",
+      "license": "SIL Open Font License 1.1, see OFL-Nunito.txt"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/Nunito-ExtraBold.ttf",
+      "bytes": 80784,
+      "sha256": "6aeac28bd008e77fe752c2c2c2ace44bf81c296534bfeb6bac582bb2d44b6347",
+      "origin": "Existing repository font pack",
+      "license": "SIL Open Font License 1.1, see OFL-Nunito.txt"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/OFL-Nunito.txt",
+      "bytes": 4385,
+      "sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
+      "origin": "Existing repository font pack",
+      "license": "SIL Open Font License 1.1, see OFL-Nunito.txt"
+    }
+  ],
+  "inline_art": {
+    "path": "docs/design/friends-showcase-prototype/app.mjs",
+    "description": "Four original flat SVG sticker drawings and semantic line icons, rendered without external assets; not an import-ready Flutter sprite pack"
+  },
+  "limits": [
+    "All identities and social records fictional, browser-memory only",
+    "Hashes verify exact sources, not legal, safety or visual approval",
+    "No economy, purchased gift, moderation service, room or social backend implemented",
+    "Raster byte size is not decoded RAM/GPU budget; no device profiling"
+  ],
+  "code_branch_observed_at_close": "5fb7fffae4975c47bc707961ccf1ec07ef2348f2",
+  "code_review_note": "5fb7fff includes partial r7 fixes (1/2); observed only, not audited or accepted by P06."
+}

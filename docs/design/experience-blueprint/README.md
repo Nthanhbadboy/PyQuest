@@ -5,9 +5,10 @@ Mục tiêu: thiết kế đi trước đủ một luồng hoàn chỉnh để c
 không chờ board/locale xong mới nghĩ tới mini-game, bạn bè, thi đấu và vinh danh.
 
 Sơ đồ tổng quan: [`experience-map.png`](experience-map.png).
-Gói gần nhất: [`P05_RESULT_TO_NEXT_ADVENTURE.md`](P05_RESULT_TO_NEXT_ADVENTURE.md).
-**Cập nhật:** [prototype P05 đã có để bấm thử](../result-adventure-prototype/README.md),
-kèm state switch, ảnh kiểm tra và handoff; chưa tích hợp Flutter.
+Gói gần nhất: [`P06_CLOUD_POST.md`](P06_CLOUD_POST.md) — **Bưu điện Mây**, bạn bè, góc trưng bày và xưởng thiệp.
+**Cập nhật:** [P06 đã có prototype tương tác](../friends-showcase-prototype/README.md),
+12 fixture, art mới, VI/EN, 414 cấu hình kiểm bố cục và handoff; chưa tích hợp Flutter.
+[P05 — kết quả và cuộc phiêu lưu tiếp theo](P05_RESULT_TO_NEXT_ADVENTURE.md) vẫn giữ nguyên.
 
 ## 1. Tầm nhìn chung: nhiều cách chơi, một thế giới
 
@@ -41,6 +42,8 @@ sắp, danh hiệu kỹ năng và danh hiệu xã hội là các khái niệm kh
 Đã fetch code tới `ca2050a` khi soạn blueprint: phía code đang có các commit làm/sửa
 PQC-010. **Không audit/accept CI của tip đó trong gói này.** Không đổi header quyền,
 không thêm forward pointer làm coordinator chuyển khỏi PQD-003 revision 6.
+Đây là **mốc lịch sử lúc soạn blueprint**; review sau đó đã lên r7. Gói P06 không đổi
+coordinator hoặc quyền runtime hiện hành (xem handoff P06 và review r7).
 
 ## 3. Các gói thiết kế có thể làm ngay
 
@@ -58,9 +61,11 @@ Mỗi gói chỉ mở một luồng thử sâu trước, không làm hàng chụ
 | **D-COPY — Nội dung & đa ngôn ngữ** | Copy VI/EN cho mọi state mới, Tutor khen/gợi ý theo kết quả, empty/error/a11y; thuật ngữ và slot tham số | Soạn pack theo semantic ID, giữ code/output/đáp án bất biến | Review nội dung với người đọc phù hợp độ tuổi và nối vào registry/ARB |
 | **D-WORLD — Đảo, nhà & nội dung dài hạn** | Bản đồ chức năng, chuyện của từng nơi, vai trò vật phẩm/danh hiệu, ý tưởng sự kiện | World bible + sơ đồ tuyến chơi gắn hoạt động thật | Content/gameplay khả dụng, navigation, streaming/memory, season operations |
 
-**Cập nhật sau blueprint:** P05 đã có prototype HTML tương tác và hai SVG mới để
-review, chưa phải màn Flutter/asset được duyệt cho production. P06/P07/P08 vẫn ở
-backlog; nhánh chia sẻ của P05 chỉ là preview, không phải social backend.
+**Cập nhật sau blueprint:** P05 và **P06 Bưu điện Mây** đã có prototype HTML tương tác,
+art, state matrix và evidence để review; chưa phải màn Flutter/asset được duyệt cho production.
+P07/P08 tiếp tục ở backlog. Nhánh chia sẻ của P05 và tương tác xã hội ở P06 đều là
+simulation, không phải social backend. P06 giữ đầy đủ các nhánh đội nhóm/triển lãm/quà mua sẵn/
+quà tự làm và lập trình trong roadmap §16, không thu hẹp tầm nhìn thành danh sách bạn.
 P02/P03/P04 vẫn là các prototype đã bàn giao trước.
 
 ## 4. Chuẩn bàn giao của mỗi gói
