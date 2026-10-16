@@ -120,6 +120,7 @@ class _TutorPanelState extends State<TutorPanel> {
   @override
   void dispose() {
     unawaited(_voice?.dispose());
+    unawaited(widget.services.audio.setTutorVoiceMode(false));
     _input.dispose();
     _focus.dispose();
     _scroll.dispose();
@@ -140,8 +141,11 @@ class _TutorPanelState extends State<TutorPanel> {
       onTranscript: (text, {required fromUser}) {
         if (!mounted) return;
         setState(() {
-          _voiceTranscript.add('${fromUser ? 'Bé' : _voiceCharacter.displayName}: $text');
-          if (_voiceTranscript.length > 6) _voiceTranscript.removeAt(0);
+          // Voice mode is spoken conversation: only show tutor replies.
+          if (!fromUser) {
+            _voiceTranscript.add(text);
+            if (_voiceTranscript.length > 6) _voiceTranscript.removeAt(0);
+          }
         });
       },
       onError: (message) {
@@ -166,6 +170,7 @@ class _TutorPanelState extends State<TutorPanel> {
       _voiceError = '';
       _voiceStatus = 'Đang bắt đầu…';
     });
+    await widget.services.audio.setTutorVoiceMode(true);
     await voice.startListening(
       characterName: _voiceCharacter.displayName,
       language: _lang == PqLang.vi ? 'vi' : 'en',
@@ -362,6 +367,9 @@ class _TutorPanelState extends State<TutorPanel> {
       builder: (context, _) {
         final session = widget.services.tutor;
         final busy = _asking || session.busy;
+        final voiceMode = _voiceStatus.isNotEmpty &&
+            _voiceStatus != 'Đã dừng trò chuyện' &&
+            _voiceStatus != 'Voice chưa kết nối';
         return Padding(
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
           child: Column(
@@ -379,17 +387,48 @@ class _TutorPanelState extends State<TutorPanel> {
                 ),
               ],
               const SizedBox(height: 10),
-              Flexible(
-                child: _transcript(busy),
-              ),
-              const SizedBox(height: 10),
-              _quickActions(),
+              if (!voiceMode) ...[
+                Flexible(child: _transcript(busy)),
+                const SizedBox(height: 10),
+                _quickActions(),
+              ] else ...[
+                Flexible(
+                  child: _voiceTranscript.isEmpty
+                      ? Center(
+                          child: Text(
+                            _lang == PqLang.vi ? 'Kai/Lumi sẽ nói ở đây…' : 'Kai/Lumi will speak here…',
+                            style: const TextStyle(fontFamily: 'Nunito', color: PQColors.inkSoft),
+                          ),
+                        )
+                      : ListView(
+                          shrinkWrap: true,
+                          children: _voiceTranscript.map((line) => Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 8, right: 28),
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: PQColors.cream,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(16), topRight: Radius.circular(16),
+                                  bottomRight: Radius.circular(16), bottomLeft: Radius.circular(4),
+                                ),
+                                border: Border.all(color: PQColors.parchmentEdge, width: 1.5),
+                              ),
+                              child: Text(line, style: const TextStyle(fontFamily: 'Nunito', fontSize: 14, color: PQColors.ink)),
+                            ),
+                          )).toList(),
+                        ),
+                ),
+              ],
               const SizedBox(height: 8),
               _voiceControls(),
-              const SizedBox(height: 8),
-              _composer(busy),
-              const SizedBox(height: 8),
-              _footer(session),
+              if (!voiceMode) ...[
+                const SizedBox(height: 8),
+                _composer(busy),
+                const SizedBox(height: 8),
+                _footer(session),
+              ],
             ],
           ),
         );
