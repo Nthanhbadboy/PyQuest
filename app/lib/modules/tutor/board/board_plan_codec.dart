@@ -468,18 +468,17 @@ void _collectBadKeys(Object? node, List<BoardIssue> issues, List<String> path) {
   if (node is Map<String, dynamic>) {
     for (final MapEntry<String, dynamic> entry in node.entries) {
       if (_forbiddenKeys.contains(entry.key)) {
-        issues.add(BoardIssue(
-          BoardIssueCode.foreignKey,
-          'khóa ngoài hợp đồng: ' + _pathOf(path, entry.key),
-        ));
+        final String where = _pathOf(path, entry.key);
+        issues.add(BoardIssue(BoardIssueCode.foreignKey, 'khóa ngoài hợp đồng: $where'));
       }
       final Object? value = entry.value;
       if (value is String) {
         for (final String bad in _forbiddenSubstrings) {
           if (value.contains(bad)) {
+            final String where = _pathOf(path, entry.key);
             issues.add(BoardIssue(
               BoardIssueCode.markupInText,
-              'chuỗi có ' + bad + ' ở ' + _pathOf(path, entry.key),
+              'chuỗi có $bad ở $where',
             ));
             break;
           }

@@ -171,10 +171,21 @@ void main() {
       c.dispose();
     });
 
-    test('plan không được tự ý đổi waitForLearner so với gói design', () {
-      // Bản đồ beat là của design; nếu plan sửa một mình thì test ghép phải nổ trước khi
-      // board kịp tin nó — tránh "beat chờ" trở thành chỗ giấu logic điều hướng mới.
-      expect(() => mutatedSource(0, <Object>['beats', 0, 'waitForLearner'], true), throwsA(anything));
+    test('beat nào chờ trẻ là do gói design quyết, plan không tự đổi được', () {
+      // `waitForLearner` là bản đồ điều hướng của design, không phải chỗ để plan giấu logic
+      // "tự nhảy beat". Test ghép (`composedPlan`) đã so từng beat với gói; ở đây nói thẳng
+      // thành bất biến để ai đổi một trong hai bên thì red có tên.
+      final Map<String, Map<String, dynamic>> pack = copyPackByBeat();
+      for (int index = 0; index < 2; index++) {
+        final Map<String, dynamic> plan = composedPlan(index);
+        for (final Object? raw in plan['beats']! as List<dynamic>) {
+          final Map<String, dynamic> beat = raw! as Map<String, dynamic>;
+          expect(beat['waitForLearner'], pack[beat['beatId']! as String]!['waitForLearner'],
+              reason: 'beat ${beat['beatId']} lệch cờ chờ so với gói design');
+        }
+      }
+      expect(pack.values.where((Map<String, dynamic> e) => e['waitForLearner'] == true), hasLength(2),
+          reason: 'mỗi bước đúng một beat chờ, ở cuối — nhiều hơn là design đổi ý');
     });
 
     test('beat đầu đã chờ thì next bị chặn, trẻ tác tác rồi mới đi tiếp được', () {

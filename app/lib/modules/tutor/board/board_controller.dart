@@ -132,7 +132,9 @@ class BoardController extends ChangeNotifier {
   /// Áp một plan **đã validate** (host gọi `validatePlan` trước). Bất kỳ lý do gì cũng
   /// **không** để lại trạng thái nửa vời: plan cũ vẫn nguyên, kèm nhãn fallback.
   BoardApplyOutcome applyPlan(BoardPlanToken token, BoardValidation validation) {
-    if (_disposed) return _finish(BoardApplyOutcome.disposed);
+    // Đã dispose thì **không** notify: ChangeNotifier sau dispose sẽ nổ assert, và một
+    // widget đã gỡ khỏi cây không còn ai nghe.
+    if (_disposed) return BoardApplyOutcome.disposed;
     if (!_tokenMatches(token)) {
       _fallbackNotice = _notice('stale');
       return _finish(BoardApplyOutcome.tokenRejected);

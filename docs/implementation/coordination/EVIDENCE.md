@@ -721,6 +721,26 @@ documentTooLarge/foreignKey(lesson)`, và caption 450 emoji được **chấp nh
 Dry-run này chỉ có giá trị phát hiện lệch rule giữa codec/validator — nó **không** thay bằng chứng
 Flutter; widget/semantics/focus vẫn chỉ do CI thật đo.
 
+**Run đỏ thứ ba `39b530b` — `analyze` exit 0 (còn 3 `info` `prefer_interpolation_to_compose_strings`,
+tôi đang không dùng `+` để ghép chuỗi), `render=0`, `test +232 -17`** (57/74 test board đã PASS;
+baseline 175 nguyên). Ba việc làm ở vòng này, và một việc **phương pháp**:
+
+- Lỗi thật thứ nhất: nhánh `disposed` của `applyPlan` vẫn gọi `_finish(...)` ⇒ `notifyListeners()` sau
+  `dispose` — vừa sai hợp đồng "không notify" vừa chạm assert của `ChangeNotifier`. Sửa: trả
+  `BoardApplyOutcome.disposed` trực tiếp.
+- Lỗi thật thứ hai là **test của tôi giả định sai machinery**: `expect(() => mutatedSource(...), throws)`
+  không nổ, vì `composedPlan` so cờ `waitForLearner` **trước khi** phép mutate chạy. Thay bằng bất biến
+  nói thẳng (mọi beat khớp gói design; mỗi bước đúng một beat chờ ở cuối) — không giữ test xanh giả.
+- `Row` của ba nút điều khiển và hàng nút ink **tràn ngang** ở 360×640 font 2.0 ⇒ đổi sang `Wrap`
+  (mỗi nút vẫn ≥ 48 px, chỉ xuống dòng). Bỏ `getSemantics(...).toString()` khỏi assertion vì đó là chi
+  tiết trình bày của `SemanticsNode`, không phải hợp đồng; giữ `find.bySemanticsLabel`.
+- Phương pháp: 13/17 tên test đỏ nằm ở "... and 13 more" mà `ci/report.py` cắt, và log thô của job nằm
+  ở host blob **không nằm trong allowlist mạng của sandbox** (`gh api .../logs` EOF) ⇒ tôi không có
+  cách nào đọc lý do. Nên từ vòng này **mỗi mối lo là một test riêng có tên mô tả đúng nó** (8 test
+  dựng hình, 2 test 48 px, 1 test cuộn, 1 test markup-nguyên-văn, 1 test ink không bị xóa, 1 test trẻ
+  tự xóa, 1 test bấm nút, 1 test Tab, 1 test Enter, 1 test semantics, 1 test fallback) và **ảnh chụp
+  tách sang `board_previews_test.dart`** để lỗi cấu trúc không che mất bằng chứng render.
+
 **Chưa xong:** commit sửa tiếp theo đây phải có `analyze` No issues + `test` xanh với toàn bộ số test mới,
 `số CI xanh` sẽ ghi thành EV-ID-022.1 ngay khi run về, kèm 16 ảnh `board-*.png` mà `publish_previews.py`
 đăng từ `build/previews` (chụp bằng test thường, **không** tag `render` vì `ci.yml` chỉ quét `--tags render

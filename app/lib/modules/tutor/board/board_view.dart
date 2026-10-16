@@ -133,7 +133,11 @@ class BoardControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    // `Wrap` chứ không `Row`: ở 360×640 với font 2.0, một hàng ba nút dài sẽ tràn ngang;
+    // Wrap giữ nguyên từng nút >= 48 px và chỉ xuống dòng — không cắt mất điều khiển.
+    return Wrap(
+      spacing: 4,
+      runSpacing: 4,
       children: <Widget>[
         _control(labels.previous, 'board_previous', () => controller.previous()),
         _control(labels.replay, 'board_replay', controller.replay),
@@ -338,7 +342,9 @@ class _LearnerLayerView extends StatelessWidget {
             ],
           ),
           if (layer.note.isNotEmpty) Text(layer.note, key: const ValueKey<String>('board_note_text')),
-          Row(
+          Wrap(
+            spacing: 4,
+            runSpacing: 4,
             children: <Widget>[
               ConstrainedBox(
                 constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
