@@ -144,11 +144,13 @@ class _TutorPanelState extends State<TutorPanel> {
       onTranscript: (text, {required fromUser}) {
         if (!mounted) return;
         setState(() {
-          // Show both sides so we can tell whether Gemini Live is actually
-          // receiving the child's speech or only playing its opening greeting.
-          final speaker = fromUser ? (_lang == PqLang.vi ? 'Bé' : 'You') : _voiceCharacter.displayName;
-          _voiceTranscript.add('$speaker: $text');
-          if (_voiceTranscript.length > 10) _voiceTranscript.removeAt(0);
+          // Keep only recognized user input in the diagnostic transcript.
+          // AI text transcription is deliberately disabled; spoken audio remains enabled.
+          if (fromUser) {
+            final speaker = _lang == PqLang.vi ? 'Bé' : 'You';
+            _voiceTranscript.add('$speaker: $text');
+            if (_voiceTranscript.length > 10) _voiceTranscript.removeAt(0);
+          }
         });
       },
       onError: (message) {
@@ -435,7 +437,7 @@ class _TutorPanelState extends State<TutorPanel> {
                   child: _voiceTranscript.isEmpty
                       ? Center(
                           child: Text(
-                            _lang == PqLang.vi ? 'Kai/Lumi sẽ nói ở đây…' : 'Kai/Lumi will speak here…',
+                            _lang == PqLang.vi ? 'Nói thử một câu để kiểm tra micro…' : 'Say a sentence to test the microphone…',
                             style: const TextStyle(fontFamily: 'Nunito', color: PQColors.inkSoft),
                           ),
                         )
