@@ -883,3 +883,30 @@ và một nhánh sáng tạo đủ thật để trẻ tin mình có thể tự l
 - [`ROADMAP.md`](ROADMAP.md) — giai đoạn triển khai và tiêu chí nghiệm thu.
 - [`../README.md`](../README.md) — điểm vào dự án.
 - [`ARENA_CREATOR_COMPETITION_BRIEF.md`](ARENA_CREATOR_COMPETITION_BRIEF.md) — nguồn bổ sung về Arena, Creator League và trải nghiệm thi đấu.
+
+---
+
+## 21. Trạng thái triển khai hiện tại và định hướng UI Direction V2
+
+### 21.1. Trạng thái source app hiện tại
+
+Source app hiện tại đã có:
+- Main Map dạng bản đồ đảo với các địa điểm hoạt động: Main Quest, Robot Maze, Dragon Jump, Catch the Stars, Bug Hunter và Nhà Thành Tích.
+- Main Quest là hoạt động học Python có lộ trình, mở khóa theo tiến trình.
+- Energy, daily quests, achievements, màn tổng kết và Adventure Recap theo dữ liệu đã lưu.
+- AI Tutor voice trong bài học: Gemini Live voice, transcript người học và trợ giảng, xử lý lỗi.
+- Mini-game Play Mode và một số Creator Mode có cấu trúc.
+
+Chưa triển khai hoặc chưa có bằng chứng trong source hiện tại:
+- Arena nhiều bộ môn, Creator Pro League, giải đồng đội.
+- Side Maps trả phí, Pro đầy đủ, cộng đồng/quà tặng đầy đủ.
+- AI Tutor dạng chat văn bản đầy đủ theo relay; bản hiện tại tập trung vào voice.
+
+### 21.2. UI Direction V2
+
+`docs/PyQuest_Reffrence_Images/PYQUEST_UI_DIRECTION_V2.svg` là tài liệu định hướng thiết kế, không phải giao diện đang chạy. Trong checkout hiện tại không có thư mục ảnh tham khảo `docs/PyQuest_Reffrence_Images`, nên không thể kiểm tra 21 ảnh gốc; các kết luận về phong cách phải được xác minh lại khi có đầy đủ asset.
+
+Nguyên tắc áp dụng:
+- UI V2 chỉ là định hướng; không mô tả mockup V2 như giao diện đã triển khai.
+- Các asset ảnh tham khảo là tài liệu thiết kế, không phải asset runtime của app.
+- Khi áp dụng V2 vào source, phải đánh giá từng màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime.

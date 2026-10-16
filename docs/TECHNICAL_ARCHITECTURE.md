@@ -796,3 +796,24 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 - [`ROADMAP.md`](ROADMAP.md) — giai đoạn triển khai và tiêu chí nghiệm thu.
 - [`../README.md`](../README.md) — điểm vào dự án.
 - [`ARENA_CREATOR_COMPETITION_BRIEF.md`](ARENA_CREATOR_COMPETITION_BRIEF.md) — nguồn bổ sung về Arena, Creator League và trải nghiệm thi đấu.
+
+---
+
+## 15. Trạng thái triển khai hiện tại và UI Direction V2
+
+### 15.1. Module đã có trong source
+
+- `activity_registry` và `MainMapScreen` cho bản đồ đảo và các địa điểm hoạt động.
+- Main Quest, mini-game, achievements, energy, daily quests và progress tracker.
+- AI Tutor voice qua Gemini Live, transcript và xử lý lỗi.
+- SQLite cục bộ với các bảng theo module; không có bảng XP/level toàn cục.
+
+### 15.2. Asset và tài liệu thiết kế
+
+- Ảnh tham khảo và SVG V2 là tài liệu thiết kế, không phải asset runtime của app.
+- Trong checkout hiện tại không có `docs/PyQuest_Reffrence_Images`, nên không thể xác minh 21 ảnh gốc.
+- Không đưa API key, token hoặc thông tin bí mật vào tài liệu. AI Tutor key chỉ được cấu hình qua `--dart-define` và CI secret.
+
+### 15.3. UI Direction V2
+
+UI V2 chưa được triển khai vào source. Việc áp dụng phải đi qua đánh giá màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime.

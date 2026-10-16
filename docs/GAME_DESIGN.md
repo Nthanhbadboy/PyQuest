@@ -569,3 +569,19 @@ Kết quả thử nghiệm sẽ quyết định điều chỉnh cụ thể.
 - [`ROADMAP.md`](ROADMAP.md) — giai đoạn triển khai và tiêu chí nghiệm thu.
 - [`../README.md`](../README.md) — điểm vào dự án.
 - [`ARENA_CREATOR_COMPETITION_BRIEF.md`](ARENA_CREATOR_COMPETITION_BRIEF.md) — nguồn bổ sung về Arena, Creator League và trải nghiệm thi đấu.
+
+---
+
+## 16. Trạng thái triển khai hiện tại và UI Direction V2
+
+### 16.1. Luồng chơi đã có trong source
+
+- Main Map dẫn tới Main Quest, mini-game và Nhà Thành Tích.
+- Main Quest mở khóa theo tiến trình học; không dùng XP/cấp độ toàn cục.
+- Energy hồi theo thời gian, quảng cáo thưởng có giới hạn và lưu trong database.
+- Daily quests, achievements, màn tổng kết và Adventure Recap dùng dữ liệu đã lưu.
+- AI Tutor voice trong bài học hiển thị transcript người học và trợ giảng, có xử lý lỗi.
+
+### 16.2. UI Direction V2
+
+UI Direction V2 là định hướng thiết kế, chưa phải giao diện đang chạy. Ảnh tham khảo không có trong checkout hiện tại, nên không thể xác minh phong cách trực tiếp. Khi áp dụng, phải đánh giá màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime. Không mô tả mockup V2 như tính năng đã hoàn thành.

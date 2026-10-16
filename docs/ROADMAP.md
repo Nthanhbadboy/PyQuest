@@ -546,3 +546,30 @@ và đủ công cụ để trẻ tự tạo ra thế giới của riêng mình.
 và dựng cấu trúc thư mục theo `TECHNICAL_ARCHITECTURE.md`. Khi đạt tiêu chí nghiệm
 thu giai đoạn 1, chuyển sang giai đoạn 2 (Home Map), rồi giai đoạn 3
 (lát cắt dọc quan trọng nhất).
+
+---
+
+## 16. Trạng thái triển khai và áp dụng UI Direction V2
+
+### 16.1. Đã có trong source
+
+- Main Map bản đồ đảo, Main Quest, mini-game, achievements, energy, daily quests.
+- AI Tutor voice trong bài học với transcript người học/trợ giảng và xử lý lỗi.
+- Kiểm thử hiện có trong CI; build Release APK đã thành công qua GitHub Actions.
+
+### 16.2. Chưa có hoặc cần xác minh
+
+- Arena, Creator Pro League, giải đồng đội.
+- Side Maps và Pro đầy đủ.
+- Cộng đồng, quà tặng và danh hiệu xã hội đầy đủ.
+- UI Direction V2 chưa được áp dụng vào source.
+
+### 16.3. Hạng mục áp dụng UI Direction V2
+
+1. Đánh giá các màn hình hiện có so với UI V2.
+2. Thiết kế chi tiết cho các màn hình cần thay đổi.
+3. Triển khai theo module, không viết lại nền tảng.
+4. Kiểm thử và xác nhận runtime.
+5. Cập nhật tài liệu sau khi có bằng chứng triển khai.
+
+Không đánh dấu hoàn thành chỉ vì tài liệu hoặc mockup tồn tại. Ảnh tham khảo không có trong checkout hiện tại, nên cần xác minh lại khi có đầy đủ asset.
