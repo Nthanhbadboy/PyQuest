@@ -311,8 +311,14 @@ void main() {
       // bố Android/TalkBack đạt hay không đạt, và không được dùng để đóng PQC-008.
       final FocusNode? before = FocusManager.instance.primaryFocus;
       for (var i = 0; i < 6; i++) {
-        await tester.sendKeyDownEvent(logicalKey: LogicalKeyboardKey.tab);
-        await tester.sendKeyUpEvent(logicalKey: LogicalKeyboardKey.tab);
+        // `WidgetTester.sendKeyDownEvent` của SDK này nhận **physical int** vị trí,
+        // không có named `logicalKey` (4 error analyze ở run 38889441962 là bằng chứng).
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.tab.usbHidUsage);
+        // Nếu engine không map physical 0x2B sang Tab thì phép thử này vô nghĩa —
+        // kiểm thẳng vào HardwareKeyboard thay vì giả định.
+        expect(HardwareKeyboard.instance.isLogicalKeyPressed(LogicalKeyboardKey.tab), isTrue,
+            reason: 'sự kiện phải được hiểu là Tab, nếu không kết luận keyboard là rỗng');
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.tab.usbHidUsage);
         await tester.pump();
       }
       expect(tester.takeException(), isNull);
