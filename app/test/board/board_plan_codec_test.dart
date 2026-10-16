@@ -60,7 +60,9 @@ void main() {
       final Map<String, dynamic> prov = boardProvenance();
       expect(prov['copySourceDesignCommit'], '59f702375551865efb3590fdc0e60d4dc1dc7408');
       expect(prov['copySourceSha256'], startsWith('003a573b76e1363c'));
-      expect(prov['opsAuthoredUnderCommit'], '5c69046272154cad57d2b8c34a3b5805f1d9435a');
+      // Ops được soạn dưới revision review mà fixture đang tuân theo, không phải commit authorize
+      // cũ — pin này là chỗ duy nhất ghi lại "ai đã soạn nội dung này theo bản nào".
+      expect(prov['opsAuthoredUnderCommit'], 'a9ffa1ccdb6e7d3402e1325829af256c8d902b9d');
       expect(prov['datasetPinSha256'], startsWith('bead251d9f290db0'));
     });
 
@@ -80,7 +82,9 @@ void main() {
     test('op ngoài allowlist', () =>
         expectOnly(0, <Object>['beats', 0, 'ops', 0, 'type'], 'animateSprite', BoardIssueCode.unknownOpKind));
     test('object chưa đăng ký', () =>
-        expectOnly(0, <Object>['beats', 0, 'ops', 0, 'objectId'], 'ghost-box', BoardIssueCode.unknownObject));
+        // `ops[1]` mới là op có `objectId` (highlightToken); `ops[0]` là codeSnippet — trỏ vào
+        // đó thì phép đột biến không chạm luật nào, tức là test xanh mà không soi gì.
+        expectOnly(0, <Object>['beats', 0, 'ops', 1, 'objectId'], 'ghost-box', BoardIssueCode.unknownObject));
     test('beat tham chiếu object lạ', () =>
         expectOnly(0, <Object>['beats', 0, 'objectIds'], <Object>['ghost-box'], BoardIssueCode.unknownObject));
     test('op tự chọn layer khác', () =>
@@ -97,7 +101,16 @@ void main() {
         expectOnly(1, <Object>['beats', 3, 'ops', 1, 'x'], 1.5, BoardIssueCode.badGeometry));
     test('id không hợp lệ', () => expectOnly(0, <Object>['planId'], 'Bad ID!', BoardIssueCode.malformedId));
     test('output tự khai khác engine', () =>
-        expectOnly(1, <Object>['beats', 1, 'ops', 1, 'value'], '8', BoardIssueCode.outputMismatch));
+        expectOnly(1, <Object>['beats', 1, 'ops', 2, 'value'], '8', BoardIssueCode.outputMismatch));
+    test('trần copy đếm code point, không đếm đơn vị UTF-16', () {
+      // 301 emoji = 601 code point nhưng 602 UTF-16 unit: nếu trần gắn vào `.length` thì ca này
+      // bị reject oan; 600 code point (=1200 unit) thì phải còn được nhận.
+      final String ok = codePointsOfLength(BoardLimits.maxCopyField - 1);
+      final BoardValidation validation =
+          validateComposed(0, source: mutatedSource(0, <Object>['beats', 0, 'copy', 'vi', 'caption'], ok));
+      expect(validation.issues, isEmpty, reason: validation.issues.toString());
+      expect(validation.accepted, isTrue);
+    });
     test('output không còn gì để đối chiếu (mất cả statement của op lẫn của beat)', () => expectOnly(
         0,
         <Object>['beats', 2, 'ops', 1, 'statement'],
@@ -276,12 +289,20 @@ void main() {
         expectOnly(0, <Object>['source'], 42, BoardIssueCode.wrongType));
 
     test('một beat không có ops vẫn là beat hợp lệ, không bị âm thầm xóa', () {
+      // Beat 4 của `mq1_01_s2` khai `objectIds` rỗng, nên đó là chỗ đúng để chứng minh "ops rỗng
+      // vẫn là beat hợp lệ". Ở beat 1 thì không: beat đó HỨA 'cmd-print', xóa hết ops là hứa suông
+      // — ca ngược đặt ngay dưới đây chính là chỗ `unanchoredObject` phải bắt được.
       final BoardValidation validation =
-          validateComposed(0, source: mutatedSource(0, <Object>['beats', 0, 'ops'], <Object>[]));
-      expect(validation.accepted, isTrue, reason: 'ops rỗng = beat chỉ có copy: ${validation.issues}');
+          validateComposed(0, source: mutatedSource(0, <Object>['beats', 3, 'ops'], <Object>[]));
+      expect(validation.issues, isEmpty, reason: validation.issues.toString());
+      expect(validation.accepted, isTrue, reason: 'ops rỗng = beat chỉ có copy');
       expect(validation.plan!.beats, hasLength(4), reason: 'không được mất beat');
-      expect(validation.plan!.beats.first.ops, isEmpty);
+      expect(validation.plan!.beats[3].ops, isEmpty);
     });
+
+    test('xóa hết ops của beat có hứa object -> unanchoredObject, không phải beat rỗng hợp lệ',
+        () => expectOnly(1, <Object>['beats', 0, 'ops'], <Object>[],
+            BoardIssueCode.unanchoredObject));
 
     test('JSON bệnh hoạn không ném exception lên host', () {
       const List<String> sick = <String>[

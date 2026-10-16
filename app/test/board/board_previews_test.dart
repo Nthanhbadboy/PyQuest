@@ -84,15 +84,17 @@ void main() {
     final Directory outDir = Directory('build/previews');
     if (!outDir.existsSync()) outDir.createSync(recursive: true);
     final List<String> written = <String>[];
+    // `List<Object>` đã là non-nullable: thêm `!` ở đây chỉ tổ thành
+    // `unnecessary_non_null_assertion`, mà CI coi warning là lỗi (analyze=1 ở run 2d55ff6).
     final List<List<Object>> jobs = <List<Object>>[
-      for (final List<Object> e in kPrimaryCaptures) <Object>[e[0]!, e[1]!, e[2]!, kPrimarySurface],
-      for (final List<Object> e in kSmallCaptures) <Object>[e[0]!, e[1]!, e[2]!, kSmallSurface],
+      for (final List<Object> e in kPrimaryCaptures) <Object>[e[0], e[1], e[2], kPrimarySurface],
+      for (final List<Object> e in kSmallCaptures) <Object>[e[0], e[1], e[2], kSmallSurface],
     ];
     for (final List<Object> job in jobs) {
-      final int planIndex = job[0]! as int;
-      final int beatIndex = job[1]! as int;
-      final String why = job[2]! as String;
-      final Size surface = job[3]! as Size;
+      final int planIndex = job[0] as int;
+      final int beatIndex = job[1] as int;
+      final String why = job[2] as String;
+      final Size surface = job[3] as Size;
       final bool small = surface == kSmallSurface;
       for (final String locale in kPreviewLocales) {
         for (final double scale in kPreviewScales) {
@@ -113,7 +115,12 @@ void main() {
     // `render.txt`/`test.txt` là kênh CI in đủ; giữ dòng tóm tắt để đối chiếu tên file với ảnh
     // đã đăng.
     // ignore: avoid_print
-    print('board previews: ${written.join(' ')}');
+    print('board previews (${written.length} ảnh): ${written.join(' ')}');
+    // Nhãn bắt buộc của §acceptance: ảnh là board TÁC GIẢ dựng trong test host, chưa nối
+    // LessonScreen/AI/voice — dòng này đi vào `test.txt` nên nằm cạnh danh sách ảnh trong báo cáo.
+    // ignore: avoid_print
+    print('board previews label: ảnh renderer PQC-010 — chưa nối LessonScreen/AI/voice, '
+        'không phải bằng chứng chạy trên thiết bị hay TalkBack.');
   });
 
   testWidgets('ảnh đại diện vẫn còn trên đĩa và không phải một dải màu duy nhất',

@@ -138,7 +138,9 @@ void main() {
 
       final BoardValidation broken = validateComposed(
         1,
-        source: mutatedSource(1, <Object>['beats', 1, 'ops', 1, 'value'], '8'),
+        // `ops[2]` mới là op `output` của b2 (b2 = clear + tokenGroup + output): sửa vào
+        // `ops[1]` là sửa... một trường không tồn tại của tokenGroup, tức là test xanh giả.
+        source: mutatedSource(1, <Object>['beats', 1, 'ops', 2, 'value'], '8'),
       );
       expect(broken.accepted, isFalse);
       expect(c.applyPlan(c.currentToken, broken), BoardApplyOutcome.rejectedPlan);
@@ -200,7 +202,7 @@ void main() {
           reason: 'mỗi bước đúng một beat chờ, ở cuối — nhiều hơn là design đổi ý');
     });
 
-    test('beat đầu đã chờ thì next bị chặn, trẻ tác tác rồi mới đi tiếp được', () {
+    test('beat đầu đã chờ thì next bị chặn, trẻ tác động rồi mới đi tiếp được', () {
       final BoardController c = controllerFor(1);
       c.applyPlan(c.currentToken, valid(1));
       // beat 3 chờ; lùi về 2 rồi lên lại để kiểm tra chiều quay lại của trạng thái chờ.

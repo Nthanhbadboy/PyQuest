@@ -416,10 +416,14 @@ BoardBeat? _decodeBeat(
     for (final String locale in requiredLocales) {
       final Map<String, dynamic>? entry = c.map(copy[locale], 'copy.$locale');
       if (entry == null) continue;
-      final String title = c.str(entry['title'], 'copy.$locale.title');
-      final String say = c.str(entry['say'], 'copy.$locale.say');
-      final String caption = c.str(entry['caption'], 'copy.$locale.caption');
-      final String alt = c.str(entry['altText'], 'copy.$locale.altText');
+      // Trần 600 code point áp cho **mọi** trường chữ của beat, kể cả caption: thiếu ở đây thì
+      // một plan AI dài tùy ý vẫn lọt qua codec rồi mới vỡ ở validator — và validator không phải
+      // lúc nào cũng chạy trước khi renderer đọc `caption`.
+      const int ceiling = BoardLimits.maxCopyField;
+      final String title = c.str(entry['title'], 'copy.$locale.title', maxRunes: ceiling);
+      final String say = c.str(entry['say'], 'copy.$locale.say', maxRunes: ceiling);
+      final String caption = c.str(entry['caption'], 'copy.$locale.caption', maxRunes: ceiling);
+      final String alt = c.str(entry['altText'], 'copy.$locale.altText', maxRunes: ceiling);
       if (alt.trim().isEmpty) {
         c.add(BoardIssueCode.missingAltText, 'altText rỗng ở $locale');
       } else if (_genericAlt.hasMatch(alt.trim())) {
