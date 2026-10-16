@@ -4,7 +4,6 @@ import 'package:pyquest/core/settings_service.dart';
 import 'package:pyquest/data/database/app_database.dart';
 import 'package:pyquest/data/repositories/state_repositories.dart';
 import 'package:pyquest/shared/l10n/pq_l10n.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
