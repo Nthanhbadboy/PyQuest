@@ -562,6 +562,7 @@ void main() {
     addTearDown(handle.dispose);
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    controller.learner.addStroke('roundtrip-ink');
     while (controller.beatIndex < 2) {
       expect(controller.next() || controller.learnerAdvance(), isTrue);
       await tester.pump();
@@ -570,33 +571,75 @@ void main() {
     await tester.pumpAndSettle();
     controller.setLocale('en');
     await tester.pumpAndSettle();
+    expect(controller.learner.strokes, <String>['roundtrip-ink'], reason: 'ink must survive VI→EN');
     expect(controller.learnerAdvance(), isTrue, reason: 'đến beat chờ trẻ bằng ý định của trẻ');
     await tester.pumpAndSettle();
     expect(nodeText(tester, 'board_prose_3_0'), startsWith('Look before'));
     controller.setLocale('vi');
     await tester.pumpAndSettle();
     expect(controller.beatIndex, 3);
+    expect(controller.learner.strokes, <String>['roundtrip-ink'], reason: 'ink must survive EN→VI');
     expect(allBoardTexts(tester), contains('Tiếp'));
     expect(nodeText(tester, 'board_prose_3_0'), startsWith('Quan sát'));
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('R10-diag: beat 2 materializes output widget and localized semantics key',
+  testWidgets('R00-D1-setup: VI plan applies and beat 2 output keys exist before scrolling',
+      (WidgetTester tester) async {
+    final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
+    final BoardController controller = await pumpBoard(tester,
+        planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
+    final List<String> checkpoints = <String>[
+      'after pump: beat=${controller.beatIndex}, beatId=${controller.currentBeat?.beatId}, locale=${controller.locale}',
+    ];
+    expect(controller.beatIndex, 0, reason: checkpoints.last);
+    while (controller.beatIndex < 2) {
+      expect(controller.next() || controller.learnerAdvance(), isTrue,
+          reason: 'advance refused; ${checkpoints.join(' | ')}');
+      await tester.pump();
+      checkpoints.add(
+          'after pump: beat=${controller.beatIndex}, beatId=${controller.currentBeat?.beatId}, locale=${controller.locale}');
+      expect(tester.takeException(), isNull, reason: checkpoints.last);
+    }
+    expect(find.byKey(const ValueKey<String>('board_output_2_1')), findsOneWidget,
+        reason: 'output key missing; ${checkpoints.join(' | ')}');
+    expect(find.byKey(const ValueKey<String>('board_output_2_1_label')), findsOneWidget,
+        reason: 'semantic wrapper key missing; ${checkpoints.join(' | ')}');
+    expect(tester.takeException(), isNull, reason: checkpoints.join(' | '));
+  });
+
+  testWidgets('R00-D1-scroll: target geometry and offset before/after ensureVisible',
       (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
     addTearDown(handle.dispose);
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     while (controller.beatIndex < 2) {
-      expect(controller.next() || controller.learnerAdvance(), isTrue);
+      expect(controller.next() || controller.learnerAdvance(), isTrue,
+          reason: 'advance failed at beat=${controller.beatIndex}, locale=${controller.locale}');
       await tester.pump();
+      expect(tester.takeException(), isNull,
+          reason: 'exception after advance: beat=${controller.beatIndex}, locale=${controller.locale}');
     }
-    expect(controller.beatIndex, 2);
-    expect(find.byKey(const ValueKey<String>('board_output_2_1')), findsOneWidget,
-        reason: 'current output op key missing at beat=${controller.beatIndex}');
-    expect(find.byKey(const ValueKey<String>('board_output_2_1_label')), findsOneWidget,
-        reason: 'localized semantics wrapper key missing at beat=${controller.beatIndex}');
-    expect(tester.takeException(), isNull);
+    final Finder target = find.byKey(const ValueKey<String>('board_output_2_1_label'));
+    final Finder viewportFinder = find.byType(SingleChildScrollView);
+    expect(target, findsOneWidget, reason: 'pre-scroll target count=${target.evaluate().length}');
+    expect(viewportFinder, findsOneWidget);
+    final Rect targetBefore = tester.getRect(target);
+    final Rect viewport = tester.getRect(viewportFinder);
+    final double offsetBefore = tester.state<ScrollableState>(find.byType(Scrollable)).position.pixels;
+    await tester.ensureVisible(target);
+    await tester.pumpAndSettle();
+    final Rect targetAfter = tester.getRect(target);
+    final double offsetAfter = tester.state<ScrollableState>(find.byType(Scrollable)).position.pixels;
+    expect(tester.takeException(), isNull,
+        reason: 'after ensureVisible targetBefore=$targetBefore targetAfter=$targetAfter '
+            'viewport=$viewport offset=$offsetBefore->$offsetAfter beat=${controller.beatIndex} '
+            'locale=${controller.locale}');
+    expect(targetAfter.overlaps(viewport), isTrue,
+        reason: 'target did not enter viewport: before=$targetBefore after=$targetAfter '
+            'viewport=$viewport offset=$offsetBefore->$offsetAfter');
   });
 
   testWidgets('R10-D1-sem: semantic output ở beat 2 mang nhãn VI đã author',
