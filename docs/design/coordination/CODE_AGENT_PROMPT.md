@@ -32,27 +32,28 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision5: nghiệm thu delta code4315d39; chờ quyền implementation**.
+Task hiện tại là **PQD-003 revision6: người dùng đã mở010/014/015, không mở runtime toàn app**.
 Đọc `docs/design/coordination/tasks/PQD-003.md` và
-`docs/design/coordination/reviews/PQD-003-r5.md` (CI JSON kèm theo).
-PQC-009 test-only đã **ACCEPTED**:175+10 tại38897787848@41752fd, app tree khớp4315d39,
-per-Tab assertions đạt;8content tests/fixture hash đã nhận. **Không làm lại intake,
-route/cache/keyboard hoặc tạo thêm ACK-only commit.**
+`docs/design/coordination/AUTHORIZATION_2026-10-16_FOUNDATION.md`, rồi ba work orders
+`docs/implementation/coordination/tasks/PQC-010.md`, `PQC-014.md`, `PQC-015.md`.
 
-Các quyết định D/U/V/L trong `reviews/PQD-003-r4.md` vẫn là contract canonical;
-§M trên nhánh code đã nhận. Housekeeping docs ghép vào lần làm việc tiếp theo, không
-phải một vòng commit mới để xin nghiệm thu lại. Giữ copied pack byte-identical.
+**Làm ngay, không trả thêm ACK-only:**
+1. Nhập và chạy test patch scope guard ở `docs/design/coordination/patches/README.md`.
+   Coordinator cũ chỉ nhìn runtime=yes nên có thể mở nhầm008; không dùng nó cấp quyền.
+2. Fetch/track `--task PQD-003`; kiểm brief010/014/015 ALLOWED,008/005 BLOCKED.
+3. Thực hiện010 →014 →015 (015 sau014 CI xanh), mỗi gói commit/evidence riêng.
+   Chỉ015 được dependency locale tối thiểu. Không sửa art/assets/platform/workflow,
+   voice/provider, grader/economy/backend hoặc old task002/004/005/008.
+4. Trả đúng tested_code_commit, CI, ảnh/runtime test host và giới hạn.010 chưa wire
+   lesson;015 chưa port toàn UI/Settings. Không quảng cáo AI/voice/multilingual toàn app.
 
-Ba gói đã đề xuất:010 board độc lập authored/caption-only;014 resolver/migration;
-015 delegates/ARB foundation. Hiện runtime/dependency **chưa được cấp**; không tự
-bắt đầu vì verdict test xanh. Chờ authorization có allowlist cụ thể, không tự mở
-002/art512,004/device voice,005/dependency cũ hoặc008/a11y runtime. Không hỏi lại thiết
-kế đã chốt, không thêm framework điều phối. Khi không còn việc trong scope, ghi chờ
-quyền và dừng; không làm test lặp chỉ để giữ phiên bận.
+PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
+của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
+chọn lọc, không merge/cherry-pick cả nhánh design; giữ mọi thay đổi riêng đang có.
 
-Giữ bạn bè/Arena/phần thưởng/động viên/mini-game là trụ cột song song theo charter;
-không rút thành app học, không gom backend social/online hoặc đổi economy vào patch
-board/locale. Mẫu HTML, copy pack và widget CI không là bằng chứng AI/TTS/device.
+Bạn bè/Arena/thưởng/danh hiệu/động viên/mini-game là trụ cột song song trong charter,
+không bị bỏ vì các patch nền hiện tập trung board/locale. Đây không phải quyền làm
+backend social/online hoặc sửa economy trong010/014/015. Không thêm framework điều phối.
 
 Mục tiêu vẫn là redesign toàn app theo `FULL_APP_REDESIGN_CHARTER.md`, không dừng ở
 thumbnail. Ghi phản hồi bảng giảng vào `docs/implementation/coordination/tasks/PQD-003.md`;
