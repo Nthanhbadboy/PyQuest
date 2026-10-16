@@ -22,7 +22,7 @@ library;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/app/app_services.dart';
 import 'package:pyquest/app/pyquest_app.dart';
@@ -301,6 +301,29 @@ void main() {
   });
 
   group('characterization những gì code đang có/không có (chưa phải kết luận thiết bị)', () {
+    testWidgets('characterization keyboard: Tab không đặt focus vào landmark nào (hành vi hiện có)',
+        (WidgetTester tester) async {
+      final AppServices s = await boot(tester);
+      // Ghi lại **hành vi hiện tại** bằng API có thật, không đoán tên: sáu ô chạm là
+      // GestureDetector trần (main_map_screen.dart:161-168), không Focus/Actions tường
+      // minh nên Tab không có gì để nhảy tới. Đây là baseline cho PQC-008: khi ai đó làm
+      // thật, assertion này ĐỔI và buộc tài liệu phải cập nhật — bản thân nó không tuyên
+      // bố Android/TalkBack đạt hay không đạt, và không được dùng để đóng PQC-008.
+      final FocusNode? before = FocusManager.instance.primaryFocus;
+      for (var i = 0; i < 6; i++) {
+        await tester.sendKeyDownEvent(logicalKey: LogicalKeyboardKey.tab);
+        await tester.sendKeyUpEvent(logicalKey: LogicalKeyboardKey.tab);
+        await tester.pump();
+      }
+      expect(tester.takeException(), isNull);
+      expect(FocusManager.instance.primaryFocus, same(before),
+          reason: 'Tab 6 lần không đổi focus node — landmark chưa có target bàn phím');
+      // Và bàn phím cũng không mở được sheet: không có route nào bật lên.
+      expect(find.byKey(const Key('sheet_go_lesson')), findsNothing);
+
+      await finishTest(tester, s);
+    });
+
     testWidgets('CTA của sheet khai báo button semantics; landmark trên map thì không', (WidgetTester tester) async {
       final AppServices s = await boot(tester);
       await tapKey(tester, 'map_hit_bug_hunter');

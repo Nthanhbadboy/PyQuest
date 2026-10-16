@@ -427,11 +427,24 @@ void main() {
       'main_quest', 'robot_maze', 'dragon_jump', 'catch_stars', 'bug_hunter', 'achievement_house',
     ];
     final AppServices seededProgress = await start(tester);
+    // PQC-009 item 3: đây là chỗ DUY NHẤT mở lần lượt cả sáu sheet qua route thật của
+    // app, nên số đo ImageCache công bố ở đây (render log không bị cắt giữa như test
+    // log, trích được con số thật thay vì suy từ W*H*4). Chỉ in, không assert: job
+    // render là kênh bằng chứng, không phải nơi đặt cửa chặn ai đó.
+    final ImageCache sixSheetCache = PaintingBinding.instance.imageCache;
+    final List<String> cacheTrace = <String>[];
     for (var i = 0; i < ids.length; i++) {
       await tap(tester, 'map_label_${ids[i]}', ms: 900);
+      // Fake async không chạy I/O thật: phải cho ảnh của sheet kịp nạp qua pipeline
+      // của chính widget tree rồi mới đọc số, nếu không chỉ đo được cache của nền đảo.
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 400)));
+      cacheTrace.add('j0$i=${sixSheetCache.currentSize}entries/${sixSheetCache.currentSizeBytes}B');
       await capture(tester, 'j0${i}_sheet_${ids[i]}');
       await home(tester);
     }
+    // ignore: avoid_print
+    print('PQC-009 imageCache khi mở lần lượt sáu sheet (cache của engine trên máy CI, '
+        'KHÔNG phải RAM/GPU thiết bị): ${cacheTrace.join(' -> ')}');
     await finish(tester, seededProgress);
 
     // Người chơi mới toanh: Bug Hunter còn khoá, CTA là "Đi tới bài học".
