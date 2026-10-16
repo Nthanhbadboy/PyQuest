@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:audioplayers/audioplayers.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:record/record.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -29,12 +27,17 @@ class GeminiLiveVoice {
   final void Function(String message) onError;
 
   final AudioRecorder _recorder = AudioRecorder();
-  final AudioPlayer _player = AudioPlayer();
+  final FlutterSoundPlayer _streamPlayer = FlutterSoundPlayer();
   WebSocketChannel? _channel;
   StreamSubscription<dynamic>? _socketSubscription;
   StreamSubscription<Uint8List>? _micSubscription;
   Completer<void> _setupComplete = Completer<void>();
-  final List<int> _responsePcm = <int>[];
+  Future<void> _audioQueue = Future<void>.value();
+  bool _playerOpened = false;
+  bool _streamStarted = false;
+  int _turnPcmBytes = 0;
+  DateTime? _turnAudioStartedAt;
+  int _audioTurn = 0;
   String _outputText = '';
   bool _recording = false;
   bool _stopAfterResponse = false;
@@ -103,7 +106,8 @@ class GeminiLiveVoice {
       if (!await _recorder.hasPermission()) {
         throw StateError('Chưa được cấp quyền micro cho PyQuest.');
       }
-      _responsePcm.clear();
+      await _streamPlayer.openPlayer();
+      _playerOpened = true;
       _outputText = '';
       _stopAfterResponse = false;
       final stream = await _recorder.startStream(const RecordConfig(
@@ -189,7 +193,10 @@ class GeminiLiveVoice {
         for (final part in parts) {
           final inlineData = part is Map ? part['inlineData'] : null;
           final data = inlineData is Map ? inlineData['data'] : null;
-          if (data is String) _responsePcm.addAll(base64Decode(data));
+          if (data is String) {
+            final pcm = Uint8List.fromList(base64Decode(data));
+            _audioQueue = _audioQueue.then((_) => _feedPcm(pcm));
+          }
           final text = part is Map ? part['text'] : null;
           if (text is String) _outputText += text;
         }
@@ -199,34 +206,72 @@ class GeminiLiveVoice {
           onTranscript(_outputText.trim(), fromUser: false);
           _outputText = '';
         }
-        unawaited(_playResponse());
+        unawaited(_finishAudioTurn());
       }
-      if (serverContent?['interrupted'] == true) _responsePcm.clear();
+      if (serverContent?['interrupted'] == true) {
+        _audioTurn++;
+        _turnPcmBytes = 0;
+        _turnAudioStartedAt = null;
+        _streamStarted = false;
+        unawaited(_streamPlayer.stopPlayer());
+      }
     } catch (error) {
       onError('Không đọc được phản hồi Gemini Live: $error');
     }
   }
 
-  Future<void> _playResponse() async {
-    if (_responsePcm.isEmpty || _disposed) {
-      if (_stopAfterResponse) {
-        onStatus('Đã dừng trò chuyện');
-        await _closeSocket();
-      } else {
-        onStatus('Đang nghe bé nói…');
-      }
-      return;
-    }
-    try {
-      final bytes = _wavBytes(Uint8List.fromList(_responsePcm), sampleRate: 24000);
-      _responsePcm.clear();
-      final directory = await getTemporaryDirectory();
-      final file = File('${directory.path}/pyquest_gemini_reply.wav');
-      await file.writeAsBytes(bytes, flush: true);
-      await _player.stop();
-      await _player.play(DeviceFileSource(file.path));
+  Future<void> _feedPcm(Uint8List pcm) async {
+    if (_disposed || pcm.isEmpty || !_playerOpened) return;
+    if (!_streamStarted) {
+      _streamStarted = true;
+      _turnPcmBytes = 0;
+      _turnAudioStartedAt = DateTime.now();
+      final turn = _audioTurn;
+      // Flutter Sound starts a native PCM stream; unlike the previous WAV path,
+      // each Gemini chunk is sent to the speaker as soon as it arrives.
+      unawaited(_streamPlayer.startPlayerFromStream(
+        codec: Codec.pcm16,
+        interleaved: true,
+        numChannels: 1,
+        sampleRate: 24000,
+        bufferSize: 4096,
+      ));
+      // Give the platform audio sink a moment to initialize before the first
+      // packet. Keep this delay short so it does not reintroduce turn buffering.
+      await Future<void>.delayed(const Duration(milliseconds: 60));
+      if (_disposed || turn != _audioTurn) return;
       onStatus('Kai/Lumi đang nói…');
-      await _player.onPlayerComplete.first.timeout(const Duration(seconds: 60));
+    }
+    if (_disposed) return;
+    // Gemini PCM chunks are 16-bit mono. Keep an even byte count for the PCM sink.
+    final usableLength = pcm.length.isEven ? pcm.length : pcm.length - 1;
+    if (usableLength <= 0) return;
+    await _streamPlayer.feedUint8FromStream(
+      usableLength == pcm.length ? pcm : Uint8List.sublistView(pcm, 0, usableLength),
+    );
+    _turnPcmBytes += usableLength;
+  }
+
+  Future<void> _finishAudioTurn() async {
+    final turn = _audioTurn;
+    try {
+      await _audioQueue;
+      if (_disposed || turn != _audioTurn) return;
+      if (_turnPcmBytes > 0 && _turnAudioStartedAt != null && _streamStarted) {
+        // Let the native stream play the remaining samples instead of cutting
+        // the tail off when Gemini signals turnComplete.
+        final total = Duration(
+          microseconds: (_turnPcmBytes * 1000000 / (24000 * 2)).round(),
+        );
+        final elapsed = DateTime.now().difference(_turnAudioStartedAt!);
+        final remaining = total - elapsed + const Duration(milliseconds: 220);
+        if (remaining > Duration.zero) await Future<void>.delayed(remaining);
+        if (_disposed || turn != _audioTurn) return;
+        await _streamPlayer.stopPlayer();
+      }
+      _streamStarted = false;
+      _turnPcmBytes = 0;
+      _turnAudioStartedAt = null;
       if (_stopAfterResponse) {
         onStatus('Đã dừng trò chuyện');
         await _closeSocket();
@@ -234,32 +279,9 @@ class GeminiLiveVoice {
         onStatus('Đang nghe bé nói…');
       }
     } catch (error) {
-      onError('Không phát được giọng nói: $error');
+      onError('Không phát được luồng giọng nói: $error');
+      _streamStarted = false;
     }
-  }
-
-  Uint8List _wavBytes(Uint8List pcm, {required int sampleRate}) {
-    final header = ByteData(44);
-    void ascii(int offset, String value) {
-      for (var i = 0; i < value.length; i++) {
-        header.setUint8(offset + i, value.codeUnitAt(i));
-      }
-    }
-
-    ascii(0, 'RIFF');
-    header.setUint32(4, 36 + pcm.length, Endian.little);
-    ascii(8, 'WAVE');
-    ascii(12, 'fmt ');
-    header.setUint32(16, 16, Endian.little);
-    header.setUint16(20, 1, Endian.little);
-    header.setUint16(22, 1, Endian.little);
-    header.setUint32(24, sampleRate, Endian.little);
-    header.setUint32(28, sampleRate * 2, Endian.little);
-    header.setUint16(32, 2, Endian.little);
-    header.setUint16(34, 16, Endian.little);
-    ascii(36, 'data');
-    header.setUint32(40, pcm.length, Endian.little);
-    return Uint8List.fromList(<int>[...header.buffer.asUint8List(), ...pcm]);
   }
 
   Future<void> _stopRecorder() async {
@@ -284,7 +306,11 @@ class GeminiLiveVoice {
     _recording = false;
     await _stopRecorder();
     await _closeSocket();
-    await _player.dispose();
+    if (_playerOpened) {
+      await _streamPlayer.stopPlayer();
+      await _streamPlayer.closePlayer();
+      _playerOpened = false;
+    }
     await _recorder.dispose();
   }
 }
