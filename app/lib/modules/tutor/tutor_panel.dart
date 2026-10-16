@@ -146,7 +146,7 @@ class _TutorPanelState extends State<TutorPanel> {
         setState(() {
           // Show both sides so we can tell whether Gemini Live is actually
           // receiving the child's speech or only playing its opening greeting.
-          final speaker = fromUser ? 'Bé' : _voiceCharacter.displayName;
+          final speaker = fromUser ? (_lang == PqLang.vi ? 'Bé' : 'You') : _voiceCharacter.displayName;
           _voiceTranscript.add('$speaker: $text');
           if (_voiceTranscript.length > 10) _voiceTranscript.removeAt(0);
         });
