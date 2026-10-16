@@ -144,11 +144,11 @@ class _TutorPanelState extends State<TutorPanel> {
       onTranscript: (text, {required fromUser}) {
         if (!mounted) return;
         setState(() {
-          // Voice mode is spoken conversation: only show tutor replies.
-          if (!fromUser) {
-            _voiceTranscript.add(text);
-            if (_voiceTranscript.length > 6) _voiceTranscript.removeAt(0);
-          }
+          // Show both sides so we can tell whether Gemini Live is actually
+          // receiving the child's speech or only playing its opening greeting.
+          final speaker = fromUser ? 'Bé' : _voiceCharacter.displayName;
+          _voiceTranscript.add('$speaker: $text');
+          if (_voiceTranscript.length > 10) _voiceTranscript.removeAt(0);
         });
       },
       onError: (message) {
