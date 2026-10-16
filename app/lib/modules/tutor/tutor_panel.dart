@@ -185,8 +185,8 @@ class _TutorPanelState extends State<TutorPanel> {
     final waiting = _voiceBusy && !recording;
 
     // The regular tutor sheet also contains the transcript, quick actions,
-    // composer, and privacy notes. Keep the idle voice entry compact so it
-    // doesn't force the bottom sheet to overflow on shorter phones.
+    // composer, and privacy notes. Keep idle voice controls compact on shorter
+    // phones; expand them only after voice mode starts.
     if (compact) {
       return Container(
         width: double.infinity,
