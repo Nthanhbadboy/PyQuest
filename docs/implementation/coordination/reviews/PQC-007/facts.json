@@ -1,0 +1,1263 @@
+{
+  "code_commit": "3b59f0b538f4bd94c49bf3076ae24f1c1dd8f428",
+  "design_commit": "86513ca29910896ef21961d9489f00414dc5262f",
+  "method": "Pinned Git blobs, source text and header math; not a Flutter run",
+  "map_image": {
+    "path": "app/assets/images/island_map.webp",
+    "bytes": 385434,
+    "width": 1152,
+    "height": 2064,
+    "sha256": "a5c604180eb29074849b909fb3dbf4ec38dbf53dfaa41f7394d889ae144b674e",
+    "rgba8_bytes": 9510912
+  },
+  "geometry": [
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "original_cover": {
+        "width": 471.06976744186045,
+        "height": 844.0,
+        "left": -40.534883720930225,
+        "top": 0.0,
+        "visible_width_percent": 82.79028436018959,
+        "visible_height_percent": 100.0
+      },
+      "original_hits": [
+        {
+          "id": "main_quest",
+          "width": 117.76744186046511,
+          "height": 190.74400000000003,
+          "left": 143.18232558139536,
+          "top": 37.135999999999996
+        },
+        {
+          "id": "robot_maze",
+          "width": 153.5687441860465,
+          "height": 121.53599999999997,
+          "left": 14.58027906976745,
+          "top": 232.94400000000002
+        },
+        {
+          "id": "dragon_jump",
+          "width": 148.38697674418606,
+          "height": 140.94799999999998,
+          "left": 246.81767441860467,
+          "top": 202.56
+        },
+        {
+          "id": "catch_stars",
+          "width": 110.7013953488372,
+          "height": 104.65599999999995,
+          "left": 253.88372093023258,
+          "top": 379.8
+        },
+        {
+          "id": "bug_hunter",
+          "width": 141.32093023255814,
+          "height": 122.37999999999997,
+          "left": 20.704186046511637,
+          "top": 392.46000000000004
+        },
+        {
+          "id": "achievement_house",
+          "width": 122.47813953488372,
+          "height": 140.94800000000004,
+          "left": 149.77730232558142,
+          "top": 521.592
+        }
+      ],
+      "prototype_cover": {
+        "width": 630.1866666666667,
+        "height": 844.0,
+        "left": -120.09333333333336,
+        "top": 0.0,
+        "visible_width_percent": 61.88642518618821,
+        "visible_height_percent": 100.0
+      },
+      "hypothetical_square_cover": {
+        "width": 844.0,
+        "height": 844.0,
+        "left": -227.0,
+        "top": 0.0,
+        "visible_width_percent": 46.208530805687204,
+        "visible_height_percent": 100.0
+      }
+    },
+    {
+      "viewport": [
+        360,
+        640
+      ],
+      "original_cover": {
+        "width": 360.0,
+        "height": 645.0,
+        "left": 0.0,
+        "top": -2.5,
+        "visible_width_percent": 100.0,
+        "visible_height_percent": 99.2248062015504
+      },
+      "original_hits": [
+        {
+          "id": "main_quest",
+          "width": 90.0,
+          "height": 145.77,
+          "left": 140.4,
+          "top": 25.88
+        },
+        {
+          "id": "robot_maze",
+          "width": 117.36,
+          "height": 92.87999999999998,
+          "left": 42.120000000000005,
+          "top": 175.52
+        },
+        {
+          "id": "dragon_jump",
+          "width": 113.40000000000002,
+          "height": 107.71499999999999,
+          "left": 219.6,
+          "top": 152.29999999999998
+        },
+        {
+          "id": "catch_stars",
+          "width": 84.6,
+          "height": 79.97999999999996,
+          "left": 225.0,
+          "top": 287.75
+        },
+        {
+          "id": "bug_hunter",
+          "width": 108.0,
+          "height": 93.52499999999998,
+          "left": 46.800000000000004,
+          "top": 297.425
+        },
+        {
+          "id": "achievement_house",
+          "width": 93.60000000000001,
+          "height": 107.71500000000002,
+          "left": 145.44,
+          "top": 396.11
+        }
+      ],
+      "prototype_cover": {
+        "width": 477.8666666666667,
+        "height": 640.0,
+        "left": -58.93333333333334,
+        "top": 0.0,
+        "visible_width_percent": 75.33482142857143,
+        "visible_height_percent": 100.0
+      },
+      "hypothetical_square_cover": {
+        "width": 640.0,
+        "height": 640.0,
+        "left": -140.0,
+        "top": 0.0,
+        "visible_width_percent": 56.25,
+        "visible_height_percent": 100.0
+      }
+    }
+  ],
+  "normalized_module_rects": [
+    {
+      "id": "main_quest",
+      "source": "app/lib/modules/main_quest/main_quest_module.dart",
+      "normalized_ltrb": [
+        0.39,
+        0.044,
+        0.64,
+        0.27
+      ],
+      "label_anchor": [
+        0.514,
+        0.275
+      ]
+    },
+    {
+      "id": "robot_maze",
+      "source": "app/lib/modules/robot_maze/robot_maze_module.dart",
+      "normalized_ltrb": [
+        0.117,
+        0.276,
+        0.443,
+        0.42
+      ],
+      "label_anchor": [
+        0.28,
+        0.43
+      ]
+    },
+    {
+      "id": "dragon_jump",
+      "source": "app/lib/modules/dragon_jump/dragon_jump_module.dart",
+      "normalized_ltrb": [
+        0.61,
+        0.24,
+        0.925,
+        0.407
+      ],
+      "label_anchor": [
+        0.768,
+        0.41
+      ]
+    },
+    {
+      "id": "catch_stars",
+      "source": "app/lib/modules/catch_stars/catch_stars_module.dart",
+      "normalized_ltrb": [
+        0.625,
+        0.45,
+        0.86,
+        0.574
+      ],
+      "label_anchor": [
+        0.735,
+        0.585
+      ]
+    },
+    {
+      "id": "bug_hunter",
+      "source": "app/lib/modules/bug_hunter/bug_hunter_module.dart",
+      "normalized_ltrb": [
+        0.13,
+        0.465,
+        0.43,
+        0.61
+      ],
+      "label_anchor": [
+        0.28,
+        0.63
+      ]
+    },
+    {
+      "id": "achievement_house",
+      "source": "app/lib/modules/achievements/achievement_house_module.dart",
+      "normalized_ltrb": [
+        0.404,
+        0.618,
+        0.664,
+        0.785
+      ],
+      "label_anchor": [
+        0.534,
+        0.795
+      ]
+    }
+  ],
+  "prototype_scene": {
+    "path": "docs/design/first-play-prototype/art/village.webp",
+    "bytes": 112018,
+    "width": 896,
+    "height": 1200,
+    "sha256": "b152f7e22fbb8c940ad1429786cd8481d1f69f0a12c13111bb43d00f2f281617",
+    "rgba8_bytes": 4300800
+  },
+  "prototype_point_anchors": [
+    {
+      "id": "python_academy",
+      "x": 0.5,
+      "y": 0.3
+    },
+    {
+      "id": "robo_maze",
+      "x": 0.28,
+      "y": 0.44
+    },
+    {
+      "id": "pip_volcano",
+      "x": 0.8,
+      "y": 0.34
+    },
+    {
+      "id": "star_observatory",
+      "x": 0.82,
+      "y": 0.53
+    },
+    {
+      "id": "bitsy_workshop",
+      "x": 0.23,
+      "y": 0.68
+    },
+    {
+      "id": "achievement_house",
+      "x": 0.78,
+      "y": 0.74
+    }
+  ],
+  "thumbnails": [
+    {
+      "path": "app/assets/images/thumb_tower.webp",
+      "bytes": 17656,
+      "width": 288,
+      "height": 288,
+      "sha256": "c17e971f866f5cb28bf7f7d749273ae204ec49fc94c4692d773e485869e8365d",
+      "rgba8_bytes": 331776
+    },
+    {
+      "path": "app/assets/images/thumb_maze.webp",
+      "bytes": 25976,
+      "width": 288,
+      "height": 288,
+      "sha256": "e963cd3aab8c6cf47f28a2265705d56ccdff0e669758eca97d7bdde81abaddef",
+      "rgba8_bytes": 331776
+    },
+    {
+      "path": "app/assets/images/thumb_volcano.webp",
+      "bytes": 19846,
+      "width": 288,
+      "height": 288,
+      "sha256": "4d2847d6d8a955da23f128e651e8412838076030b2f469ce27407a25496f4f52",
+      "rgba8_bytes": 331776
+    },
+    {
+      "path": "app/assets/images/thumb_observatory.webp",
+      "bytes": 26676,
+      "width": 288,
+      "height": 288,
+      "sha256": "620d6e9ea279582a347df1f9659923db6ad8eb6b1ae4446a11b0e9e04d444031",
+      "rgba8_bytes": 331776
+    },
+    {
+      "path": "app/assets/images/thumb_workshop.webp",
+      "bytes": 26778,
+      "width": 288,
+      "height": 288,
+      "sha256": "e3cf18513c7ba327106b437ecebcf88826258c1b9c91a0939d2dbdfe002faf14",
+      "rgba8_bytes": 331776
+    },
+    {
+      "path": "app/assets/images/thumb_house.webp",
+      "bytes": 27340,
+      "width": 288,
+      "height": 288,
+      "sha256": "e6ac23380ae4087ec536a87251998132ff0347c25e021755004899a7ce1ca93e",
+      "rgba8_bytes": 331776
+    }
+  ],
+  "exports": [
+    {
+      "path": "docs/design/first-play-prototype/art/achievement_house_512.webp",
+      "bytes": 21712,
+      "width": 512,
+      "height": 512,
+      "sha256": "d7781c4dd46142e1480e6a5a956f23ee4a9c634f927baa0ba6739c689213b36c",
+      "rgba8_bytes": 1048576
+    },
+    {
+      "path": "docs/design/first-play-prototype/art/bitsy_workshop_512.webp",
+      "bytes": 19198,
+      "width": 512,
+      "height": 512,
+      "sha256": "45aa475f5cd4afad0e9fc3762ad525584c5cc3c0d193fbfc991a7a13897d04c9",
+      "rgba8_bytes": 1048576
+    },
+    {
+      "path": "docs/design/first-play-prototype/art/pip_volcano_512.webp",
+      "bytes": 17410,
+      "width": 512,
+      "height": 512,
+      "sha256": "db1912e199b8b5d21890e8537f6b1d431966aa8ec3dea0d169d1be3fe50780b9",
+      "rgba8_bytes": 1048576
+    },
+    {
+      "path": "docs/design/first-play-prototype/art/python_academy_512.webp",
+      "bytes": 13802,
+      "width": 512,
+      "height": 512,
+      "sha256": "c33ce18f00cd5c808b17cf49dcabb17d8197e658a5a680f385efe36fa08d2c73",
+      "rgba8_bytes": 1048576
+    },
+    {
+      "path": "docs/design/first-play-prototype/art/robo_maze_512.webp",
+      "bytes": 23888,
+      "width": 512,
+      "height": 512,
+      "sha256": "b444be914ea22e7dd650fb9cc6004de40de45e9cfd31ef642ed8f2dbd4f27b5a",
+      "rgba8_bytes": 1048576
+    },
+    {
+      "path": "docs/design/first-play-prototype/art/star_observatory_512.webp",
+      "bytes": 16928,
+      "width": 512,
+      "height": 512,
+      "sha256": "5204f72f3ba45adb87e8de2ed59a38163a4f4eb92a5d48ffdaefaa36f6deda93",
+      "rgba8_bytes": 1048576
+    }
+  ],
+  "totals": {
+    "before_bytes": 144272,
+    "after_bytes": 112938,
+    "reduction_bytes": 31334,
+    "before_rgba8_bytes": 1990656,
+    "after_rgba8_bytes": 6291456
+  },
+  "source_anchors": {
+    "app/lib/modules/main_map/main_map_screen.dart": {
+      "sha256": "8bd09c02c81af1a370495c41329b473fa82a1830e2e26faf7c01ec118a55676d",
+      "lines": 593,
+      "matches": [
+        {
+          "line": 26,
+          "text": "const Size kMapImageSize = Size(1152, 2064);"
+        },
+        {
+          "line": 58,
+          "text": "if (!s.settings.introSeen && !_introShown) {"
+        },
+        {
+          "line": 109,
+          "text": "await _services?.settings.setIntroSeen();"
+        },
+        {
+          "line": 116,
+          "text": "final action = await showPQSheet<String>(context, builder: (ctx) => ActivitySheet(module: module, status: status));"
+        },
+        {
+          "line": 131,
+          "text": "final calm = s.settings.calmMode;"
+        },
+        {
+          "line": 138,
+          "text": "final dest = _coverRect(kMapImageSize, constraints.biggest);"
+        },
+        {
+          "line": 164,
+          "text": "child: GestureDetector("
+        },
+        {
+          "line": 197,
+          "text": "EnergyPill(compact: MediaQuery.sizeOf(context).width < 380),"
+        },
+        {
+          "line": 237,
+          "text": "child: GestureDetector("
+        },
+        {
+          "line": 255,
+          "text": "type: EventTypes.activityOpened,"
+        },
+        {
+          "line": 264,
+          "text": "page = (ctx) => mq.buildHome(ctx, openLessonId: lessonId);"
+        },
+        {
+          "line": 267,
+          "text": "final future = nav.push(CloudRoute<void>(builder: page, calm: s.settings.calmMode));"
+        },
+        {
+          "line": 269,
+          "text": "unawaited(Future<void>.delayed(const Duration(milliseconds: 900), () {"
+        },
+        {
+          "line": 270,
+          "text": "if (nav.mounted) showRewardToasts(nav.context, outcome.notices);"
+        },
+        {
+          "line": 277,
+          "text": "Rect _coverRect(Size image, Size box) {"
+        },
+        {
+          "line": 347,
+          "text": "child: GestureDetector("
+        },
+        {
+          "line": 392,
+          "text": "const Padding(padding: EdgeInsets.only(right: 3), child: GameIcon(GameIconKind.lock, size: 15))"
+        },
+        {
+          "line": 394,
+          "text": "const Padding(padding: EdgeInsets.only(right: 2), child: StarIcon(size: 15)),"
+        },
+        {
+          "line": 533,
+          "text": "key: const ValueKey('welcome_next'),"
+        }
+      ]
+    },
+    "app/lib/core/settings_service.dart": {
+      "sha256": "d7d7cbecd783ca9834a991f3f517cec05efa860197df4ccf73ad8d137ccebc8a",
+      "lines": 48,
+      "matches": [
+        {
+          "line": 32,
+          "text": "bool get calmMode => _bool('calm_mode', false);"
+        },
+        {
+          "line": 33,
+          "text": "bool get introSeen => _bool('intro_seen', false);"
+        },
+        {
+          "line": 38,
+          "text": "Future<void> setIntroSeen() => _set('intro_seen', '1');"
+        }
+      ]
+    },
+    "app/lib/shared/widgets/chunky_button.dart": {
+      "sha256": "884c3ccfbea6d7183a351796f4a794b4e3a4070440f63dc675ba86e3d41ef8be",
+      "lines": 309,
+      "matches": [
+        {
+          "line": 45,
+          "text": "ChunkySize.small => 44,"
+        },
+        {
+          "line": 51,
+          "text": "ChunkySize.small => 4,"
+        },
+        {
+          "line": 57,
+          "text": "ChunkySize.small => 17,"
+        },
+        {
+          "line": 89,
+          "text": "return Semantics("
+        },
+        {
+          "line": 93,
+          "text": "excludeSemantics: true,"
+        },
+        {
+          "line": 94,
+          "text": "child: GestureDetector("
+        },
+        {
+          "line": 110,
+          "text": "padding: EdgeInsets.only(top: pressed ? _depth : 0, bottom: pressed ? 0 : _depth),"
+        },
+        {
+          "line": 116,
+          "text": "horizontal: switch (widget.size) { ChunkySize.large => 22, ChunkySize.medium => 14, ChunkySize.small => 12 },"
+        },
+        {
+          "line": 160,
+          "text": "final button = GestureDetector("
+        },
+        {
+          "line": 175,
+          "text": "padding: EdgeInsets.only(top: pressed ? depth : 0, bottom: pressed ? 0 : depth),"
+        },
+        {
+          "line": 184,
+          "text": "return Semantics("
+        },
+        {
+          "line": 283,
+          "text": "return Semantics("
+        },
+        {
+          "line": 287,
+          "text": "child: GestureDetector("
+        },
+        {
+          "line": 302,
+          "text": "padding: EdgeInsets.only(top: pressed ? depth : 0, bottom: pressed ? 0 : depth),"
+        }
+      ]
+    },
+    "app/lib/shared/widgets/common.dart": {
+      "sha256": "51469f7089a3d2fce902e93cc6c1d8496c2e7b32f56f2112a4c5128f60d1b8d4",
+      "lines": 347,
+      "matches": [
+        {
+          "line": 309,
+          "text": "Future<T?> showPQSheet<T>(BuildContext context, {required WidgetBuilder builder}) {"
+        },
+        {
+          "line": 318,
+          "text": "padding: EdgeInsets.only(bottom: media.viewInsets.bottom),"
+        }
+      ]
+    },
+    "app/lib/modules/main_map/activity_sheet.dart": {
+      "sha256": "8d6c99037121b1ca3c1acb5f256ee25c7c308652bd6c81f360c4a9c03e7e5e0c",
+      "lines": 135,
+      "matches": []
+    },
+    "app/lib/modules/robot_maze/maze_play_screen.dart": {
+      "sha256": "0a4b44d8d0bc7ff03e36742253a68222cedba33df94e508ec84ffda8592666c4",
+      "lines": 1137,
+      "matches": [
+        {
+          "line": 135,
+          "text": "} else if (commandCount(_program) < 30) {"
+        },
+        {
+          "line": 230,
+          "text": "FocusScope.of(context).unfocus();"
+        },
+        {
+          "line": 287,
+          "text": "_pb.hintCells = const [];"
+        },
+        {
+          "line": 419,
+          "text": "await Future<void>.delayed(const Duration(milliseconds: 650));"
+        },
+        {
+          "line": 461,
+          "text": "_pb.hintCells = cells;"
+        },
+        {
+          "line": 520,
+          "text": "type: EventTypes.levelCompleted,"
+        },
+        {
+          "line": 552,
+          "text": "ResultGoal('Dùng tối đa ${level.commandLimit} lệnh (bạn dùng $_commandsUsed)', stars.withinLimit),"
+        },
+        {
+          "line": 555,
+          "text": "ResultStat('Số lệnh', '$_commandsUsed'),"
+        },
+        {
+          "line": 556,
+          "text": "ResultStat('Đá quý', '${result.gems.length}/${level.gems.length}', icon: GameIconKind.gem),"
+        },
+        {
+          "line": 557,
+          "text": "ResultStat('Lần chạy', '$_attempts'),"
+        },
+        {
+          "line": 575,
+          "text": "if (!await spendEnergy(context, nextCost)) {"
+        },
+        {
+          "line": 595,
+          "text": "if (!s.withinLimit) {"
+        },
+        {
+          "line": 645,
+          "text": "child: GestureDetector("
+        },
+        {
+          "line": 687,
+          "text": "child: GestureDetector("
+        },
+        {
+          "line": 861,
+          "text": "onPressed: running || _history.isEmpty ? null : _undo,"
+        },
+        {
+          "line": 869,
+          "text": "onPressed: running || _program.isEmpty ? null : _clear,"
+        },
+        {
+          "line": 882,
+          "text": "onPressed: running || _phase == _Phase.won ? null : () => _runProgram(),"
+        },
+        {
+          "line": 942,
+          "text": "c == null ? '≤ ${level.commandLimit} dòng' : '$c/${level.commandLimit} lệnh',"
+        },
+        {
+          "line": 943,
+          "text": "c != null && c > 0 && c <= level.commandLimit,"
+        },
+        {
+          "line": 944,
+          "text": "warn: c != null && c > level.commandLimit,"
+        },
+        {
+          "line": 992,
+          "text": "return Semantics("
+        },
+        {
+          "line": 995,
+          "text": "child: GestureDetector("
+        },
+        {
+          "line": 1007,
+          "text": "padding: EdgeInsets.only(top: _down ? 5 : 0, bottom: _down ? 0 : 5),"
+        },
+        {
+          "line": 1036,
+          "text": "return GestureDetector("
+        },
+        {
+          "line": 1084,
+          "text": "GestureDetector("
+        },
+        {
+          "line": 1112,
+          "text": "child: GestureDetector("
+        },
+        {
+          "line": 1126,
+          "text": "GestureDetector("
+        }
+      ]
+    },
+    "app/lib/modules/robot_maze/maze_models.dart": {
+      "sha256": "238cc06597a0010a3f8335e7b219f85deda0a53aa23c2e96b5c88a05315d9092",
+      "lines": 393,
+      "matches": [
+        {
+          "line": 46,
+          "text": "required this.commandLimit,"
+        },
+        {
+          "line": 63,
+          "text": "final int commandLimit;"
+        },
+        {
+          "line": 77,
+          "text": "required int commandLimit,"
+        },
+        {
+          "line": 121,
+          "text": "commandLimit: commandLimit,"
+        },
+        {
+          "line": 147,
+          "text": "'command_limit': commandLimit,"
+        },
+        {
+          "line": 155,
+          "text": "commandLimit: (json['command_limit'] as num?)?.toInt() ?? 10,"
+        },
+        {
+          "line": 344,
+          "text": "const MazeStars({required this.reached, required this.allGems, required this.withinLimit});"
+        },
+        {
+          "line": 347,
+          "text": "final bool withinLimit;"
+        },
+        {
+          "line": 349,
+          "text": "int get count => reached ? 1 + (allGems ? 1 : 0) + (withinLimit ? 1 : 0) : 0;"
+        },
+        {
+          "line": 352,
+          "text": "reached ? complete + (allGems ? gems : 0) + (withinLimit ? limit : 0) : 0;"
+        },
+        {
+          "line": 357,
+          "text": "withinLimit: run.won && commandsUsed <= level.commandLimit,"
+        },
+        {
+          "line": 376,
+          "text": "commandLimit: (list[i]['command_limit'] as num).toInt(),"
+        }
+      ]
+    },
+    "app/lib/modules/robot_maze/maze_board.dart": {
+      "sha256": "60755aecece1fd5ca5d588031d44e90bc7319dccbbac4a63e0ed892c6aa737eb",
+      "lines": 292,
+      "matches": [
+        {
+          "line": 23,
+          "text": "List<Cell> hintCells = const [];"
+        },
+        {
+          "line": 104,
+          "text": "for (var i = 0; i < playback.hintCells.length; i++) {"
+        },
+        {
+          "line": 105,
+          "text": "final c = playback.hintCells[i];"
+        }
+      ]
+    },
+    "app/lib/shared/widgets/result_screen.dart": {
+      "sha256": "d84eb7ebdfa1b4761323e42fe5e3582d763ed7758762f463b18703cb4543bf21",
+      "lines": 404,
+      "matches": [
+        {
+          "line": 25,
+          "text": "const ResultStat(this.label, this.value, {this.icon});"
+        },
+        {
+          "line": 76,
+          "text": "final calm = AppScope.of(context).settings.calmMode;"
+        },
+        {
+          "line": 125,
+          "text": "final calm = AppScope.of(context).settings.calmMode;"
+        },
+        {
+          "line": 162,
+          "text": "padding: EdgeInsets.only(left: 6, right: 6, top: i == 1 ? 0 : 14),"
+        }
+      ]
+    },
+    "app/lib/modules/tutor/tutor_panel.dart": {
+      "sha256": "f95af3030a1f544040934aaae75fa052915d80b4ea4c579bcd16a273fd80b6bc",
+      "lines": 1180,
+      "matches": [
+        {
+          "line": 30,
+          "text": "return showPQSheet<void>("
+        },
+        {
+          "line": 63,
+          "text": "final FocusNode _focus = FocusNode();"
+        },
+        {
+          "line": 121,
+          "text": "CastDialogue.line(_member.id, DialogueMoment.greet, _lang),"
+        },
+        {
+          "line": 899,
+          "text": "padding: EdgeInsets.only(top: 3, right: 6),"
+        },
+        {
+          "line": 1045,
+          "text": "padding: EdgeInsets.only(top: 2, right: 6),"
+        }
+      ]
+    },
+    "app/lib/shared/characters/dialogue.dart": {
+      "sha256": "081715e7b615fa385ac513d14e0ca7b3f70a5ab16c36348d232c517e5854e4bf",
+      "lines": 384,
+      "matches": [
+        {
+          "line": 37,
+          "text": "/// and the tutor pick a line with [CastDialogue.line], which rotates through"
+        },
+        {
+          "line": 40,
+          "text": "abstract final class CastDialogue {"
+        }
+      ]
+    },
+    "app/test/activity_sheet_thumbnails_test.dart": {
+      "sha256": "6802e6c63b9e0b8ada9ff08b15f4b80ffb5a94fb40a2f51936d70c4f9dda364b",
+      "lines": 471,
+      "matches": [
+        {
+          "line": 16,
+          "text": "// (`showPQSheet`), result pop được kiểm chứ không chỉ `findsOneWidget`; `unlockLessonId`"
+        },
+        {
+          "line": 33,
+          "text": "import 'package:pyquest/modules/main_map/main_map_screen.dart' show kMapImageSize;"
+        },
+        {
+          "line": 34,
+          "text": "import 'package:pyquest/shared/widgets/common.dart' show showPQSheet;"
+        },
+        {
+          "line": 142,
+          "text": "await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 25)));"
+        },
+        {
+          "line": 296,
+          "text": "group('route thật của sheet (showPQSheet) — CTA phải cuộn tới được và trả đúng nhánh', () {"
+        },
+        {
+          "line": 297,
+          "text": "// 360×640 + textScale 2.0: `showPQSheet` chặn chiều cao ở 0.9×screen, nên nếu"
+        },
+        {
+          "line": 322,
+          "text": "onPressed: () async => popped = await showPQSheet<Object>("
+        },
+        {
+          "line": 387,
+          "text": "// `kMapImageSize` + cover rect của main_map_screen, không phải cảm nhận:"
+        },
+        {
+          "line": 391,
+          "text": "final Size image = kMapImageSize;"
+        },
+        {
+          "line": 422,
+          "text": "await precacheImage(AssetImage(asset), context);"
+        },
+        {
+          "line": 429,
+          "text": "expect(cache.currentSize, greaterThanOrEqualTo(1), reason: 'cache phải nhận ảnh đã nạp');"
+        },
+        {
+          "line": 430,
+          "text": "expect(cache.currentSizeBytes, lessThan(64 * 1024 * 1024));"
+        },
+        {
+          "line": 432,
+          "text": "print('PQC-003 imageCache: entries=${cache.currentSize} bytes=${cache.currentSizeBytes}');"
+        },
+        {
+          "line": 448,
+          "text": "await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 25)));"
+        }
+      ]
+    },
+    "app/test/render/render_screens_test.dart": {
+      "sha256": "11dc1043c6576caed417ae1af69cf3d8979f20f281d6ec2449bfcee0d53865e6",
+      "lines": 460,
+      "matches": [
+        {
+          "line": 67,
+          "text": "await s.settings.setIntroSeen();"
+        },
+        {
+          "line": 71,
+          "text": "type: EventTypes.levelCompleted,"
+        },
+        {
+          "line": 102,
+          "text": "await precacheImage(AssetImage(a), ctx);"
+        },
+        {
+          "line": 159,
+          "text": "await tap(tester, 'welcome_next', ms: 500);"
+        },
+        {
+          "line": 440,
+          "text": "await tap(tester, 'welcome_next', ms: 500);"
+        },
+        {
+          "line": 454,
+          "text": "await tap(tester, 'welcome_next', ms: 500);"
+        }
+      ]
+    },
+    "app/lib/modules/main_quest/main_quest_module.dart": {
+      "sha256": "d327b59bccfeb0a7c2c6c86df9cfb28ce027648ae7c43ee1b4eb37f024a61882",
+      "lines": 378,
+      "matches": [
+        {
+          "line": 27,
+          "text": "hitBox: Rect.fromLTRB(0.39, 0.044, 0.64, 0.27),"
+        },
+        {
+          "line": 28,
+          "text": "labelAnchor: Offset(0.514, 0.275),"
+        },
+        {
+          "line": 51,
+          "text": "Widget buildHome(BuildContext context, {String? openLessonId}) => MainQuestHomeScreen(openLessonId: openLessonId);"
+        },
+        {
+          "line": 55,
+          "text": "const MainQuestHomeScreen({super.key, this.openLessonId});"
+        },
+        {
+          "line": 56,
+          "text": "final String? openLessonId;"
+        },
+        {
+          "line": 91,
+          "text": "if (!_scrolledToTarget && widget.openLessonId != null) {"
+        },
+        {
+          "line": 93,
+          "text": "final i = _services!.mainQuest.lessons.indexWhere((l) => l.id == widget.openLessonId);"
+        },
+        {
+          "line": 102,
+          "text": "bool _unlocked(List<Lesson> lessons, int i) => i == 0 || _done.contains(lessons[i - 1].id);"
+        },
+        {
+          "line": 104,
+          "text": "Future<void> _open(Lesson lesson) async {"
+        },
+        {
+          "line": 109,
+          "text": "if (!await spendEnergy(context, cost)) return;"
+        },
+        {
+          "line": 111,
+          "text": "await Navigator.of(context).push(CloudRoute<void>(builder: (_) => LessonScreen(lesson: lesson), calm: s.settings.calmMode));"
+        },
+        {
+          "line": 122,
+          "text": ".firstWhere((i) => _unlocked(lessons, i) && !_done.contains(lessons[i].id), orElse: () => -1);"
+        },
+        {
+          "line": 134,
+          "text": "trailing: const [EnergyPill(compact: true)],"
+        },
+        {
+          "line": 150,
+          "text": "unlocked: _unlocked(lessons, i),"
+        },
+        {
+          "line": 152,
+          "text": "highlighted: lessons[i].id == widget.openLessonId,"
+        },
+        {
+          "line": 169,
+          "text": "CloudRoute<void>(builder: (_) => const AdventureRecapScreen(), calm: s.settings.calmMode),"
+        },
+        {
+          "line": 175,
+          "text": "CloudRoute<void>(builder: (_) => const PlaygroundScreen(), calm: s.settings.calmMode),"
+        },
+        {
+          "line": 269,
+          "text": "return GestureDetector("
+        }
+      ]
+    },
+    "app/lib/modules/robot_maze/robot_maze_module.dart": {
+      "sha256": "18ef0c39aa2cf6c91d8bf6b5b869a03394810e5d06c48e97013f30f5e49a71f5",
+      "lines": 371,
+      "matches": [
+        {
+          "line": 29,
+          "text": "hitBox: Rect.fromLTRB(0.117, 0.276, 0.443, 0.42),"
+        },
+        {
+          "line": 30,
+          "text": "labelAnchor: Offset(0.28, 0.43),"
+        },
+        {
+          "line": 92,
+          "text": "bool _unlocked(List<MazeLevel> levels, int i) => i == 0 || _records.containsKey(levels[i - 1].id);"
+        },
+        {
+          "line": 98,
+          "text": "if (!await spendEnergy(context, cost)) return;"
+        },
+        {
+          "line": 100,
+          "text": "await Navigator.of(context).push(CloudRoute<void>(builder: (_) => MazePlayScreen(level: level), calm: s.settings.calmMode));"
+        },
+        {
+          "line": 109,
+          "text": "(i) => _unlocked(levels, i) && !_records.containsKey(levels[i].id),"
+        },
+        {
+          "line": 123,
+          "text": "trailing: const [EnergyPill(compact: true)],"
+        },
+        {
+          "line": 140,
+          "text": "isUnlocked: (i) => _unlocked(levels, i),"
+        },
+        {
+          "line": 148,
+          "text": "CloudRoute<void>(builder: (_) => const MazeWorkshopScreen(), calm: s.settings.calmMode),"
+        },
+        {
+          "line": 320,
+          "text": "final calm = AppScope.of(context).settings.calmMode;"
+        }
+      ]
+    },
+    "app/lib/modules/dragon_jump/dragon_jump_module.dart": {
+      "sha256": "121d3dbf9dc0f096d2e11f57324926df111b75ec4898aab89245fd3c178d79ef",
+      "lines": 686,
+      "matches": [
+        {
+          "line": 69,
+          "text": "hitBox: Rect.fromLTRB(0.61, 0.24, 0.925, 0.407),"
+        },
+        {
+          "line": 70,
+          "text": "labelAnchor: Offset(0.768, 0.41),"
+        },
+        {
+          "line": 125,
+          "text": "if (!await spendEnergy(context, s.config.cost('arcade_run'))) return;"
+        },
+        {
+          "line": 129,
+          "text": "calm: s.settings.calmMode,"
+        },
+        {
+          "line": 135,
+          "text": "await showPQSheet<void>(context, builder: (ctx) => DragonShop(onChanged: _load));"
+        },
+        {
+          "line": 151,
+          "text": "PQTopBar(title: 'Núi Lửa Pip', subtitle: 'Rồng Nhảy', tone: PQTone.coral, trailing: const [EnergyPill(compact: true)]),"
+        },
+        {
+          "line": 288,
+          "text": "if (mounted && outcome.notices.isNotEmpty) showRewardToasts(context, outcome.notices);"
+        },
+        {
+          "line": 473,
+          "text": "type: EventTypes.levelCompleted,"
+        },
+        {
+          "line": 498,
+          "text": "ResultStat('Quãng đường', '${g.distanceMeters} m'),"
+        },
+        {
+          "line": 499,
+          "text": "ResultStat('Xu nhặt được', '${g.coins}', icon: GameIconKind.coin),"
+        },
+        {
+          "line": 500,
+          "text": "if (g.gems > 0) ResultStat('Đá quý', '${g.gems}', icon: GameIconKind.gem),"
+        },
+        {
+          "line": 518,
+          "text": "if (!await spendEnergy(context, cost)) {"
+        },
+        {
+          "line": 553,
+          "text": "child: GestureDetector("
+        }
+      ]
+    },
+    "app/lib/modules/catch_stars/catch_stars_module.dart": {
+      "sha256": "59db296bb6908a8f5f6f27b6b2cf53cd910a8d2f58380d949c3493026600eddc",
+      "lines": 619,
+      "matches": [
+        {
+          "line": 33,
+          "text": "hitBox: Rect.fromLTRB(0.625, 0.45, 0.86, 0.574),"
+        },
+        {
+          "line": 34,
+          "text": "labelAnchor: Offset(0.735, 0.585),"
+        },
+        {
+          "line": 90,
+          "text": "if (!await spendEnergy(context, s.config.cost('arcade_run'))) return;"
+        },
+        {
+          "line": 92,
+          "text": "await Navigator.of(context).push(CloudRoute<void>(builder: (_) => const StarsPlayScreen(), calm: s.settings.calmMode));"
+        },
+        {
+          "line": 109,
+          "text": "PQTopBar(title: 'Đài Thiên Văn', subtitle: 'Hái Sao', tone: PQTone.night, trailing: const [EnergyPill(compact: true)]),"
+        },
+        {
+          "line": 166,
+          "text": "CloudRoute<void>(builder: (_) => StarAtlasScreen(total: _total), calm: s.settings.calmMode),"
+        },
+        {
+          "line": 386,
+          "text": "Future<void>.delayed(const Duration(milliseconds: 900), _finish);"
+        },
+        {
+          "line": 413,
+          "text": "type: EventTypes.levelCompleted,"
+        },
+        {
+          "line": 438,
+          "text": "ResultStat('Sao đã hái', '${g.caught}'),"
+        },
+        {
+          "line": 439,
+          "text": "ResultStat('Chuỗi dài nhất', '${g.bestCombo}'),"
+        },
+        {
+          "line": 440,
+          "text": "ResultStat('Tổng sao', '$after'),"
+        },
+        {
+          "line": 456,
+          "text": "if (!await spendEnergy(context, cost)) {"
+        },
+        {
+          "line": 487,
+          "text": "child: GestureDetector("
+        }
+      ]
+    },
+    "app/lib/modules/bug_hunter/bug_hunter_module.dart": {
+      "sha256": "c13f4ffa98cd690c31ef87b4a1e48c23212612e1c25372671edc0909d813eb78",
+      "lines": 571,
+      "matches": [
+        {
+          "line": 34,
+          "text": "hitBox: Rect.fromLTRB(0.13, 0.465, 0.43, 0.61),"
+        },
+        {
+          "line": 35,
+          "text": "labelAnchor: Offset(0.28, 0.63),"
+        },
+        {
+          "line": 126,
+          "text": "if (!await spendEnergy(context, cost)) return;"
+        },
+        {
+          "line": 128,
+          "text": "await Navigator.of(context).push(CloudRoute<void>(builder: (_) => BugPuzzleScreen(puzzle: p), calm: s.settings.calmMode));"
+        },
+        {
+          "line": 146,
+          "text": "trailing: const [EnergyPill(compact: true)],"
+        },
+        {
+          "line": 208,
+          "text": "return GestureDetector("
+        },
+        {
+          "line": 317,
+          "text": "Future<void>.delayed(const Duration(milliseconds: 600), () {"
+        },
+        {
+          "line": 324,
+          "text": "final pick = await showPQSheet<String>("
+        },
+        {
+          "line": 377,
+          "text": "type: EventTypes.levelCompleted,"
+        },
+        {
+          "line": 383,
+          "text": "await Future<void>.delayed(const Duration(milliseconds: 700));"
+        },
+        {
+          "line": 406,
+          "text": "ResultStat('Bọ đã bắt', '${p.bugs.length}'),"
+        },
+        {
+          "line": 407,
+          "text": "ResultStat('Lần nhầm', '$_mistakes'),"
+        },
+        {
+          "line": 408,
+          "text": "ResultStat('Thời gian', '${seconds}s'),"
+        },
+        {
+          "line": 422,
+          "text": "if (next == null || !await spendEnergy(context, nextCost)) {"
+        },
+        {
+          "line": 549,
+          "text": "child: GestureDetector("
+        }
+      ]
+    },
+    "app/lib/modules/achievements/achievement_house_module.dart": {
+      "sha256": "49060c2d988d40047dbf7768fe5846071d8702053d4337c2589ef431cc0301b0",
+      "lines": 501,
+      "matches": [
+        {
+          "line": 30,
+          "text": "hitBox: Rect.fromLTRB(0.404, 0.618, 0.664, 0.785),"
+        },
+        {
+          "line": 31,
+          "text": "labelAnchor: Offset(0.534, 0.795),"
+        },
+        {
+          "line": 141,
+          "text": "child: GestureDetector("
+        },
+        {
+          "line": 230,
+          "text": "return GestureDetector("
+        },
+        {
+          "line": 269,
+          "text": "showPQSheet<void>("
+        }
+      ]
+    }
+  },
+  "source_scans": {
+    "disableAnimations": [],
+    "accessibilityFeatures": [],
+    "textScaler": [],
+    "textScaleFactor": [],
+    "maximumSizeBytes": [],
+    "didChangeAppLifecycleState": [
+      "app/lib/core/audio_service.dart:111:void didChangeAppLifecycleState(AppLifecycleState state) {",
+      "app/lib/core/session_service.dart:49:void didChangeAppLifecycleState(AppLifecycleState state) {"
+    ]
+  },
+  "bug_unlock_lesson": "mq1_03"
+}
