@@ -477,14 +477,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('R10-D1: output VI ban đầu có prose, thứ tự và semantics thật', (WidgetTester tester) async {
-    // Rev 7 để lẫn hai kênh: altText bị tìm trong `allBoardTexts` trong khi renderer đặt nó ở
-    // node Semantics, và output bị tìm bằng chuỗi gộp `7\n3 + 4` dù mỗi dòng là một Text riêng.
-    // Ca này sửa theo đúng hợp đồng: **chữ nhìn thấy** đo bằng Text, **nhãn** đo bằng cây semantics
-    // thật, **output** đo bằng các dòng theo thứ tự. Không đưa altText lên bảng làm chữ debug chỉ
-    // để khớp assertion cũ.
-    final SemanticsHandle handle = tester.ensureSemantics();
-    addTearDown(handle.dispose);
+  testWidgets('R10-D1-visible: initial VI prose and ordered output', (WidgetTester tester) async {
+    // Visible text is checked through Text widgets and ordered output lines. The actual localized
+    // accessibility label is checked separately in R10-D1-sem; it must not leak into visible text.
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1,
         locale: 'vi',
@@ -528,10 +523,8 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('R10-D2: đổi locale VI→EN cập nhật chữ và semantics trên cùng controller',
+  testWidgets('R10-D2-visible: same controller updates visible text VI→EN',
       (WidgetTester tester) async {
-    final SemanticsHandle handle = tester.ensureSemantics();
-    addTearDown(handle.dispose);
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     controller.learner.addStroke('net-cua-tre');
@@ -556,10 +549,8 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('R10-D3: VI→EN→VI giữ beat, dịch prose và semantics về VI',
+  testWidgets('R10-D3-visible: VI→EN→VI preserves beat, ink and localized prose',
       (WidgetTester tester) async {
-    final SemanticsHandle handle = tester.ensureSemantics();
-    addTearDown(handle.dispose);
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     controller.learner.addStroke('roundtrip-ink');
@@ -586,8 +577,6 @@ void main() {
 
   testWidgets('R00-D1-initial: VI setup applies at beat 0 without framework exception',
       (WidgetTester tester) async {
-    final SemanticsHandle handle = tester.ensureSemantics();
-    addTearDown(handle.dispose);
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     expect(controller.beatIndex, 0,
@@ -598,8 +587,6 @@ void main() {
 
   testWidgets('R00-D1-advance: same-controller next reaches output beat 2',
       (WidgetTester tester) async {
-    final SemanticsHandle handle = tester.ensureSemantics();
-    addTearDown(handle.dispose);
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     final List<String> checkpoints = <String>[];
@@ -616,8 +603,6 @@ void main() {
 
   testWidgets('R00-D1-key: beat 2 materializes output widget and semantics wrapper',
       (WidgetTester tester) async {
-    final SemanticsHandle handle = tester.ensureSemantics();
-    addTearDown(handle.dispose);
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     while (controller.beatIndex < 2) {
@@ -633,8 +618,6 @@ void main() {
 
   testWidgets('R00-D1-scroll: target geometry and offset before/after ensureVisible',
       (WidgetTester tester) async {
-    final SemanticsHandle handle = tester.ensureSemantics();
-    addTearDown(handle.dispose);
     final BoardController controller = await pumpBoard(tester,
         planIndex: 1, locale: 'vi', reduceMotion: true, codeText: 'print(3 + 4)\nprint("3 + 4")');
     while (controller.beatIndex < 2) {
