@@ -1,6 +1,6 @@
 # PyQuest Village — 2.5D Redesign Brief
 
-Status: design direction / future implementation scope. Do not begin this UI overhaul before the AI Tutor greeting/speaker-label bug is fixed and verified.
+Status: design direction / future implementation scope. Visual concept committed at [PYQUEST_VILLAGE_2_5D_CONCEPT.svg](./PYQUEST_VILLAGE_2_5D_CONCEPT.svg). This is a design mockup, not implemented app UI. Do not begin this UI overhaul before the AI Tutor greeting/speaker-label bug is fixed and verified.
 
 ## Product intent
 
