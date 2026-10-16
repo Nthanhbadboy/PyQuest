@@ -41,6 +41,7 @@ class GeminiLiveVoice {
   String _outputText = '';
   bool _recording = false;
   bool _stopAfterResponse = false;
+  Timer? _stopTimeout;
   bool _disposed = false;
 
   bool get isRecording => _recording;
@@ -109,6 +110,7 @@ class GeminiLiveVoice {
       await _streamPlayer.openPlayer();
       _playerOpened = true;
       _outputText = '';
+      _stopTimeout?.cancel();
       _stopAfterResponse = false;
       final stream = await _recorder.startStream(const RecordConfig(
         encoder: AudioEncoder.pcm16bits,
@@ -168,6 +170,20 @@ class GeminiLiveVoice {
     } catch (error) {
       onError('Không gửi được đoạn âm thanh: $error');
     }
+
+    // Gemini should finish its current turn after audioStreamEnd. Never leave
+    // the UI waiting forever if the server does not send turnComplete.
+    _stopTimeout?.cancel();
+    _stopTimeout = Timer(const Duration(seconds: 8), () {
+      if (_disposed || !_stopAfterResponse || _channel == null) return;
+      _stopAfterResponse = false;
+      _streamStarted = false;
+      _turnPcmBytes = 0;
+      _turnAudioStartedAt = null;
+      onStatus('Đã dừng trò chuyện');
+      unawaited(_streamPlayer.stopPlayer());
+      unawaited(_closeSocket());
+    });
   }
 
   void _handleServerMessage(dynamic raw) {
@@ -273,6 +289,9 @@ class GeminiLiveVoice {
       _turnPcmBytes = 0;
       _turnAudioStartedAt = null;
       if (_stopAfterResponse) {
+        _stopTimeout?.cancel();
+        _stopTimeout = null;
+        _stopAfterResponse = false;
         onStatus('Đã dừng trò chuyện');
         await _closeSocket();
       } else {
@@ -304,6 +323,8 @@ class GeminiLiveVoice {
   Future<void> dispose() async {
     _disposed = true;
     _recording = false;
+    _stopTimeout?.cancel();
+    _stopTimeout = null;
     await _stopRecorder();
     await _closeSocket();
     if (_playerOpened) {
