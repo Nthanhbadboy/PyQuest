@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-/// Experimental push-to-talk Gemini Live client for development builds.
+/// Experimental hands-free Gemini Live conversation for development builds.
 ///
 /// Supply the key only through --dart-define=GEMINI_API_KEY=... . This is
 /// intentionally a development shortcut: dart-defines are embedded in the
@@ -37,12 +37,13 @@ class GeminiLiveVoice {
   final List<int> _responsePcm = <int>[];
   String _outputText = '';
   bool _recording = false;
+  bool _stopAfterResponse = false;
   bool _disposed = false;
 
   bool get isRecording => _recording;
 
   Future<void> startListening({required String characterName, required String language}) async {
-    if (_disposed || _recording) return;
+    if (_disposed || _recording || _channel != null) return;
     if (_apiKey.trim().isEmpty) {
       onError('Thiếu GEMINI_API_KEY. Hãy build thử nghiệm với --dart-define=GEMINI_API_KEY=...');
       return;
@@ -104,6 +105,7 @@ class GeminiLiveVoice {
       }
       _responsePcm.clear();
       _outputText = '';
+      _stopAfterResponse = false;
       final stream = await _recorder.startStream(const RecordConfig(
         encoder: AudioEncoder.pcm16bits,
         sampleRate: 16000,
@@ -113,7 +115,7 @@ class GeminiLiveVoice {
         noiseSuppress: true,
       ));
       _recording = true;
-      onStatus('Đang nghe… Nhấn Dừng để Kai/Lumi trả lời');
+      onStatus('Đang trò chuyện… Hãy nói tự nhiên, không cần nhấn giữ micro');
       _micSubscription = stream.listen((chunk) {
         if (!_recording || _channel == null) return;
         _channel!.sink.add(jsonEncode(<String, Object>{
@@ -125,6 +127,22 @@ class GeminiLiveVoice {
           },
         }));
       }, onError: (Object error) => onError('Không đọc được micro: $error'));
+      // Prompt the tutor to open the conversation as soon as the session is ready.
+      _channel!.sink.add(jsonEncode(<String, Object>{
+        'clientContent': <String, Object>{
+          'turns': <Object>[
+            <String, Object>{
+              'role': 'user',
+              'parts': <Object>[
+                <String, String>{
+                  'text': 'Start a friendly voice conversation with the child now. Briefly greet them, introduce yourself as $characterName, and ask one simple question about what they are learning. Speak aloud in ${language == 'vi' ? 'Vietnamese' : 'English'}.',
+                },
+              ],
+            },
+          ],
+          'turnComplete': true,
+        },
+      }));
     } catch (error) {
       await _stopRecorder();
       onError('Không thể bắt đầu voice: $error');
@@ -136,7 +154,8 @@ class GeminiLiveVoice {
   Future<void> stopListening() async {
     if (!_recording) return;
     _recording = false;
-    onStatus('Đang xử lý câu nói…');
+    _stopAfterResponse = true;
+    onStatus('Đang chờ Kai/Lumi nói nốt…');
     await _stopRecorder();
     try {
       _channel?.sink.add(jsonEncode(<String, Object>{
@@ -190,8 +209,12 @@ class GeminiLiveVoice {
 
   Future<void> _playResponse() async {
     if (_responsePcm.isEmpty || _disposed) {
-      onStatus('Đã xong lượt nói');
-      await _closeSocket();
+      if (_stopAfterResponse) {
+        onStatus('Đã dừng trò chuyện');
+        await _closeSocket();
+      } else {
+        onStatus('Đang nghe bé nói…');
+      }
       return;
     }
     try {
@@ -204,8 +227,12 @@ class GeminiLiveVoice {
       await _player.play(DeviceFileSource(file.path));
       onStatus('Kai/Lumi đang nói…');
       await _player.onPlayerComplete.first.timeout(const Duration(seconds: 60));
-      onStatus('Đã xong lượt nói');
-      await _closeSocket();
+      if (_stopAfterResponse) {
+        onStatus('Đã dừng trò chuyện');
+        await _closeSocket();
+      } else {
+        onStatus('Đang nghe bé nói…');
+      }
     } catch (error) {
       onError('Không phát được giọng nói: $error');
     }
