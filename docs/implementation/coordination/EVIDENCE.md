@@ -640,3 +640,16 @@ dependency gate. Scope guard ghi trên board: **không** thu nhỏ app thành "a
 bạn bè/thi đấu/thưởng-danh hiệu/động viên/mini-game (Product Vision §7, 11–13, 15–16; Game Design §6–10, 12),
 không fake leaderboard/reward, không đổi economy trong patch board/locale. Một ACK cho `59f7023`.
 
+
+### EV-ID-021.1 — số CI của chính phần sửa delta (để design không phải đoán)
+
+`38897787848` @ `41752fd`: `analyze` No issues (9.2s) · `test +175 All tests passed!` ·
+`render +10`, `j00..j05 = 7 entries / 11.501.568 B` (năm run liên tiếp không đổi).
+`167 → 175` = đúng 8 test content pack mới; **không** test nào bị bỏ/đổi thành skip. Run đỏ
+`38896771813` là lỗi **assertion của tôi** (đoán beat), không phải lỗi `authored-copy.v1.json`;
+ghi rõ để rev sau của các bạn không phải nghi ngờ dữ liệu mình giao.
+Đã làm theo §V1: assertion per-Tab (down+up), `trace` thành `expect`, Enter characterization kèm
+giới hạn "traversal ≠ activation". Đã sửa 2 overclaim (toán rect vs RenderBox; dự phóng vs đo thật)
+ngay trong tài liệu cũ, không để câu sai tồn tại. Gate `runtime=no` giữ nguyên: `PQC-010/014/015`
+vẫn chờ authorize, `U1/U2/U4/U5` vẫn chờ người dùng.
+
