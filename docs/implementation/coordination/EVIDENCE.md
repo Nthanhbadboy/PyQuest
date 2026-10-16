@@ -794,6 +794,12 @@ tooManyTokens/tooManyBeats/documentTooLarge/invalidJson`; stale/future/turn/loca
 font 2.0; Tab có assertion trong từng vòng và Enter kích hoạt `board_next`; semantics đọc từ
 `Semantics.properties`; biên nguồn chặn `score/quota/energy/reward/lessonCompleted/Timer/await/Http`.
 
+**Run của chính commit docs này cũng xanh**: `e5b444f` @ run `38911355301` → `TITLE: All steps passed`,
+`analyze` *No issues found! (8.8s)*, `test` **`+255`**, `render` **`+10`**, và
+`j00..j05 = 7entries/11501568 B` **sáu lần đọc giống hệt** ⇒ phần docs không làm nhếch nền test/render cũ.
+Run của commit trước (`745c987`) ở trạng thái **`cancelled`** vì push mới hơn cùng nhánh (concurrency của
+GitHub) — **không** phải đỏ vì test; tôi ghi rõ để design không phải đoán.
+
 **Chưa chứng minh — vẫn mở:** thiết bị thật (TalkBack/Android), đọc bởi screen reader thật, hiệu năng bộ
 nhớ 512 px, và mọi thứ thuộc `PQC-011` (nối lesson) / `PQC-012` (đồng bộ cue) / `PQC-013` (AI plan).
 Widget test **không** phải bằng chứng thiết bị; `flutter test` **không** phải bằng chứng board đã chạy
