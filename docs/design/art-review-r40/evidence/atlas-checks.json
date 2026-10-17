@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-18",
+  "browser": "153.0.8010.0",
+  "imagesDecoded": 9,
+  "localLinksHTTP200": 28,
+  "rootRedirect": true,
+  "mobile": [
+    {
+      "width": 390,
+      "overflow": false,
+      "small": []
+    },
+    {
+      "width": 360,
+      "overflow": false,
+      "small": []
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Gallery smoke only; not the 432 screen matrix or runtime validation"
+  ]
+}

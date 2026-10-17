@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-18",
+  "source_sha": "4fe3b7d0a1bf5f6dface1b04cbc4e2d7ee9d451f",
+  "exact_content_imports": 215,
+  "unchanged_content_symlinks": 147,
+  "new_archive_entries_verified_against_git": 36,
+  "old_archive_files_unchanged": 24,
+  "canonical_review_records": 16,
+  "manifests": 9,
+  "states": 36,
+  "runtime_source_blobs": 15,
+  "all_nine_PNGs_and_prompts_unchanged": true,
+  "other_eight_layouts_and_shared_js_unchanged": true,
+  "code_correction_allowlist": "PASS",
+  "single_substantive_commit": true,
+  "app_ci_diff_since_a331": false,
+  "code_static_receipt": "129/129 preserved, inspected, not re-executed",
+  "independent_browser": "432 PASS; editor48; font3204 including editor144",
+  "limits": [
+    "This is an independent provenance check, not a re-run of CODE static129 script",
+    "Hashes do not certify visual review; targeted product captures separately viewed",
+    "No app/device/engine/production acceptance"
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "task": "PQC-018",
+  "scene_id": "b02-w12-creator-editor",
+  "batch": "B",
+  "status": "CONCEPT_AND_SCREEN_STUDY_NOT_REVIEWED",
+  "title": {
+    "vi": "Xưởng sáng tạo",
+    "en": "Creator editor"
+  },
+  "description": "Creator Editor design concept with four static VI/EN state fixtures and an authored, read-only sample-prose surface; no live feature or service is claimed.",
+  "design_pin": "cbb0f8bed808a888ae607bb31ba6343c182bf0b8",
+  "design_review_pin": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2",
+  "runtime_identity_pin": "a331ac110f19de63e9be6884d08db8c436054f50",
+  "screen_review_status": "R38-A/B correction implemented by CODE; DESIGN review pending; not self-accepted",
+  "references": [
+    {
+      "id": "w01-village",
+      "path": "../art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+    },
+    {
+      "id": "w12-creator",
+      "path": "../art-refresh-r34/concepts/w12-creator.jpg",
+      "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f"
+    },
+    {
+      "id": "w12b-friends-gifts",
+      "path": "../art-refresh-r34/concepts/w12b-friends-gifts.jpg",
+      "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0"
+    },
+    {
+      "id": "w13-tutor",
+      "path": "../art-refresh-r33/code/w13-tutor/concept.png",
+      "sha256": "611acdf2acd18110c30984f797da6a091bcac57adc99a119c28a06adcdd75d84"
+    }
+  ],
+  "reference_rationale": "W01 sets materials; W12 anchors the maker workshop; W12b is not reused as an editor or gift economy; W13 informs front-facing learning/code readability. The concept adds a blank editor surface, separate preview and version tray without claiming a live editor.",
+  "source_paths": [
+    "docs/ARENA_CREATOR_COMPETITION_BRIEF.md",
+    "docs/design/experience-blueprint/P06C_LINKED_JOURNEYS.md"
+  ],
+  "pinned_runtime_source_files": [],
+  "image": {
+    "path": "concept.png",
+    "format": "PNG",
+    "dimensions": [
+      928,
+      1152
+    ],
+    "png_color_type": 2,
+    "bytes": 2370490,
+    "sha256": "d37ff8e6e729400df919a0e7b94abb7800f2754ed481facea53eecc78955442e",
+    "origin": "Arena image generation; one standalone concept image",
+    "prompt_path": "prompt.txt",
+    "prompt_sha256": "e515cee6522931be8793ec6fd06b33bc88e471b4dd775e95d74c281fb074010b",
+    "prompt_record": "Exact generation prompt stored; no seed-perfect reproducibility is claimed.",
+    "alpha_layers_separated": false
+  },
+  "layout": {
+    "path": "layout.html",
+    "sha256": "fad21ed576a01b3b95a621cf4711574edf6ba8d8bf69caecdfc21049f2a11382",
+    "shared_css": "../shared.css",
+    "shared_js": "../shared.js",
+    "states": [
+      "draft_unsaved",
+      "test_error",
+      "saved_private",
+      "moderation_pending"
+    ],
+    "locales": [
+      "vi",
+      "en"
+    ],
+    "text_scales": [
+      "1",
+      "1.3",
+      "2"
+    ],
+    "viewport_targets": [
+      "390x844",
+      "360x640"
+    ],
+    "controls": "Localized static editor sample/preview controls only; editor is read-only, no interpreter/persistence/publishing; primary CTA disabled.",
+    "shared_css_sha256": "63df474b632a97c26d6ef02e52e6f5bf3da0e5d98de5b3955713162a64cf01d3",
+    "shared_js_sha256": "e2d80ee83952358c52ebcf20f41c21834cc610f99aa6e97028d0fb548b1d2bc7",
+    "batch_css": "../batch-b.css",
+    "batch_css_sha256": "9e2751863f7f166f6283803e7f090e70823c9ed33cbdf5426816021ae477106c",
+    "batch_js": "../batch-b.js",
+    "batch_js_sha256": "17f60911954e1129364672b3568e15de20599749658f811c390577458cf30099"
+  },
+  "runtime_ready": false,
+  "production_approved": false,
+  "animation_present": false,
+  "game_or_transaction_executed": false,
+  "checks": {
+    "static": "PASS",
+    "static_report": "../evidence/r38-static-checks.json",
+    "browser": "PASS",
+    "browser_report": "../evidence/r38-batch-b-browser-checks.json",
+    "browser_cases": 192,
+    "horizontal_overflow_cases": 0,
+    "computed_font_assertions": 1296,
+    "header_overlap_cases": 0,
+    "interactive_target_checks": 1728,
+    "footer_reachable_checks": 192,
+    "all_primary_ctas_disabled": true,
+    "all_images_decoded": true,
+    "product_bar_title_checks": 192,
+    "product_bar_pill_bounds_checks": 192,
+    "general_computed_font_assertions": 1152,
+    "editor_visible_content_checks": 48,
+    "editor_computed_font_assertions": 144,
+    "static_check_count": 129,
+    "static_passed": 129
+  },
+  "generation_input_refs": [
+    "w12-creator",
+    "w13-tutor"
+  ],
+  "editor_sample_provenance": {
+    "origin": "Three lines of fictional prose authored by CODE specifically as B02 design-fixture content; no source code or external lesson source.",
+    "vi": [
+      "Khu vườn nhỏ nằm cạnh ao.",
+      "Một hạt giống chờ dưới lớp đất.",
+      "Đèn giấy khẽ sáng lúc hoàng hôn."
+    ],
+    "en": [
+      "A small garden sits beside a pond.",
+      "One seed waits beneath the soil.",
+      "A paper lantern glows at dusk."
+    ],
+    "not_game_api_or_canon": true,
+    "not_lesson_answer_or_grader": true,
+    "executable": false,
+    "interpreter": false,
+    "persistence": false,
+    "publishing": false
+  }
+}

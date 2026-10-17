@@ -1,0 +1,116 @@
+{
+  "task": "PQC-018",
+  "scene_id": "b04-w10-pet-rest",
+  "batch": "B",
+  "status": "CONCEPT_AND_SCREEN_STUDY_NOT_REVIEWED",
+  "title": {
+    "vi": "Miu nghỉ ngơi",
+    "en": "Miu at rest"
+  },
+  "description": "Miu Rest design concept with 3 static VI/EN state fixtures; no live feature or service is claimed.",
+  "design_pin": "cbb0f8bed808a888ae607bb31ba6343c182bf0b8",
+  "design_review_pin": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2",
+  "runtime_identity_pin": "a331ac110f19de63e9be6884d08db8c436054f50",
+  "screen_review_status": "R38-A/B correction implemented by CODE; DESIGN review pending; not self-accepted",
+  "references": [
+    {
+      "id": "w01-village",
+      "path": "../art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+    },
+    {
+      "id": "w10-pet",
+      "path": "../art-refresh-r34/concepts/w10-pet.jpg",
+      "sha256": "52b623e516cbb1afd64c13c557d39018a9faaef6639a248b236f4e6d95f752d8"
+    }
+  ],
+  "reference_rationale": "W10 is the same orange Miu identity and garden/pergola reference; W01 anchors materials/light. The separate gray W10b shop kitten is excluded. One static resting pose only; unsupported-AI/model-removed are UI fixtures, not an AI feature.",
+  "source_paths": [
+    "docs/design/experience-blueprint/P06B_LIVING_HOMES_ISLANDS_PETS.md",
+    "docs/design/LIVING_WORLD_DIRECTION.md"
+  ],
+  "pinned_runtime_source_files": [],
+  "image": {
+    "path": "concept.png",
+    "format": "PNG",
+    "dimensions": [
+      848,
+      1264
+    ],
+    "png_color_type": 2,
+    "bytes": 2684317,
+    "sha256": "f0a7e8896ef8ba6298e79d4579f7c463bb7b57e109dcbcf24aa4e0e6c8a62317",
+    "origin": "Arena image generation; one standalone concept image",
+    "prompt_path": "prompt.txt",
+    "prompt_sha256": "97612f13d113e271b0f29e56d7cf231be3fc85ac1b40ad842d1b53c2158d55c4",
+    "prompt_record": "Exact generation prompt stored; no seed-perfect reproducibility is claimed.",
+    "alpha_layers_separated": false
+  },
+  "layout": {
+    "path": "layout.html",
+    "sha256": "88b11eb4ce300ea61a2810d8188bc15e1ca7fa50eac6caa3605fbf0d4ea982b4",
+    "shared_css": "../shared.css",
+    "shared_js": "../shared.js",
+    "states": [
+      "rest",
+      "ai_unsupported",
+      "model_removed_baseline"
+    ],
+    "locales": [
+      "vi",
+      "en"
+    ],
+    "text_scales": [
+      "1",
+      "1.3",
+      "2"
+    ],
+    "viewport_targets": [
+      "390x844",
+      "360x640"
+    ],
+    "controls": "Localized static editor sample/preview controls only; editor is read-only, no interpreter/persistence/publishing; primary CTA disabled.",
+    "shared_css_sha256": "63df474b632a97c26d6ef02e52e6f5bf3da0e5d98de5b3955713162a64cf01d3",
+    "shared_js_sha256": "e2d80ee83952358c52ebcf20f41c21834cc610f99aa6e97028d0fb548b1d2bc7",
+    "batch_css": "../batch-b.css",
+    "batch_css_sha256": "9e2751863f7f166f6283803e7f090e70823c9ed33cbdf5426816021ae477106c",
+    "batch_js": "../batch-b.js",
+    "batch_js_sha256": "17f60911954e1129364672b3568e15de20599749658f811c390577458cf30099"
+  },
+  "runtime_ready": false,
+  "production_approved": false,
+  "animation_present": false,
+  "game_or_transaction_executed": false,
+  "checks": {
+    "static": "PASS",
+    "static_report": "../evidence/r38-static-checks.json",
+    "browser": "PASS",
+    "browser_report": "../evidence/r38-batch-b-browser-checks.json",
+    "browser_cases": 192,
+    "horizontal_overflow_cases": 0,
+    "computed_font_assertions": 1296,
+    "header_overlap_cases": 0,
+    "interactive_target_checks": 1728,
+    "footer_reachable_checks": 192,
+    "all_primary_ctas_disabled": true,
+    "all_images_decoded": true,
+    "product_bar_title_checks": 192,
+    "product_bar_pill_bounds_checks": 192,
+    "general_computed_font_assertions": 1152,
+    "editor_visible_content_checks": 0,
+    "editor_computed_font_assertions": 0,
+    "static_check_count": 129,
+    "static_passed": 129
+  },
+  "excluded_references": [
+    {
+      "id": "w10b-pet-shop",
+      "path": "../art-refresh-r34/concepts/w10b-pet-shop.jpg",
+      "sha256": "0106104a69095e63fe54124abaeb4276c8bc0e5c98330ed16db27122f6176a89",
+      "reason": "Explicitly excluded; gray shop kitten is not orange Miu."
+    }
+  ],
+  "generation_input_refs": [
+    "w10-pet"
+  ]
+}

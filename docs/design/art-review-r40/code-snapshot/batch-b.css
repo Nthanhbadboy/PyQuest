@@ -1,0 +1,50 @@
+/* B01: a real community nook with the friend/recipient list as a separate front-facing board. */
+.friends-product { background: #d6c59f; }
+.friends-scene { height: 250px; overflow: hidden; border-bottom: 3px solid #70482f; }
+.friends-scene img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; }
+.friends-board { position: relative; margin: -18px 8px 9px; padding: 10px; border: 2px solid #70482f; border-radius: 14px; background: #fff8e8; box-shadow: 0 5px 0 rgba(75,48,28,.2); }
+.friends-board .product-copy { padding: 0 2px 3px; }
+.friend-roster { display: grid; gap: 6px; margin: 8px 0; }
+.friend-row { min-height: 48px; display: flex; align-items: center; gap: 8px; padding: 7px 9px; border: 1px solid #d9c7a5; border-radius: 10px; background: #fffdf7; font-size: .82rem; font-weight: 800; overflow-wrap: anywhere; }
+.friend-mark { flex: 0 0 28px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: #286d73; font-size: .72rem; }
+
+/* B02: a tangible editor, preview surface and separate version tray within a creator workshop. */
+.creator-product { background: #d8c29a; }
+.creator-scene { height: 220px; overflow: hidden; border-bottom: 3px solid #70482f; }
+.creator-scene img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 43%; }
+.creator-workspace { margin: -1px 8px 9px; padding: 9px; border: 2px solid #70482f; border-radius: 6px 6px 14px 14px; background: #f4ead3; box-shadow: 0 5px 0 rgba(61,40,23,.2); }
+.creator-editor { margin-bottom: 9px; padding: 9px; border: 2px solid #355c59; border-radius: 10px; background: #fffdf7; box-shadow: inset 0 0 0 2px #d8e9e3; }
+.creator-editor-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 5px 8px; color: #183c46; }
+.creator-editor-heading strong { font-size: .88rem; font-weight: 900; }
+.creator-editor-heading > span { padding: 3px 7px; border: 1px solid #829e98; border-radius: 999px; color: #245d57; background: #e4f0de; font-size: .68rem; font-weight: 900; overflow-wrap: anywhere; }
+.creator-editor-provenance { margin: 4px 0 7px; color: #4d6d70; font-size: .72rem; font-weight: 800; overflow-wrap: anywhere; }
+.creator-editor-surface { min-height: 112px; padding: 8px 7px; border: 1px solid #829e98; border-radius: 7px; color: #fff8e8; background: #183c46; font-family: 'PyQuest Mono', monospace; font-size: .78rem; line-height: 1.6; }
+.creator-editor-surface:focus-visible { outline: 3px solid #087d8b; outline-offset: 2px; }
+.creator-editor-line { display: grid; grid-template-columns: 2ch minmax(0,1fr); gap: 8px; min-height: 1.6em; overflow-wrap: anywhere; }
+.creator-line-number { color: #b3d6c3; text-align: right; user-select: none; }
+.creator-editor-line > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.creator-preview { min-height: 72px; margin-bottom: 8px; padding: 8px; border: 2px dashed #7e958b; border-radius: 9px; background: repeating-linear-gradient(135deg,#e1ece0 0,#e1ece0 14px,#d4e3d8 15px,#d4e3d8 28px); }
+.creator-preview strong { display: block; margin-bottom: 5px; font-size: .78rem; }
+.preview-blocks { display: flex; flex-wrap: wrap; gap: 5px; }
+.preview-blocks span { min-width: 38px; height: 24px; border: 1px solid #9c805b; border-radius: 5px; background: #fff8e8; }
+.version-tray { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; padding: 8px; border: 2px solid #c0a278; border-radius: 9px; background: #fff8e8; }
+.version-tray > span:first-child { flex: 0 0 100%; color: #4d6d70; font-size: .72rem; font-weight: 900; }
+.version-tray span:not(:first-child) { padding: 4px 7px; border: 1px solid #d2bd98; border-radius: 7px; background: #e7dcc3; font-size: .72rem; font-weight: 800; overflow-wrap: anywhere; }
+.creator-workspace .product-copy { padding: 4px 1px 1px; }
+
+/* B03: uninterrupted solid ground plane and a clearly connected real doorway. */
+.room-product { background: #d5c09a; }
+.room-scene { overflow: hidden; border-bottom: 3px solid #70482f; }
+.room-scene img { display: block; width: 100%; height: auto; }
+.room-threshold { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px; color: #fff8e8; background: #355c59; }
+.room-threshold span { padding: 4px 8px; border: 1px solid rgba(255,255,255,.65); border-radius: 999px; font-size: .68rem; font-weight: 900; }
+.room-copy { padding: 10px; }
+.room-copy .product-copy { padding: 0; }
+
+/* B04: one still resting scene, preserving Miu's W10 identity. */
+.pet-product { background: #e6d5ac; }
+.pet-scene { overflow: hidden; border-bottom: 3px solid #70482f; }
+.pet-scene img { display: block; width: 100%; height: auto; }
+.pet-plaque { position: relative; margin: -18px 9px 9px; padding: 10px; border: 2px solid #986340; border-radius: 14px; background: rgba(255,248,232,.97); box-shadow: 0 5px 0 rgba(75,48,28,.2); }
+.pet-plaque .product-copy { padding: 0; }
+.pet-status { display: inline-flex; margin-bottom: 7px; padding: 5px 9px; border: 1px solid #9bbda8; border-radius: 999px; color: #245d57; background: #e4f0de; font-size: .7rem; font-weight: 900; }

@@ -32,24 +32,21 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision38**, review exactCODEab0ae35 +0990fbc.
-Đọc `docs/design/coordination/reviews/PQD-003-r38.md`,
-`docs/implementation/coordination/tasks/PQC-018.md` revision3 và
-`docs/design/art-review-r38/README.md` từ DESIGN SHA mới.
+Task hiện tại là **PQD-003 revision40**, review exactCODE4fe3b7d.
+Đọc `docs/design/coordination/reviews/PQD-003-r40.md`,
+`docs/implementation/coordination/tasks/PQC-018.md` revision4 và
+`docs/design/art-review-r40/README.md` từ DESIGN SHA mới.
 
-**Giữ cả9concept; không vẽ lại hoặc intake16ảnh lại. BatchB đã giao.** R36font/back/
-sourcecopy đã xác minh; còn đúng2findings trong một correctioncommit `[skip ci]`:
-- R38-A: sharedproductbar wrap/stack để badge không ép title thành cột chữ ởEN2×.
-  A01not_following360 vàA03first_visit390/360; innerwidth32.75/10.20/0px.
-- R38-B: Creator B02 cần editor read-only/mock có nội dung front-facing. Hiện chỉ
-  labelEditor,preview3ôtrống vàversiontray. Không interpreter/gameAPI/grader/persistence.
+**R38-A/B đã CLOSED;018 REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE.**
+Independent432PASS,3,204fontassertions,48B02content/144editorfonts;9PNG giữ nguyên.
+Không còn correction018, không redo/intake/ACK-only, không port9màn vàoFlutter.
+B02 được giữ như read-only prose mock có provenance, không authoring/runtime.
+Không ghi đè snapshot4fe3b7d củaDESIGN; giữ receipt/archive packageCODE.
+W08r37 vàW14r39 làlaneDESIGN riêng, không giaoCODEđổi ref hoặc làmtravel/achievements.
 
-Regression432case toàngói sau sharedCSS, thêmeditor visible-content/computedfont
-checks48caseB02. Giữ originals và9PNG, updatehashes/evidence/task actualcounts.
-Không ghi đè snapshot0990fbc trongDESIGN; CODE sửa package làm việc của chính mình.
-Allowlist018giữ code/**+own018; khôngACK-only,khôngpopstash,khôngapp/deps/CI/backend.
-DESIGN W08r37 làlane riêng, khôngđổi refs/brief củaCODE haygiaoCODElàmtravel.
-Sáuscreenstudiesgiữởmứcconcept/layout; tấtcảchưaproduction/runtime. Đọc reviewđầyđủ.
+Tiếp tục work order **011 revision2/R34-A/B/C/D** đã có, commitriêng theoallowlist.
+Nếu thiếu SDK/gate, báo rõ chưa chạy; không dùng artPASS để tựaccept011, không tự
+đổiSDK/deps/CI hoặc mở task khác. Không có yêu cầu user quyết định lại scope này.
 
 **011 CHANGES_REQUESTED @a331ac1** vẫn hiệu lực: CI117462432865failanalyze8issues,
 suites skipped. SửaR34-A imports/compile/pumpAndSettle; BSetcontent equalitycả2;

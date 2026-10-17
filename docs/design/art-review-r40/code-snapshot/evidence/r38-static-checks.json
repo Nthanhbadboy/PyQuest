@@ -1,0 +1,671 @@
+{
+  "task": "PQC-018 R38-A/B correction static provenance and structure",
+  "review_pin": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2",
+  "baseline_commit": "0990fbcbf6045bd64244239e36ccbca8c8dc394b",
+  "check_count": 129,
+  "passed": 129,
+  "failed": 0,
+  "status": "PASS",
+  "browser_receipts": {
+    "A": {
+      "cases": 240,
+      "computed_font_assertions": 1499,
+      "captures": 19
+    },
+    "B": {
+      "cases": 192,
+      "computed_font_assertions": 1296,
+      "editor_visible_content_checks": 48,
+      "editor_computed_font_assertions": 144,
+      "captures": 20
+    }
+  },
+  "checks": [
+    {
+      "check": "pre-R38 archive baseline",
+      "status": "PASS",
+      "detail": "0990fbcbf6045bd64244239e36ccbca8c8dc394b"
+    },
+    {
+      "check": "pre-R38 archive records",
+      "status": "PASS",
+      "detail": "36"
+    },
+    {
+      "check": "original bytes/hash archived: shared.css",
+      "status": "PASS",
+      "detail": "47bd9c66e0749f430655befa64de7fe09168205465479e04a1dafa02912cfc22"
+    },
+    {
+      "check": "original bytes/hash archived: batch-b.css",
+      "status": "PASS",
+      "detail": "ed5d1aa3b538ca30c52683ad4895e89c376b1988ad3d94b519debb442374a7a9"
+    },
+    {
+      "check": "original bytes/hash archived: batch-b.js",
+      "status": "PASS",
+      "detail": "e372ee2a76c98448b52bc24c8cacaf57b3036be5e399da9280e7af188e48b20d"
+    },
+    {
+      "check": "original bytes/hash archived: b02-w12-creator-editor/layout.html",
+      "status": "PASS",
+      "detail": "5960994cc9dfd66219c5c5404d4bdad4c00a0c0abe3535ef1bfd458ecebfd055"
+    },
+    {
+      "check": "original bytes/hash archived: b02-w12-creator-editor/manifest.json",
+      "status": "PASS",
+      "detail": "ab41753d1d58480869d78550a42c2475ede6730f8575cb40f9b532e13f8ade9b"
+    },
+    {
+      "check": "original bytes/hash archived: b02-w12-creator-editor/README.md",
+      "status": "PASS",
+      "detail": "4294dcb7a787494c39069b5d505812417517a7f430d211f2a2ccf0c300ee83fb"
+    },
+    {
+      "check": "original bytes/hash archived: README.md",
+      "status": "PASS",
+      "detail": "d15d6ea348981bb14ea52f3a0519509ba23546172251953030a607ddeecedcdc"
+    },
+    {
+      "check": "original bytes/hash archived: index.html",
+      "status": "PASS",
+      "detail": "2e7c443203d09fbe9fb220bfe410f968b6891abd95d9097e7fb36d3ce97ae6e8"
+    },
+    {
+      "check": "original bytes/hash archived: reviewed-inputs.json",
+      "status": "PASS",
+      "detail": "3b2945f0759f1fb0390a58be0e555905c9c02c2a00a614a067937556c07e9316"
+    },
+    {
+      "check": "original bytes/hash archived: evidence/BATCH_B_CHECKS.md",
+      "status": "PASS",
+      "detail": "f1af6b8ef0c9138f746c5ee2655453a00071b40f61bfa7b36fe5db8f3d48ba52"
+    },
+    {
+      "check": "original bytes/hash archived: evidence/batch_b_browser_check.cjs",
+      "status": "PASS",
+      "detail": "d0d98c87e1a98acf6e3d207a3d6017d91004512cbd92bf4542dcdfa43799c3a9"
+    },
+    {
+      "check": "original bytes/hash archived: evidence/batch_b_static_check.py",
+      "status": "PASS",
+      "detail": "6b222b01843fbf7d907ef9fe19cf961c26b5af1648c31d96cd9b0f638ee3dd2a"
+    },
+    {
+      "check": "original bytes/hash archived: evidence/batch-b-browser-checks.json",
+      "status": "PASS",
+      "detail": "34d560a0666b5e59108e63313e290164afc17b9d6eef0664a6feca4ec53481e8"
+    },
+    {
+      "check": "original bytes/hash archived: evidence/batch-b-static-checks.json",
+      "status": "PASS",
+      "detail": "a134c29a122ead0908172c8af5b043f20179732e4c444f2fe25c46d6fb4713f3"
+    },
+    {
+      "check": "original bytes/hash archived: docs/implementation/coordination/tasks/PQC-018.md",
+      "status": "PASS",
+      "detail": "5c129b73a19b6f469f092b418fdc2755f388f0b2d666dcc4d566f2c3ca88326e"
+    },
+    {
+      "check": "original bytes/hash archived: a01-w04-journal/manifest.json",
+      "status": "PASS",
+      "detail": "d1ae66696b56fceac6009fe1ef8cec4354727031b78e65d253945a66b92535ed"
+    },
+    {
+      "check": "original bytes/hash archived: a02-shared-settings/manifest.json",
+      "status": "PASS",
+      "detail": "47c4515caa4f006ecc014331f140200f536981ec610e93bedc387921820fae7e"
+    },
+    {
+      "check": "original bytes/hash archived: a03-shared-welcome/manifest.json",
+      "status": "PASS",
+      "detail": "6458685dc4802057d1266c2d9100da20bfc0abb89263be6c716dd22eb63a5dec"
+    },
+    {
+      "check": "original bytes/hash archived: a04-w05-catch-stars/manifest.json",
+      "status": "PASS",
+      "detail": "8b05119fe44f6142633dd668b7270f154c27a482cbd511b6e7cb40fbbc662b70"
+    },
+    {
+      "check": "original bytes/hash archived: a05-w05-bug-hunter/manifest.json",
+      "status": "PASS",
+      "detail": "787c169fc97ec3d82822f29797c75f601fb6c0646f158860140b6bb0133f8c51"
+    },
+    {
+      "check": "original bytes/hash archived: b01-w09-friends-invites/manifest.json",
+      "status": "PASS",
+      "detail": "baa97f5d050d3ff5f8cd407a921418583597f9aeabd03429b5f730188e1b0281"
+    },
+    {
+      "check": "original bytes/hash archived: b02-w12-creator-editor/manifest.json",
+      "status": "PASS",
+      "detail": "ab41753d1d58480869d78550a42c2475ede6730f8575cb40f9b532e13f8ade9b"
+    },
+    {
+      "check": "original bytes/hash archived: b03-w07-built-room/manifest.json",
+      "status": "PASS",
+      "detail": "6024d484e764f1553c6eea773cb282c02dcf3e29b4594be11f4edaab93a9ece7"
+    },
+    {
+      "check": "original bytes/hash archived: b04-w10-pet-rest/manifest.json",
+      "status": "PASS",
+      "detail": "7391b1591b746cf446b399ea4783565c1b4e658bc76f34610bb49e6002709656"
+    },
+    {
+      "check": "original bytes/hash archived: a01-w04-journal/concept.png",
+      "status": "PASS",
+      "detail": "2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6"
+    },
+    {
+      "check": "original bytes/hash archived: a02-shared-settings/concept.png",
+      "status": "PASS",
+      "detail": "99033a84778a4f9cd8a9a2c2b247ae4ab5a81f515864ed3f22051f8033de0219"
+    },
+    {
+      "check": "original bytes/hash archived: a03-shared-welcome/concept.png",
+      "status": "PASS",
+      "detail": "35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb"
+    },
+    {
+      "check": "original bytes/hash archived: a04-w05-catch-stars/concept.png",
+      "status": "PASS",
+      "detail": "1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718"
+    },
+    {
+      "check": "original bytes/hash archived: a05-w05-bug-hunter/concept.png",
+      "status": "PASS",
+      "detail": "65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073"
+    },
+    {
+      "check": "original bytes/hash archived: b01-w09-friends-invites/concept.png",
+      "status": "PASS",
+      "detail": "769336b24efdbc7561427030fa636e8301a3eee15431d1882554ec069f6b0ece"
+    },
+    {
+      "check": "original bytes/hash archived: b02-w12-creator-editor/concept.png",
+      "status": "PASS",
+      "detail": "d37ff8e6e729400df919a0e7b94abb7800f2754ed481facea53eecc78955442e"
+    },
+    {
+      "check": "original bytes/hash archived: b03-w07-built-room/concept.png",
+      "status": "PASS",
+      "detail": "88f1e9c4ec20c070a35a00f0430b61837ce13a49f8fd2f3b430ef8ee4df3b63d"
+    },
+    {
+      "check": "original bytes/hash archived: b04-w10-pet-rest/concept.png",
+      "status": "PASS",
+      "detail": "f0a7e8896ef8ba6298e79d4579f7c463bb7b57e109dcbcf24aa4e0e6c8a62317"
+    },
+    {
+      "check": "original bytes/hash archived: b01-w09-friends-invites/README.md",
+      "status": "PASS",
+      "detail": "54315a859dd5da90888d3ec9d6d6816d4ee63781b9474319bd86622a9f5433ea"
+    },
+    {
+      "check": "original bytes/hash archived: b03-w07-built-room/README.md",
+      "status": "PASS",
+      "detail": "c4627272c3ac1c131d698db229211245d47e7f26dbc4281989be1a99f80de56f"
+    },
+    {
+      "check": "original bytes/hash archived: b04-w10-pet-rest/README.md",
+      "status": "PASS",
+      "detail": "d4f535fd566be46850b960c2875ded37df72103deadf37a52ac6d992b221a3c7"
+    },
+    {
+      "check": "R38-A product bar wraps",
+      "status": "PASS",
+      "detail": "title occupies a full row; wrapping remains enabled"
+    },
+    {
+      "check": "R38-A title retains full scale and no clipping",
+      "status": "PASS",
+      "detail": "shared title keeps baseline font; no hide/clip/truncate rule"
+    },
+    {
+      "check": "R38-A pill stays bounded",
+      "status": "PASS",
+      "detail": "pill can wrap and cannot exceed available bar width"
+    },
+    {
+      "check": "R38-B distinct editor styles",
+      "status": "PASS",
+      "detail": "editor, preview and version tray have independent visual rules"
+    },
+    {
+      "check": "R38-B no live editor or runtime",
+      "status": "PASS",
+      "detail": "read-only mock; no editor execution or publishing behavior"
+    },
+    {
+      "check": "A: R38 browser receipt pin/status",
+      "status": "PASS",
+      "detail": "pin=3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2 status=PASS"
+    },
+    {
+      "check": "A: full configuration coverage",
+      "status": "PASS",
+      "detail": "240"
+    },
+    {
+      "check": "A: computed font assertions",
+      "status": "PASS",
+      "detail": "1499"
+    },
+    {
+      "check": "A: title inner-text/bounds checks",
+      "status": "PASS",
+      "detail": "title=240, pill=240"
+    },
+    {
+      "check": "A: no overflow/header overlap/errors",
+      "status": "PASS",
+      "detail": "zero overflow/overlap, page errors and failed requests"
+    },
+    {
+      "check": "A: disabled CTAs and captures",
+      "status": "PASS",
+      "detail": "disabled=True captures=19"
+    },
+    {
+      "check": "A: screenshot files",
+      "status": "PASS",
+      "detail": "19"
+    },
+    {
+      "check": "B: R38 browser receipt pin/status",
+      "status": "PASS",
+      "detail": "pin=3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2 status=PASS"
+    },
+    {
+      "check": "B: full configuration coverage",
+      "status": "PASS",
+      "detail": "192"
+    },
+    {
+      "check": "B: computed font assertions",
+      "status": "PASS",
+      "detail": "1296"
+    },
+    {
+      "check": "B: title inner-text/bounds checks",
+      "status": "PASS",
+      "detail": "title=192, pill=192"
+    },
+    {
+      "check": "B: no overflow/header overlap/errors",
+      "status": "PASS",
+      "detail": "zero overflow/overlap, page errors and failed requests"
+    },
+    {
+      "check": "B: disabled CTAs and captures",
+      "status": "PASS",
+      "detail": "disabled=True captures=20"
+    },
+    {
+      "check": "B: screenshot files",
+      "status": "PASS",
+      "detail": "20"
+    },
+    {
+      "check": "B02: all 48 editor content checks",
+      "status": "PASS",
+      "detail": "48"
+    },
+    {
+      "check": "B02: computed fonts across 48 cases",
+      "status": "PASS",
+      "detail": "144"
+    },
+    {
+      "check": "B02: three localized sample literals",
+      "status": "PASS",
+      "detail": "VI and EN prose literals appear in the static fixture"
+    },
+    {
+      "check": "a01-w04-journal: manifest/review pin",
+      "status": "PASS",
+      "detail": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2"
+    },
+    {
+      "check": "a01-w04-journal: layout and shared hashes",
+      "status": "PASS",
+      "detail": "live layout/CSS/JS hashes match"
+    },
+    {
+      "check": "a01-w04-journal: image original preserved",
+      "status": "PASS",
+      "detail": "2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6"
+    },
+    {
+      "check": "a01-w04-journal: image dimensions unchanged",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "a01-w04-journal: image matches pre-R38 archive",
+      "status": "PASS",
+      "detail": "2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6"
+    },
+    {
+      "check": "a01-w04-journal: manifest links current evidence",
+      "status": "PASS",
+      "detail": "../evidence/r38a-browser-checks.json"
+    },
+    {
+      "check": "a01-w04-journal: no production acceptance",
+      "status": "PASS",
+      "detail": "static-only fixture and CTA remains disabled"
+    },
+    {
+      "check": "a02-shared-settings: manifest/review pin",
+      "status": "PASS",
+      "detail": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2"
+    },
+    {
+      "check": "a02-shared-settings: layout and shared hashes",
+      "status": "PASS",
+      "detail": "live layout/CSS/JS hashes match"
+    },
+    {
+      "check": "a02-shared-settings: image original preserved",
+      "status": "PASS",
+      "detail": "99033a84778a4f9cd8a9a2c2b247ae4ab5a81f515864ed3f22051f8033de0219"
+    },
+    {
+      "check": "a02-shared-settings: image dimensions unchanged",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "a02-shared-settings: image matches pre-R38 archive",
+      "status": "PASS",
+      "detail": "99033a84778a4f9cd8a9a2c2b247ae4ab5a81f515864ed3f22051f8033de0219"
+    },
+    {
+      "check": "a02-shared-settings: manifest links current evidence",
+      "status": "PASS",
+      "detail": "../evidence/r38a-browser-checks.json"
+    },
+    {
+      "check": "a02-shared-settings: no production acceptance",
+      "status": "PASS",
+      "detail": "static-only fixture and CTA remains disabled"
+    },
+    {
+      "check": "a03-shared-welcome: manifest/review pin",
+      "status": "PASS",
+      "detail": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2"
+    },
+    {
+      "check": "a03-shared-welcome: layout and shared hashes",
+      "status": "PASS",
+      "detail": "live layout/CSS/JS hashes match"
+    },
+    {
+      "check": "a03-shared-welcome: image original preserved",
+      "status": "PASS",
+      "detail": "35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb"
+    },
+    {
+      "check": "a03-shared-welcome: image dimensions unchanged",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "a03-shared-welcome: image matches pre-R38 archive",
+      "status": "PASS",
+      "detail": "35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb"
+    },
+    {
+      "check": "a03-shared-welcome: manifest links current evidence",
+      "status": "PASS",
+      "detail": "../evidence/r38a-browser-checks.json"
+    },
+    {
+      "check": "a03-shared-welcome: no production acceptance",
+      "status": "PASS",
+      "detail": "static-only fixture and CTA remains disabled"
+    },
+    {
+      "check": "a04-w05-catch-stars: manifest/review pin",
+      "status": "PASS",
+      "detail": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2"
+    },
+    {
+      "check": "a04-w05-catch-stars: layout and shared hashes",
+      "status": "PASS",
+      "detail": "live layout/CSS/JS hashes match"
+    },
+    {
+      "check": "a04-w05-catch-stars: image original preserved",
+      "status": "PASS",
+      "detail": "1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718"
+    },
+    {
+      "check": "a04-w05-catch-stars: image dimensions unchanged",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "a04-w05-catch-stars: image matches pre-R38 archive",
+      "status": "PASS",
+      "detail": "1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718"
+    },
+    {
+      "check": "a04-w05-catch-stars: manifest links current evidence",
+      "status": "PASS",
+      "detail": "../evidence/r38a-browser-checks.json"
+    },
+    {
+      "check": "a04-w05-catch-stars: no production acceptance",
+      "status": "PASS",
+      "detail": "static-only fixture and CTA remains disabled"
+    },
+    {
+      "check": "a05-w05-bug-hunter: manifest/review pin",
+      "status": "PASS",
+      "detail": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2"
+    },
+    {
+      "check": "a05-w05-bug-hunter: layout and shared hashes",
+      "status": "PASS",
+      "detail": "live layout/CSS/JS hashes match"
+    },
+    {
+      "check": "a05-w05-bug-hunter: image original preserved",
+      "status": "PASS",
+      "detail": "65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073"
+    },
+    {
+      "check": "a05-w05-bug-hunter: image dimensions unchanged",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "a05-w05-bug-hunter: image matches pre-R38 archive",
+      "status": "PASS",
+      "detail": "65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073"
+    },
+    {
+      "check": "a05-w05-bug-hunter: manifest links current evidence",
+      "status": "PASS",
+      "detail": "../evidence/r38a-browser-checks.json"
+    },
+    {
+      "check": "a05-w05-bug-hunter: no production acceptance",
+      "status": "PASS",
+      "detail": "static-only fixture and CTA remains disabled"
+    },
+    {
+      "check": "b01-w09-friends-invites: manifest/review pin",
+      "status": "PASS",
+      "detail": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2"
+    },
+    {
+      "check": "b01-w09-friends-invites: layout and shared hashes",
+      "status": "PASS",
+      "detail": "live layout/CSS/JS hashes match"
+    },
+    {
+      "check": "b01-w09-friends-invites: batch asset hashes",
+      "status": "PASS",
+      "detail": "batch-b.css/js hashes match"
+    },
+    {
+      "check": "b01-w09-friends-invites: image original preserved",
+      "status": "PASS",
+      "detail": "769336b24efdbc7561427030fa636e8301a3eee15431d1882554ec069f6b0ece"
+    },
+    {
+      "check": "b01-w09-friends-invites: image dimensions unchanged",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "b01-w09-friends-invites: image matches pre-R38 archive",
+      "status": "PASS",
+      "detail": "769336b24efdbc7561427030fa636e8301a3eee15431d1882554ec069f6b0ece"
+    },
+    {
+      "check": "b01-w09-friends-invites: manifest links current evidence",
+      "status": "PASS",
+      "detail": "../evidence/r38-batch-b-browser-checks.json"
+    },
+    {
+      "check": "b01-w09-friends-invites: no production acceptance",
+      "status": "PASS",
+      "detail": "static-only fixture and CTA remains disabled"
+    },
+    {
+      "check": "b02-w12-creator-editor: manifest/review pin",
+      "status": "PASS",
+      "detail": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2"
+    },
+    {
+      "check": "b02-w12-creator-editor: layout and shared hashes",
+      "status": "PASS",
+      "detail": "live layout/CSS/JS hashes match"
+    },
+    {
+      "check": "b02-w12-creator-editor: batch asset hashes",
+      "status": "PASS",
+      "detail": "batch-b.css/js hashes match"
+    },
+    {
+      "check": "b02-w12-creator-editor: image original preserved",
+      "status": "PASS",
+      "detail": "d37ff8e6e729400df919a0e7b94abb7800f2754ed481facea53eecc78955442e"
+    },
+    {
+      "check": "b02-w12-creator-editor: image dimensions unchanged",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "b02-w12-creator-editor: image matches pre-R38 archive",
+      "status": "PASS",
+      "detail": "d37ff8e6e729400df919a0e7b94abb7800f2754ed481facea53eecc78955442e"
+    },
+    {
+      "check": "b02-w12-creator-editor: manifest links current evidence",
+      "status": "PASS",
+      "detail": "../evidence/r38-batch-b-browser-checks.json"
+    },
+    {
+      "check": "b02-w12-creator-editor: no production acceptance",
+      "status": "PASS",
+      "detail": "static-only fixture and CTA remains disabled"
+    },
+    {
+      "check": "b03-w07-built-room: manifest/review pin",
+      "status": "PASS",
+      "detail": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2"
+    },
+    {
+      "check": "b03-w07-built-room: layout and shared hashes",
+      "status": "PASS",
+      "detail": "live layout/CSS/JS hashes match"
+    },
+    {
+      "check": "b03-w07-built-room: batch asset hashes",
+      "status": "PASS",
+      "detail": "batch-b.css/js hashes match"
+    },
+    {
+      "check": "b03-w07-built-room: image original preserved",
+      "status": "PASS",
+      "detail": "88f1e9c4ec20c070a35a00f0430b61837ce13a49f8fd2f3b430ef8ee4df3b63d"
+    },
+    {
+      "check": "b03-w07-built-room: image dimensions unchanged",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "b03-w07-built-room: image matches pre-R38 archive",
+      "status": "PASS",
+      "detail": "88f1e9c4ec20c070a35a00f0430b61837ce13a49f8fd2f3b430ef8ee4df3b63d"
+    },
+    {
+      "check": "b03-w07-built-room: manifest links current evidence",
+      "status": "PASS",
+      "detail": "../evidence/r38-batch-b-browser-checks.json"
+    },
+    {
+      "check": "b03-w07-built-room: no production acceptance",
+      "status": "PASS",
+      "detail": "static-only fixture and CTA remains disabled"
+    },
+    {
+      "check": "b04-w10-pet-rest: manifest/review pin",
+      "status": "PASS",
+      "detail": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2"
+    },
+    {
+      "check": "b04-w10-pet-rest: layout and shared hashes",
+      "status": "PASS",
+      "detail": "live layout/CSS/JS hashes match"
+    },
+    {
+      "check": "b04-w10-pet-rest: batch asset hashes",
+      "status": "PASS",
+      "detail": "batch-b.css/js hashes match"
+    },
+    {
+      "check": "b04-w10-pet-rest: image original preserved",
+      "status": "PASS",
+      "detail": "f0a7e8896ef8ba6298e79d4579f7c463bb7b57e109dcbcf24aa4e0e6c8a62317"
+    },
+    {
+      "check": "b04-w10-pet-rest: image dimensions unchanged",
+      "status": "PASS",
+      "detail": "[848, 1264]"
+    },
+    {
+      "check": "b04-w10-pet-rest: image matches pre-R38 archive",
+      "status": "PASS",
+      "detail": "f0a7e8896ef8ba6298e79d4579f7c463bb7b57e109dcbcf24aa4e0e6c8a62317"
+    },
+    {
+      "check": "b04-w10-pet-rest: manifest links current evidence",
+      "status": "PASS",
+      "detail": "../evidence/r38-batch-b-browser-checks.json"
+    },
+    {
+      "check": "b04-w10-pet-rest: no production acceptance",
+      "status": "PASS",
+      "detail": "static-only fixture and CTA remains disabled"
+    },
+    {
+      "check": "B02: explicit sample provenance",
+      "status": "PASS",
+      "detail": "Three lines of fictional prose authored by CODE specifically as B02 design-fixture content; no source code or external lesson source."
+    },
+    {
+      "check": "B02: no interpreter/persistence/publishing",
+      "status": "PASS",
+      "detail": "{'origin': 'Three lines of fictional prose authored by CODE specifically as B02 design-fixture content; no source code or external lesson source.', 'vi': ['Khu vườn nhỏ nằm cạnh ao.', 'Một hạt giống chờ dưới lớp đất.', 'Đèn giấy khẽ sáng lúc hoàng hôn.'], 'en': ['A small garden sits beside a pond.', 'One seed waits beneath the soil.', 'A paper lantern glows at dusk.'], 'not_game_api_or_canon': True, 'not_lesson_answer_or_grader': True, 'executable': False, 'interpreter': False, 'persistence': False, 'publishing': False}"
+    }
+  ],
+  "limits": "Static hashes/provenance/structure plus linked headless HTML receipts only; no DESIGN self-acceptance, Flutter/device/accessibility certification or production validation."
+}
