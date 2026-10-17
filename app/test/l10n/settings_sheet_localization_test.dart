@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' show CheckedState, Tristate;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +16,6 @@ import 'package:pyquest/core/settings_service.dart';
 import 'package:pyquest/data/database/app_database.dart';
 import 'package:pyquest/data/repositories/state_repositories.dart';
 import 'package:pyquest/l10n/generated/app_localizations.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../test_helpers.dart';
@@ -766,8 +766,9 @@ void _expectOneSelectedRadio(WidgetTester tester, LocalePreference expected) {
     final data = tester
         .getSemantics(find.byKey(ValueKey<String>('language_${preference.storageValue}')))
         .getSemanticsData();
-    expect(data.hasCheckedState, isTrue, reason: '${preference.storageValue} row must expose radio state');
-    checked[preference] = data.isChecked;
+    expect(data.flagsCollection.isInMutuallyExclusiveGroup, isTrue);
+    expect(data.flagsCollection.isChecked, isNot(CheckedState.none));
+    checked[preference] = data.flagsCollection.isChecked == CheckedState.isTrue;
   }
   expect(checked.values.where((bool value) => value), hasLength(1));
   expect(checked[expected], isTrue);
@@ -781,8 +782,8 @@ void _expectToggle(
 }) {
   final data = tester.getSemantics(find.byKey(ValueKey<String>(key))).getSemanticsData();
   expect(data.label, label);
-  expect(data.hasToggledState, isTrue);
-  expect(data.isToggled, isToggled);
+  expect(data.flagsCollection.isToggled, isNot(Tristate.none));
+  expect(data.flagsCollection.isToggled == Tristate.isTrue, isToggled);
 }
 
 const List<String> _settingsViCopy = <String>[
