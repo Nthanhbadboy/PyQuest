@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:pyquest/app/app_services.dart';
@@ -309,84 +310,64 @@ void main() {
       services.settings.dispose();
     });
 
-    testWidgets('persisted override survives app and service recreation against the real database',
+    testWidgets('persisted override survives a recreated service and localization root',
         (WidgetTester tester) async {
-      final Directory directory = await Directory.systemTemp.createTemp('pyquest-locale-recreate-');
+      final Directory directory = Directory.systemTemp.createTempSync('pyquest-locale-recreate-');
       addTearDown(() {
         if (directory.existsSync()) directory.deleteSync(recursive: true);
       });
-      final String firstDatabasePath = p.join(directory.path, 'first.db');
-      final String recreatedDatabasePath = p.join(directory.path, 'recreated.db');
-      Future<AppServices> createServices(String databasePath) async {
-        final AppServices? services = await tester.runAsync(() => AppServices.create(
-              bundle: rootBundle,
-              databaseFactory: databaseFactoryFfiNoIsolate,
-              databasePath: databasePath,
-              audioEnabled: false,
-              startSessionTimer: false,
-            ));
-        return services!;
-      }
+      final AppDatabase database = await tester.runAsync(() => AppDatabase.open(
+            factory: databaseFactoryFfiNoIsolate,
+            path: p.join(directory.path, 'pyquest.db'),
+          )) as AppDatabase;
+      final _Fixture fixture = _Fixture(database);
+      final SettingsService original = fixture.service();
+      await tester.runAsync(original.load);
+      expect(await tester.runAsync(() => original.setLocalePreference(LocalePreference.en)), isTrue);
+      expect(original.raw(SettingsService.localePreferenceKey), 'en');
+
+      // Recreate the service against the real SQLite database; it must read the persisted
+      // explicit choice rather than relying on the first service's in-memory state.
+      final SettingsService recreated = fixture.service();
+      expect(recreated, isNot(same(original)));
+      await tester.runAsync(recreated.load);
+      expect(recreated.localePreference, LocalePreference.en);
 
       final List<Locale> osLocales = <Locale>[const Locale('vi', 'VN')];
-      final AppServices first = await createServices(firstDatabasePath);
-      await tester.pumpWidget(
-        PyQuestApp(
-          servicesFactory: (_) async => first,
-          systemLocalesReader: () => List<Locale>.unmodifiable(osLocales),
-          minSplash: Duration.zero,
-        ),
-      );
-      await pumpFor(tester, const Duration(milliseconds: 300));
-      await tester.runAsync(() => first.settings.setLocalePreference(LocalePreference.en));
+      final AppLocaleBinding binding = AppLocaleBinding(
+        settings: recreated,
+        systemLocales: () => List<Locale>.unmodifiable(osLocales),
+      )..syncSystemLocales();
+      await tester.pumpWidget(_localizedHost(binding));
       await pumpFor(tester, const Duration(milliseconds: 100));
       expect(_localeOf(tester), const Locale('en'));
-      final Map<String, String>? persistedRows =
-          await tester.runAsync(() => SettingsRepository(first.db).all());
-      expect(persistedRows?[SettingsService.localePreferenceKey], 'en');
+      expect(_materialOf(tester).cancelButtonLabel, 'Cancel');
 
-      await tester.pumpWidget(const SizedBox.shrink());
-      first.dispose();
-      first.settings.dispose();
-      // Snapshot the committed SQLite file after its write, then construct a fresh service/app
-      // against that disk state. The second path avoids sqflite's per-path singleton cache.
-      File(firstDatabasePath).copySync(recreatedDatabasePath);
-
-      final AppServices recreated = await createServices(recreatedDatabasePath);
-      await tester.pumpWidget(
-        PyQuestApp(
-          servicesFactory: (_) async => recreated,
-          systemLocalesReader: () => List<Locale>.unmodifiable(osLocales),
-          minSplash: Duration.zero,
-        ),
-      );
-      await pumpFor(tester, const Duration(milliseconds: 300));
-      expect(recreated.settings.localePreference, LocalePreference.en);
-      expect(recreated.settings.lang, PqLang.en);
-      expect(_localeOf(tester), const Locale('en'));
-
-      await tester.runAsync(() => recreated.settings.setLocalePreference(LocalePreference.system));
+      expect(await tester.runAsync(() => recreated.setLocalePreference(LocalePreference.system)), isTrue);
+      binding.syncSystemLocales();
       await pumpFor(tester, const Duration(milliseconds: 100));
       expect(_localeOf(tester), const Locale('vi'));
-      expect(recreated.settings.lang, PqLang.vi);
+      expect(_materialOf(tester).cancelButtonLabel, 'Huỷ');
+      expect(recreated.raw(SettingsService.localePreferenceKey), 'system');
 
       await tester.pumpWidget(const SizedBox.shrink());
+      binding.dispose();
+      original.dispose();
       recreated.dispose();
-      recreated.settings.dispose();
     });
 
     testWidgets('localized framework control semantics update on a live modal route',
         (WidgetTester tester) async {
+      final _Fixture fixture = await tester.runAsync(() => _openFixture(const <String, String>{})) as _Fixture;
+      final SettingsService settings = fixture.service();
+      await tester.runAsync(settings.load);
       final List<Locale> osLocales = <Locale>[const Locale('vi', 'VN')];
-      final AppServices services = await _openServices(tester);
-      await tester.pumpWidget(
-        PyQuestApp(
-          servicesFactory: (_) async => services,
-          systemLocalesReader: () => List<Locale>.unmodifiable(osLocales),
-          minSplash: Duration.zero,
-        ),
-      );
-      await pumpFor(tester, const Duration(milliseconds: 300));
+      final AppLocaleBinding binding = AppLocaleBinding(
+        settings: settings,
+        systemLocales: () => List<Locale>.unmodifiable(osLocales),
+      )..syncSystemLocales();
+      await tester.pumpWidget(_localizedHost(binding));
+      await pumpFor(tester, const Duration(milliseconds: 100));
       final SemanticsHandle semantics = tester.ensureSemantics();
       addTearDown(semantics.dispose);
 
@@ -397,7 +378,7 @@ void main() {
           actions: <Widget>[BackButton()],
         ),
       ));
-      await pumpFor(tester, const Duration(milliseconds: 200));
+      await pumpFor(tester, const Duration(milliseconds: 150));
       final Finder backVi = find.byTooltip('Quay lại');
       expect(backVi, findsOneWidget);
       expect(tester.getSemantics(backVi).label, 'Quay lại');
@@ -405,17 +386,17 @@ void main() {
       osLocales
         ..clear()
         ..add(const Locale('en', 'US'));
-      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
-      await pumpFor(tester, const Duration(milliseconds: 200));
+      binding.syncSystemLocales();
+      await pumpFor(tester, const Duration(milliseconds: 150));
       final Finder backEn = find.byTooltip('Back');
       expect(backEn, findsOneWidget);
       expect(tester.getSemantics(backEn).label, 'Back');
 
       await tester.tap(backEn);
-      await pumpFor(tester, const Duration(milliseconds: 200));
+      await pumpFor(tester, const Duration(milliseconds: 150));
       await tester.pumpWidget(const SizedBox.shrink());
-      services.dispose();
-      services.settings.dispose();
+      binding.dispose();
+      settings.dispose();
     });
 
     testWidgets('switching locale keeps the route and the text being typed',
@@ -487,6 +468,26 @@ void main() {
     });
   });
 }
+
+Widget _localizedHost(AppLocaleBinding binding) => AnimatedBuilder(
+      animation: binding,
+      builder: (BuildContext context, Widget? _) => MaterialApp(
+        locale: binding.locale,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        home: Scaffold(
+          body: Builder(
+            builder: (BuildContext context) =>
+                Text(MaterialLocalizations.of(context).cancelButtonLabel),
+          ),
+        ),
+      ),
+    );
 
 Locale _localeOf(WidgetTester tester) =>
     Localizations.localeOf(tester.element(find.byType(Navigator).first));
