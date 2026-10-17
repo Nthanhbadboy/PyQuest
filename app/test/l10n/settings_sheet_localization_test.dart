@@ -181,7 +181,7 @@ void main() {
       'vi',
     );
 
-    await tester.pageBack();
+    Navigator.of(tester.element(find.byKey(const ValueKey<String>('settings_language_panel')))).pop();
     await pumpFor(tester, const Duration(milliseconds: 250));
     await _openSettings(tester);
     _expectOneSelectedRadio(tester, LocalePreference.vi);
@@ -317,7 +317,14 @@ void main() {
     lock = await _holdWriteLock(tester, databasePath);
     await _chooseLocale(tester, services, LocalePreference.en, waitForPersistence: false);
     expect(_rootLocale(tester), const Locale('en'));
-    expect(find.text('Saving your choice…'), findsOneWidget);
+    expect(
+      find.text('Saving your choice…'),
+      findsOneWidget,
+      reason: 'the locale write should remain pending; '
+          'saved=${services.settings.localePreferenceSaved}, '
+          'raw=${services.settings.raw(SettingsService.localePreferenceKey)}, '
+          'error=${services.settings.localePreferenceSaveError}',
+    );
     await _chooseLocale(tester, services, LocalePreference.vi, waitForPersistence: false);
     expect(_rootLocale(tester), const Locale('vi'));
     expect(find.text('Đang lưu lựa chọn…'), findsOneWidget);
@@ -339,8 +346,15 @@ void main() {
     // let the injected write failure arrive. The unmounted panel must not call setState afterward.
     lock = await _holdWriteLock(tester, databasePath);
     await _chooseLocale(tester, services, LocalePreference.en, waitForPersistence: false);
-    expect(find.text('Saving your choice…'), findsOneWidget);
-    await tester.pageBack();
+    expect(
+      find.text('Saving your choice…'),
+      findsOneWidget,
+      reason: 'the locale write should remain pending; '
+          'saved=${services.settings.localePreferenceSaved}, '
+          'raw=${services.settings.raw(SettingsService.localePreferenceKey)}, '
+          'error=${services.settings.localePreferenceSaveError}',
+    );
+    Navigator.of(tester.element(find.byKey(const ValueKey<String>('settings_language_panel')))).pop();
     await pumpFor(tester, const Duration(milliseconds: 100));
     expect(find.byKey(const ValueKey<String>('settings_language_panel')), findsNothing);
     await _releaseWriteLock(tester, lock);
@@ -395,7 +409,7 @@ void main() {
     }
     expect(tester.takeException(), isNull);
 
-    await tester.pageBack();
+    Navigator.of(tester.element(find.byKey(const ValueKey<String>('python_info_sheet')))).pop();
     await pumpFor(tester, const Duration(milliseconds: 250));
     await _tapVisible(tester, find.byKey(const ValueKey<String>('settings_reset_progress')));
     await pumpFor(tester, const Duration(milliseconds: 250));
