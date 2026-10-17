@@ -1,0 +1,56 @@
+version: 2.1
+
+jobs:
+  flutter-check:
+    docker:
+      - image: ghcr.io/cirruslabs/flutter:3.47.7
+    resource_class: medium
+    working_directory: ~/project
+    steps:
+      - checkout
+      - run:
+          name: Resolve Flutter dependencies
+          command: |
+            cd app
+            flutter --version
+            flutter pub get
+      - run:
+          name: Verify reproducible localization generation
+          command: |
+            python3 --version
+            python3 ci/test_l10n_evidence.py
+            python3 ci/l10n_evidence.py collect \
+              --repo-root "$PWD" \
+              --app-dir "$PWD/app" \
+              --output /tmp/circleci-l10n-evidence.json \
+              --sha "$CIRCLE_SHA1" \
+              --run-id "$CIRCLE_BUILD_NUM"
+      - run:
+          name: Analyze, ordinary tests, and render tests
+          no_output_timeout: 60m
+          command: |
+            set +e
+            cd app
+
+            flutter analyze --no-fatal-infos 2>&1 | tee /tmp/flutter-analyze.log
+            analyze_status=${PIPESTATUS[0]}
+
+            flutter test --reporter expanded --exclude-tags render 2>&1 | tee /tmp/flutter-test.log
+            test_status=${PIPESTATUS[0]}
+
+            flutter test --reporter expanded --tags render test/render 2>&1 | tee /tmp/flutter-render.log
+            render_status=${PIPESTATUS[0]}
+
+            printf '\nCircleCI phase results: analyze=%s test=%s render=%s\n' \
+              "$analyze_status" "$test_status" "$render_status"
+            if [ "$analyze_status" -ne 0 ] || [ "$test_status" -ne 0 ] || [ "$render_status" -ne 0 ]; then
+              exit 1
+            fi
+
+workflows:
+  pqc-016-circleci-tests:
+    jobs:
+      - flutter-check:
+          filters:
+            branches:
+              only: arena/0d4fcb38-pyquest
