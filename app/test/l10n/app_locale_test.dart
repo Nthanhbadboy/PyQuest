@@ -34,12 +34,16 @@ void main() {
       expect(AppLocaleBinding.bootstrapLocale(const <Locale>[]), const Locale('en'));
     });
 
-    test('system preference follows the ordered OS list and never persists it', () async {
-      final _Fixture fixture = await _openFixture(const <String, String>{});
-      addTearDown(fixture.close);
+    testWidgets('system preference follows the ordered OS list and never persists it',
+        (WidgetTester tester) async {
+      final _Fixture fixture = await tester.runAsync(() => _openFixture(const <String, String>{}))
+          as _Fixture;
+      addTearDown(() async {
+        await tester.runAsync(fixture.close);
+      });
       final SettingsService settings = fixture.service();
       addTearDown(settings.dispose);
-      await settings.load();
+      await tester.runAsync(settings.load);
 
       final AppLocaleBinding binding = AppLocaleBinding(
         settings: settings,
@@ -53,15 +57,20 @@ void main() {
       // Cast dialogue and the live tutor voice are built from this getter.
       expect(settings.lang, PqLang.vi);
       expect(settings.raw(SettingsService.localePreferenceKey), isNull);
-      expect((await fixture.repository.all())[SettingsService.localePreferenceKey], isNull);
+      final Map<String, String>? rows = await tester.runAsync(fixture.repository.all);
+      expect(rows?[SettingsService.localePreferenceKey], isNull);
     });
 
-    test('an unsupported OS list falls back to English without writing a preference', () async {
-      final _Fixture fixture = await _openFixture(const <String, String>{});
-      addTearDown(fixture.close);
+    testWidgets('an unsupported OS list falls back to English without writing a preference',
+        (WidgetTester tester) async {
+      final _Fixture fixture = await tester.runAsync(() => _openFixture(const <String, String>{}))
+          as _Fixture;
+      addTearDown(() async {
+        await tester.runAsync(fixture.close);
+      });
       final SettingsService settings = fixture.service();
       addTearDown(settings.dispose);
-      await settings.load();
+      await tester.runAsync(settings.load);
 
       final AppLocaleBinding binding = AppLocaleBinding(
         settings: settings,
@@ -73,22 +82,30 @@ void main() {
       expect(binding.locale, const Locale('en'));
       expect(settings.localeResolution.usedEnglishFallback, isTrue);
       expect(settings.lang, PqLang.en);
-      expect((await fixture.repository.all())[SettingsService.localePreferenceKey], isNull);
+      final Map<String, String>? rows = await tester.runAsync(fixture.repository.all);
+      expect(rows?[SettingsService.localePreferenceKey], isNull);
     });
 
-    test('an explicit preference keeps winning while the OS list changes', () async {
-      final _Fixture fixture = await _openFixture(const <String, String>{});
-      addTearDown(fixture.close);
+    testWidgets('an explicit preference keeps winning while the OS list changes',
+        (WidgetTester tester) async {
+      final _Fixture fixture = await tester.runAsync(() => _openFixture(const <String, String>{}))
+          as _Fixture;
+      addTearDown(() async {
+        await tester.runAsync(fixture.close);
+      });
       final SettingsService settings = fixture.service();
       addTearDown(settings.dispose);
-      await settings.load();
+      await tester.runAsync(settings.load);
 
       final List<Locale> osList = <Locale>[const Locale('vi', 'VN')];
       final AppLocaleBinding binding =
           AppLocaleBinding(settings: settings, systemLocales: () => osList);
       addTearDown(binding.dispose);
       binding.syncSystemLocales();
-      expect(await settings.setLocalePreference(LocalePreference.en), isTrue);
+      expect(
+        await tester.runAsync(() => settings.setLocalePreference(LocalePreference.en)),
+        isTrue,
+      );
       expect(binding.locale, const Locale('en'));
 
       osList
@@ -99,7 +116,10 @@ void main() {
       expect(settings.lang, PqLang.en);
 
       // Back to `system`: the OS list applies again, still without a new write.
-      expect(await settings.setLocalePreference(LocalePreference.system), isTrue);
+      expect(
+        await tester.runAsync(() => settings.setLocalePreference(LocalePreference.system)),
+        isTrue,
+      );
       binding.syncSystemLocales();
       expect(binding.locale, const Locale('vi'));
       expect(settings.raw(SettingsService.localePreferenceKey), 'system');
@@ -272,8 +292,6 @@ void main() {
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pump();
       expect(services.settings.lang, PqLang.en);
-      services.dispose();
-      services.settings.dispose();
     });
 
     testWidgets('resetAllProgress reload keeps the synchronized system locale without persisting it',
@@ -306,54 +324,87 @@ void main() {
       expect(resetRows?[SettingsService.localePreferenceKey], isNull);
 
       await tester.pumpWidget(const SizedBox.shrink());
-      services.dispose();
-      services.settings.dispose();
     });
 
     testWidgets('persisted override survives a recreated service and localization root',
         (WidgetTester tester) async {
-      final Directory directory = Directory.systemTemp.createTempSync('pyquest-locale-recreate-');
-      addTearDown(() {
-        if (directory.existsSync()) directory.deleteSync(recursive: true);
+      final Directory directory = await tester.runAsync(
+          () => Directory.systemTemp.createTemp('pyquest-locale-recreate-')) as Directory;
+      AppDatabase? database;
+      SettingsService? original;
+      SettingsService? recreated;
+      AppLocaleBinding? binding;
+      addTearDown(() async {
+        try {
+          await tester.pumpWidget(const SizedBox.shrink());
+        } finally {
+          try {
+            binding?.dispose();
+          } finally {
+            try {
+              original?.dispose();
+            } finally {
+              try {
+                recreated?.dispose();
+              } finally {
+                try {
+                  if (database != null) await tester.runAsync(database!.close);
+                } finally {
+                  await tester.runAsync(() async {
+                    if (await directory.exists()) await directory.delete(recursive: true);
+                  });
+                }
+              }
+            }
+          }
+        }
       });
-      final AppDatabase database = await tester.runAsync(() => AppDatabase.open(
+
+      final AppDatabase openedDatabase = await tester.runAsync(() => AppDatabase.open(
             factory: databaseFactoryFfiNoIsolate,
             path: p.join(directory.path, 'pyquest.db'),
           )) as AppDatabase;
-      final _Fixture fixture = _Fixture(database);
-      final SettingsService original = fixture.service();
-      await tester.runAsync(original.load);
-      expect(await tester.runAsync(() => original.setLocalePreference(LocalePreference.en)), isTrue);
-      expect(original.raw(SettingsService.localePreferenceKey), 'en');
+      database = openedDatabase;
+      final _Fixture fixture = _Fixture(openedDatabase);
+      original = fixture.service();
+      await tester.runAsync(original!.load);
+      expect(
+        await tester.runAsync(() => original!.setLocalePreference(LocalePreference.en)),
+        isTrue,
+      );
+      expect(original!.raw(SettingsService.localePreferenceKey), 'en');
 
       // Recreate the service against the real SQLite database; it must read the persisted
       // explicit choice rather than relying on the first service's in-memory state.
-      final SettingsService recreated = fixture.service();
+      recreated = fixture.service();
       expect(recreated, isNot(same(original)));
-      await tester.runAsync(recreated.load);
-      expect(recreated.localePreference, LocalePreference.en);
+      await tester.runAsync(recreated!.load);
+      expect(recreated!.localePreference, LocalePreference.en);
 
       final List<Locale> osLocales = <Locale>[const Locale('vi', 'VN')];
-      final AppLocaleBinding binding = AppLocaleBinding(
-        settings: recreated,
+      binding = AppLocaleBinding(
+        settings: recreated!,
         systemLocales: () => List<Locale>.unmodifiable(osLocales),
       )..syncSystemLocales();
-      await tester.pumpWidget(_localizedHost(binding));
+      await tester.pumpWidget(_localizedHost(binding!));
       await pumpFor(tester, const Duration(milliseconds: 100));
       expect(_localeOf(tester), const Locale('en'));
       expect(_materialOf(tester).cancelButtonLabel, 'Cancel');
 
-      expect(await tester.runAsync(() => recreated.setLocalePreference(LocalePreference.system)), isTrue);
-      binding.syncSystemLocales();
+      expect(
+        await tester.runAsync(() => recreated!.setLocalePreference(LocalePreference.system)),
+        isTrue,
+      );
+      binding!.syncSystemLocales();
       await pumpFor(tester, const Duration(milliseconds: 100));
       expect(_localeOf(tester), const Locale('vi'));
       expect(_materialOf(tester).cancelButtonLabel, 'Huỷ');
-      expect(recreated.raw(SettingsService.localePreferenceKey), 'system');
+      expect(recreated!.raw(SettingsService.localePreferenceKey), 'system');
+      final Map<String, String>? persisted =
+          await tester.runAsync(fixture.repository.all);
+      expect(persisted?[SettingsService.localePreferenceKey], 'system');
 
       await tester.pumpWidget(const SizedBox.shrink());
-      binding.dispose();
-      original.dispose();
-      recreated.dispose();
     });
 
     testWidgets('switching locale keeps the route and the text being typed',
@@ -460,7 +511,23 @@ Future<AppServices> _openServices(WidgetTester tester) async {
         audioEnabled: false,
         startSessionTimer: false,
       ));
-  return services!;
+  final AppServices opened = services!;
+  addTearDown(() async {
+    try {
+      await tester.pumpWidget(const SizedBox.shrink());
+    } finally {
+      try {
+        opened.dispose();
+      } finally {
+        try {
+          opened.settings.dispose();
+        } finally {
+          await tester.runAsync(opened.db.close);
+        }
+      }
+    }
+  });
+  return opened;
 }
 
 class _Fixture {

@@ -68,10 +68,22 @@ jobs:
           set +e
           flutter --version > ../flutter_version.txt 2>&1
           flutter pub get > ../pub_get.txt 2>&1; echo "pub_get=$?" >> ../status.txt
+          python3 ../ci/test_l10n_evidence.py > ../l10n_evidence_tests.txt 2>&1; echo "l10n_evidence_tests=$?" >> ../status.txt
+          python3 ../ci/l10n_evidence.py collect --repo-root .. --app-dir . --output ../l10n_evidence.json > ../l10n_evidence_collect.txt 2>&1; echo "l10n_evidence=$?" >> ../status.txt
           flutter analyze --no-fatal-infos > ../analyze.txt 2>&1; echo "analyze=$?" >> ../status.txt
           flutter test --reporter expanded --exclude-tags render > ../test.txt 2>&1; echo "test=$?" >> ../status.txt
           flutter test --reporter expanded --tags render test/render > ../render.txt 2>&1; echo "render=$?" >> ../status.txt
           cat ../status.txt
+      - name: Publish localization generation evidence
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          python3 ci/l10n_evidence.py publish --evidence l10n_evidence.json > l10n_evidence_publish.txt 2>&1
+          publish_status=$?
+          echo "l10n_evidence_publish=${publish_status}" >> status.txt
+          cat l10n_evidence_publish.txt
       - name: Publish previews
         if: always()
         env:
