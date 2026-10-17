@@ -13,11 +13,13 @@ ALLOWED = tuple((ROOT / p).resolve() for p in (
 
 
 class ArtHandler(SimpleHTTPRequestHandler):
+    landing = '/docs/design/art-review-r36/index.html'
+
     def do_GET(self):
         path = unquote(urlsplit(self.path).path)
         if path == '/':
             self.send_response(302)
-            self.send_header('Location', '/docs/design/art-review-r36/index.html')
+            self.send_header('Location', self.landing)
             self.end_headers()
             return
         target = (ROOT / path.lstrip('/')).resolve()
@@ -42,6 +44,9 @@ class ArtHandler(SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, default=8000)
+    parser.add_argument('--landing', choices=('r36', 'w08'), default='r36')
     args = parser.parse_args()
+    if args.landing == 'w08':
+        ArtHandler.landing = '/docs/design/world-travel-r37/index.html'
     handler = partial(ArtHandler, directory=str(ROOT))
     ThreadingHTTPServer(('0.0.0.0', args.port), handler).serve_forever()

@@ -1,0 +1,55 @@
+{
+  "coordinate_frame": {
+    "image_width": 928,
+    "image_height": 1152,
+    "svg_viewbox": [
+      0,
+      0,
+      100,
+      124.138
+    ]
+  },
+  "calibrated": false,
+  "purpose": "Approximate visual UI anchoring only, not runtime world geometry or navigation",
+  "landmarks": {
+    "village": {
+      "marker_percent": [
+        34,
+        46
+      ],
+      "dock_svg": [
+        66.5,
+        68.8
+      ]
+    },
+    "home": {
+      "marker_percent": [
+        76,
+        76
+      ],
+      "dock_svg": [
+        55.4,
+        110.6
+      ]
+    },
+    "forest": {
+      "marker_percent": [
+        75,
+        24
+      ],
+      "dock_svg": [
+        87,
+        55
+      ]
+    }
+  },
+  "routes": {
+    "home": "M66.5 68.8 C72 76 43 82 43 97 C43 106 47 110 55.4 110.6",
+    "forest": "M66.5 68.8 C83 80 98 73 87 55"
+  },
+  "minimum_marker_css_px": [
+    48,
+    48
+  ],
+  "production_approved": false
+}

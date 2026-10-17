@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-18",
+  "scope": "In-memory DESIGN simulator only; not app/backend/Flutter evidence",
+  "tests": 16,
+  "results": [
+    {
+      "name": "19 fixture states have no economy side effects",
+      "status": "PASS"
+    },
+    {
+      "name": "selection and confirmation do not change location",
+      "status": "PASS"
+    },
+    {
+      "name": "double departure starts exactly one request",
+      "status": "PASS"
+    },
+    {
+      "name": "cannot skip before loaded and access valid",
+      "status": "PASS"
+    },
+    {
+      "name": "valid completion then arrival exactly once",
+      "status": "PASS"
+    },
+    {
+      "name": "cancel invalidates late response",
+      "status": "PASS"
+    },
+    {
+      "name": "load failure retains source and rejects late duplicate",
+      "status": "PASS"
+    },
+    {
+      "name": "access rejection cannot be bypassed by reselecting",
+      "status": "PASS"
+    },
+    {
+      "name": "pack preparation is not travel or entitlement purchase",
+      "status": "PASS"
+    },
+    {
+      "name": "cancelled download retries missing content, not lost ownership",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown or denied access cannot begin travel",
+      "status": "PASS"
+    },
+    {
+      "name": "revocation removes private data and uses safe public source",
+      "status": "PASS"
+    },
+    {
+      "name": "return departure context retained on failure",
+      "status": "PASS"
+    },
+    {
+      "name": "offline invalidates pending request; new selection cannot travel",
+      "status": "PASS"
+    },
+    {
+      "name": "reconnect preserves destination and source, needs fresh preparation",
+      "status": "PASS"
+    },
+    {
+      "name": "source fixtures are not mutated by reducer",
+      "status": "PASS"
+    }
+  ]
+}

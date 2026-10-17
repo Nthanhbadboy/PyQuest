@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyQuest · Hải đồ & hành trình W08</title><link rel="stylesheet" href="style.css"><script src="model.js" defer></script><script src="copy.js" defer></script><script src="study.js" defer></script></head>
+<body>
+<header class="review-mast chrome"><a class="brand" href="../art-review-r36/index.html"><span>P<span>✦</span></span><b>PyQuest<small>WORLD DESIGN / 037</small></b></a><a href="README.md" data-h="spec"></a></header>
+<main class="workbench">
+<section class="intro chrome"><p class="overline">W08 / DESIGN LANE</p><h1 data-h="title"></h1><p data-h="desc"></p><div class="scope"><b data-h="simulation"></b><p data-h="note"></p></div><h2 data-h="newArt"></h2><p data-h="newArtNote"></p><a href="assets/archipelago-study.png" class="text-link">Concept PNG ↗</a><a href="SPEC.md" class="text-link" data-h="spec"></a><a href="../art-review-r36/index.html" class="text-link" data-h="gallery"></a></section>
+<div class="phone-column"><div class="phone-caption chrome"><span data-h="simulation"></span><a id="standalone" href="?phone=1" data-h="full"></a></div>
+<section class="phone" aria-label="W08 interactive design study"><div class="screen" id="screen">
+<header class="app-head"><button type="button" id="back" class="back" data-action="back" aria-label="Về bến nguồn">←</button><div><p class="app-kicker" data-ui="eyebrow"></p><h1 data-ui="title"></h1></div><span class="compass" aria-hidden="true">✧</span></header>
+<div class="location"><span class="location-dot" aria-hidden="true"></span><span><span data-ui="at"></span> <strong id="current-place"></strong></span></div>
+<div class="view-tabs" role="group" aria-label="Map or destination list"><button type="button" data-view="map" aria-pressed="true" data-ui="map"></button><button type="button" data-view="list" aria-pressed="false" data-ui="list"></button></div>
+<div class="map-frame" id="map-frame"><img src="assets/archipelago-study.png" class="map-art" alt="Ba đảo có khối, bến thuyền và biển liên tục; hình minh họa" draggable="false">
+<svg class="route-overlay" viewBox="0 0 100 124.138" aria-hidden="true"><path id="route-shadow" fill="none"/><path id="route-path" fill="none"/><circle id="origin-dot" r="1.35"/><circle id="arrival-dot" r="1.35"/></svg>
+<button type="button" class="map-pin village" data-destination="village"><span>1</span></button><button type="button" class="map-pin home" data-destination="home"><span>2</span></button><button type="button" class="map-pin forest" data-destination="forest"><span>3</span></button>
+<div class="map-caption" data-ui="legend"></div></div>
+<div id="destination-list" class="destination-list" hidden></div>
+<section class="info" id="info" aria-labelledby="state-title"><div class="sheet-handle" aria-hidden="true"></div><p class="kind" id="place-kind"></p><h2 id="state-title" tabindex="-1"></h2><p id="state-body"></p><p id="activity" class="activity"></p>
+<div id="route-summary" class="route-summary"><div><small data-ui="from"></small><strong id="route-from"></strong></div><span aria-hidden="true">↓</span><div><small data-ui="to"></small><strong id="route-to"></strong></div></div>
+<div class="loading-track" id="loading-track" hidden aria-hidden="true"><span></span></div>
+<div class="actions"><button type="button" id="primary" class="primary"></button><button type="button" id="secondary" class="secondary"></button></div>
+<p class="safe-note" id="safe-note"></p><p class="energy"><span aria-hidden="true">◇</span><span data-ui="free"></span></p></section>
+<footer class="app-foot" data-ui="fixture"></footer><p class="sr-only" id="announce" role="status" aria-live="polite"></p>
+</div></section></div>
+<aside class="review-controls chrome"><h2 data-h="controls"></h2><p class="instructions" data-h="steps"></p><div class="control"><label for="lang" data-h="language"></label><select id="lang"><option value="vi">Tiếng Việt</option><option value="en">English</option></select></div><div class="control"><label for="scale" data-h="scale"></label><select id="scale"><option value="1">1×</option><option value="1.3">1.3×</option><option value="2">2×</option></select></div><div class="control"><label for="fixture" data-h="state"></label><select id="fixture"></select></div><label class="check"><input type="checkbox" id="auto" checked><span data-h="auto"></span></label><label class="check"><input type="checkbox" id="calm"><span data-h="calm"></span></label>
+<div class="event-buttons"><button type="button" id="response-ok" data-h="ok"></button><button type="button" id="response-fail" data-h="fail"></button><button type="button" id="revoke" data-h="revoke"></button><button type="button" id="reconnect" data-h="reconnect"></button><button type="button" id="stale" data-h="stale"></button></div><h3 data-h="receipt"></h3><output id="trace"></output><p class="limits">HTML / in-memory fixtures only. No Flutter, device, download, billing or server authority.</p></aside>
+</main><script>if(new URLSearchParams(location.search).has('phone'))document.body.classList.add('standalone');</script>
+</body></html>
