@@ -1,0 +1,1048 @@
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,7 @@
+ # PyQuest
++
++> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](docs/PROJECT_STATUS.md).
++> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
+ **Build Your Game. Rule Your World.**
+
+@@ -99,7 +102,7 @@
+    câu hỏi/ngày, lịch sử trong bài, và **tự động rơi về trợ giảng ngoại tuyến**
+    khi mạng lỗi. Cấu hình qua `app/assets/config/ai_tutor_config.json` hoặc
+    `--dart-define=AI_TUTOR_ENDPOINT=...`.
+-   **App không bao giờ chứa API key.** Relay mẫu nằm ở
++   **Luồng Tutor văn bản qua relay không nhúng provider key vào app.** Relay mẫu nằm ở
+    [`tools/ai_relay/`](tools/ai_relay/) — chạy được bằng Python thuần, có test
+    riêng (`python3 tools/ai_relay/test_relay.py`), chỉ giữ key ở phía server.
+ 3. **Giọng nói Gemini Live (thử nghiệm)** — `lib/modules/tutor/gemini_live_*.dart`
+@@ -107,9 +110,11 @@
+    24 kHz PCM xuống, half-duplex (micro chỉ mở khi trợ giảng im lặng), bắt
+    chống vọng âm từ loa, và một transcript chung cho cả hai vai
+    (`tutor_transcript.dart`) để câu nào cũng mang đúng tên người nói.
+-   Chỉ bật được ở bản dựng có `--dart-define=GEMINI_API_KEY=...` — đây là đường
+-   tắt cho bản thử nghiệm, **phải thay bằng token ngắn hạn/server mediation trước
+-   khi phát hành**. Bảng kiểm tra trên thiết bị:
++   Source còn đường thử nghiệm cục bộ qua `--dart-define=GEMINI_API_KEY=...`;
++   giá trị này nằm trong APK, không phải bí mật được bảo vệ trên client.
++   **Từ r47, hai workflow CI build APK với define rỗng, không đọc Gemini secret;
++   direct Gemini Live không xác thực được trên các APK đó.** Phải có token ngắn hạn/
++   server mediation trước khi cho phép phân phối voice. Bảng kiểm tra trên thiết bị:
+    [`docs/experimental/GEMINI_LIVE_VOICE_TEST.md`](docs/experimental/GEMINI_LIVE_VOICE_TEST.md).
+
+ ---
+@@ -165,23 +170,28 @@
+
+ **Nguyên tắc tài liệu:** tài liệu sản phẩm xác định *xây trò chơi gì*;
+ tài liệu kỹ thuật xác định *xây bằng cách nào*; roadmap xác định
+-*làm gì trước và kiểm tra bằng gì*. Bốn tài liệu này là nguồn sự thật duy nhất;
+-mọi nhánh làm việc đều chuẩn hoá theo chúng, không tự sinh hướng thiết kế riêng.
+-
+----
+-
+-## Roadmap tóm tắt
+-
+-1. **Foundation** — khung Flutter, điều hướng, lưu dữ liệu, giao diện cơ bản. ✅
+-2. **Home Map** — thế giới chính, nhân vật, âm thanh. ✅
+-3. **Một mini-game hoàn chỉnh** — gameplay, điểm số, lưu kỷ lục, Creator Mode. ✅
+-4. **Energy & Rewarded Ads** — 🟡 năng lượng + hồi theo thời gian đã có và có giới hạn; **quảng cáo thưởng chưa được implement** trong source
+-5. **Interpreter mô phỏng** — thực thi tập con Python-like an toàn, giới hạn tài nguyên. ✅
+-6. **Main Quest** — bài học Python, bài tập, lưu tiến trình, trợ giảng. ✅
+-7. **Side Maps & Pro** — nội dung mở rộng và mua hàng. ⏳ chưa bắt đầu
+-8. **Hoàn thiện** — localization, accessibility, kiểm thử, build, phát hành. ⏳ đang tiếp diễn
+-
+-Chi tiết và tiêu chí nghiệm thu: [`docs/ROADMAP.md`](docs/ROADMAP.md).
++*làm gì trước và kiểm tra bằng gì*. Bốn tài liệu là nguồn định hướng sản phẩm;
++mọi nhánh chuẩn hoá theo chúng, không tự sinh hướng thiết kế riêng. Trạng thái
++source/kiểm chứng đọc tại [PROJECT_STATUS](docs/PROJECT_STATUS.md) và review/task
++đã pin, không suy tiến độ triển khai từ yêu cầu trong tài liệu tầm nhìn.
++
++---
++
++## Roadmap tóm tắt — trạng thái source, không phải chứng nhận hoàn tất
++
++| Phần | Trạng thái |
++|---|---|
++| Foundation / Home Map | Có source; không khởi tạo lại. UI thế giới mới chưa được port toàn bộ |
++| Các hoạt động chơi / Creator Maze | Có source cho Robot Maze, Dragon Jump, Catch the Stars, Bug Hunter và Creator Maze |
++| Energy & Rewarded Ads | Energy có; **rewarded ads chưa triển khai** |
++| Interpreter mô phỏng | Có tập con Python và giới hạn; **không phải sandbox đã được chứng nhận** |
++| Main Quest | Chặng1 có12 bài/64 bước; không có nghĩa mọi chặng/tiêu chí đã hoàn tất |
++| Side Maps & Pro / cộng đồng đầy đủ | Kế hoạch sản phẩm, chưa có implementation đầy đủ |
++| UI / localization / accessibility / voice / phát hành | Từng phần có evidence riêng; không có whole-app acceptance |
++
++[Ma trận source/evidence và disposition task](docs/PROJECT_STATUS.md) là điểm đọc
++trạng thái. [Roadmap](docs/ROADMAP.md) giữ thứ tự và tiêu chí kế hoạch; không dùng
++số checklist hoặc biểu tượng hoàn thành thay SHA/test/device evidence.
+
+ **Nguyên tắc chốt từ đầu:** đừng xây cả thế giới PyQuest ngay lập tức. Làm một
+ **lát cắt dọc hoàn chỉnh**: mở app → vào một trò chơi → chơi được → lưu kết quả →
+@@ -190,7 +200,7 @@
+ **Về runtime:** giai đoạn đầu dùng **interpreter mô phỏng một tập con giới hạn**
+ (Flutter/Dart), **không** chạy Python thật. Việc nhúng Python thật chỉ được đánh
+ giá sau, khi mô phỏng đã chứng minh giá trị sư phạm. Chi tiết ở
+-[`docs/TECHNICAL_ARCHITECTURE.md`](docs/TECHNICAL_ARCHITURE.md).
++[`docs/TECHNICAL_ARCHITECTURE.md`](docs/TECHNICAL_ARCHITECTURE.md).
+
+ ---
+
+@@ -211,13 +221,18 @@
+   --driver=test_driver/integration_test.dart --target=integration_test/journey_test.dart -d <device-id>
+ ```
+
+-Bản dựng thử nghiệm giọng nói (key chỉ nằm ở máy/build cục bộ hoặc secret của CI —
+-không bao giờ nằm trong repository):
++APK preview không có Gemini key (cùng chính sách workflow từ r47):
+
+ ```bash
+ cd app
+-flutter build apk --release --dart-define="GEMINI_API_KEY=$GEMINI_API_KEY"
++flutter build apk --release --dart-define=GEMINI_API_KEY=
+ ```
++
++`--release` là build mode, **không phải quyền phát hành công khai**. Direct Gemini
++Live sẽ không xác thực được khi define rỗng; không thêm lại repository secret để
++“sửa” điều này. Thử voice cục bộ có kiểm soát được mô tả trong
++[hướng dẫn thử nghiệm](docs/experimental/GEMINI_LIVE_VOICE_TEST.md), không phải
++đường phân phối artifact. Tutor ngoại tuyến/relay văn bản không bị sửa.
+
+ CI (GitHub Actions) chạy `analyze` + `test` + render preview cho mỗi lần push vào
+ `arena/**`; commit có `[apk]` build thêm Release APK (tải ở *Artifacts* của lần
+@@ -226,10 +241,11 @@
+ `ci/report.py` + `ci/step_outcomes.py`, nên đọc được ngay trên trang checks mà
+ không cần tải log.
+
+-Bảo mật: `GEMINI_API_KEY` là repository secret, chỉ được đưa vào build thử
+-nghiệm; key của relay văn bản nằm ở `RELAY_API_KEY` phía server
+-(`tools/ai_relay/relay.py`). Không có key nào được commit, in ra log, hay ghi vào
+-tài liệu.
++Bảo mật: hai workflow không đọc `GEMINI_API_KEY` từ repository secrets và đặt
++define rỗng cho các lệnh build APK. Key của relay văn bản nằm phía server ở
++`RELAY_API_KEY`. Không commit hoặc đưa key vào tài liệu/log/chat. APK cũ có thể
++đã chứa key nếu secret được cấu hình; sửa workflow không thu hồi artifact hay
++xoay key cũ. Chưa có APK mới hoặc kiểm tra thiết bị được thực hiện trong r47.
+
+ ---
+
+--- a/docs/PRODUCT_VISION.md
++++ b/docs/PRODUCT_VISION.md
+@@ -1,4 +1,7 @@
+ # PyQuest — Product Vision
++
++> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
++> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
+ > Tài liệu này xác định **PyQuest là trò chơi gì**, dành cho ai, bán giấc mơ gì,
+ > và thế giới bên trong nó vận hành theo triết lý nào.
+@@ -901,7 +904,7 @@
+ - Arena nhiều bộ môn, Creator Pro League, giải đồng đội.
+ - Side Maps trả phí, Pro đầy đủ, cộng đồng/quà tặng đầy đủ.
+ - Quảng cáo thưởng: năng lượng đã có, rewarded ads chưa có trong source.
+-- Giọng nói ở trạng thái thử nghiệm cho bản dựng phát triển (key đưa lúc build), chưa phải đường production có token ngắn hạn qua server.
++- Giọng nói còn đường thử nghiệm cục bộ có key nằm trong APK; từ r47 workflow CI không đưa Gemini key vào bản dựng. Chưa có token ngắn hạn/server mediation production hoặc device voice PASS mới.
+
+ ### 21.2. UI Direction V2
+
+--- a/docs/GAME_DESIGN.md
++++ b/docs/GAME_DESIGN.md
+@@ -1,4 +1,7 @@
+ # PyQuest — Game Design
++
++> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
++> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
+ > Tài liệu này xác định **luật chơi và thông số định lượng** của PyQuest:
+ > năng lượng, tiến trình hoạt động, phần thưởng, điều kiện mở khóa và cân bằng độ khó.
+@@ -102,6 +105,10 @@
+   gợi ý nội dung miễn phí đang có.
+
+ ### 3.4. Quy tắc quảng cáo thưởng
++
++**Kế hoạch, chưa triển khai SDK** tại CODE71b0; các mức thưởng/hạn mức bên dưới
++không phải tính năng đang chạy. Không hiển thị ad reward thành công khi chưa có
++callback hợp lệ của SDK. Xem [trạng thái](PROJECT_STATUS.md).
+
+ - Chỉ hiển thị nút "Nhận thêm năng lượng" khi năng lượng < tối đa.
+ - Tối đa **3 lần hợp lệ/ngày**, reset vào 00:00 giờ địa phương.
+@@ -578,7 +585,7 @@
+
+ - Main Map dẫn tới Main Quest, mini-game và Nhà Thành Tích.
+ - Main Quest mở khóa theo tiến trình học; không dùng XP/cấp độ toàn cục.
+-- Energy hồi theo thời gian, quảng cáo thưởng có giới hạn và lưu trong database.
++- Energy hồi theo thời gian và lưu trong database. Quảng cáo thưởng là kế hoạch; rewarded-ad SDK chưa có trong source tại CODE71b0, không báo đã chạy quảng cáo thật.
+ - Daily quests, achievements, màn tổng kết và Adventure Recap dùng dữ liệu đã lưu.
+ - AI Tutor trong bài học: câu hỏi gõ hoặc câu nói đều vào cùng một transcript, mỗi dòng mang vai rõ ràng (Bé / nhân vật trả lời), câu chào thuộc về trợ giảng, trạng thái loading – đang nghe – đang nói – lỗi – bị ngắt lời hiển thị đúng như phiên thật, và câu trả lời luôn kèm nhãn cho biết nó do AI soạn hay do trợ giảng ngoại tuyến.
+
+--- a/docs/ROADMAP.md
++++ b/docs/ROADMAP.md
+@@ -1,4 +1,7 @@
+ # PyQuest — Roadmap
++
++> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
++> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
+ > Tài liệu này xác định **làm gì trước, làm gì sau, và kiểm tra bằng gì**.
+ > Mỗi giai đoạn có mục tiêu rõ ràng, phạm vi cụ thể và tiêu chí nghiệm thu.
+@@ -53,6 +56,11 @@
+ ---
+
+ ## 2. Tổng quan các giai đoạn
++
++**Quy ước đọc tiêu chí:** 64 mục dưới §3–13 là yêu cầu kế hoạch/lịch sử,
++không phải64 task chưa bắt đầu. Bỏ hình thức checkbox để tránh biến chúng thành
++bảng tiến độ giả. Có source không tự đóng tiêu chí; xem §14 và PROJECT_STATUS
++cho trạng thái và evidence. Giai đoạn4 vẫn partial vì chưa có rewarded-ad SDK.
+
+ | # | Giai đoạn | Mục tiêu chính | Thời lượng dự kiến |
+ |---|---|---|---|
+@@ -96,11 +104,11 @@
+
+ ### 3.4. Tiêu chí nghiệm thu
+
+-- [ ] App build và chạy được trên Android thật.
+-- [ ] Điều hướng giữa 3–4 màn hình rỗng hoạt động trơn tru.
+-- [ ] Ghi một giá trị vào SQLite, thoát app, mở lại, đọc được giá trị cũ.
+-- [ ] `game_config.json` load được và đọc đúng thông số.
+-- [ ] Cấu trúc thư mục khớp với `TECHNICAL_ARCHITECTURE.md`.
++- **Tiêu chí kế hoạch:** App build và chạy được trên Android thật.
++- **Tiêu chí kế hoạch:** Điều hướng giữa 3–4 màn hình rỗng hoạt động trơn tru.
++- **Tiêu chí kế hoạch:** Ghi một giá trị vào SQLite, thoát app, mở lại, đọc được giá trị cũ.
++- **Tiêu chí kế hoạch:** `game_config.json` load được và đọc đúng thông số.
++- **Tiêu chí kế hoạch:** Cấu trúc thư mục khớp với `TECHNICAL_ARCHITECTURE.md`.
+
+ ---
+
+@@ -129,11 +137,11 @@
+
+ ### 4.4. Tiêu chí nghiệm thu
+
+-- [ ] Home Map hiển thị đúng, không bị vỡ layout trên các kích thước màn hình phổ biến.
+-- [ ] Chạm vào địa điểm có phản hồi âm thanh + hiệu ứng.
+-- [ ] Nhân vật xuất hiện với thoại ngắn khi mở app.
+-- [ ] Tắt/bật âm thanh hoạt động và được lưu lại sau khi thoát app.
+-- [ ] Trẻ (hoặc người test) hiểu được "đây là nơi để khám phá".
++- **Tiêu chí kế hoạch:** Home Map hiển thị đúng, không bị vỡ layout trên các kích thước màn hình phổ biến.
++- **Tiêu chí kế hoạch:** Chạm vào địa điểm có phản hồi âm thanh + hiệu ứng.
++- **Tiêu chí kế hoạch:** Nhân vật xuất hiện với thoại ngắn khi mở app.
++- **Tiêu chí kế hoạch:** Tắt/bật âm thanh hoạt động và được lưu lại sau khi thoát app.
++- **Tiêu chí kế hoạch:** Trẻ (hoặc người test) hiểu được "đây là nơi để khám phá".
+
+ ---
+
+@@ -182,15 +190,15 @@
+
+ **Đây là lát cắt dọc quan trọng nhất — phải đạt tất cả:**
+
+-- [ ] Mở app → vào Home Map → chạm vào Robot Maze → chơi được màn 1.
+-- [ ] Hoàn thành màn → thấy màn tổng kết với số liệu cụ thể.
+-- [ ] Điểm cao được lưu vào SQLite.
+-- [ ] Thoát app → mở lại → màn đã mở vẫn còn, điểm cao vẫn còn.
+-- [ ] Huy hiệu **First Line** xuất hiện sau khi hoàn thành màn 1.
+-- [ ] Creator Mode cho phép ghép khối/chỉnh luật có cấu trúc và chạy thử ít nhất
++- **Tiêu chí kế hoạch:** Mở app → vào Home Map → chạm vào Robot Maze → chơi được màn 1.
++- **Tiêu chí kế hoạch:** Hoàn thành màn → thấy màn tổng kết với số liệu cụ thể.
++- **Tiêu chí kế hoạch:** Điểm cao được lưu vào SQLite.
++- **Tiêu chí kế hoạch:** Thoát app → mở lại → màn đã mở vẫn còn, điểm cao vẫn còn.
++- **Tiêu chí kế hoạch:** Huy hiệu **First Line** xuất hiện sau khi hoàn thành màn 1.
++- **Tiêu chí kế hoạch:** Creator Mode cho phép ghép khối/chỉnh luật có cấu trúc và chạy thử ít nhất
+       1 màn (**không cần interpreter Python-like** ở giai đoạn này).
+-- [ ] Không crash khi chơi liên tục 15 phút.
+-- [ ] Phát sự kiện `level_completed` và `game_completed` đúng chuẩn.
++- **Tiêu chí kế hoạch:** Không crash khi chơi liên tục 15 phút.
++- **Tiêu chí kế hoạch:** Phát sự kiện `level_completed` và `game_completed` đúng chuẩn.
+
+ **Nếu tiêu chí này chưa đạt → chưa chuyển sang giai đoạn 4.**
+
+@@ -223,16 +231,16 @@
+
+ ### 6.4. Tiêu chí nghiệm thu
+
+-- [ ] Năng lượng hồi đúng tốc độ (10 phút/đơn vị).
+-- [ ] Tắt app 30 phút → mở lại → năng lượng đã hồi đúng.
+-- [ ] Tiêu hao đúng luật cho từng hoạt động (`GAME_DESIGN.md` 3.2).
+-- [ ] Hết năng lượng vẫn truy cập được nội dung miễn phí (ôn tập, đọc truyện,
++- **Tiêu chí kế hoạch:** Năng lượng hồi đúng tốc độ (10 phút/đơn vị).
++- **Tiêu chí kế hoạch:** Tắt app 30 phút → mở lại → năng lượng đã hồi đúng.
++- **Tiêu chí kế hoạch:** Tiêu hao đúng luật cho từng hoạt động (`GAME_DESIGN.md` 3.2).
++- **Tiêu chí kế hoạch:** Hết năng lượng vẫn truy cập được nội dung miễn phí (ôn tập, đọc truyện,
+       xem bộ sưu tập, Creator Mode).
+-- [ ] Xem quảng cáo thưởng → cộng +5 năng lượng sau khi SDK xác nhận.
+-- [ ] Quảng cáo thất bại → không trừ lượt, không trừ năng lượng.
+-- [ ] Vượt 3 lượt/ngày → nút ẩn hoặc vô hiệu hóa; thoát/mở lại app **không** reset lượt trong ngày.
+-- [ ] Không có quảng cáo nào chen ngang bài học.
+-- [ ] Đã kiểm tra chính sách Google Play Families **trước khi bật quảng cáo thật**.
++- **Tiêu chí kế hoạch:** Xem quảng cáo thưởng → cộng +5 năng lượng sau khi SDK xác nhận.
++- **Tiêu chí kế hoạch:** Quảng cáo thất bại → không trừ lượt, không trừ năng lượng.
++- **Tiêu chí kế hoạch:** Vượt 3 lượt/ngày → nút ẩn hoặc vô hiệu hóa; thoát/mở lại app **không** reset lượt trong ngày.
++- **Tiêu chí kế hoạch:** Không có quảng cáo nào chen ngang bài học.
++- **Tiêu chí kế hoạch:** Đã kiểm tra chính sách Google Play Families **trước khi bật quảng cáo thật**.
+
+ ---
+
+@@ -259,13 +267,13 @@
+
+ ### 7.4. Tiêu chí nghiệm thu
+
+-- [ ] Chạy được tập con Python-like (in, biến, điều kiện, vòng lặp, hàm đơn giản).
+-- [ ] Vòng lặp vô hạn dừng an toàn do **vượt ngân sách bước**, không crash.
+-- [ ] Đệ quy sâu dừng an toàn ở ngưỡng độ sâu đã đặt.
+-- [ ] Lỗi cú pháp hiển thị thông báo thân thiện với trẻ.
+-- [ ] Output bị chặn khi vượt giới hạn.
+-- [ ] Không truy cập được file hệ thống, mạng, module hệ thống.
+-- [ ] Creator Mode của mini-game mẫu chạy được trên interpreter này.
++- **Tiêu chí kế hoạch:** Chạy được tập con Python-like (in, biến, điều kiện, vòng lặp, hàm đơn giản).
++- **Tiêu chí kế hoạch:** Vòng lặp vô hạn dừng an toàn do **vượt ngân sách bước**, không crash.
++- **Tiêu chí kế hoạch:** Đệ quy sâu dừng an toàn ở ngưỡng độ sâu đã đặt.
++- **Tiêu chí kế hoạch:** Lỗi cú pháp hiển thị thông báo thân thiện với trẻ.
++- **Tiêu chí kế hoạch:** Output bị chặn khi vượt giới hạn.
++- **Tiêu chí kế hoạch:** Không truy cập được file hệ thống, mạng, module hệ thống.
++- **Tiêu chí kế hoạch:** Creator Mode của mini-game mẫu chạy được trên interpreter này.
+
+ ### 7.5. Đánh giá Python thật (sau này — chưa cam kết)
+
+@@ -318,15 +326,15 @@
+
+ ### 8.4. Tiêu chí nghiệm thu
+
+-- [ ] Chặng 1 hoàn chỉnh, trẻ (hoặc người test) hoàn thành được 12 bài.
+-- [ ] Mở chặng theo tiến trình học/điều kiện thực sự cần; Main Map hiển thị và điều hướng tới hoạt động hợp lệ.
+-- [ ] Màn tổng kết hiển thị số liệu lấy từ tiến trình đã lưu.
+-- [ ] Adventure Recap hiển thị đúng số liệu sau chặng 1.
+-- [ ] Nhà Thành Tích hiển thị huy hiệu, tường chiến tích, bộ sưu tập.
+-- [ ] Nhiệm vụ ngày reset đúng 00:00 giờ địa phương.
+-- [ ] Huy hiệu bí mật không lộ điều kiện.
+-- [ ] Chặng 2 mở được khi đủ điều kiện.
+-- [ ] Không cộng trùng phần thưởng "một lần" sau khi thoát/mở lại app.
++- **Tiêu chí kế hoạch:** Chặng 1 hoàn chỉnh, trẻ (hoặc người test) hoàn thành được 12 bài.
++- **Tiêu chí kế hoạch:** Mở chặng theo tiến trình học/điều kiện thực sự cần; Main Map hiển thị và điều hướng tới hoạt động hợp lệ.
++- **Tiêu chí kế hoạch:** Màn tổng kết hiển thị số liệu lấy từ tiến trình đã lưu.
++- **Tiêu chí kế hoạch:** Adventure Recap hiển thị đúng số liệu sau chặng 1.
++- **Tiêu chí kế hoạch:** Nhà Thành Tích hiển thị huy hiệu, tường chiến tích, bộ sưu tập.
++- **Tiêu chí kế hoạch:** Nhiệm vụ ngày reset đúng 00:00 giờ địa phương.
++- **Tiêu chí kế hoạch:** Huy hiệu bí mật không lộ điều kiện.
++- **Tiêu chí kế hoạch:** Chặng 2 mở được khi đủ điều kiện.
++- **Tiêu chí kế hoạch:** Không cộng trùng phần thưởng "một lần" sau khi thoát/mở lại app.
+
+ ---
+
+@@ -358,14 +366,14 @@
+
+ ### 9.3. Tiêu chí nghiệm thu
+
+-- [ ] Trẻ xem được Side Map Shop với giá và nội dung rõ ràng.
+-- [ ] Parental gate hoạt động trước khi vào màn hình mua hàng.
+-- [ ] Mua Side Map → mở được nội dung.
+-- [ ] Thoát app → mở lại → quyền sở hữu vẫn còn.
+-- [ ] Đổi thiết bị → khôi phục được giao dịch.
+-- [ ] Mô phỏng purchase token giả → không mở nội dung.
+-- [ ] Pro ẩn toàn bộ quảng cáo trong phạm vi gói.
+-- [ ] Main Quest vẫn truy cập được khi không mua gì.
++- **Tiêu chí kế hoạch:** Trẻ xem được Side Map Shop với giá và nội dung rõ ràng.
++- **Tiêu chí kế hoạch:** Parental gate hoạt động trước khi vào màn hình mua hàng.
++- **Tiêu chí kế hoạch:** Mua Side Map → mở được nội dung.
++- **Tiêu chí kế hoạch:** Thoát app → mở lại → quyền sở hữu vẫn còn.
++- **Tiêu chí kế hoạch:** Đổi thiết bị → khôi phục được giao dịch.
++- **Tiêu chí kế hoạch:** Mô phỏng purchase token giả → không mở nội dung.
++- **Tiêu chí kế hoạch:** Pro ẩn toàn bộ quảng cáo trong phạm vi gói.
++- **Tiêu chí kế hoạch:** Main Quest vẫn truy cập được khi không mua gì.
+
+ ---
+
+@@ -389,15 +397,15 @@
+
+ ### 10.3. Tiêu chí nghiệm thu
+
+-- [ ] App khởi động < 3 giây trên thiết bị tầm trung.
+-- [ ] Mini-game chạy 60 FPS ổn định.
+-- [ ] Dung lượng app < 150 MB.
+-- [ ] Bật/tắt được âm thanh, nhạc nền, hoạt ảnh.
+-- [ ] Localization hoạt động, không có chuỗi hard-code.
+-- [ ] Tất cả kịch bản kiểm thử cuối (mục 11) đạt.
+-- [ ] Build release cài được trên thiết bị thật.
+-- [ ] Đã kiểm tra chính sách trước khi submit.
+-- [ ] AI Tutor mẫu đầu tiên đạt tiêu chí nghiệm thu trong `PRODUCT_VISION.md` mục 14.6.
++- **Tiêu chí kế hoạch:** App khởi động < 3 giây trên thiết bị tầm trung.
++- **Tiêu chí kế hoạch:** Mini-game chạy 60 FPS ổn định.
++- **Tiêu chí kế hoạch:** Dung lượng app < 150 MB.
++- **Tiêu chí kế hoạch:** Bật/tắt được âm thanh, nhạc nền, hoạt ảnh.
++- **Tiêu chí kế hoạch:** Localization hoạt động, không có chuỗi hard-code.
++- **Tiêu chí kế hoạch:** Tất cả kịch bản kiểm thử cuối (mục 11) đạt.
++- **Tiêu chí kế hoạch:** Build release cài được trên thiết bị thật.
++- **Tiêu chí kế hoạch:** Đã kiểm tra chính sách trước khi submit.
++- **Tiêu chí kế hoạch:** AI Tutor mẫu đầu tiên đạt tiêu chí nghiệm thu trong `PRODUCT_VISION.md` mục 14.6.
+
+ ---
+
+@@ -467,44 +475,58 @@
+
+ ### 13.3. Tiêu chí nghiệm thu (cao cấp)
+
+-- [ ] Các tính năng mở rộng được thêm theo module, không viết lại nền tảng.
+-- [ ] Dữ liệu luyện tập và thi đấu thật được phân biệt rõ.
+-- [ ] Không có XP/cấp độ toàn cục được thêm vào.
+-- [ ] Cộng đồng/quà tặng tuân thủ an toàn trẻ em và quyền riêng tư.
++- **Tiêu chí kế hoạch:** Các tính năng mở rộng được thêm theo module, không viết lại nền tảng.
++- **Tiêu chí kế hoạch:** Dữ liệu luyện tập và thi đấu thật được phân biệt rõ.
++- **Tiêu chí kế hoạch:** Không có XP/cấp độ toàn cục được thêm vào.
++- **Tiêu chí kế hoạch:** Cộng đồng/quà tặng tuân thủ an toàn trẻ em và quyền riêng tư.
+
+ ---
+
+ ## 14. Trạng thái hiện tại & việc cần làm ngay
+
+-### 14.1. Trạng thái
+-
+-- Tài liệu sản phẩm: **đã cập nhật** (`PRODUCT_VISION.md`, `GAME_DESIGN.md`) để phản ánh README và brief.
+-- Tài liệu kỹ thuật: **đã cập nhật** (`TECHNICAL_ARCHITECTURE.md`) để phản ánh README và brief.
+-- Roadmap: **đã cập nhật** (`ROADMAP.md`) để giữ tầm nhìn sản phẩm và chia giai đoạn.
+-- Mã nguồn: **đã có lát cắt dọc hoàn chỉnh cho v0.1 "Đảo Khởi Đầu"** — Main Map, Main Quest (12 bài/64 bước), ba mini-game, Xưởng Mê Cung, Nhà Thành Tích, năng lượng, nhắc nghỉ, Python mô phỏng, trợ giảng (ngoại tuyến + relay + giọng nói thử nghiệm), SQLite, bộ test chạy trong CI. Giai đoạn 7 (Side Maps & Pro) chưa bắt đầu.
+-
+-### 14.2. Việc cần làm theo thứ tự ưu tiên
+-
+-1. **Chốt phạm vi Python runtime** — đã chốt: mô phỏng giai đoạn đầu, đánh giá lại sau.
+-2. **Định lượng hóa Game Design** — đã có trong `GAME_DESIGN.md`.
+-3. **Xác định cấu trúc code & tiêu chí nghiệm thu** — đã có trong tài liệu này.
+-4. **Phân biệt Main Map và Main Quest** — đã chốt trong `PRODUCT_VISION.md`.
+-5. **Chốt ranh giới dữ liệu giữa các module** — đã có trong `TECHNICAL_ARCHITECTURE.md`.
+-6. **Tách tài liệu** — đã hoàn thành (README + 4 tài liệu trong `docs/`).
+-7. **Lát cắt dọc đầu tiên** — đã xong (mở app → chơi → lưu → mở lại vẫn còn kết quả, có test và hành trình emulator trong CI). Việc còn lại: đóng bằng chứng trên thiết bị cho AI Tutor (xem 16.3) và áp dụng UI Direction V2 theo từng màn hình.
++### 14.1. Trạng thái có source khác với nghiệm thu
++
++Nguồn cập nhật: [PROJECT_STATUS](PROJECT_STATUS.md), đối chiếu CODE
++`71b0fd3fd8fb07c73596ce089fa2e68f6fe87964` và DESIGN trước r47
++`c68bdcd73b400c4d449216023a54499b202bda1d`.
++
++- Foundation/SQLite/điều hướng, Main Map, Main Quest chặng1 và interpreter mô phỏng
++  đã có source; không bắt đầu lại dự án. Chưa đóng mọi tiêu chí của giai đoạn1–6.
++- Registry có6 module: Main Quest, **Robot Maze, Dragon Jump, Catch the Stars,
++  Bug Hunter**, Nhà Thành Tích. Bốn hoạt động chơi được liệt kê theo tên để không
++  bỏ sót debug game Bug Hunter; Maze có Creator riêng.
++- Giai đoạn4 **chỉ hoàn thành một phần**: energy có source, rewarded-ad SDK chưa
++  có. Không coi quảng cáo/quota/SDK callbacks là dữ liệu đang được lưu/chạy.
++- Evidence lịch sử a9b: run39051006962 có406 ordinary +10 render;12 focused Settings
++  là subset. APK run39052978443 đã build, không thay device/voice/usability PASS.
++  Những kết quả đó không phải execution evidence cho71b0 hoặc tip mới hơn.
++- PQC-011: **CHANGES_REQUESTED / WAITING_FOR_PINNED_SDK_EVIDENCE**;
++  R42-A/B **SOURCE_ADDRESSED / EXECUTION_UNVERIFIED** theo review r44.
++- PQC-018: **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE** theo review r40;
++  không runtime/production approval. Header cũ trên CODE phải đồng bộ, không mở lại task.
++- DESIGN r45/r46 đã giao study chọn màn Maze và Creator; không phải Flutter port.
++  Side Maps/Pro, cộng đồng/Arena đầy đủ và các lane runtime mở rộng vẫn chưa đóng.
++
++### 14.2. Ưu tiên hiện tại
++
++1. Giữ011 ở blocker evidence; không giao lại source correction đã được review,
++   không cài SDK hoặc tự trigger/rerun CI để biến thiếu evidence thành PASS.
++2. Đồng bộ tài liệu/trạng thái và chính sách APK keyless theo r47. Đây là việc
++   bảo trì riêng, không mở runtime011 hoặc art018. Không overwrite workflow CODE
++   bằng cả file DESIGN vì hai nhánh có các gate kiểm thử khác nhau.
++3. DESIGN hoàn thiện các surface còn partial và bộ art2,5D production. R1/R4 chưa
++   mở; CODE chỉ nhận runtime order có scope/allowlist/assets/tests riêng.
++4. Nhà–đất–đảo, visit/pet, Arena/cộng đồng tiếp tục theo readiness, không tự cấp
++   economy/quyền chia sẻ và không chờ voice production mới thiết kế UI độc lập.
+
+ ### 14.3. Bước tiếp theo cụ thể
+
+-Bắt đầu **giai đoạn 1 — Foundation**:
+-
+-- Khởi tạo project Flutter.
+-- Dựng cấu trúc thư mục theo `TECHNICAL_ARCHITECTURE.md`.
+-- Cấu hình SQLite với schema ban đầu.
+-- Tạo `game_config.json`.
+-- Dựng 3–4 màn hình rỗng và điều hướng.
+-- Kiểm tra: ghi SQLite, thoát app, mở lại, đọc được.
+-
+-Khi giai đoạn 1 đạt tiêu chí nghiệm thu → chuyển sang giai đoạn 2.
++**Không khởi tạo lại Flutter/SQLite.** Đọc ma trận trong PROJECT_STATUS và task
++review tương ứng trước khi chọn việc. Chỉ dùng source đã pin để map module/state;
++không lấy checkbox, ảnh concept hoặc build APK làm bằng chứng đã nghiệm thu.
++Các tiêu chí nền dưới §3–13 được giữ như kế hoạch tham chiếu, không phải bảng đếm
++việc chưa bắt đầu. Không đánh dấu hoàn tất hàng loạt; từng acceptance cần SHA,
++scope, log/test/device evidence và giới hạn của lần kiểm chứng.
+
+ ### 14.4. Quyết định còn mở (TBD)
+
+@@ -569,11 +591,12 @@
+ - Quảng cáo thưởng (rewarded ads) chưa có trong source.
+ - UI Direction V2 chưa được áp dụng vào source.
+ - **Bằng chứng trên thiết bị cho giọng nói**: bản sửa lỗi âm thanh và vai người nói
+-  đã có test tự động (giao thức Live, vòng đời loa PCM, mô hình transcript, danh
+-  tính trong panel) và CI xanh, nhưng **chưa** có phiên Gemini Live thật được xác
++  có test source (giao thức Live, vòng đời loa PCM, mô hình transcript, danh
++  tính trong panel) và evidence lịch sử, nhưng **chưa** có phiên Gemini Live thật được xác
+   nhận bằng tai trên máy. Tiêu chí đóng: làm theo bảng kiểm trong
+-  `docs/experimental/GEMINI_LIVE_VOICE_TEST.md` trên Release APK dựng từ commit
+-  cần kiểm tra (cần `GEMINI_API_KEY` của repo secret lúc build).
++  `docs/experimental/GEMINI_LIVE_VOICE_TEST.md` trên build cục bộ được phép hoặc
++  đường token production tương lai, ghi exact SHA. Từ r47 CI không nhúng Gemini
++  key; không coi một keyless APK build thành công là voice PASS.
+
+ ### 16.3. Hạng mục áp dụng UI Direction V2
+
+--- a/docs/TECHNICAL_ARCHITECTURE.md
++++ b/docs/TECHNICAL_ARCHITECTURE.md
+@@ -1,4 +1,7 @@
+ # PyQuest — Technical Architecture
++
++> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
++> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
+ > Tài liệu này xác định **xây PyQuest bằng cách nào**:
+ > framework, cách chạy Python, cấu trúc module, lưu dữ liệu,
+@@ -95,12 +98,21 @@
+
+ #### 2.3.2. Kiểm soát có thể thi hành
+
++**Yêu cầu thiết kế, không phải chứng nhận sandbox.** Config/runtime source tại
++CODE71b0 có `step_budget=100000`, `max_call_depth=50`, `max_output_chars=10000`
++và `max_collection_length=10000`. Output là **ký tự**, không phải bảo đảm10KB.
++Có bộ đếm/check trong source không chứng minh mọi operation, cấp phát hoặc thời
++lượng CPU đều đã bị chặn. Cần evidence theo từng đường thực thi; đợt r47 không
++chạy lại interpreter hay kiểm tra sandbox trên thiết bị. Rate-limit print, hủy
++isolate và mục tiêu bộ nhớ bên dưới vẫn là yêu cầu cần kiểm chứng, không claim
++đều đã triển khai. Xem [ma trận source/evidence](PROJECT_STATUS.md).
++
+ | Kiểm soát | Cách thi hành | Giá trị |
+ |---|---|---|
+ | **Ngân sách bước (step budget)** | Đếm số "bước" ngay trong vòng lặp interpreter; dừng khi vượt ngưỡng. Đây là **ràng buộc cứng chính**. | 100.000 bước (**TBD** — cần hiệu chỉnh theo trải nghiệm thực tế) |
+ | **Độ sâu gọi/đệ quy** | Bộ đếm call-depth tường minh, tăng khi gọi hàm, giảm khi `return`. | 50 (**TBD**) |
+-| **Kích thước output** | Cộng dồn độ dài output; dừng/khóa khi vượt ngưỡng. | 10 KB (**TBD**) |
+-| **Kích thước collection** | Chặn khi list vượt độ dài tối đa. | **TBD** (chưa có giá trị hợp lý) |
++| **Kích thước output** | Cộng dồn độ dài output; dừng/khóa khi vượt ngưỡng. | 10.000 ký tự trong source; cần kiểm chứng enforcement |
++| **Kích thước collection** | Chặn khi list vượt độ dài tối đa. | 10.000 phần tử trong source; cần đo/kiểm chứng, không phải trần bộ nhớ |
+ | **Số lần in mỗi giây** | Đếm và gộp output trong cửa sổ thời gian. | 100/giây (**TBD**) |
+
+ #### 2.3.3. Ngắt/hủy thực thi — thiết kế đúng
+@@ -109,8 +121,9 @@
+   trong cùng isolate: một `while True` sẽ chặn luồng và không nhường quyền cho
+   bộ hẹn giờ. Vì vậy **không** được mô tả "đặt 3 giây là tự dừng".
+ - Cách làm đúng (chọn một, thiết kế để có thể thay):
+-  - **Ưu tiên:** chặn bằng **ngân sách bước** (2.3.2) — kiểm tra mỗi bước, luôn
+-    dừng an toàn bất kể code làm gì.
++  - **Ưu tiên:** chặn bằng **ngân sách bước** (2.3.2). Phải kiểm tra coverage của
++    bộ đếm và chặn các operation/cấp phát tốn kém; không suy ra “luôn dừng an toàn
++    bất kể code làm gì” chỉ từ việc có một counter.
+   - Nếu cần hủy giữa chừng theo yêu cầu người dùng: chạy interpreter trong một
+     **isolate riêng** và **hủy isolate** khi người dùng bấm dừng.
+ - **Giới hạn bộ nhớ:** không thể thi hành "trần cứng" chỉ bằng một giá trị cấu
+@@ -828,11 +841,17 @@
+   Đường chuẩn cho trợ giảng văn bản là **relay giữ key ở server**
+   (`tools/ai_relay/relay.py`, `RELAY_API_KEY`), app chỉ cấu hình endpoint
+   (`AI_TUTOR_ENDPOINT` hoặc `assets/config/ai_tutor_config.json`).
+-- Giọng nói Gemini Live hiện chỉ có đường cấu hình `--dart-define=GEMINI_API_KEY=...`
+-  cho **build thử nghiệm**: value nằm trong APK nên nó chỉ dành cho bản internal,
+-  tuyệt đối không commit key, không in key vào log, và phải đổi sang token ngắn hạn
+-  qua server trước khi phát hành. App đã gỡ bỏ key khỏi log bằng
+-  `GeminiLiveWire.redactSecrets`.
++- Source Gemini Live còn đường thử nghiệm cục bộ bằng dart-define; key nằm trong
++  APK và có thể bị trích xuất. `GeminiLiveWire.redactSecrets` chỉ giảm lộ trong
++  log, không bảo vệ key trong client. Cần token ngắn hạn/server mediation trước
++  khi cho phép phân phối voice; việc sửa tài liệu không triển khai cơ chế đó.
++- **Từ r47, hai workflow build APK không đọc Gemini repository secret và luôn
++  truyền `--dart-define=GEMINI_API_KEY=`.** Direct voice không xác thực được trong
++  các artifact mới của đường build này. Không thêm lại key để bật voice trên CI.
++- Release-mode và quyền phát hành là hai việc khác nhau. Workflow preview không
++  phải gate store/public release. Keyless chưa có nghĩa đã đạt mọi gate bảo mật.
++  Không có APK/device evidence mới trong đợt sửa này; artifact/key cũ chưa được
++  thu hồi/xoay tự động. Xem [chính sách hiện hành](PROJECT_STATUS.md#4-apk-và-bí-mật-chính-sách-từ-r47).
+
+ ### 15.3. UI Direction V2
+
+--- a/docs/experimental/GEMINI_LIVE_VOICE_TEST.md
++++ b/docs/experimental/GEMINI_LIVE_VOICE_TEST.md
+@@ -3,22 +3,28 @@
+ Tài liệu này dành cho người chạy thử APK. AI Tutor voice là tính năng thử nghiệm:
+ nó chỉ hoạt động ở bản build có `GEMINI_API_KEY` và cần quyền micro.
+
+-## Build
++## Build và quyền phân phối — cập nhật r47
+
+-Từ thư mục gốc của repo:
++**APK CI mới không dùng để kiểm thử voice có xác thực.** Cả hai workflow
++`ci.yml` và `build-debug-apk.yml` không đọc Gemini repository secret, và truyền
++`--dart-define=GEMINI_API_KEY=` khi build. Không thêm lại secret vào workflow để
++bật voice. APK keyless có thể dùng để kiểm tra luồng thiếu key/fallback, nhưng
++không chứng minh PCM/audio session thật hoạt động.
+
+-```bash
+-cd app
+-flutter pub get
+-flutter run --dart-define=GEMINI_API_KEY=KEY_CUA_BAN
+-```
++Source vẫn còn đường thử nghiệm cục bộ có key. Chỉ chạy trên môi trường/thiết bị
++được phép, dùng credential thử nghiệm riêng và không upload/phân phối APK đó.
++Cấu hình credential ngoài repository theo quy trình bảo mật cục bộ; không gửi key
++vào chat/issue/PR, không ghi vào shell history hoặc log. Không có credential nào
++được yêu cầu hoặc đọc trong đợt r47.
+
+-Không commit key, không dán key vào issue/chat/PR. `--dart-define` được nhúng
+-thẳng vào APK nên chỉ dùng cho bản thử nghiệm nội bộ; trước khi phát hành rộng
+-phải đổi sang token ngắn hạn qua server trung gian và xoay vòng key đã dùng.
++Dart-define đặt giá trị vào APK; biến môi trường, repository secret hay build
++`--release` **không biến nó thành bí mật được bảo vệ trên client**. Đường phân phối
++voice phải dùng token ngắn hạn/server mediation và được nghiệm thu riêng.
+
+-Bản Release trên CI lấy key từ repository secret `GEMINI_API_KEY`
+-(xem `.github/workflows/ci.yml`, job `apk`).
++Các workflow cũ từng truyền Gemini key khi secret tồn tại. Sửa workflow không
++thay đổi APK cũ hoặc tự xoay key; chủ tài khoản cần kiểm tra phạm vi phân phối và
++thu hồi/xoay credential đã đưa vào bản chia sẻ nếu có. Chưa kết luận key đã lộ.
++Xem [source/evidence/release policy](../PROJECT_STATUS.md).
+
+ ## Các bước kiểm tra
+
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -309,17 +309,14 @@
+           channel: stable
+           flutter-version: ${{ env.FLUTTER_VERSION }}
+           cache: true
+-      - name: Build release APK
+-        working-directory: app
+-        shell: bash
+-        env:
+-          # Add GEMINI_API_KEY under repository Settings > Secrets and variables > Actions.
+-          # If unset, the APK still builds, but Gemini Live voice will not authenticate.
+-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
++      # Keyless preview policy r47: never compile a provider secret into CI artifacts.
++      - name: Build release APK (keyless preview)
++        working-directory: app
++        shell: bash
+         run: |
+           set +e
+           flutter pub get > ../apk_release.txt 2>&1
+-          flutter build apk --release --dart-define="GEMINI_API_KEY=${GEMINI_API_KEY}" >> ../apk_release.txt 2>&1; echo "build_apk_release=$?" >> ../status.txt
++          flutter build apk --release --dart-define=GEMINI_API_KEY= >> ../apk_release.txt 2>&1; echo "build_apk_release=$?" >> ../status.txt
+           cp build/app/outputs/flutter-apk/app-release.apk ../pyquest-release.apk
+           ls -la ../pyquest-release.apk >> ../apk_release.txt 2>&1
+           tail -25 ../apk_release.txt
+@@ -375,14 +372,15 @@
+         id: runner_state_before
+         shell: bash
+         run: bash ci/runner_state.sh runner-state-before.txt "before the emulator step"
+-      - name: Build debug APK
++      # Keyless preview policy r47: never compile a provider secret into CI artifacts.
++      - name: Build debug APK (keyless preview)
+         id: build_apk
+         working-directory: app
+         shell: bash
+         run: |
+           set +e
+           flutter pub get > ../apk_build.txt 2>&1
+-          flutter build apk --debug >> ../apk_build.txt 2>&1; echo "build_apk_debug=$?" >> ../status.txt
++          flutter build apk --debug --dart-define=GEMINI_API_KEY= >> ../apk_build.txt 2>&1; echo "build_apk_debug=$?" >> ../status.txt
+           cp build/app/outputs/flutter-apk/app-debug.apk ../pyquest-debug.apk
+           ls -la ../pyquest-debug.apk >> ../apk_build.txt 2>&1
+           (cd android && ./gradlew --stop) >/dev/null 2>&1
+--- a/.github/workflows/build-debug-apk.yml
++++ b/.github/workflows/build-debug-apk.yml
+@@ -1,4 +1,4 @@
+-name: Build PyQuest debug APK
++name: Build PyQuest APK (keyless preview)
+
+ on:
+   push:
+@@ -38,15 +38,14 @@
+       - name: Resolve dependencies
+         run: flutter pub get
+
+-      - name: Build debug APK
+-        env:
+-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+-        run: flutter build apk --debug --dart-define=GEMINI_API_KEY="$GEMINI_API_KEY"
++      # Keyless preview policy r47: never compile a provider secret into CI artifacts.
++      - name: Build debug APK (keyless preview)
++        run: flutter build apk --debug --dart-define=GEMINI_API_KEY=
+
+       - name: Upload debug APK
+         uses: actions/upload-artifact@v4
+         with:
+-          name: pyquest-debug-voice-diagnostics
++          name: pyquest-debug-keyless-preview
+           path: app/build/app/outputs/flutter-apk/app-debug.apk
+           if-no-files-found: error
+           retention-days: 7
+--- a/docs/implementation/coordination/tasks/PQC-018.md
++++ b/docs/implementation/coordination/tasks/PQC-018.md
+@@ -1,16 +1,29 @@
+ # PQC-018 — Hoàn thiện phần concept còn thiếu từ bộ ảnh chung r35
+
+-- revision: 3 · 2026-10-18
+-- status: **IN_PROGRESS — 9 CONCEPTS REVIEWED; TWO SCREEN CORRECTIONS**; art/design-only
++- revision: 4 · 2026-10-18
++- status: **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**; no runtime/production approval
+ - owner: CODE; DESIGN review/canonical catalog
+ - authorization: user yêu cầu review017, đồng bộ ảnh và giao các ảnh còn lại cho CODE
+-- design_source: **`3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2`** (review PQD-003 r38 + task revision3)
++- design_source: **`30394b7bb23ad1fcf371c8dee644fd6caaf3793d`** — disposition r40/revision4; đồng bộ theo PQC-019 r47
+ - previous_design_pin: `68f2590b5883ca8aa746ffde0814d60a32dacb3c`
+-- received_art_pin: `0990fbcbf6045bd64244239e36ccbca8c8dc394b` (B + A correction `ab0ae35eafebf8602ef714d85004ad4b744898a4`)
++- received_art_pin: **`4fe3b7d0a1bf5f6dface1b04cbc4e2d7ee9d451f`** — R38-A/B correction reviewed by DESIGN r40
+ - runtime_identity_pin: `a331ac110f19de63e9be6884d08db8c436054f50` (runtime trong e3 không đổi)
+ - runtime/app_tests/dependencies/CI/SDK/economy: **no**
+-- design_art/layout_checks/coordination: **yes**, chỉ allowlist §5
++- design_art/layout_checks/coordination: **review complete**; không có correction018 mới
+ - runtime_ready: **false**, production approval: **not granted**
++
++## Trạng thái hiện hành — đồng bộ r47
++
++Disposition018 theo [DESIGN review r40](https://github.com/Nthanhbadboy/PyQuest/blob/30394b7bb23ad1fcf371c8dee644fd6caaf3793d/docs/design/coordination/reviews/PQD-003-r40.md):
++**REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**. Những câu IN_PROGRESS hoặc yêu cầu
++sửa R38 trong phần lịch sử phía dưới không còn là lệnh đang mở. Không vẽ lại,
++không port Flutter và không cấp production approval.
++
++PQC-011 vẫn **CHANGES_REQUESTED / WAITING_FOR_PINNED_SDK_EVIDENCE** theo r44;
++không giao correction source mới. Xem [PROJECT_STATUS](../../../PROJECT_STATUS.md).
++Đồng bộ tài liệu và workflow keyless thuộc **PQC-019 riêng**, không mở lại018/011.
++Phần brief/handoff sau đây giữ làm lịch sử; không dùng các status cũ để phủ quyết
++disposition hiện hành.
+
+ ## 0. Revision3 — giữ9ảnh, chỉ sửa hai điểm còn thiếu
+
+--- /dev/null
++++ b/docs/PROJECT_STATUS.md
+@@ -0,0 +1,80 @@
++# PyQuest — trạng thái source, bằng chứng và phát hành
++
++**2026-10-18 · r47 · không phải chứng nhận runtime mới.**
++
++Tài liệu này phân biệt **có source**, **đã kiểm chứng tại một SHA**, **thiết kế** và
++**kế hoạch**. Product Vision/Game Design/Technical Architecture/Roadmap giữ vai trò
++riêng; không lấy checklist hoặc hình concept làm trạng thái triển khai.
++
++## 1. Mốc đối chiếu
++
++- CODE được đọc: `71b0fd3fd8fb07c73596ce089fa2e68f6fe87964` trên
++  `arena/0d4fcb38-pyquest`. Chưa có bằng chứng thực thi pinned-SDK được nhận cho011
++  tại SHA này. Không suy PASS từ việc source đã sửa.
++- DESIGN trước đợt sửa tài liệu này: `c68bdcd73b400c4d449216023a54499b202bda1d`
++  trên `arena/00838eb9-pyquest`; đã giao study r46, chưa port toàn bộ vào Flutter.
++- Bằng chứng runtime lịch sử: source `a9bcdcf8e3203ee17b1a5de0b9ebff6a0e8dd32d`,
++  run39051006962:406 ordinary +10 render;12 focused Settings là subset, không cộng
++  lần nữa. Build APK run39052978443 không thay kiểm tra cài/chạy/voice trên thiết bị.
++  Các kết quả này **không chuyển thành PASS cho CODE71b0 hoặc tip mới hơn**.
++
++## 2. Ma trận tiến độ thay cho dấu tick tổng quát
++
++| Phần | Source tại mốc đối chiếu | Bằng chứng / việc chưa đóng |
++|---|---|---|
++| Foundation, SQLite, điều hướng | Đã có; không khởi tạo lại | Có evidence lịch sử nói trên; không coi mọi tiêu chí Foundation đã nghiệm thu trên tip |
++| Main Map | Đã có hub và registry6 module | UI thế giới2,5D mới chưa được port toàn bộ; concept không phải APK mới |
++| Các hoạt động chơi | Robot Maze, Dragon Jump, Catch the Stars, Bug Hunter; Maze có Creator | Liệt kê4 hoạt động, trong đó Bug Hunter là debug; không còn tóm tắt thiếu bằng “ba mini-game” |
++| Energy / rewarded ads | Energy hồi theo thời gian và lưu SQLite; **rewarded-ad SDK chưa có** | Ads/quota/reward callback/policy trẻ em là kế hoạch, không phải feature đã hoạt động |
++| Interpreter mô phỏng | Có tập con Python viết bằng Dart và các bộ đếm/giới hạn | Không phải Python đầy đủ hoặc sandbox được chứng nhận; cần kiểm tra coverage, cấp phát và thời gian của từng operation |
++| Main Quest | Chặng1 có12 bài/64 bước; Tutor ngoại tuyến và relay văn bản có source | Không nói toàn bộ các chặng hoặc board AI/freehand/voice-sync đã hoàn tất |
++| Voice Gemini Live | Đường thử nghiệm direct API có trong source | Chưa có token ngắn hạn/server mediation production; CI mới không đưa key vào APK; không có device voice PASS mới |
++| Side Maps, Pro, cộng đồng/Arena mở rộng | Thuộc kế hoạch sản phẩm, chưa đủ implementation | Không bán/claim quyền lợi chưa triển khai |
++| Nhà–đất–đảo, visit/pet và skin mới | Đã có thiết kế và các study có giới hạn | Không dùng HTML/JS/art PASS thay runtime, quyền chia sẻ hay commerce thật |
++
++64 tiêu chí lịch sử trong Roadmap là **tiêu chí kế hoạch**, không phải64 task chưa
++bắt đầu, cũng không được đánh dấu hoàn tất hàng loạt vì thấy source. Khi nghiệm
++thu một tiêu chí cần ghi rõ scope, SHA, log/test/device evidence và giới hạn.
++
++## 3. Disposition phối hợp hiện hành
++
++| Task | Disposition có thẩm quyền | Nguồn |
++|---|---|---|
++| PQC-010 /014 /015 /016 | Đã nhận trong phạm vi riêng; không có nghĩa whole-app complete | Snapshot/evidence lịch sử ở §1 |
++| PQC-011 | **CHANGES_REQUESTED / WAITING_FOR_PINNED_SDK_EVIDENCE**; R42-A/B **SOURCE_ADDRESSED / EXECUTION_UNVERIFIED** | [Review r44 tại DESIGN8f754a1](https://github.com/Nthanhbadboy/PyQuest/blob/8f754a16c829264747b6517c7f7bacb3c8769283/docs/design/coordination/reviews/PQD-003-r44.md) |
++| PQC-018 | **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**; không runtime/production approval | [Task revision4 tại DESIGN30394b7](https://github.com/Nthanhbadboy/PyQuest/blob/30394b7bb23ad1fcf371c8dee644fd6caaf3793d/docs/implementation/coordination/tasks/PQC-018.md) |
++| DESIGN r45 /r46 | Maze selection và Creator interaction study đã giao | [Visual status tại DESIGNc68bdcd](https://github.com/Nthanhbadboy/PyQuest/blob/c68bdcd73b400c4d449216023a54499b202bda1d/docs/design/VISUAL_DESIGN_STATUS.md) |
++| Runtime R1 /R4 | Chưa mở | Cần order/asset/allowlist/gates riêng; không suy quyền từ art study |
++
++**Độ lệch nhánh đã phát hiện:** CODE71b0 còn câu ads đã có, chỉ dẫn bắt đầu
++Foundation và header018 `IN_PROGRESS`; DESIGN đã sửa các mục đó từ trước r47.
++Bản cập nhật r47 và patch đồng bộ phải được CODE áp dụng trên nhánh của CODE;
++không coi việc DESIGN push hoặc đối tác fetch là đã đồng bộ working tree.
++PQC-011 và acceptance lịch sử không bị sửa/đóng lại trong việc đồng bộ này.
++
++## 4. APK và bí mật: chính sách từ r47
++
++- Hai workflow `.github/workflows/ci.yml` và `build-debug-apk.yml` **không đọc
++  repository secret `GEMINI_API_KEY` để build**, và truyền define rỗng rõ ràng cho
++  mọi lệnh build APK. Không thêm tùy chọn opt-in đưa key dài hạn vào CI artifact.
++- Hệ quả: APK tạo bởi cấu hình workflow mới **không có Gemini key từ đường build
++  đó**; direct Gemini Live voice không xác thực được. Đây là thay đổi có chủ ý,
++  không phải lỗi cần khắc phục bằng cách thêm lại secret. Tutor ngoại tuyến/relay
++  văn bản không bị sửa; hành vi trên APK vẫn phải được kiểm chứng khi có build.
++- `--release` chỉ là build mode, **không phải cho phép phát hành công khai**.
++  Signing, quyền phân phối, token/backend, an toàn trẻ em và kiểm tra thiết bị vẫn
++  là các gate riêng. Keyless không đồng nghĩa đã đạt mọi yêu cầu bảo mật.
++- Source vẫn cho phép đường thử nghiệm cục bộ qua dart-define; sửa workflow không
++  vô hiệu hóa mọi cách tự build có key. Đường đó không được upload/phân phối như
++  artifact tiêu chuẩn. Xem [hướng dẫn voice](experimental/GEMINI_LIVE_VOICE_TEST.md).
++- Workflow cũ có thể đã đóng gói key nếu secret tồn tại. Sửa hôm nay **không xóa
++  key khỏi APK cũ, không thu hồi artifact và không tự xoay key**. Chưa đọc secret,
++  chưa phân tích APK cũ, chưa kết luận lộ key. Chủ tài khoản cần rà soát phạm vi
++  phân phối, thu hồi/xoay key nếu đã đưa vào bản chia sẻ; không gửi key qua chat.
++
++## 5. Giới hạn của đợt sửa
++
++Chỉ sửa tài liệu, cấu hình đóng gói và kiểm tra local của chính sách đó. Không sửa
++app/runtime/dependencies, không cài SDK, không dispatch/rerun CI, không tạo APK
++hoặc tuyên bố đạt Flutter/Python/device tests. CODE sync là task riêng, không phải
++ACK-only và không mở lại source corrections của011 hay art scope018.
+--- /dev/null
++++ b/docs/implementation/coordination/tasks/PQC-019.md
+@@ -0,0 +1,74 @@
++# PQC-019 — Đồng bộ trạng thái tài liệu và APK keyless · r47
++
++- owner: **CODE** cho áp dụng patch trên nhánh CODE; **DESIGN** đã sửa nhánh DESIGN
++- status: **READY_FOR_CODE — bounded documentation / packaging-policy sync**
++- authorization: user yêu cầu “sửa” sau audit tài liệu/voice-key/roadmap/task drift
++- date: 2026-10-18
++- source_pin: `71b0fd3fd8fb07c73596ce089fa2e68f6fe87964`
++- design_base: `c68bdcd73b400c4d449216023a54499b202bda1d`
++- runtime/app/dependencies/SDK: **no**
++- workflow_source_edit: **yes**, chỉ bỏ key injection và ghi nhãn keyless preview
++- CI_dispatch/rerun/build/device_tests: **no**
++- local_static_policy_tests/docs/coordination: **yes**, theo allowlist bên dưới
++
++## Mục tiêu
++
++Nhánh CODE còn nội dung ads đã triển khai, bắt đầu Foundation, header018 đang làm;
++DESIGN đã sửa trước đó nhưng bản sao trên CODE chưa cập nhật. Cả hai workflow cũ
++còn truyền Gemini repository secret vào APK. Đây là thay đổi bảo trì có nội dung,
++**không phải ACK-only, không sửa runtime011 hoặc mở lại art018**.
++
++DESIGN đã chuẩn bị patch riêng trên exact CODE pin, không lấy nguyên workflow
++DESIGN đè workflow CODE (sẽ mất gate/test riêng của CODE). File patch và manifest
++nằm trên nhánh DESIGN tại `docs/design/coordination/reviews/PQD-010-r47/`.
++
++## Cách tiếp nhận
++
++1. Fetch DESIGN, xác định commit thật chứa task này và `code-sync.patch`; ghi SHA
++   đó khi bàn giao. Giữ nhánh CODE được phiên của bạn cho phép; bảo vệ dirty files.
++2. Đọc [PROJECT_STATUS](../../../PROJECT_STATUS.md), patch và allowlist.
++   Nếu file liên quan đã đổi so với source pin, dừng việc apply tự động và review
++   từng hunk; không `--reject`, không force, không reset hoặc checkout cả file từ DESIGN.
++3. Lấy patch từ commit DESIGN đã pin ra file cache ngoài Git; chạy
++   `git apply --check <patch>` rồi `git apply <patch>`. Patch đã được dry-run và
++   áp dụng vào snapshot tạm của CODE71b0 để kiểm tra, **chưa được áp dụng lên remote CODE**.
++4. Chạy local, không Flutter/CI:
++   - `python tools/maintenance/test_release_policy.py`
++   - `python tools/maintenance/check_release_policy.py`
++   - `git diff --check`
++5. Xem diff: giữ nguyên `on`, job conditions, Flutter version, formatter/analyzer/
++   test/integration gates và CODE-specific workflow steps. Chỉ thay phần APK key
++   và label liên quan. Không thêm opt-in đọc key dài hạn hoặc input key.
++6. Cập nhật task này thành `APPLIED_SOURCE_ONLY — local checks PASS` với final SHA
++   trong handoff, counts/log và file list; commit `[skip ci]` có nội dung thật rồi
++   push đúng nhánh phiên CODE. Không yêu cầu ACK-only riêng và không gọi build/CI.
++
++## Allowlist chính xác (13 file)
++
++- `README.md`
++- `docs/{PROJECT_STATUS,PRODUCT_VISION,GAME_DESIGN,ROADMAP,TECHNICAL_ARCHITECTURE}.md`
++- `docs/experimental/GEMINI_LIVE_VOICE_TEST.md`
++- `docs/implementation/coordination/tasks/PQC-018.md` — disposition/header và nhãn lịch sử, không artwork
++- `docs/implementation/coordination/tasks/PQC-019.md` — task này / handoff
++- `.github/workflows/{ci,build-debug-apk}.yml` — đúng keyless hunks, không thay gates
++- `tools/maintenance/{check_release_policy,test_release_policy}.py`
++
++Không sửa `app/**`, pubspec/lock, authored-board assets/tests, token/backend, key,
++repo secrets/environments, old artifacts, lịch sử review/archive hay danh sách art.
++Không coi status/source update là authorized pinned-SDK execution cho011.
++
++## Acceptance và giới hạn
++
++- Hai workflow không tham chiếu Gemini secret; cả3 lệnh APK build có
++  `--dart-define=GEMINI_API_KEY=`. Release/debug đều keyless, không có bypass input.
++- 64 tiêu chí Roadmap được giữ nguyên nội dung dưới dạng **tiêu chí kế hoạch**,
++  không tick tất cả; ma trận source/evidence tách rõ ads chưa có và game registry.
++- README không còn claim “app không bao giờ chứa API key”; voice guide không hướng
++  dẫn CI inject key; interpreter không được mô tả như sandbox đã được chứng nhận.
++- 018 giữ **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**;011 giữ
++  **CHANGES_REQUESTED / WAITING_FOR_PINNED_SDK_EVIDENCE** theo r44.
++- Static checks chỉ bảo vệ cấu trúc/lệnh literal hiện tại, không audit mọi YAML/shell
++  hoặc APK. Shell test dùng fake Flutter và sentinel giả; không đọc key thật.
++- Chưa build/inspect APK, chưa chứng minh voice trên máy, không revoke artifact/key
++  cũ. Keyless làm direct Gemini Live không xác thực được; không thêm lại secret
++  để làm voice hoạt động. Token mediation production cần order khác.
+--- /dev/null
++++ b/tools/maintenance/check_release_policy.py
+@@ -0,0 +1,97 @@
++#!/usr/bin/env python3
++"""Bounded, stdlib-only regression checks for r47's two literal APK workflows.
++Not a general shell/YAML security analyzer, secret scanner or APK verifier.
++Does not invoke Flutter, CI or any network operation.
++"""
++import argparse
++import json
++from pathlib import Path
++import re
++import shlex
++
++WORKFLOWS = ('.github/workflows/ci.yml', '.github/workflows/build-debug-apk.yml')
++EMPTY_DEFINE = '--dart-define=GEMINI_API_KEY='
++
++
++def build_commands(text):
++    commands = []
++    for match in re.finditer(r'\bflutter\s+build\s+apk\b[^\n]*', text):
++        lexer = shlex.shlex(match.group(), posix=True, punctuation_chars=';&|<>')
++        lexer.whitespace_split = True
++        args = []
++        for word in lexer:
++            if word and all(c in ';&|<>' for c in word):
++                break
++            args.append(word)
++        commands.append(args)
++    return commands
++
++
++def check_workflow(text):
++    issues = []
++    if re.search(r'secrets[^\n]*GEMINI_API_KEY|GEMINI_API_KEY[^\n]*secrets', text, re.I):
++        issues.append('Gemini repository secret reference remains')
++    if re.search(r'\$(?:GEMINI_API_KEY\b|\{GEMINI_API_KEY\b)', text):
++        issues.append('Gemini environment substitution remains')
++    commands = build_commands(text)
++    if not commands:
++        issues.append('No literal APK build command found; review checker coverage')
++    for args in commands:
++        if args.count(EMPTY_DEFINE) != 1:
++            issues.append('Every APK command must explicitly define an empty Gemini key once')
++        if any(a.startswith('--dart-define-from-file') for a in args):
++            issues.append('An additional define file could override the empty key')
++        defines = [a for a in args if 'GEMINI_API_KEY' in a]
++        if defines != [EMPTY_DEFINE]:
++            issues.append('Additional or non-empty Gemini define')
++    return issues
++
++
++def check_tree(root):
++    errors, workflows = [], []
++    for path in WORKFLOWS:
++        text = (root / path).read_text()
++        errors.extend(f'{path}: {message}' for message in check_workflow(text))
++        workflows.append({'path': path, 'apk_commands': len(build_commands(text))})
++    roadmap = (root / 'docs/ROADMAP.md').read_text()
++    if re.search(r'^\s*- \[[ xX]\]', roadmap, re.M):
++        errors.append('Roadmap still represents historical criteria as progress checkboxes')
++    if roadmap.count('- **Tiêu chí kế hoạch:**') != 64:
++        errors.append('The 64 historical roadmap criteria were not preserved')
++    for old in ['Bắt đầu **giai đoạn 1 — Foundation**', 'ba mini-game', 'cần `GEMINI_API_KEY` của repo secret lúc build']:
++        if old in roadmap:
++            errors.append('Stale roadmap statement: ' + old)
++    game = (root / 'docs/GAME_DESIGN.md').read_text()
++    if 'Energy hồi theo thời gian, quảng cáo thưởng có giới hạn và lưu trong database.' in game:
++        errors.append('Game Design still claims rewarded ads are implemented')
++    readme = (root / 'README.md').read_text()
++    if 'App không bao giờ chứa API key' in readme:
++        errors.append('README still claims the entire app can never contain a key')
++    if 'TECHNICAL_ARCHITURE.md' in readme:
++        errors.append('README architecture link is misspelled')
++    voice = (root / 'docs/experimental/GEMINI_LIVE_VOICE_TEST.md').read_text()
++    if 'Bản Release trên CI lấy key' in voice:
++        errors.append('Voice guide still directs users to CI key injection')
++    for path in ['README.md', 'docs/PRODUCT_VISION.md', 'docs/GAME_DESIGN.md',
++                 'docs/ROADMAP.md', 'docs/TECHNICAL_ARCHITECTURE.md']:
++        if 'PROJECT_STATUS.md' not in (root / path).read_text():
++            errors.append(path + ': missing source/evidence/status entry point')
++    task18 = (root / 'docs/implementation/coordination/tasks/PQC-018.md').read_text()
++    header = re.search(r'^- status: (.+)$', task18, re.M)
++    if not header or 'REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE' not in header.group(1):
++        errors.append('PQC-018 current header is stale')
++    task11 = (root / 'docs/implementation/coordination/tasks/PQC-011.md').read_text()
++    if 'WAITING_FOR_PINNED_SDK_EVIDENCE' not in task11 or 'CHANGES_REQUESTED' not in task11:
++        errors.append('PQC-011 blocker/disposition was lost')
++    return {'result': 'PASS_STATIC_POLICY_ONLY' if not errors else 'FAIL',
++            'workflows': workflows, 'historical_criteria': 64, 'errors': errors,
++            'flutter': 'NOT_RUN', 'ci_triggered': False, 'apk_inspection': 'NOT_RUN'}
++
++
++if __name__ == '__main__':
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[2])
++    args = parser.parse_args()
++    report = check_tree(args.root)
++    print(json.dumps(report, ensure_ascii=False, indent=2))
++    raise SystemExit(bool(report['errors']))
+--- /dev/null
++++ b/tools/maintenance/test_release_policy.py
+@@ -0,0 +1,83 @@
++#!/usr/bin/env python3
++"""Local regressions; the shell test uses a fake Flutter executable, never the SDK."""
++import os
++from pathlib import Path
++import subprocess
++import tempfile
++import unittest
++
++from check_release_policy import EMPTY_DEFINE, WORKFLOWS, build_commands, check_tree, check_workflow
++
++ROOT = Path(__file__).resolve().parents[2]
++
++
++class ReleasePolicyTests(unittest.TestCase):
++    def test_current_tree(self):
++        self.assertEqual(check_tree(ROOT)['errors'], [])
++
++    def test_release_and_debug_explicit_empty(self):
++        for mode in ['release', 'debug', '"$BUILD_MODE"']:
++            self.assertEqual(check_workflow(f'run: flutter build apk --{mode} {EMPTY_DEFINE}'), [])
++
++    def test_env_secret_rejected(self):
++        text = f'GEMINI_API_KEY: ${{{{ secrets.GEMINI_API_KEY }}}}\nrun: flutter build apk --release {EMPTY_DEFINE}'
++        self.assertTrue(check_workflow(text))
++
++    def test_nonempty_literal_rejected(self):
++        self.assertTrue(check_workflow('run: flutter build apk --release --dart-define=GEMINI_API_KEY=not-a-key'))
++
++    def test_shell_substitution_rejected(self):
++        for value in ['$GEMINI_API_KEY', '${GEMINI_API_KEY}', '$OTHER_VALUE']:
++            self.assertTrue(check_workflow(f'run: flutter build apk --release --dart-define="GEMINI_API_KEY={value}"'))
++
++    def test_missing_empty_define_rejected(self):
++        self.assertTrue(check_workflow('run: flutter build apk --debug'))
++
++    def test_define_file_rejected(self):
++        for flag in ['--dart-define-from-file=other.json', '--dart-define-from-file other.json']:
++            self.assertTrue(check_workflow(f'run: flutter build apk --release {EMPTY_DEFINE} {flag}'))
++
++    def test_duplicate_and_split_defines_rejected(self):
++        for extra in [EMPTY_DEFINE, '--dart-define=GEMINI_API_KEY=not-a-key', '--dart-define GEMINI_API_KEY=not-a-key']:
++            self.assertTrue(check_workflow(f'run: flutter build apk --release {EMPTY_DEFINE} {extra}'))
++
++    def test_added_unprotected_build_rejected(self):
++        self.assertTrue(check_workflow(f'flutter build apk --release {EMPTY_DEFINE}\nflutter build apk --debug'))
++
++    def test_missing_literal_command_requires_manual_review(self):
++        self.assertTrue(check_workflow('run: bash build.sh'))
++
++    def test_redirection_status_commands_not_build_arguments(self):
++        text = f'flutter build apk --release {EMPTY_DEFINE} >> ../apk.txt 2>&1; echo "build=$?"'
++        self.assertEqual(build_commands(text), [['flutter', 'build', 'apk', '--release', EMPTY_DEFINE]])
++
++    def test_bash_expansion_does_not_pass_environment_key(self):
++        # Execute only extracted build command prefixes with a fake executable.
++        # The sentinel is synthetic. No real environment credentials are inherited.
++        import re
++        with tempfile.TemporaryDirectory(prefix='r47-policy-') as directory:
++            folder = Path(directory)
++            fake = folder / 'flutter'
++            fake.write_text('#!/bin/sh\nprintf "%s\\n" "$@"\n')
++            fake.chmod(0o700)
++            cases = 0
++            for path in WORKFLOWS:
++                text = (ROOT / path).read_text()
++                for match in re.finditer(r'\bflutter\s+build\s+apk\b[^\n]*', text):
++                    command = match.group().split(' >>', 1)[0]
++                    for mode in ['release', 'debug']:
++                        result = subprocess.run(['/bin/bash', '-euc', command], check=True,
++                                                capture_output=True, text=True, cwd=folder,
++                                                env={'PATH': str(folder) + ':/usr/bin:/bin',
++                                                     'GEMINI_API_KEY': 'SYNTHETIC_SENTINEL_NOT_A_KEY',
++                                                     'BUILD_MODE': mode})
++                        args = result.stdout.splitlines()
++                        self.assertEqual(args.count(EMPTY_DEFINE), 1)
++                        self.assertNotIn('SYNTHETIC_SENTINEL_NOT_A_KEY', result.stdout)
++                        self.assertEqual([x for x in args if 'GEMINI_API_KEY' in x], [EMPTY_DEFINE])
++                        cases += 1
++            self.assertEqual(cases, 6)
++
++
++if __name__ == '__main__':
++    unittest.main(verbosity=2)

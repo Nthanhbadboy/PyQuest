@@ -1,5 +1,8 @@
 # PyQuest — Game Design
 
+> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
+> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
 > **Đồng bộ mở rộng · 2026-10-18:** nhà → đất → đảo, nhiệm vụ liên kết,
 > thăm nhà có hoạt động, thú thông minh, bạn bè/Arena đều thuộc thiết kế sản phẩm.
 > [Thiết kế thế giới thống nhất](design/WORLD_EXPANSION_REDESIGN.md) nối các màn và
@@ -123,6 +126,10 @@ Năng lượng áp dụng tại điểm bắt đầu theo luật hoạt động,
   gợi ý nội dung miễn phí đang có.
 
 ### 3.4. Quy tắc quảng cáo thưởng
+
+**Kế hoạch, chưa triển khai SDK** tại CODE71b0; các mức thưởng/hạn mức bên dưới
+không phải tính năng đang chạy. Không hiển thị ad reward thành công khi chưa có
+callback hợp lệ của SDK. Xem [trạng thái](PROJECT_STATUS.md).
 
 - Chỉ hiển thị nút "Nhận thêm năng lượng" khi năng lượng < tối đa.
 - Tối đa **3 lần hợp lệ/ngày**, reset vào 00:00 giờ địa phương.

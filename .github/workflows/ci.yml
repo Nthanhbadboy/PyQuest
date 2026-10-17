@@ -114,17 +114,14 @@ jobs:
           channel: stable
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
-      - name: Build release APK
+      # Keyless preview policy r47: never compile a provider secret into CI artifacts.
+      - name: Build release APK (keyless preview)
         working-directory: app
         shell: bash
-        env:
-          # Add GEMINI_API_KEY under repository Settings > Secrets and variables > Actions.
-          # If unset, the APK still builds, but Gemini Live voice will not authenticate.
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set +e
           flutter pub get > ../apk_release.txt 2>&1
-          flutter build apk --release --dart-define="GEMINI_API_KEY=${GEMINI_API_KEY}" >> ../apk_release.txt 2>&1; echo "build_apk_release=$?" >> ../status.txt
+          flutter build apk --release --dart-define=GEMINI_API_KEY= >> ../apk_release.txt 2>&1; echo "build_apk_release=$?" >> ../status.txt
           cp build/app/outputs/flutter-apk/app-release.apk ../pyquest-release.apk
           ls -la ../pyquest-release.apk >> ../apk_release.txt 2>&1
           tail -25 ../apk_release.txt
@@ -180,14 +177,15 @@ jobs:
         id: runner_state_before
         shell: bash
         run: bash ci/runner_state.sh runner-state-before.txt "before the emulator step"
-      - name: Build debug APK
+      # Keyless preview policy r47: never compile a provider secret into CI artifacts.
+      - name: Build debug APK (keyless preview)
         id: build_apk
         working-directory: app
         shell: bash
         run: |
           set +e
           flutter pub get > ../apk_build.txt 2>&1
-          flutter build apk --debug >> ../apk_build.txt 2>&1; echo "build_apk_debug=$?" >> ../status.txt
+          flutter build apk --debug --dart-define=GEMINI_API_KEY= >> ../apk_build.txt 2>&1; echo "build_apk_debug=$?" >> ../status.txt
           cp build/app/outputs/flutter-apk/app-debug.apk ../pyquest-debug.apk
           ls -la ../pyquest-debug.apk >> ../apk_build.txt 2>&1
           (cd android && ./gradlew --stop) >/dev/null 2>&1

@@ -1,5 +1,8 @@
 # PyQuest — Technical Architecture
 
+> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
+> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
 > **Đồng bộ mở rộng · 2026-10-18:** nhà → đất → đảo, nhiệm vụ liên kết,
 > thăm nhà có hoạt động, thú thông minh, bạn bè/Arena đều thuộc thiết kế sản phẩm.
 > [Thiết kế thế giới thống nhất](design/WORLD_EXPANSION_REDESIGN.md) nối các màn và
@@ -100,12 +103,21 @@ sandbox Python đa dụng. Thiết kế an toàn phải dựa trên các biện 
 
 #### 2.3.2. Kiểm soát có thể thi hành
 
+**Yêu cầu thiết kế, không phải chứng nhận sandbox.** Config/runtime source tại
+CODE71b0 có `step_budget=100000`, `max_call_depth=50`, `max_output_chars=10000`
+và `max_collection_length=10000`. Output là **ký tự**, không phải bảo đảm10KB.
+Có bộ đếm/check trong source không chứng minh mọi operation, cấp phát hoặc thời
+lượng CPU đều đã bị chặn. Cần evidence theo từng đường thực thi; đợt r47 không
+chạy lại interpreter hay kiểm tra sandbox trên thiết bị. Rate-limit print, hủy
+isolate và mục tiêu bộ nhớ bên dưới vẫn là yêu cầu cần kiểm chứng, không claim
+đều đã triển khai. Xem [ma trận source/evidence](PROJECT_STATUS.md).
+
 | Kiểm soát | Cách thi hành | Giá trị |
 |---|---|---|
 | **Ngân sách bước (step budget)** | Đếm số "bước" ngay trong vòng lặp interpreter; dừng khi vượt ngưỡng. Đây là **ràng buộc cứng chính**. | 100.000 bước (**TBD** — cần hiệu chỉnh theo trải nghiệm thực tế) |
 | **Độ sâu gọi/đệ quy** | Bộ đếm call-depth tường minh, tăng khi gọi hàm, giảm khi `return`. | 50 (**TBD**) |
-| **Kích thước output** | Cộng dồn độ dài output; dừng/khóa khi vượt ngưỡng. | 10 KB (**TBD**) |
-| **Kích thước collection** | Chặn khi list vượt độ dài tối đa. | **TBD** (chưa có giá trị hợp lý) |
+| **Kích thước output** | Cộng dồn độ dài output; dừng/khóa khi vượt ngưỡng. | 10.000 ký tự trong source; cần kiểm chứng enforcement |
+| **Kích thước collection** | Chặn khi list vượt độ dài tối đa. | 10.000 phần tử trong source; cần đo/kiểm chứng, không phải trần bộ nhớ |
 | **Số lần in mỗi giây** | Đếm và gộp output trong cửa sổ thời gian. | 100/giây (**TBD**) |
 
 #### 2.3.3. Ngắt/hủy thực thi — thiết kế đúng
@@ -114,8 +126,9 @@ sandbox Python đa dụng. Thiết kế an toàn phải dựa trên các biện 
   trong cùng isolate: một `while True` sẽ chặn luồng và không nhường quyền cho
   bộ hẹn giờ. Vì vậy **không** được mô tả "đặt 3 giây là tự dừng".
 - Cách làm đúng (chọn một, thiết kế để có thể thay):
-  - **Ưu tiên:** chặn bằng **ngân sách bước** (2.3.2) — kiểm tra mỗi bước, luôn
-    dừng an toàn bất kể code làm gì.
+  - **Ưu tiên:** chặn bằng **ngân sách bước** (2.3.2). Phải kiểm tra coverage của
+    bộ đếm và chặn các operation/cấp phát tốn kém; không suy ra “luôn dừng an toàn
+    bất kể code làm gì” chỉ từ việc có một counter.
   - Nếu cần hủy giữa chừng theo yêu cầu người dùng: chạy interpreter trong một
     **isolate riêng** và **hủy isolate** khi người dùng bấm dừng.
 - **Giới hạn bộ nhớ:** không thể thi hành "trần cứng" chỉ bằng một giá trị cấu
@@ -963,11 +976,17 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
   Đường chuẩn cho trợ giảng văn bản là **relay giữ key ở server**
   (`tools/ai_relay/relay.py`, `RELAY_API_KEY`), app chỉ cấu hình endpoint
   (`AI_TUTOR_ENDPOINT` hoặc `assets/config/ai_tutor_config.json`).
-- Giọng nói Gemini Live hiện chỉ có đường cấu hình `--dart-define=GEMINI_API_KEY=...`
-  cho **build thử nghiệm**: value nằm trong APK nên nó chỉ dành cho bản internal,
-  tuyệt đối không commit key, không in key vào log, và phải đổi sang token ngắn hạn
-  qua server trước khi phát hành. App đã gỡ bỏ key khỏi log bằng
-  `GeminiLiveWire.redactSecrets`.
+- Source Gemini Live còn đường thử nghiệm cục bộ bằng dart-define; key nằm trong
+  APK và có thể bị trích xuất. `GeminiLiveWire.redactSecrets` chỉ giảm lộ trong
+  log, không bảo vệ key trong client. Cần token ngắn hạn/server mediation trước
+  khi cho phép phân phối voice; việc sửa tài liệu không triển khai cơ chế đó.
+- **Từ r47, hai workflow build APK không đọc Gemini repository secret và luôn
+  truyền `--dart-define=GEMINI_API_KEY=`.** Direct voice không xác thực được trong
+  các artifact mới của đường build này. Không thêm lại key để bật voice trên CI.
+- Release-mode và quyền phát hành là hai việc khác nhau. Workflow preview không
+  phải gate store/public release. Keyless chưa có nghĩa đã đạt mọi gate bảo mật.
+  Không có APK/device evidence mới trong đợt sửa này; artifact/key cũ chưa được
+  thu hồi/xoay tự động. Xem [chính sách hiện hành](PROJECT_STATUS.md#4-apk-và-bí-mật-chính-sách-từ-r47).
 
 ### 15.3. UI Direction V2
 

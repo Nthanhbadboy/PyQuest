@@ -1,5 +1,8 @@
 # PyQuest
 
+> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](docs/PROJECT_STATUS.md).
+> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
 **Build Your Game. Rule Your World.**
 
 **Một thế giới game chung, gồm nhiều nhánh hoạt động độc lập** dành cho trẻ dưới
@@ -107,7 +110,7 @@ Ba tầng, và app luôn nói rõ câu trả lời đến từ tầng nào:
    câu hỏi/ngày, lịch sử trong bài, và **tự động rơi về trợ giảng ngoại tuyến**
    khi mạng lỗi. Cấu hình qua `app/assets/config/ai_tutor_config.json` hoặc
    `--dart-define=AI_TUTOR_ENDPOINT=...`.
-   **App không bao giờ chứa API key.** Relay mẫu nằm ở
+   **Luồng Tutor văn bản qua relay không nhúng provider key vào app.** Relay mẫu nằm ở
    [`tools/ai_relay/`](tools/ai_relay/) — chạy được bằng Python thuần, có test
    riêng (`python3 tools/ai_relay/test_relay.py`), chỉ giữ key ở phía server.
 3. **Giọng nói Gemini Live (thử nghiệm)** — `lib/modules/tutor/gemini_live_*.dart`
@@ -115,9 +118,11 @@ Ba tầng, và app luôn nói rõ câu trả lời đến từ tầng nào:
    24 kHz PCM xuống, half-duplex (micro chỉ mở khi trợ giảng im lặng), bắt
    chống vọng âm từ loa, và một transcript chung cho cả hai vai
    (`tutor_transcript.dart`) để câu nào cũng mang đúng tên người nói.
-   Chỉ bật được ở bản dựng có `--dart-define=GEMINI_API_KEY=...` — đây là đường
-   tắt cho bản thử nghiệm, **phải thay bằng token ngắn hạn/server mediation trước
-   khi phát hành**. Bảng kiểm tra trên thiết bị:
+   Source còn đường thử nghiệm cục bộ qua `--dart-define=GEMINI_API_KEY=...`;
+   giá trị này nằm trong APK, không phải bí mật được bảo vệ trên client.
+   **Từ r47, hai workflow CI build APK với define rỗng, không đọc Gemini secret;
+   direct Gemini Live không xác thực được trên các APK đó.** Phải có token ngắn hạn/
+   server mediation trước khi cho phép phân phối voice. Bảng kiểm tra trên thiết bị:
    [`docs/experimental/GEMINI_LIVE_VOICE_TEST.md`](docs/experimental/GEMINI_LIVE_VOICE_TEST.md).
 
 ---
@@ -191,23 +196,28 @@ trữ không cần sửa.
 
 **Nguyên tắc tài liệu:** tài liệu sản phẩm xác định *xây trò chơi gì*;
 tài liệu kỹ thuật xác định *xây bằng cách nào*; roadmap xác định
-*làm gì trước và kiểm tra bằng gì*. Bốn tài liệu này là nguồn sự thật duy nhất;
-mọi nhánh làm việc đều chuẩn hoá theo chúng, không tự sinh hướng thiết kế riêng.
+*làm gì trước và kiểm tra bằng gì*. Bốn tài liệu là nguồn định hướng sản phẩm;
+mọi nhánh chuẩn hoá theo chúng, không tự sinh hướng thiết kế riêng. Trạng thái
+source/kiểm chứng đọc tại [PROJECT_STATUS](docs/PROJECT_STATUS.md) và review/task
+đã pin, không suy tiến độ triển khai từ yêu cầu trong tài liệu tầm nhìn.
 
 ---
 
-## Roadmap tóm tắt
+## Roadmap tóm tắt — trạng thái source, không phải chứng nhận hoàn tất
 
-1. **Foundation** — khung Flutter, điều hướng, lưu dữ liệu, giao diện cơ bản. ✅
-2. **Home Map** — thế giới chính, nhân vật, âm thanh. ✅
-3. **Một mini-game hoàn chỉnh** — gameplay, điểm số, lưu kỷ lục, Creator Mode. ✅
-4. **Energy & Rewarded Ads** — 🟡 năng lượng + hồi theo thời gian đã có và có giới hạn; **quảng cáo thưởng chưa được implement** trong source
-5. **Interpreter mô phỏng** — thực thi tập con Python-like an toàn, giới hạn tài nguyên. ✅
-6. **Main Quest** — bài học Python, bài tập, lưu tiến trình, trợ giảng. ✅
-7. **Side Maps & Pro** — nội dung mở rộng và mua hàng. ⏳ chưa bắt đầu
-8. **Hoàn thiện** — localization, accessibility, kiểm thử, build, phát hành. ⏳ đang tiếp diễn
+| Phần | Trạng thái |
+|---|---|
+| Foundation / Home Map | Có source; không khởi tạo lại. UI thế giới mới chưa được port toàn bộ |
+| Các hoạt động chơi / Creator Maze | Có source cho Robot Maze, Dragon Jump, Catch the Stars, Bug Hunter và Creator Maze |
+| Energy & Rewarded Ads | Energy có; **rewarded ads chưa triển khai** |
+| Interpreter mô phỏng | Có tập con Python và giới hạn; **không phải sandbox đã được chứng nhận** |
+| Main Quest | Chặng1 có12 bài/64 bước; không có nghĩa mọi chặng/tiêu chí đã hoàn tất |
+| Side Maps & Pro / cộng đồng đầy đủ | Kế hoạch sản phẩm, chưa có implementation đầy đủ |
+| UI / localization / accessibility / voice / phát hành | Từng phần có evidence riêng; không có whole-app acceptance |
 
-Chi tiết và tiêu chí nghiệm thu: [`docs/ROADMAP.md`](docs/ROADMAP.md).
+[Ma trận source/evidence và disposition task](docs/PROJECT_STATUS.md) là điểm đọc
+trạng thái. [Roadmap](docs/ROADMAP.md) giữ thứ tự và tiêu chí kế hoạch; không dùng
+số checklist hoặc biểu tượng hoàn thành thay SHA/test/device evidence.
 
 **Nguyên tắc chốt từ đầu:** đừng xây cả thế giới PyQuest ngay lập tức. Làm một
 **lát cắt dọc hoàn chỉnh**: mở app → vào một trò chơi → chơi được → lưu kết quả →
@@ -216,7 +226,7 @@ thoát ra mở lại vẫn còn kết quả. Lát cắt này **không** cần in
 **Về runtime:** giai đoạn đầu dùng **interpreter mô phỏng một tập con giới hạn**
 (Flutter/Dart), **không** chạy Python thật. Việc nhúng Python thật chỉ được đánh
 giá sau, khi mô phỏng đã chứng minh giá trị sư phạm. Chi tiết ở
-[`docs/TECHNICAL_ARCHITECTURE.md`](docs/TECHNICAL_ARCHITURE.md).
+[`docs/TECHNICAL_ARCHITECTURE.md`](docs/TECHNICAL_ARCHITECTURE.md).
 
 ---
 
@@ -237,13 +247,18 @@ flutter drive --no-pub --keep-app-running \
   --driver=test_driver/integration_test.dart --target=integration_test/journey_test.dart -d <device-id>
 ```
 
-Bản dựng thử nghiệm giọng nói (key chỉ nằm ở máy/build cục bộ hoặc secret của CI —
-không bao giờ nằm trong repository):
+APK preview không có Gemini key (cùng chính sách workflow từ r47):
 
 ```bash
 cd app
-flutter build apk --release --dart-define="GEMINI_API_KEY=$GEMINI_API_KEY"
+flutter build apk --release --dart-define=GEMINI_API_KEY=
 ```
+
+`--release` là build mode, **không phải quyền phát hành công khai**. Direct Gemini
+Live sẽ không xác thực được khi define rỗng; không thêm lại repository secret để
+“sửa” điều này. Thử voice cục bộ có kiểm soát được mô tả trong
+[hướng dẫn thử nghiệm](docs/experimental/GEMINI_LIVE_VOICE_TEST.md), không phải
+đường phân phối artifact. Tutor ngoại tuyến/relay văn bản không bị sửa.
 
 CI (GitHub Actions) chạy `analyze` + `test` + render preview cho mỗi lần push vào
 `arena/**`; commit có `[apk]` build thêm Release APK (tải ở *Artifacts* của lần
@@ -252,10 +267,11 @@ job được publish thành check run (*PyQuest check*, *PyQuest emulator*) qua
 `ci/report.py` + `ci/step_outcomes.py`, nên đọc được ngay trên trang checks mà
 không cần tải log.
 
-Bảo mật: `GEMINI_API_KEY` là repository secret, chỉ được đưa vào build thử
-nghiệm; key của relay văn bản nằm ở `RELAY_API_KEY` phía server
-(`tools/ai_relay/relay.py`). Không có key nào được commit, in ra log, hay ghi vào
-tài liệu.
+Bảo mật: hai workflow không đọc `GEMINI_API_KEY` từ repository secrets và đặt
+define rỗng cho các lệnh build APK. Key của relay văn bản nằm phía server ở
+`RELAY_API_KEY`. Không commit hoặc đưa key vào tài liệu/log/chat. APK cũ có thể
+đã chứa key nếu secret được cấu hình; sửa workflow không thu hồi artifact hay
+xoay key cũ. Chưa có APK mới hoặc kiểm tra thiết bị được thực hiện trong r47.
 
 ---
 

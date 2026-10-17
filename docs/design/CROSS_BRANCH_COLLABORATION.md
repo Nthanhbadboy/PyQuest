@@ -125,3 +125,15 @@ Lead nghiệm thu xong thì giao task mới hoặc chuyển về DESIGN để ti
 không dừng vì chưa có commit kế tiếp. Không tự mở scope bên CODE: Lead publish
 work order rõ trước. Không tuyên bố browser relay đã chạy/đã gửi nếu chưa xác minh.
 Bản hướng dẫn watcher GitHub tại e4c2895 đã được thay bằng cơ chế browser relay này.
+
+## 7. Tránh lệch bản sao trạng thái — bổ sung r47
+
+- Đọc [PROJECT_STATUS](../PROJECT_STATUS.md) cùng review đã pin. File có chữ
+  “current” trên một nhánh không tự mới hơn disposition của Lead trên nhánh kia.
+- Fetch chỉ lấy Git objects, **không cập nhật working tree**. Chỉ báo đồng bộ khi
+  patch/hunks đã được áp dụng, kiểm tra và push trên nhánh được phiên đó cho phép.
+- Bản sao task018 cũ không mở lại art scope;011 vẫn chờ execution evidence.
+  [PQC-019](../implementation/coordination/tasks/PQC-019.md) là đợt sửa có nội dung
+  cho docs/keyless packaging, không ACK-only và không cấp phép chạy CI.
+- Không lấy nguyên workflow DESIGN đè lên CODE: phải giữ gate/test riêng của nhánh
+  nhận. Không merge runtime chỉ để sửa một câu trong tài liệu.

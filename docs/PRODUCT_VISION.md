@@ -1,5 +1,8 @@
 # PyQuest — Product Vision
 
+> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
+> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
 > **Đồng bộ mở rộng · 2026-10-18:** nhà → đất → đảo, nhiệm vụ liên kết,
 > thăm nhà có hoạt động, thú thông minh, bạn bè/Arena đều thuộc thiết kế sản phẩm.
 > [Thiết kế thế giới thống nhất](design/WORLD_EXPANSION_REDESIGN.md) nối các màn và
@@ -1016,7 +1019,7 @@ Chưa triển khai hoặc chưa có bằng chứng trong source hiện tại:
 - Arena nhiều bộ môn, Creator Pro League, giải đồng đội.
 - Side Maps trả phí, Pro đầy đủ, cộng đồng/quà tặng đầy đủ.
 - Quảng cáo thưởng: năng lượng đã có, rewarded ads chưa có trong source.
-- Giọng nói ở trạng thái thử nghiệm cho bản dựng phát triển (key đưa lúc build), chưa phải đường production có token ngắn hạn qua server.
+- Giọng nói còn đường thử nghiệm cục bộ có key nằm trong APK; từ r47 workflow CI không đưa Gemini key vào bản dựng. Chưa có token ngắn hạn/server mediation production hoặc device voice PASS mới.
 
 **Mốc nghiệm thu riêng:**010 board độc lập,014 locale service,015 root localization,
 016 Settings đã được nhận trong phạm vi riêng. Run39051006962:406ordinary+10render;

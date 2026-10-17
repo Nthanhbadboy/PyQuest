@@ -1,0 +1,17 @@
+test_added_unprotected_build_rejected (__main__.ReleasePolicyTests.test_added_unprotected_build_rejected) ... ok
+test_bash_expansion_does_not_pass_environment_key (__main__.ReleasePolicyTests.test_bash_expansion_does_not_pass_environment_key) ... ok
+test_current_tree (__main__.ReleasePolicyTests.test_current_tree) ... ok
+test_define_file_rejected (__main__.ReleasePolicyTests.test_define_file_rejected) ... ok
+test_duplicate_and_split_defines_rejected (__main__.ReleasePolicyTests.test_duplicate_and_split_defines_rejected) ... ok
+test_env_secret_rejected (__main__.ReleasePolicyTests.test_env_secret_rejected) ... ok
+test_missing_empty_define_rejected (__main__.ReleasePolicyTests.test_missing_empty_define_rejected) ... ok
+test_missing_literal_command_requires_manual_review (__main__.ReleasePolicyTests.test_missing_literal_command_requires_manual_review) ... ok
+test_nonempty_literal_rejected (__main__.ReleasePolicyTests.test_nonempty_literal_rejected) ... ok
+test_redirection_status_commands_not_build_arguments (__main__.ReleasePolicyTests.test_redirection_status_commands_not_build_arguments) ... ok
+test_release_and_debug_explicit_empty (__main__.ReleasePolicyTests.test_release_and_debug_explicit_empty) ... ok
+test_shell_substitution_rejected (__main__.ReleasePolicyTests.test_shell_substitution_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.023s
+
+OK

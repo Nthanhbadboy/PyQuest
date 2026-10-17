@@ -1,5 +1,8 @@
 # PyQuest — Roadmap
 
+> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
+> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
 > **Đồng bộ mở rộng · 2026-10-18:** nhà → đất → đảo, nhiệm vụ liên kết,
 > thăm nhà có hoạt động, thú thông minh, bạn bè/Arena đều thuộc thiết kế sản phẩm.
 > [Thiết kế thế giới thống nhất](design/WORLD_EXPANSION_REDESIGN.md) nối các màn và
@@ -81,11 +84,17 @@ PQC-017 design-only (Tutor/nội thất thành tích/Arena), không mở app/CI/
 R1 vẫn là ưu tiên UI sau gate thiết kế, **chưa READY_FOR_CODE runtime**. Trước R1
 phải review concept chung, composition phone/state/copy, rồi asset export phù hợp.
 Không chờ hoàn tất local AI/voice, nhưng cũng không bỏ art gate để nhanh có APK.
-PQC-011 tại a331ac1 được bàn giao unverified; chia việc art không tự nghiệm thu011.
+PQC-017/018 đã được review trong phạm vi art;018 ART_SCOPE_COMPLETE theo r40.
+PQC-011 tại71b0 vẫn chờ pinned-SDK evidence theo r44; xem PROJECT_STATUS.
 
 ---
 
 ## 2. Tổng quan các giai đoạn
+
+**Quy ước đọc tiêu chí:** 64 mục dưới §3–13 là yêu cầu kế hoạch/lịch sử,
+không phải64 task chưa bắt đầu. Bỏ hình thức checkbox để tránh biến chúng thành
+bảng tiến độ giả. Có source không tự đóng tiêu chí; xem §14 và PROJECT_STATUS
+cho trạng thái và evidence. Giai đoạn4 vẫn partial vì chưa có rewarded-ad SDK.
 
 | # | Giai đoạn | Mục tiêu chính | Thời lượng dự kiến |
 |---|---|---|---|
@@ -129,11 +138,11 @@ và giao diện đủ để bắt đầu gắn module.
 
 ### 3.4. Tiêu chí nghiệm thu
 
-- [ ] App build và chạy được trên Android thật.
-- [ ] Điều hướng giữa 3–4 màn hình rỗng hoạt động trơn tru.
-- [ ] Ghi một giá trị vào SQLite, thoát app, mở lại, đọc được giá trị cũ.
-- [ ] `game_config.json` load được và đọc đúng thông số.
-- [ ] Cấu trúc thư mục khớp với `TECHNICAL_ARCHITECTURE.md`.
+- **Tiêu chí kế hoạch:** App build và chạy được trên Android thật.
+- **Tiêu chí kế hoạch:** Điều hướng giữa 3–4 màn hình rỗng hoạt động trơn tru.
+- **Tiêu chí kế hoạch:** Ghi một giá trị vào SQLite, thoát app, mở lại, đọc được giá trị cũ.
+- **Tiêu chí kế hoạch:** `game_config.json` load được và đọc đúng thông số.
+- **Tiêu chí kế hoạch:** Cấu trúc thư mục khớp với `TECHNICAL_ARCHITECTURE.md`.
 
 ---
 
@@ -162,11 +171,11 @@ chứ không phải màn hình danh sách bài học.
 
 ### 4.4. Tiêu chí nghiệm thu
 
-- [ ] Home Map hiển thị đúng, không bị vỡ layout trên các kích thước màn hình phổ biến.
-- [ ] Chạm vào địa điểm có phản hồi âm thanh + hiệu ứng.
-- [ ] Nhân vật xuất hiện với thoại ngắn khi mở app.
-- [ ] Tắt/bật âm thanh hoạt động và được lưu lại sau khi thoát app.
-- [ ] Trẻ (hoặc người test) hiểu được "đây là nơi để khám phá".
+- **Tiêu chí kế hoạch:** Home Map hiển thị đúng, không bị vỡ layout trên các kích thước màn hình phổ biến.
+- **Tiêu chí kế hoạch:** Chạm vào địa điểm có phản hồi âm thanh + hiệu ứng.
+- **Tiêu chí kế hoạch:** Nhân vật xuất hiện với thoại ngắn khi mở app.
+- **Tiêu chí kế hoạch:** Tắt/bật âm thanh hoạt động và được lưu lại sau khi thoát app.
+- **Tiêu chí kế hoạch:** Trẻ (hoặc người test) hiểu được "đây là nơi để khám phá".
 
 ---
 
@@ -215,15 +224,15 @@ tư duy thuật toán và dễ chuyển sang code Python.
 
 **Đây là lát cắt dọc quan trọng nhất — phải đạt tất cả:**
 
-- [ ] Mở app → vào Home Map → chạm vào Robot Maze → chơi được màn 1.
-- [ ] Hoàn thành màn → thấy màn tổng kết với số liệu cụ thể.
-- [ ] Điểm cao được lưu vào SQLite.
-- [ ] Thoát app → mở lại → màn đã mở vẫn còn, điểm cao vẫn còn.
-- [ ] Huy hiệu **First Line** xuất hiện sau khi hoàn thành màn 1.
-- [ ] Creator Mode cho phép ghép khối/chỉnh luật có cấu trúc và chạy thử ít nhất
+- **Tiêu chí kế hoạch:** Mở app → vào Home Map → chạm vào Robot Maze → chơi được màn 1.
+- **Tiêu chí kế hoạch:** Hoàn thành màn → thấy màn tổng kết với số liệu cụ thể.
+- **Tiêu chí kế hoạch:** Điểm cao được lưu vào SQLite.
+- **Tiêu chí kế hoạch:** Thoát app → mở lại → màn đã mở vẫn còn, điểm cao vẫn còn.
+- **Tiêu chí kế hoạch:** Huy hiệu **First Line** xuất hiện sau khi hoàn thành màn 1.
+- **Tiêu chí kế hoạch:** Creator Mode cho phép ghép khối/chỉnh luật có cấu trúc và chạy thử ít nhất
       1 màn (**không cần interpreter Python-like** ở giai đoạn này).
-- [ ] Không crash khi chơi liên tục 15 phút.
-- [ ] Phát sự kiện `level_completed` và `game_completed` đúng chuẩn.
+- **Tiêu chí kế hoạch:** Không crash khi chơi liên tục 15 phút.
+- **Tiêu chí kế hoạch:** Phát sự kiện `level_completed` và `game_completed` đúng chuẩn.
 
 **Nếu tiêu chí này chưa đạt → chưa chuyển sang giai đoạn 4.**
 
@@ -256,16 +265,16 @@ nguyện, an toàn cho trẻ.
 
 ### 6.4. Tiêu chí nghiệm thu
 
-- [ ] Năng lượng hồi đúng tốc độ (10 phút/đơn vị).
-- [ ] Tắt app 30 phút → mở lại → năng lượng đã hồi đúng.
-- [ ] Tiêu hao đúng luật cho từng hoạt động (`GAME_DESIGN.md` 3.2).
-- [ ] Hết năng lượng vẫn truy cập được nội dung miễn phí (ôn tập, đọc truyện,
+- **Tiêu chí kế hoạch:** Năng lượng hồi đúng tốc độ (10 phút/đơn vị).
+- **Tiêu chí kế hoạch:** Tắt app 30 phút → mở lại → năng lượng đã hồi đúng.
+- **Tiêu chí kế hoạch:** Tiêu hao đúng luật cho từng hoạt động (`GAME_DESIGN.md` 3.2).
+- **Tiêu chí kế hoạch:** Hết năng lượng vẫn truy cập được nội dung miễn phí (ôn tập, đọc truyện,
       xem bộ sưu tập, Creator Mode).
-- [ ] Xem quảng cáo thưởng → cộng +5 năng lượng sau khi SDK xác nhận.
-- [ ] Quảng cáo thất bại → không trừ lượt, không trừ năng lượng.
-- [ ] Vượt 3 lượt/ngày → nút ẩn hoặc vô hiệu hóa; thoát/mở lại app **không** reset lượt trong ngày.
-- [ ] Không có quảng cáo nào chen ngang bài học.
-- [ ] Đã kiểm tra chính sách Google Play Families **trước khi bật quảng cáo thật**.
+- **Tiêu chí kế hoạch:** Xem quảng cáo thưởng → cộng +5 năng lượng sau khi SDK xác nhận.
+- **Tiêu chí kế hoạch:** Quảng cáo thất bại → không trừ lượt, không trừ năng lượng.
+- **Tiêu chí kế hoạch:** Vượt 3 lượt/ngày → nút ẩn hoặc vô hiệu hóa; thoát/mở lại app **không** reset lượt trong ngày.
+- **Tiêu chí kế hoạch:** Không có quảng cáo nào chen ngang bài học.
+- **Tiêu chí kế hoạch:** Đã kiểm tra chính sách Google Play Families **trước khi bật quảng cáo thật**.
 
 ---
 
@@ -292,13 +301,13 @@ Main Quest chạy code và Creator Mode mở code (xem `TECHNICAL_ARCHITECTURE.m
 
 ### 7.4. Tiêu chí nghiệm thu
 
-- [ ] Chạy được tập con Python-like (in, biến, điều kiện, vòng lặp, hàm đơn giản).
-- [ ] Vòng lặp vô hạn dừng an toàn do **vượt ngân sách bước**, không crash.
-- [ ] Đệ quy sâu dừng an toàn ở ngưỡng độ sâu đã đặt.
-- [ ] Lỗi cú pháp hiển thị thông báo thân thiện với trẻ.
-- [ ] Output bị chặn khi vượt giới hạn.
-- [ ] Không truy cập được file hệ thống, mạng, module hệ thống.
-- [ ] Creator Mode của mini-game mẫu chạy được trên interpreter này.
+- **Tiêu chí kế hoạch:** Chạy được tập con Python-like (in, biến, điều kiện, vòng lặp, hàm đơn giản).
+- **Tiêu chí kế hoạch:** Vòng lặp vô hạn dừng an toàn do **vượt ngân sách bước**, không crash.
+- **Tiêu chí kế hoạch:** Đệ quy sâu dừng an toàn ở ngưỡng độ sâu đã đặt.
+- **Tiêu chí kế hoạch:** Lỗi cú pháp hiển thị thông báo thân thiện với trẻ.
+- **Tiêu chí kế hoạch:** Output bị chặn khi vượt giới hạn.
+- **Tiêu chí kế hoạch:** Không truy cập được file hệ thống, mạng, module hệ thống.
+- **Tiêu chí kế hoạch:** Creator Mode của mini-game mẫu chạy được trên interpreter này.
 
 ### 7.5. Đánh giá Python thật (sau này — chưa cam kết)
 
@@ -351,15 +360,15 @@ Tiêu hao năng lượng dùng luật đã có từ giai đoạn 4.
 
 ### 8.4. Tiêu chí nghiệm thu
 
-- [ ] Chặng 1 hoàn chỉnh, trẻ (hoặc người test) hoàn thành được 12 bài.
-- [ ] Mở chặng theo tiến trình học/điều kiện thực sự cần; Main Map hiển thị và điều hướng tới hoạt động hợp lệ.
-- [ ] Màn tổng kết hiển thị số liệu lấy từ tiến trình đã lưu.
-- [ ] Adventure Recap hiển thị đúng số liệu sau chặng 1.
-- [ ] Nhà Thành Tích hiển thị huy hiệu, tường chiến tích, bộ sưu tập.
-- [ ] Nhiệm vụ ngày reset đúng 00:00 giờ địa phương.
-- [ ] Huy hiệu bí mật không lộ điều kiện.
-- [ ] Chặng 2 mở được khi đủ điều kiện.
-- [ ] Không cộng trùng phần thưởng "một lần" sau khi thoát/mở lại app.
+- **Tiêu chí kế hoạch:** Chặng 1 hoàn chỉnh, trẻ (hoặc người test) hoàn thành được 12 bài.
+- **Tiêu chí kế hoạch:** Mở chặng theo tiến trình học/điều kiện thực sự cần; Main Map hiển thị và điều hướng tới hoạt động hợp lệ.
+- **Tiêu chí kế hoạch:** Màn tổng kết hiển thị số liệu lấy từ tiến trình đã lưu.
+- **Tiêu chí kế hoạch:** Adventure Recap hiển thị đúng số liệu sau chặng 1.
+- **Tiêu chí kế hoạch:** Nhà Thành Tích hiển thị huy hiệu, tường chiến tích, bộ sưu tập.
+- **Tiêu chí kế hoạch:** Nhiệm vụ ngày reset đúng 00:00 giờ địa phương.
+- **Tiêu chí kế hoạch:** Huy hiệu bí mật không lộ điều kiện.
+- **Tiêu chí kế hoạch:** Chặng 2 mở được khi đủ điều kiện.
+- **Tiêu chí kế hoạch:** Không cộng trùng phần thưởng "một lần" sau khi thoát/mở lại app.
 
 ---
 
@@ -391,14 +400,14 @@ Mở rộng thế giới và mô hình kinh doanh, nhưng không khóa Main Ques
 
 ### 9.3. Tiêu chí nghiệm thu
 
-- [ ] Trẻ xem được Side Map Shop với giá và nội dung rõ ràng.
-- [ ] Parental gate hoạt động trước khi vào màn hình mua hàng.
-- [ ] Mua Side Map → mở được nội dung.
-- [ ] Thoát app → mở lại → quyền sở hữu vẫn còn.
-- [ ] Đổi thiết bị → khôi phục được giao dịch.
-- [ ] Mô phỏng purchase token giả → không mở nội dung.
-- [ ] Pro ẩn toàn bộ quảng cáo trong phạm vi gói.
-- [ ] Main Quest vẫn truy cập được khi không mua gì.
+- **Tiêu chí kế hoạch:** Trẻ xem được Side Map Shop với giá và nội dung rõ ràng.
+- **Tiêu chí kế hoạch:** Parental gate hoạt động trước khi vào màn hình mua hàng.
+- **Tiêu chí kế hoạch:** Mua Side Map → mở được nội dung.
+- **Tiêu chí kế hoạch:** Thoát app → mở lại → quyền sở hữu vẫn còn.
+- **Tiêu chí kế hoạch:** Đổi thiết bị → khôi phục được giao dịch.
+- **Tiêu chí kế hoạch:** Mô phỏng purchase token giả → không mở nội dung.
+- **Tiêu chí kế hoạch:** Pro ẩn toàn bộ quảng cáo trong phạm vi gói.
+- **Tiêu chí kế hoạch:** Main Quest vẫn truy cập được khi không mua gì.
 
 ---
 
@@ -422,15 +431,15 @@ Mở rộng thế giới và mô hình kinh doanh, nhưng không khóa Main Ques
 
 ### 10.3. Tiêu chí nghiệm thu
 
-- [ ] App khởi động < 3 giây trên thiết bị tầm trung.
-- [ ] Mini-game chạy 60 FPS ổn định.
-- [ ] Dung lượng app < 150 MB.
-- [ ] Bật/tắt được âm thanh, nhạc nền, hoạt ảnh.
-- [ ] Localization hoạt động, không có chuỗi hard-code.
-- [ ] Tất cả kịch bản kiểm thử cuối (mục 11) đạt.
-- [ ] Build release cài được trên thiết bị thật.
-- [ ] Đã kiểm tra chính sách trước khi submit.
-- [ ] AI Tutor mẫu đầu tiên đạt tiêu chí nghiệm thu trong `PRODUCT_VISION.md` mục 14.6.
+- **Tiêu chí kế hoạch:** App khởi động < 3 giây trên thiết bị tầm trung.
+- **Tiêu chí kế hoạch:** Mini-game chạy 60 FPS ổn định.
+- **Tiêu chí kế hoạch:** Dung lượng app < 150 MB.
+- **Tiêu chí kế hoạch:** Bật/tắt được âm thanh, nhạc nền, hoạt ảnh.
+- **Tiêu chí kế hoạch:** Localization hoạt động, không có chuỗi hard-code.
+- **Tiêu chí kế hoạch:** Tất cả kịch bản kiểm thử cuối (mục 11) đạt.
+- **Tiêu chí kế hoạch:** Build release cài được trên thiết bị thật.
+- **Tiêu chí kế hoạch:** Đã kiểm tra chính sách trước khi submit.
+- **Tiêu chí kế hoạch:** AI Tutor mẫu đầu tiên đạt tiêu chí nghiệm thu trong `PRODUCT_VISION.md` mục 14.6.
 
 ---
 
@@ -503,45 +512,58 @@ Mở rộng PyQuest theo tầm nhìn sản phẩm mà không làm mất các vò
 
 ### 13.3. Tiêu chí nghiệm thu (cao cấp)
 
-- [ ] Các tính năng mở rộng được thêm theo module, không viết lại nền tảng.
-- [ ] Dữ liệu luyện tập và thi đấu thật được phân biệt rõ.
-- [ ] Không có XP/cấp độ toàn cục được thêm vào.
-- [ ] Cộng đồng/quà tặng tuân thủ an toàn trẻ em và quyền riêng tư.
+- **Tiêu chí kế hoạch:** Các tính năng mở rộng được thêm theo module, không viết lại nền tảng.
+- **Tiêu chí kế hoạch:** Dữ liệu luyện tập và thi đấu thật được phân biệt rõ.
+- **Tiêu chí kế hoạch:** Không có XP/cấp độ toàn cục được thêm vào.
+- **Tiêu chí kế hoạch:** Cộng đồng/quà tặng tuân thủ an toàn trẻ em và quyền riêng tư.
 
 ---
 
 ## 14. Trạng thái hiện tại & việc cần làm ngay
 
-### 14.1. Snapshot có bằng chứng — không tự suy theo tip
+### 14.1. Trạng thái có source khác với nghiệm thu
 
-- Source app đối chiếu `a9bcdcf`: Main Map, Main Quest12bài/64bước, mini-games,
-  Creator Maze, achievements, energy/daily/progress và Tutor text/voice thử nghiệm.
-- PQC-010 board độc lập,014 locale service,015 root localization,016 Settings đã
-  accepted trong phạm vi riêng.011 revision2/r31 mới được giao, chưa nghiệm thu.
-- Run39051006962:406ordinary+10render,12focusedSettings là subset; analyze sạch.
-- Release-mode APK từ a9b đã build run39052978443 (workflow SHA khác source SHA);
-  chưa coi việc build là device/voice/usability pass, chưa có UI mới hay nhà/visit/pets.
-- Bốn tài liệu được đồng bộ2026-10-18; P03–P06C là nguồn thiết kế, không bằng chứng
-  Flutter. Mọi acceptance mới phải thêm SHA/evidence, không dùng checklist cũ thay thế.
+Nguồn cập nhật: [PROJECT_STATUS](PROJECT_STATUS.md), đối chiếu CODE
+`71b0fd3fd8fb07c73596ce089fa2e68f6fe87964` và DESIGN trước r47
+`c68bdcd73b400c4d449216023a54499b202bda1d`.
+
+- Foundation/SQLite/điều hướng, Main Map, Main Quest chặng1 và interpreter mô phỏng
+  đã có source; không bắt đầu lại dự án. Chưa đóng mọi tiêu chí của giai đoạn1–6.
+- Registry có6 module: Main Quest, **Robot Maze, Dragon Jump, Catch the Stars,
+  Bug Hunter**, Nhà Thành Tích. Bốn hoạt động chơi được liệt kê theo tên để không
+  bỏ sót debug game Bug Hunter; Maze có Creator riêng.
+- Giai đoạn4 **chỉ hoàn thành một phần**: energy có source, rewarded-ad SDK chưa
+  có. Không coi quảng cáo/quota/SDK callbacks là dữ liệu đang được lưu/chạy.
+- Evidence lịch sử a9b: run39051006962 có406 ordinary +10 render;12 focused Settings
+  là subset. APK run39052978443 đã build, không thay device/voice/usability PASS.
+  Những kết quả đó không phải execution evidence cho71b0 hoặc tip mới hơn.
+- PQC-011: **CHANGES_REQUESTED / WAITING_FOR_PINNED_SDK_EVIDENCE**;
+  R42-A/B **SOURCE_ADDRESSED / EXECUTION_UNVERIFIED** theo review r44.
+- PQC-018: **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE** theo review r40;
+  không runtime/production approval. Header cũ trên CODE phải đồng bộ, không mở lại task.
+- DESIGN r45/r46 đã giao study chọn màn Maze và Creator; không phải Flutter port.
+  Side Maps/Pro, cộng đồng/Arena đầy đủ và các lane runtime mở rộng vẫn chưa đóng.
 
 ### 14.2. Ưu tiên hiện tại
 
-1. Giữ CODE hoàn thành011 đúng hai authored examples đã giao; không kéo dài thành
-   AI planner, freehand hoặc voice sync. Review khi có evidence, không tự accept.
-2. DESIGN hoàn thiện gói **R1 UI làng + luồng hiện có** theo thiết kế mở rộng đã đồng
-   bộ: nhiều ngữ cảnh nhưng chỉ route thật trong APK, không port nguyên prototype.
-3. CODE nhận R1 sau order/allowlist/asset/copy/test cụ thể; có APK trước/sau cùng
-   trạng thái để user nhìn thấy thay đổi. Không chờ token voice hoặc pet LLM.
-4. R2 nối local nhà–dự án–nguồn kiếm–kết quả–nhận–xây–vào phòng; scope economy phải
-   được mở rõ, không tự thêm gỗ/vải từ bản mẫu. Sau đó theo các lane §17.
+1. Giữ011 ở blocker evidence; không giao lại source correction đã được review,
+   không cài SDK hoặc tự trigger/rerun CI để biến thiếu evidence thành PASS.
+2. Đồng bộ tài liệu/trạng thái và chính sách APK keyless theo r47. Đây là việc
+   bảo trì riêng, không mở runtime011 hoặc art018. Không overwrite workflow CODE
+   bằng cả file DESIGN vì hai nhánh có các gate kiểm thử khác nhau.
+3. DESIGN hoàn thiện các surface còn partial và bộ art2,5D production. R1/R4 chưa
+   mở; CODE chỉ nhận runtime order có scope/allowlist/assets/tests riêng.
+4. Nhà–đất–đảo, visit/pet, Arena/cộng đồng tiếp tục theo readiness, không tự cấp
+   economy/quyền chia sẻ và không chờ voice production mới thiết kế UI độc lập.
 
 ### 14.3. Bước tiếp theo cụ thể
 
-Không khởi tạo lại Flutter/SQLite. Dùng
-[WORLD_EXPANSION_REDESIGN](design/WORLD_EXPANSION_REDESIGN.md) làm layout/interaction
-chung, source hiện hành để map activity IDs/state thật. Gói R1 cần scene layers,
-landmark/portal anchors, controls/copyVIEN, state/phone matrix, provenance và file
-allowlist; không có thì chưa giao sửa MainMap. Không cần viết lại nền tảng đã nhận.
+**Không khởi tạo lại Flutter/SQLite.** Đọc ma trận trong PROJECT_STATUS và task
+review tương ứng trước khi chọn việc. Chỉ dùng source đã pin để map module/state;
+không lấy checkbox, ảnh concept hoặc build APK làm bằng chứng đã nghiệm thu.
+Các tiêu chí nền dưới §3–13 được giữ như kế hoạch tham chiếu, không phải bảng đếm
+việc chưa bắt đầu. Không đánh dấu hoàn tất hàng loạt; từng acceptance cần SHA,
+scope, log/test/device evidence và giới hạn của lần kiểm chứng.
 
 ### 14.4. Quyết định còn mở (TBD)
 
@@ -607,11 +629,12 @@ lane riêng; không chặn việc thiết kế/đưa UI thế giới và chơi s
 - Quảng cáo thưởng (rewarded ads) chưa có trong source.
 - UI thế giới mới chưa được áp dụng vào APK a9b; bản thiết kế mở rộng đã nối lại các gói V2/P03–P06C, xem §17.
 - **Bằng chứng trên thiết bị cho giọng nói**: bản sửa lỗi âm thanh và vai người nói
-  đã có test tự động (giao thức Live, vòng đời loa PCM, mô hình transcript, danh
-  tính trong panel) và CI xanh, nhưng **chưa** có phiên Gemini Live thật được xác
+  có test source (giao thức Live, vòng đời loa PCM, mô hình transcript, danh
+  tính trong panel) và evidence lịch sử, nhưng **chưa** có phiên Gemini Live thật được xác
   nhận bằng tai trên máy. Tiêu chí đóng: làm theo bảng kiểm trong
-  `docs/experimental/GEMINI_LIVE_VOICE_TEST.md` trên Release APK dựng từ commit
-  cần kiểm tra (cần `GEMINI_API_KEY` của repo secret lúc build).
+  `docs/experimental/GEMINI_LIVE_VOICE_TEST.md` trên build cục bộ được phép hoặc
+  đường token production tương lai, ghi exact SHA. Từ r47 CI không nhúng Gemini
+  key; không coi một keyless APK build thành công là voice PASS.
 
 ### 16.3. Hạng mục áp dụng UI Direction V2
 
