@@ -1,0 +1,44 @@
+[
+  {
+    "path": "published-r33/w02-home-expansion.jpg",
+    "source_commit": "ae7289f376d70ab9f73b37346d25edaf727abc12",
+    "source_path": "docs/design/art-refresh-r33/concepts/w02-home-expansion.jpg",
+    "sha256": "a070f05804141ff6031e3a80d805c6ef6bbd0c0507701938f74cb7c7973e8243",
+    "reason": "Exact published corrected bytes; preserve preexisting working-tree originals at old paths unchanged"
+  },
+  {
+    "path": "published-r33/w08-archipelago.jpg",
+    "source_commit": "ae7289f376d70ab9f73b37346d25edaf727abc12",
+    "source_path": "docs/design/art-refresh-r33/concepts/w08-archipelago.jpg",
+    "sha256": "83652b3f6479c1e4595a8dab7ad2987a720d409d8ec1d0c3218bfbe8760de52d",
+    "reason": "Exact published corrected bytes; preserve preexisting working-tree originals at old paths unchanged"
+  },
+  {
+    "path": "layouts/media/w13-tutor-crop.jpg",
+    "source_commit": "e3ec5f1b6887eea5fa168efd265531425a531719",
+    "source_path": "docs/design/art-refresh-r33/code/w13-tutor/concept.png",
+    "source_sha256": "611acdf2acd18110c30984f797da6a091bcac57adc99a119c28a06adcdd75d84",
+    "crop_box_ltrb": [
+      0,
+      350,
+      704,
+      1200
+    ],
+    "sha256": "f55c28031fea6a0c4d6036833eeaeadaf5f52de1fa79789b025a56467b6a5a91",
+    "reason": "Layout crop only; unchanged full original stays in imported package"
+  },
+  {
+    "path": "layouts/media/w11-arena-crop.jpg",
+    "source_commit": "e3ec5f1b6887eea5fa168efd265531425a531719",
+    "source_path": "docs/design/art-refresh-r33/code/w11-arena/concept.png",
+    "source_sha256": "2b9932f9d6f69c9bb8bd9f3591099fc77d06e1338f41f0a75be0fc4a8bd15d72",
+    "crop_box_ltrb": [
+      0,
+      500,
+      1440,
+      2200
+    ],
+    "sha256": "d235fa490cc3df99c9772fdb83bae775985ea1e5c6dd143cd7912f663cddb6d7",
+    "reason": "Layout crop only; unchanged full original stays in imported package"
+  }
+]

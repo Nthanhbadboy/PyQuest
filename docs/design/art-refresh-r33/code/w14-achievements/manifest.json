@@ -1,0 +1,59 @@
+{
+  "screen_id": "W14",
+  "screen_name": "Achievement House interior",
+  "status": "concept_scene_and_screen_study_for_design_review",
+  "design_revision_sha": "ae7289f376d70ab9f73b37346d25edaf727abc12",
+  "source_context_sha": "a331ac110f19de63e9be6884d08db8c436054f50",
+  "source_context_status": "SUBMITTED_UNVERIFIED; not accepted by PQC-017",
+  "design_only": true,
+  "runtime_ready": false,
+  "production_approved": false,
+  "scene": {
+    "path": "concept.png",
+    "dimensions_px": [843, 1264],
+    "format": "PNG",
+    "bytes": 2727255,
+    "sha256": "fac243137dc25acd74f9688c876b8286e53d1c7b12acf6c1085e91c1236265f8",
+    "alpha": false,
+    "origin": "Arena built-in image generation; user selected candidate 2/2, then one restyle correction pass"
+  },
+  "generation_history": {
+    "initial_selection": "candidate 2 of 2 selected by user",
+    "correction_count": 1,
+    "correction_prompt_path": "prompt-restyle.txt",
+    "correction_prompt_sha256": "3fa12a034ad5ab525b42224d09f64625cbe55dba52252c7a02bc4fb5c73b9b46",
+    "selected_original_hash": "not captured before edit; original bytes were overwritten; no original hash is claimed"
+  },
+  "screen_composition": {
+    "path": "layout.html",
+    "viewports_css_px": [[390, 844], [360, 640]],
+    "locales": ["vi", "en"],
+    "states": ["empty/fixture taxonomy", "selected first_line detail/back"],
+    "text_scale": [1, 2],
+    "control_min_css_px": 48,
+    "safe_area_and_crop": "proportional cover; at 390x844 trims ~129 source px from each side; at 360x640 trims ~66 source px per side; cabinet/plinth edges may crop; header/panel overlay, no scene stretch; 2x may scroll",
+    "contrast_and_device_measurements": "not performed",
+    "browser_visual_test": "not performed"
+  },
+  "source_map": [
+    {"source_commit": "a331ac110f19de63e9be6884d08db8c436054f50", "path": "app/lib/modules/achievements/achievement_catalog.dart", "git_blob": "e6cf2f772f70aae7862b17c293a44a38569b8f0e", "sha256": "07d52e12d2552ddff0fb7786146184df421c8ad2267e57fbb1cb7c9ef6c67200", "mapping": "first_line title, description and howTo for detail; real source definition, not player state. Catalog secret=true is not exposed in condition text."},
+    {"source_commit": "a331ac110f19de63e9be6884d08db8c436054f50", "path": "app/lib/modules/achievements/achievement_house_module.dart", "git_blob": "145c9c4d2435e586c96a03277e01991d14ad4523", "sha256": "49060c2d988d40047dbf7768fe5846071d8702053d4337c2589ef431cc0301b0", "mapping": "achievement_house identity and cabinet/trophy-wall/collection/creator-corner concept only; no data copied as player progress"}
+  ],
+  "fixture_policy": {
+    "display_label": "Mẫu thiết kế / Design sample",
+    "earned_locked_secret": "visual taxonomy fixtures only; never current-user progress",
+    "secret_conditions": "not shown",
+    "skill_vs_social": "skill badge is source-mapped first_line; social category is empty because source a331 has no social reward item registry",
+    "xp_or_user_progress": "none fabricated"
+  },
+  "tool_and_rights": {
+    "tool": "Arena built-in image generation tool; model/version not exposed",
+    "initial_prompt_path": "prompt-original.txt",
+    "initial_prompt_sha256": "ca328ae40a1b71d5c8630c3887608ec819337cd407ec5c6564463c45852a155f",
+    "reference_paths": ["../references/w01-village.jpg", "concept.png (selected image input to restyle pass)"],
+    "reference_sha256": ["2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99", "selected-original hash not captured before overwrite"],
+    "rights": "Project-owned W01 reference and prior generated concept supplied; no third-party reference input. No CC0/exclusivity/stock-license claim; review generator terms and project release policy before production."
+  },
+  "camera_material_review": "Detailed interior with cabinet, ledges, pedestals and floor path; after correction still more frontal/perspective than W01's 3/4 orthographic camera. Material family is closer but not calibrated. DESIGN review/correction remains open.",
+  "not_delivered": ["runtime layers/alpha/pivots/footprints/occlusion/animation", "real user progress integration", "social reward registry", "device/contrast/usability evidence", "production approval"]
+}

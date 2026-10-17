@@ -32,27 +32,31 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision34**. Đọc `reviews/PQD-003-r34.md` và
-`docs/implementation/coordination/tasks/PQC-011.md` từ SHA DESIGN đã pin.
+Task hiện tại là **PQD-003 revision35**. Bản tinr35 thay bảnr34 user chưa chuyển.
+Đọc reviewr35, `docs/design/art-sync-r35/README.md`, `catalog.json`, `STYLE_SYNC.md`
+và `docs/implementation/coordination/tasks/PQC-018.md` từ DESIGN SHA đã pin.
 
-**011 CHANGES_REQUESTED @a331ac1.** CI117462432865 đã fail analyze8issues;
-Settings/ordinary/render skipped, không còn chỉ là "chưa biết CI". Sửa compile/
-imports/pumpAndSettle, equality nội dung cả2Set, assertion beat và selection-only
-acknowledge; hoàn thiện matrix revision2. Runtime/tests chỉ allowlist011 cũ, không
-controller/validator/schema/deps/pubspec/CI/SDK/APK. Không sửa test cho xanh bằng
-cách auto-advance board hoặc bỏ assertion. Báo evidence thực chạy trước acceptance.
+**017 đã REVIEWED_WITH_CORRECTIONS** từexacte3ec5f1.20filegốc giữ nguyên; W13/W11giữ
+concept, W14active làcorrectionr35 cutaway3/4/tủbục trống. Layout gốc28/56overflow;
+bản synced0/64, bỏdebugID, thêmemptythật. Dùnglayoutcanonicalr35, khônglàm lại cả017.
+Không tựproductionapprove; activecatalog16bao gồm13DESIGN+3CODE/correction.
 
-**017 vẫn READY_FOR_CODE design/art-only.** Giữ công việc artwork đang làm, không
-hủy/restart; W13 Tutor, W14 Nhà Thành Tích, W11 Arena luyện tập. W01r33 là neo.
-Đọc ART_DIRECTION_2_5D, WORLD_EXPANSION_REDESIGN và task017. Ghi code/** dưới gói art
-và own017; không port vào app. Tách commit017 với correction011. Nếu thiếu image
-tool: giao layout/state có thể làm, báo artworkBLOCKED, không SVGphẳng thay concept.
+**BẮT BUỘC mở xem tất cả16ảnhactive đã đồngbộ, đủkíchthước, vàcáclayout/state.**
+Khôngchỉ đọcmanifest/thumbnail. Ghi16id/path/hash/observation vàDESIGN SHA trong
+reviewed-inputs.json cùngcommitart018. W01làneo; khôngsaochép lỗi geometry/actor ghi
+trongSTYLE_SYNC hoặc cacheW02/W08selected-original. Khônggiảđãxem nếu thiếuviewer.
 
-DESIGN bổ sung10concept ở art-refresh-r34 cùng phone/state studies; không overwrite
-master art. Journal/settings/welcome art riêng chưa sinh được do limit; CatchStars/
-BugHunter và các state production còn thiếu. Không tự coi toàn app đã đủ hình.
-R1runtime chưa giao;010/014/015/016 giữaccepted. Không merge/cherry-pick toàn nhánh
-DESIGN hoặc nhập APKworkflow. Không ACK-onlycommit.
+**018 READY_FOR_CODE art-only9ảnh**, A5bàn giao trước rồiB4: A journal/settings/welcome/
+CatchStars/BugHunter; B friends-invites/Creator-editor/built-room/pet-rest. Chỉghi
+art-completion-r36/code/** +own018, giữmasterr33/r34/r35 nguyên. Cóconcept riêng,
+VIENphone/state, provenance vàchecksthật; `[skip ci]`, khôngapp/deps/CI/APK.
+Khôngvẽpolygonphẳngthay2,5D, khôngretryvượttool limit; báoBLOCKED thật nếu cần.
+
+**011 CHANGES_REQUESTED @a331ac1** vẫn hiệu lực: CI117462432865failanalyze8issues,
+suites skipped. SửaR34-A imports/compile/pumpAndSettle; BSetcontent equalitycả2;
+Cbeatassertionkhôngauto-advance; Dselection-onlykhôngackedit; coveragecũ theoorder.
+Allowlist011riêng, khôngcontroller/validator/schema/deps/pubspec/CI/SDK/APK. Không
+gộp correction011 vàoart018, khôngaccept011vì017đẹp. R1runtimechưa mở.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders

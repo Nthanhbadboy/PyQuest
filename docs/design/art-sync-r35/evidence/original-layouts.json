@@ -1,0 +1,1036 @@
+{
+  "date": "2026-10-18",
+  "mode": "original",
+  "source_code_sha": "e3ec5f1b6887eea5fa168efd265531425a531719",
+  "browser": "153.0.8010.0",
+  "cases": 56,
+  "horizontalOverflowCases": 28,
+  "debugIDVisibleCases": 16,
+  "errors": [],
+  "captures": [
+    "original-w13-tutor-390x844-vi-text1.png",
+    "original-w13-tutor-360x640-en-text2.png",
+    "original-w14-achievements-390x844-vi-text1.png",
+    "original-w14-achievements-360x640-en-text2.png",
+    "original-w11-arena-390x844-vi-text1.png",
+    "original-w11-arena-360x640-en-text2.png"
+  ],
+  "results": [
+    {
+      "screen": "w13-tutor",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "1",
+      "state": "main",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "1",
+      "state": "error",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "2",
+      "state": "main",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 441,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "2",
+      "state": "error",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 441,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "1",
+      "state": "main",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "1",
+      "state": "error",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "2",
+      "state": "main",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 540,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top",
+        "panel",
+        "row",
+        "actions"
+      ],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "2",
+      "state": "error",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 540,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top",
+        "panel",
+        "row",
+        "actions"
+      ],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "1",
+      "state": "main",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "1",
+      "state": "error",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "2",
+      "state": "main",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 441,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top",
+        "row"
+      ],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "2",
+      "state": "error",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 441,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top",
+        "row"
+      ],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "1",
+      "state": "main",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "1",
+      "state": "error",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "2",
+      "state": "main",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 540,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top",
+        "panel",
+        "row",
+        "actions"
+      ],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w13-tutor",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "2",
+      "state": "error",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 540,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top",
+        "panel",
+        "row",
+        "actions"
+      ],
+      "disabledMocks": true,
+      "code": [
+        "print(\"Xin chào!\")",
+        "print(\"Xin chào!"
+      ],
+      "debugIDVisible": true
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "1",
+      "state": "empty",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "1",
+      "state": "detail",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "2",
+      "state": "empty",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 423,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top",
+        "panel",
+        "fixture-grid",
+        "specimen earned",
+        "specimen locked",
+        "specimen secret",
+        "specimen"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "2",
+      "state": "detail",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 423,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "1",
+      "state": "empty",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "1",
+      "state": "detail",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "2",
+      "state": "empty",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 577,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top",
+        "panel",
+        "fixture-grid",
+        "specimen earned",
+        "specimen locked",
+        "specimen secret",
+        "specimen"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "2",
+      "state": "detail",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 577,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "1",
+      "state": "empty",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "1",
+      "state": "detail",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "2",
+      "state": "empty",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 423,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top",
+        "panel",
+        "fixture-grid",
+        "specimen earned",
+        "specimen locked",
+        "specimen secret",
+        "specimen"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "2",
+      "state": "detail",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 423,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "1",
+      "state": "empty",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "1",
+      "state": "detail",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "2",
+      "state": "empty",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 577,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top",
+        "panel",
+        "fixture-grid",
+        "specimen earned",
+        "specimen locked",
+        "specimen secret",
+        "specimen"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w14-achievements",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "2",
+      "state": "detail",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 577,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "1",
+      "state": "home",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "1",
+      "state": "rules",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "1",
+      "state": "unavailable",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "2",
+      "state": "home",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "2",
+      "state": "rules",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "vi",
+      "scale": "2",
+      "state": "unavailable",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "1",
+      "state": "home",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "1",
+      "state": "rules",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "1",
+      "state": "unavailable",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 380,
+      "clientWidth": 380,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "2",
+      "state": "home",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 405,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top",
+        "actions"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "2",
+      "state": "rules",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 405,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "390x844",
+      "locale": "en",
+      "scale": "2",
+      "state": "unavailable",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 405,
+      "clientWidth": 380,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "1",
+      "state": "home",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "1",
+      "state": "rules",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "1",
+      "state": "unavailable",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "2",
+      "state": "home",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 378,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top",
+        "actions"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "2",
+      "state": "rules",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 378,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "vi",
+      "scale": "2",
+      "state": "unavailable",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 378,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "1",
+      "state": "home",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "1",
+      "state": "rules",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "1",
+      "state": "unavailable",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 350,
+      "clientWidth": 350,
+      "overflow": [],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "2",
+      "state": "home",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 405,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top",
+        "panel",
+        "actions"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "2",
+      "state": "rules",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 405,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    },
+    {
+      "screen": "w11-arena",
+      "size": "360x640",
+      "locale": "en",
+      "scale": "2",
+      "state": "unavailable",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 405,
+      "clientWidth": 350,
+      "overflow": [
+        "phone",
+        "top"
+      ],
+      "disabledMocks": true,
+      "code": [],
+      "debugIDVisible": false
+    }
+  ],
+  "limits": [
+    "HTML only, no Flutter/device tests",
+    "No gameplay, live AI, social or economy",
+    "No exhaustive contrast/screenreader audit"
+  ]
+}

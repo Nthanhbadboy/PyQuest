@@ -7,7 +7,9 @@ from urllib.parse import unquote, urlsplit
 import argparse
 
 ROOT = Path(__file__).resolve().parents[2]
-ALLOWED = ((ROOT / 'docs/design').resolve(), (ROOT / 'app/assets/fonts').resolve())
+ALLOWED = tuple((ROOT / p).resolve() for p in (
+    'docs/design', 'app/assets/fonts', 'docs/implementation/coordination/tasks'
+))
 
 
 class ArtHandler(SimpleHTTPRequestHandler):
@@ -15,7 +17,7 @@ class ArtHandler(SimpleHTTPRequestHandler):
         path = unquote(urlsplit(self.path).path)
         if path == '/':
             self.send_response(302)
-            self.send_header('Location', '/docs/design/art-refresh-r34/index.html')
+            self.send_header('Location', '/docs/design/art-sync-r35/index.html')
             self.end_headers()
             return
         target = (ROOT / path.lstrip('/')).resolve()

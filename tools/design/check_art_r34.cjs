@@ -9,7 +9,7 @@ const chromiumModule = require('@sparticuz/chromium');
 const chromium = chromiumModule.default || chromiumModule;
 const root = path.resolve(__dirname, '../..');
 const output = path.join(root, 'docs/design/art-refresh-r34/evidence');
-const base = process.env.ART_REVIEW_URL || 'http://127.0.0.1:8000/';
+const base = process.env.ART_REVIEW_URL || 'http://127.0.0.1:8000/docs/design/art-refresh-r34/index.html';
 (async () => {
  fs.mkdirSync(output, {recursive:true});
  const browser = await playwright.launch({executablePath: await chromium.executablePath(), args: chromium.args, headless:true});

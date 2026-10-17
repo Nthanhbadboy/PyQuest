@@ -108,6 +108,15 @@ Journal/Settings/Welcome chưa có ảnh mới vì tool limit10ảnh/lượt. Ca
 BugHunter, friends list và editor sâu vẫn thiếu.017 củaCODE chưa được nhận trong
 reviewr34. Các checklist dưới đây vẫn chưa đạt toàn bộ; R1 không tự mở.
 
+### Cập nhật r35 · 2026-10-18 — nguồn ảnh chung
+
+[art-sync-r35](art-sync-r35/README.md) nhập3conceptCODE017 vào13conceptDESIGN, thành
+catalog16ảnhactive. W14dùngcorrection3/4/empty mới; original giữnguyên. W13/W11giữ
+concept, cả3layoutđã sửaoverflow2×, W13ẩndebugID, W14thêmemptythật. Đây không phải
+productionapproval cho16ảnh: geometry/character/materialgaps vẫn trongSTYLE_SYNC.
+W01vẫnneo chính. **CODE phải xem đủ16ảnh +layouts** trước018, khôngchỉthumbnail.
+018giao9ảnh cònthiếu theoA5+B4; không tựmởruntime hoặc ghiđèmaster.
+
 ## 7. Quality gate trước R1 UI
 
 - [ ] Ba concept DESIGN và ba concept CODE cùng họ2,5D; không mang nhân vật/logo lạ.
