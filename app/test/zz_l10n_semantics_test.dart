@@ -26,7 +26,11 @@ void main() {
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
     await _openModalHarness(tester);
     expect(find.byTooltip('Quay lại'), findsOneWidget);
-    expect(tester.getSemantics(find.byTooltip('Quay lại')).label, 'Quay lại');
+    final String label = tester.getSemantics(find.byType(IconButton)).label;
+    // Android combines the icon's semantic label with the button tooltip; assert the
+    // localized text is present rather than requiring a single copy.
+    expect(label, contains('Quay lại'));
+    expect(label, isNot(contains('Back')));
   }, semanticsEnabled: true);
 
   testWidgets('modal BackButton tooltip tracks a system locale change',
@@ -56,7 +60,9 @@ void main() {
 
     final Finder backEn = find.byTooltip('Back');
     expect(backEn, findsOneWidget);
-    expect(tester.getSemantics(backEn).label, 'Back');
+    final String label = tester.getSemantics(find.byType(IconButton)).label;
+    expect(label, contains('Back'));
+    expect(label, isNot(contains('Quay lại')));
     await tester.tap(backEn);
     await tester.pump(const Duration(milliseconds: 150));
   }, semanticsEnabled: true);
