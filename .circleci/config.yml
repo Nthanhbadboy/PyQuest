@@ -44,9 +44,22 @@ jobs:
           name: One-test smoke check (locale resolver)
           command: |
             source "$BASH_ENV"
+            mkdir -p /tmp/circleci-artifacts
+            cp /tmp/circleci-l10n-evidence.json /tmp/circleci-artifacts/
             cd app
+            set +e
             flutter test --reporter expanded test/l10n/locale_resolver_test.dart \
-              --plain-name "resolves regional system tags in OS order and canonicalizes the match"
+              --plain-name "resolves regional system tags in OS order and canonicalizes the match" \
+              2>&1 | tee /tmp/circleci-artifacts/flutter-smoke.log
+            smoke_status=${PIPESTATUS[0]}
+            printf '%s\n' "$smoke_status" > /tmp/circleci-artifacts/flutter-smoke-exit.txt
+            exit 0
+      - store_artifacts:
+          path: /tmp/circleci-artifacts
+          destination: pqc-016-circleci-smoke
+      - run:
+          name: Fail if the smoke test failed
+          command: test "$(cat /tmp/circleci-artifacts/flutter-smoke-exit.txt)" -eq 0
       - when:
           condition:
             equal: [true, << pipeline.parameters.run_full_suite >>]
