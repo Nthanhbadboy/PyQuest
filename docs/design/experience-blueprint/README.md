@@ -15,6 +15,14 @@ P06 A là lớp giao lưu; P06C thêm chuỗi mở phòng. Không gian đi lại
 12 fixture, art mới, VI/EN, 414 cấu hình kiểm bố cục và handoff; chưa tích hợp Flutter.
 [P05 — kết quả và cuộc phiêu lưu tiếp theo](P05_RESULT_TO_NEXT_ADVENTURE.md) vẫn giữ nguyên.
 
+## Cập nhật2026-10-18 — blueprint đã hợp nhất
+
+[WORLD_EXPANSION_REDESIGN](../WORLD_EXPANSION_REDESIGN.md) và
+[world-expansion-map.png](world-expansion-map.png) nối P03–P08 thành world hub,
+nhà/đất/đảo, sổ dự án, visit/pets/Arena. Bốn tài liệu gốc đã đồng bộ. Sơ đồ cũ phía
+trên là lịch sử, không phải trạng thái source. R32 giữ CODE ở011; R1 UI world là
+bước triển khai kế tiếp sau work order cụ thể, không chờ hoàn tất voice/local AI.
+
 ## 1. Tầm nhìn chung: nhiều cách chơi, một thế giới
 
 ```text

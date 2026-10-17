@@ -1,6 +1,6 @@
 # PyQuest Village — 2.5D Redesign Brief
 
-Status: design direction / future implementation scope. Visual concept committed at [PYQUEST_VILLAGE_2_5D_CONCEPT.svg](./PYQUEST_VILLAGE_2_5D_CONCEPT.svg). This is a design mockup, not implemented app UI. Do not begin this UI overhaul before the AI Tutor greeting/speaker-label bug is fixed and verified.
+Status: design direction / future implementation scope. Visual concept committed at [PYQUEST_VILLAGE_2_5D_CONCEPT.svg](./PYQUEST_VILLAGE_2_5D_CONCEPT.svg). This is a design mockup, not implemented app UI. Current sequencing is defined by ROADMAP §17 and design/WORLD_EXPANSION_REDESIGN.md (2026-10-18). Preserve Tutor regression coverage; voice production completion is not a gate for world UI.
 
 ## Product intent
 
@@ -20,7 +20,7 @@ The current village feels cramped and visually flat. Redesign it as a larger, ex
 Build a connected map with clear landmarks and readable paths. Candidate districts (final names may change after source audit):
 
 1. **Village Square** — spawn point, welcome board, daily goal and a few moving residents.
-2. **Python Academy** — lesson entrance, learning streak and next lesson; must link to the real lesson flow.
+2. **Python Academy** — lesson entrance, saved lesson progress and next lesson (no streak pressure); must link to the real lesson flow.
 3. **Code Workshop** — coding challenges, build/repair interactions and earned cosmetic unlocks.
 4. **Arena Gate** — entry to Arena modes and Creator Pro League; show availability and status truthfully.
 5. **Market / Customization** — outfit, avatar and decoration previews; do not imply paid ownership unless the purchase flow exists.
@@ -54,7 +54,7 @@ Do not use side-view combat sprites as village residents merely because they are
 
 - First inspect the existing village source, navigation, state, assets and tests; identify the exact files that must change and why.
 - Preserve current product flows and existing persistence. Village redesign must not alter lesson progression, purchase entitlement, Arena state, or AI Tutor behavior.
-- Do not start the full redesign until the AI Tutor greeting/speaker-label issue is fixed and regression-tested.
+- Use a bounded world UI work order; preserve accepted Tutor behavior/tests without blocking UI on unfinished voice production.
 - Use a data-driven map model for districts, paths, props and NPCs where that fits the current architecture; avoid a giant hard-coded widget.
 - Keep rendering performant on low-memory Android devices: atlas/sprite-sheet reuse, bounded animation frame rates, culling off-screen NPCs, and asset-size budgets.
 - Support different phone aspect ratios and safe areas. Avoid text baked into art; keep labels localizable.
@@ -62,7 +62,7 @@ Do not use side-view combat sprites as village residents merely because they are
 
 ## Acceptance criteria
 
-- [ ] AI Tutor greeting and speaker labels are fixed and regression-tested before village redesign starts.
+- [ ] Existing Tutor identity/greeting behavior and regressions are preserved; UI delivery has its own source/asset/state evidence.
 - [ ] The village is visibly larger and has multiple connected districts, not just a reskinned single panel.
 - [ ] The camera/layout reads as 2.5D/isometric through consistent perspective, depth layers and shadows.
 - [ ] Multiple NPCs visibly animate; at least idle and walking behavior are demonstrated with approved assets.
@@ -75,9 +75,20 @@ Do not use side-view combat sprites as village residents merely because they are
 
 ## Suggested order of work
 
-1. Fix and verify AI Tutor bug; add a regression test.
+1. Read the current expansion design and source snapshot; preserve accepted Tutor regressions instead of reopening a historical gate.
 2. Audit current village implementation and capture baseline screenshots.
 3. Select one consistent 2.5D style and inspect candidate assets before coding.
 4. Prototype one small area with one animated NPC and verify performance on a low-end device.
 5. Expand the map/districts, wire only real destinations, then add remaining NPCs and ambient motion.
 6. Run regression tests for Tutor, lessons, Arena, purchases and navigation; compare APK size and frame performance.
+
+
+## Expansion alignment (2026-10-18)
+
+Read [the integrated world design](../design/WORLD_EXPANSION_REDESIGN.md) before any
+new scene layout. Public village, personal home/land/island, paid content maps and
+Achievement House are distinct contexts. Provide a reachable home/dock/atlas path
+when its real feature ships, not a menu of dead-end placeholders. Housing projects
+need earned conditions, material costs and usable rooms; visit requires activity
+and permissions; pets need baseline behavior and capability-aware AI/commerce.
+None of these future features is authorized by an art mockup or this brief alone.

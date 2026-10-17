@@ -1,5 +1,10 @@
 # PyQuest — Roadmap
 
+> **Đồng bộ mở rộng · 2026-10-18:** nhà → đất → đảo, nhiệm vụ liên kết,
+> thăm nhà có hoạt động, thú thông minh, bạn bè/Arena đều thuộc thiết kế sản phẩm.
+> [Thiết kế thế giới thống nhất](design/WORLD_EXPANSION_REDESIGN.md) nối các màn và
+> phân biệt rõ luật đề xuất với source đã chạy. Không coi prototype là tính năng APK.
+
 > Tài liệu này xác định **làm gì trước, làm gì sau, và kiểm tra bằng gì**.
 > Mỗi giai đoạn có mục tiêu rõ ràng, phạm vi cụ thể và tiêu chí nghiệm thu.
 > Tài liệu **không** định nghĩa lại luật chơi (xem `GAME_DESIGN.md`)
@@ -52,6 +57,20 @@ Khi lát cắt đó chạy ổn, phần còn lại chủ yếu là **mở rộng
 
 ---
 
+### 1.6. Cách đọc roadmap sau khi đồng bộ mở rộng
+
+§2–13 giữ lịch sử và checklist của các giai đoạn nền. **Ưu tiên đang áp dụng nằm
+ở §14 và §17**; không khởi tạo lại Foundation, không chờ mọi voice/model hoàn thiện
+mới đưa UI mới vào APK. Thiết kế toàn hệ thống phải có trước, implementation vẫn
+chia lát cắt có evidence. “Sau phát hành” trong kế hoạch cũ không phải lý do hoãn
+nhà/đất/đảo vô hạn hoặc để bạn bè/thi đấu biến mất khỏi thiết kế.
+
+Chỉ đóng từng dependency khi có chứng cứ; nghiên cứu/UI các lane độc lập có thể
+song song. Chính sách/quyền/server bắt buộc cho tính năng shared/paid không biến
+thành dependency giả cho UI làng hoặc nhánh nhà solo.
+
+---
+
 ## 2. Tổng quan các giai đoạn
 
 | # | Giai đoạn | Mục tiêu chính | Thời lượng dự kiến |
@@ -64,7 +83,7 @@ Khi lát cắt đó chạy ổn, phần còn lại chủ yếu là **mở rộng
 | 6 | **Main Quest** | Bài học Python, bài tập, lưu tiến trình | Dài |
 | 7 | **Side Maps & Pro** | Nội dung mở rộng và mua hàng | Trung bình |
 | 8 | **Hoàn thiện** | Localization, accessibility, kiểm thử, build, phát hành | Dài |
-| 9 | **Mở rộng tầm nhìn (sau phát hành)** | Arena mở rộng, AI Tutor nâng cao, cộng đồng, quà tặng, Side Maps mới | Dài |
+| 9 | **Mở rộng theo readiness** | Nhà/đất/đảo, visit/pets, Arena, cộng đồng, quà tặng và nội dung mới; xem §17 | Dài |
 
 **Lưu ý:** thời lượng chỉ là ước lượng tương đối — quan trọng là **thứ tự** và **tiêu chí nghiệm thu**, không phải deadline cứng.
 
@@ -450,7 +469,7 @@ Những mục này có thể được đánh giá lại sau khi PyQuest phát h�
 
 ---
 
-## 13. Giai đoạn 9 — Mở rộng tầm nhìn (sau phát hành)
+## 13. Giai đoạn 9 — Mở rộng tầm nhìn theo readiness
 
 ### 13.1. Mục tiêu
 
@@ -462,7 +481,10 @@ Mở rộng PyQuest theo tầm nhìn sản phẩm mà không làm mất các vò
 - **AI Tutor nâng cao:** thêm nhân vật Tutor (cún, mèo, rồng, búp bê), voice chat có kiểm soát, hội thoại theo ngữ cảnh trong toàn game.
 - **Cộng đồng:** kết bạn, đội nhóm, quà tặng, danh hiệu xã hội, an toàn trẻ em.
 - **Sáng tạo xã hội:** tranh, thiệp, quà do người chơi tự tạo.
-- **Side Maps mới:** bộ môn, chủ đề, vật phẩm, danh hiệu và trải nghiệm nâng cao.
+- **Nhà/đất/đảo:** dự án có nguồn huy chương/vật liệu, preview/commit, phòng dùng được, sắp đồ và lối đi; không chỉ profile/wallpaper.
+- **Visit thật:** snapshot chủ vắng hoặc cùng session, quyền xem/chơi/sửa, thu hồi/mất mạng, hoạt động chung và moderation.
+- **Pet thông minh:** hành vi nền, khả năng thiết bị, mua/khôi phục quyền; nghiên cứu AI local riêng có benchmark/fallback.
+- **Side Maps mới:** bộ môn, chủ đề, vật phẩm, danh hiệu và trải nghiệm nâng cao; không đồng nhất với đảo cá nhân.
 - **Danh hiệu độc quyền:** Side Maps, Tutor, nhiều bảng xếp hạng và tổng sắp chung.
 
 ### 13.3. Tiêu chí nghiệm thu (cao cấp)
@@ -476,35 +498,36 @@ Mở rộng PyQuest theo tầm nhìn sản phẩm mà không làm mất các vò
 
 ## 14. Trạng thái hiện tại & việc cần làm ngay
 
-### 14.1. Trạng thái
+### 14.1. Snapshot có bằng chứng — không tự suy theo tip
 
-- Tài liệu sản phẩm: **đã cập nhật** (`PRODUCT_VISION.md`, `GAME_DESIGN.md`) để phản ánh README và brief.
-- Tài liệu kỹ thuật: **đã cập nhật** (`TECHNICAL_ARCHITECTURE.md`) để phản ánh README và brief.
-- Roadmap: **đã cập nhật** (`ROADMAP.md`) để giữ tầm nhìn sản phẩm và chia giai đoạn.
-- Mã nguồn: **đã có lát cắt dọc hoàn chỉnh cho v0.1 "Đảo Khởi Đầu"** — Main Map, Main Quest (12 bài/64 bước), ba mini-game, Xưởng Mê Cung, Nhà Thành Tích, năng lượng, nhắc nghỉ, Python mô phỏng, trợ giảng (ngoại tuyến + relay + giọng nói thử nghiệm), SQLite, bộ test chạy trong CI. Giai đoạn 7 (Side Maps & Pro) chưa bắt đầu.
+- Source app đối chiếu `a9bcdcf`: Main Map, Main Quest12bài/64bước, mini-games,
+  Creator Maze, achievements, energy/daily/progress và Tutor text/voice thử nghiệm.
+- PQC-010 board độc lập,014 locale service,015 root localization,016 Settings đã
+  accepted trong phạm vi riêng.011 revision2/r31 mới được giao, chưa nghiệm thu.
+- Run39051006962:406ordinary+10render,12focusedSettings là subset; analyze sạch.
+- Release-mode APK từ a9b đã build run39052978443 (workflow SHA khác source SHA);
+  chưa coi việc build là device/voice/usability pass, chưa có UI mới hay nhà/visit/pets.
+- Bốn tài liệu được đồng bộ2026-10-18; P03–P06C là nguồn thiết kế, không bằng chứng
+  Flutter. Mọi acceptance mới phải thêm SHA/evidence, không dùng checklist cũ thay thế.
 
-### 14.2. Việc cần làm theo thứ tự ưu tiên
+### 14.2. Ưu tiên hiện tại
 
-1. **Chốt phạm vi Python runtime** — đã chốt: mô phỏng giai đoạn đầu, đánh giá lại sau.
-2. **Định lượng hóa Game Design** — đã có trong `GAME_DESIGN.md`.
-3. **Xác định cấu trúc code & tiêu chí nghiệm thu** — đã có trong tài liệu này.
-4. **Phân biệt Main Map và Main Quest** — đã chốt trong `PRODUCT_VISION.md`.
-5. **Chốt ranh giới dữ liệu giữa các module** — đã có trong `TECHNICAL_ARCHITECTURE.md`.
-6. **Tách tài liệu** — đã hoàn thành (README + 4 tài liệu trong `docs/`).
-7. **Lát cắt dọc đầu tiên** — đã xong (mở app → chơi → lưu → mở lại vẫn còn kết quả, có test và hành trình emulator trong CI). Việc còn lại: đóng bằng chứng trên thiết bị cho AI Tutor (xem 16.3) và áp dụng UI Direction V2 theo từng màn hình.
+1. Giữ CODE hoàn thành011 đúng hai authored examples đã giao; không kéo dài thành
+   AI planner, freehand hoặc voice sync. Review khi có evidence, không tự accept.
+2. DESIGN hoàn thiện gói **R1 UI làng + luồng hiện có** theo thiết kế mở rộng đã đồng
+   bộ: nhiều ngữ cảnh nhưng chỉ route thật trong APK, không port nguyên prototype.
+3. CODE nhận R1 sau order/allowlist/asset/copy/test cụ thể; có APK trước/sau cùng
+   trạng thái để user nhìn thấy thay đổi. Không chờ token voice hoặc pet LLM.
+4. R2 nối local nhà–dự án–nguồn kiếm–kết quả–nhận–xây–vào phòng; scope economy phải
+   được mở rõ, không tự thêm gỗ/vải từ bản mẫu. Sau đó theo các lane §17.
 
 ### 14.3. Bước tiếp theo cụ thể
 
-Bắt đầu **giai đoạn 1 — Foundation**:
-
-- Khởi tạo project Flutter.
-- Dựng cấu trúc thư mục theo `TECHNICAL_ARCHITECTURE.md`.
-- Cấu hình SQLite với schema ban đầu.
-- Tạo `game_config.json`.
-- Dựng 3–4 màn hình rỗng và điều hướng.
-- Kiểm tra: ghi SQLite, thoát app, mở lại, đọc được.
-
-Khi giai đoạn 1 đạt tiêu chí nghiệm thu → chuyển sang giai đoạn 2.
+Không khởi tạo lại Flutter/SQLite. Dùng
+[WORLD_EXPANSION_REDESIGN](design/WORLD_EXPANSION_REDESIGN.md) làm layout/interaction
+chung, source hiện hành để map activity IDs/state thật. Gói R1 cần scene layers,
+landmark/portal anchors, controls/copyVIEN, state/phone matrix, provenance và file
+allowlist; không có thì chưa giao sửa MainMap. Không cần viết lại nền tảng đã nhận.
 
 ### 14.4. Quyết định còn mở (TBD)
 
@@ -516,6 +539,9 @@ Các điểm sau **chưa chốt** và **không** được tự ý đặt số li
 | Giá trị kiểm soát interpreter | Ngân sách bước, trần collection, mục tiêu bộ nhớ cụ thể | `TECHNICAL_ARCHITECTURE.md` 2.3 |
 | Nhà cung cấp/model AI Tutor | Chất lượng tiếng Việt, độ trễ, chi phí, phương án lỗi | `TECHNICAL_ARCHITECTURE.md` 9.1 |
 | Cơ chế kiểm duyệt nội dung do người chơi tạo | Báo cáo/kiểm duyệt phù hợp trẻ em | `PRODUCT_VISION.md` 16.5 |
+| Recipe và vật liệu | Nguồn reachable, supply đủ, quota/giá, backfill người đã chơi; không lấy số fixture làm production | `GAME_DESIGN.md`17 |
+| Visit thật | Capacity, quyền từng vùng, reconnect/thu hồi/co-edit conflicts | `TECHNICAL_ARCHITECTURE.md`3.8/4.8 |
+| Pet local AI / mua thú | Model/license/benchmark VIEN, capability trước mua, memory/restore/refund | `TECHNICAL_ARCHITECTURE.md`9.4; `PRODUCT_VISION.md`16.7 |
 
 ---
 
@@ -542,11 +568,9 @@ và đủ công cụ để trẻ tự tạo ra thế giới của riêng mình.
 
 ---
 
-**Bước tiếp theo:** lát cắt dọc và giai đoạn 1–6 đã nằm trong source. Việc kế tiếp
-theo thứ tự: (1) đóng bằng chứng thiết bị cho AI Tutor theo
-`docs/experimental/GEMINI_LIVE_VOICE_TEST.md`; (2) đưa giọng nói sang token ngắn hạn
-qua server thay cho key lúc build; (3) áp dụng UI Direction V2 cho từng màn hình học
-tập, mỗi lần một module, kèm test và ảnh render để so với ảnh tham khảo gốc.
+**Bước tiếp theo:** theo §14/§17, không theo thứ tự voice → token → UI của bản
+roadmap cũ. Voice production vẫn cần token an toàn và evidence thiết bị, nhưng là
+lane riêng; không chặn việc thiết kế/đưa UI thế giới và chơi solo vào app.
 
 ---
 
@@ -567,7 +591,7 @@ tập, mỗi lần một module, kèm test và ảnh render để so với ảnh
 - Side Maps và Pro đầy đủ.
 - Cộng đồng, quà tặng và danh hiệu xã hội đầy đủ.
 - Quảng cáo thưởng (rewarded ads) chưa có trong source.
-- UI Direction V2 chưa được áp dụng vào source.
+- UI thế giới mới chưa được áp dụng vào APK a9b; bản thiết kế mở rộng đã nối lại các gói V2/P03–P06C, xem §17.
 - **Bằng chứng trên thiết bị cho giọng nói**: bản sửa lỗi âm thanh và vai người nói
   đã có test tự động (giao thức Live, vòng đời loa PCM, mô hình transcript, danh
   tính trong panel) và CI xanh, nhưng **chưa** có phiên Gemini Live thật được xác
@@ -586,3 +610,30 @@ tập, mỗi lần một module, kèm test và ảnh render để so với ảnh
 Không đánh dấu hoàn thành chỉ vì tài liệu hoặc mockup tồn tại. Ảnh tham khảo gốc
 (21 ảnh trong `docs/PyQuest_Reffrence_Images/`) đã có trong checkout và là chuẩn
 thị giác; mockup V2 và concept SVG chỉ là định hướng, không phải bằng chứng đã làm.
+
+
+## 17. Lộ trình redesign đồng bộ nhà–đất–đảo
+
+**Đây là kế hoạch, không phải blanket runtime authorization.** Mỗi hàng cần order
+có source pin/allowlist/test; không đánh dấu đã làm vì có bảng này. R0 là tài liệu
+đã hoàn thành trong r32; các hàng còn lại chưa nghiệm thu. User không cần chọn lại
+các bước phát triển thông thường; Lead chịu trách nhiệm chia scope và review.
+
+| Lane | Đầu ra nhìn thấy/chơi được | Dependency thật | Evidence để đóng |
+|---|---|---|---|
+| R0 Đồng bộ | Bốn tài liệu + thiết kế W01–W14 và audit thiếu/mâu thuẫn | Đọc PV/P06B/P06C/source, không cần backend | Cross-doc coverage, link/gate check; **không phải runtime pass** |
+| R1 UI thế giới hiện hữu | Làng2.5D dễ đọc, một gợi ý tiếp tục, chọn địa điểm → activity → kết quả → về; giữ sáu module thật | Art/copy/state và scene/navigation contract riêng; nối011 theo gate, không cần voice mới | APK mới, trước/sau360×640/390×844, VIEN, touch/focus/scroll/locale, save và routes không đổi; frame/memory trên máy ghi rõ nếu chưa đo |
+| R2 Nhà + dự án solo | Nhà ban đầu, một dự án mở phòng có nguồn grant, nhận → preview → xây → vào dùng được; Sổ/túi | Inventory/recipe/ledger/migration được duyệt; không cần social backend | Hai thứ tự job, pending đa kết quả, retry/restart không cộng/trừ lặp, badge còn, người chơi cũ không mất save |
+| R3 Bố trí + pet nền | Sắp/cất đồ, lối đi hợp lệ, pet đi/chơi/phản hồi, nội thất dùng được | Layout/behavior/nav ownership; không cần model sinh | Thao tác không drag, cancel/save/relaunch, không kẹt cửa, pause/calm, pet không phạt khi nghỉ |
+| R4 Đất / bến / đảo | Mở khu có hoạt động mới, hải đồ phân loại, đi/về/cancel; không chỉ thêm nền | Content và recipe mỗi khu, scene bounds/streaming/authority | Reachability/supply, lỗi travel giữ bến nguồn, arrival một lần, trạng thái cũ còn; không đồng nhất đảo tư với paid map |
+| R5 Ghé nhà thật | Chủ vắng có nhãn hoặc hai người cùng phiên, một hoạt động chung, quyền vùng/thu hồi | Identity/consent/moderation, session authority, shared layout/version | Hai thiết bị/client độc lập, presence thật, disconnect/rejoin/revoke/private data không leak; không lấy simulation hai vai làm bằng chứng |
+| R6 Arena / đội / giao lưu | Từ luyện tập rõ nhãn tới một bộ môn thật, tác phẩm/version, title/rank, quà/thiệp có quyền | Scoring/result authority, anti-abuse, moderation/consent; không cần hoàn tất mọi đảo | Kết quả chính thức/dedup/disconnect, đóng góp cá nhân/đội, ownership quà không thành skill title, safe solo exit |
+| R7 Pet AI / commerce | Capability rõ trước mua, inference tùy máy, fallback, restore và entitlement thật | Model/runtime/license benchmark VIEN; store/parental/receipt policy | Đo cùng scene, cancel/background, prompt safety, không silent cloud fallback; gỡ model không mất pet; purchase fail/restore/revoke đúng |
+
+R5/R6 có thể nghiên cứu song song; triển khai từng lát cắt riêng khi dependency đạt.
+R7 không chặn R1–R4. R6 không cần chờ mua thú hay sở hữu đảo lớn. Side Maps/Pro/quà
+trả phí vẫn giữ roadmap, nhưng không lén bán quyền học hoặc mua chiến thắng.
+
+Mỗi APK phải ghi source SHA, phần UI thật sự đổi và phần chưa có. Review visual
+không chỉ đếm test: phải dùng được vòng đã giao. Tài liệu/hình/prototype chưa nối
+Flutter không phải bằng chứng đã giao trải nghiệm mới cho người cài app.

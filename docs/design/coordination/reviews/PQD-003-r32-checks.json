@@ -1,0 +1,36 @@
+{
+  "review": "PQD-003-r32",
+  "date": "2026-10-18",
+  "kind": "documentation-and-product-design",
+  "runtime_source_pin": "a9bcdcf8e3203ee17b1a5de0b9ebff6a0e8dd32d",
+  "design_before": "edc763383c3bbe21ed38798e71706bb84f233f90",
+  "runtime_acceptance_new": false,
+  "runtime_authorization_unchanged": [
+    "PQC-011 revision2"
+  ],
+  "checks": {
+    "changed_markdown_local_links": 46,
+    "balanced_fences": true,
+    "four_document_coverage": true,
+    "obsolete_foundation_restart_removed": true,
+    "incorrect_board_current_status_removed": true,
+    "no_app_ci_dependency_diff": true,
+    "diagram_deterministic": true
+  },
+  "diagram": {
+    "path": "docs/design/experience-blueprint/world-expansion-map.png",
+    "sha256": "c3f3c26c4897ec6debea57bcb75e74b0de68b08ad4b5772a240b5716bc2879fb",
+    "size": [
+      1800,
+      1520
+    ],
+    "is_app_screenshot": false
+  },
+  "not_performed": [
+    "Flutter tests",
+    "device testing",
+    "new interactive prototype",
+    "final art approval",
+    "housing/visit/pet implementation"
+  ]
+}

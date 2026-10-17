@@ -1,5 +1,9 @@
 # P04 — Một thế giới để lớn lên cùng
 
+> **Cập nhật2026-10-18:** P04 là prototype lịch sử. Thiết kế hiện hành nối đầy đủ
+> nhà–đất–đảo/visit/pet tại [WORLD_EXPANSION_REDESIGN](WORLD_EXPANSION_REDESIGN.md).
+> Không dùng “Tutor ưu tiên” ở gói cũ để hoãn UI làng sau voice/local AI.
+
 ## Chốt hướng sáng tạo
 
 Người dùng trao quyền chủ động sáng tạo cho design: Tutor có lời chào/bong bóng thoại
@@ -75,8 +79,9 @@ Tutor context, route/cancel token). Không hardcode một màn làng vào từng
 Travel phải có cancel/skip và một điểm commit arrival, không ghi reward hay tiến trình
 học vì tới một island. Load lỗi thì ở lại bến nguồn, không để trẻ mắc kẹt giữa hai map.
 
-Giữ **Tutor/bảng giảng là ưu tiên implementation** của PQD-003. World là lớp khám phá
-nâng đỡ việc học, không mở thêm ba game/voice stack trước khi board hoạt động tốt.
+Ưu tiên P04 thời điểm soạn là board. Thứ tự hiện hành theo ROADMAP §17: hoàn tất
+011 trong scope, đưa UI world vào app theo R1; không mở thêm voice/model trước đó.
+World phục vụ nhiều nhánh chơi/sở hữu/giao lưu, không chỉ làm nền cho bài học.
 
 ## Thẩm mỹ và nguồn bên ngoài
 

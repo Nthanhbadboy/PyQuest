@@ -1,5 +1,10 @@
 # PyQuest — Product Vision
 
+> **Đồng bộ mở rộng · 2026-10-18:** nhà → đất → đảo, nhiệm vụ liên kết,
+> thăm nhà có hoạt động, thú thông minh, bạn bè/Arena đều thuộc thiết kế sản phẩm.
+> [Thiết kế thế giới thống nhất](design/WORLD_EXPANSION_REDESIGN.md) nối các màn và
+> phân biệt rõ luật đề xuất với source đã chạy. Không coi prototype là tính năng APK.
+
 > Tài liệu này xác định **PyQuest là trò chơi gì**, dành cho ai, bán giấc mơ gì,
 > và thế giới bên trong nó vận hành theo triết lý nào.
 > Tài liệu **không** đi vào thông số cân bằng (xem `GAME_DESIGN.md`),
@@ -72,7 +77,7 @@ khác dùng thuật ngữ này, nghĩa phải đúng như bảng sau.
 
 ## 2. Triết lý thiết kế
 
-Chín nguyên tắc dưới đây chi phối **mọi quyết định** về sản phẩm, từ nội dung
+Các nguyên tắc dưới đây chi phối **mọi quyết định** về sản phẩm, từ nội dung
 đến mô hình kinh doanh, từ giao diện đến cách viết thoại.
 
 ### 2.1. Main Map là hub điều hướng; hoạt động cốt lõi miễn phí
@@ -308,6 +313,30 @@ Tutor là các nhân vật có tính cách, lĩnh vực và vai trò riêng. H�
 - Thăm nhà phải cho khách đi quanh, khám phá và tương tác với các đồ vật/tác phẩm/thú được phép; khi chủ và khách cùng hiện diện phải dựa trên phiên đồng bộ thật. Trang hồ sơ chỉ là một lối vào, không thay cho trải nghiệm thăm nhà.
 - Phạm vi cho xem, cùng chơi và cùng sửa là các quyền khác nhau. Phòng riêng không tự mở vì đã kết bạn; chủ có thể thu hồi quyền và khách luôn có đường rời đi an toàn.
 
+
+---
+
+### 4.6. Một hệ thống thế giới, không bốn ứng dụng rời nhau
+
+Làng công cộng → hoạt động → kết quả → dự án nhà → đất/bến/đảo tạo đường khám phá
+liên kết. Đây là **lựa chọn dài hạn**, không thay mọi nhánh thành bài học hay buộc
+mọi trẻ xây nhà. Kết quả có thể quay lại hoạt động, trưng bày hoặc dự án đang theo.
+Tutor đi cùng ngữ cảnh; bạn bè/Arena là trụ cột chơi lâu dài, không chỉ phụ kiện chat.
+
+- Màn đầu ưu tiên cảnh có điểm đến và một việc đang dở; không biến thành danh sách
+  card dài hoặc một nhà riêng chặn Main Map. Có đường vào mini-game ngay.
+- Hành trình mở rộng có nhiều quy mô: phòng mở thêm bàn sáng tạo; sân/vườn mở thêm
+  chơi với thú; bến/đảo mở thêm nội dung và đường khám phá. Không chỉ đổi wallpaper.
+- Dự án được lưu lâu dài, không reset theo nhiệm vụ ngày. Huy chương là bằng chứng
+  giữ lại; vật liệu là tài nguyên có thể tiêu; không dùng điểm xếp hạng làm tiền xây.
+- Nhà riêng, Nhà Thành Tích, đảo cá nhân và Side Map có identity/quyền khác nhau.
+  Cụm “mỗi nhà là một module” ở §4.4 chỉ nói công trình chức năng công cộng, không
+  có nghĩa mỗi phòng do trẻ xây cần một module game riêng.
+- Giữ miễn phí phần cốt lõi, không cần kết bạn/mua thú để kiếm nguyên liệu bắt buộc;
+  không mở vòng khóa: phòng cần gỗ nhưng chỉ phòng đó mới có gỗ.
+- Xem **Game Design §17** cho luật, **Technical Architecture §3.8/4.8/9.4** cho
+  ownership/authority và **Roadmap §17** cho thứ tự triển khai. Thiết kế màn W01–W14
+  nằm trong [WORLD_EXPANSION_REDESIGN](design/WORLD_EXPANSION_REDESIGN.md).
 
 ---
 
@@ -959,9 +988,10 @@ và một nhánh sáng tạo đủ thật để trẻ tin mình có thể tự l
 
 ## 21. Trạng thái triển khai hiện tại và định hướng UI Direction V2
 
-### 21.1. Trạng thái source app hiện tại
+### 21.1. Snapshot source và giới hạn bằng chứng — a9bcdcf
 
-Source app hiện tại đã có:
+Các mục dưới mô tả snapshot `a9bcdcf`, không tự cập nhật theo tip của nhánh CODE.
+Có trong source:
 - Main Map dạng bản đồ đảo với các địa điểm hoạt động: Main Quest, Robot Maze, Dragon Jump, Catch the Stars, Bug Hunter và Nhà Thành Tích.
 - Main Quest là hoạt động học Python có lộ trình, mở khóa theo tiến trình (chặng 1 *Code Apprentice*: 12 bài, 64 bước).
 - Energy hồi theo thời gian, daily quests, achievements (15 huy hiệu, 3 bí mật), màn tổng kết và Adventure Recap theo dữ liệu đã lưu.
@@ -974,6 +1004,14 @@ Chưa triển khai hoặc chưa có bằng chứng trong source hiện tại:
 - Quảng cáo thưởng: năng lượng đã có, rewarded ads chưa có trong source.
 - Giọng nói ở trạng thái thử nghiệm cho bản dựng phát triển (key đưa lúc build), chưa phải đường production có token ngắn hạn qua server.
 
+**Mốc nghiệm thu riêng:**010 board độc lập,014 locale service,015 root localization,
+016 Settings đã được nhận trong phạm vi riêng. Run39051006962:406ordinary+10render;
+APK sourcea9b đã build ở39052978443. Build thành công không thay device/user test.
+011 mới được giao để nối hai authored examples vào lesson; không có cơ sở ghi bảng
+AI/voice hoặc freehand đã triển khai toàn bài học. Nhà/đất/đảo, vật liệu/dự án xây,
+visit thật, mua thú/local AI và UI thế giới mới chưa có trong APK này.
+
+
 ### 21.2. UI Direction V2
 
 `docs/PyQuest_Reffrence_Images/PYQUEST_UI_DIRECTION_V2.svg` là tài liệu định hướng thiết kế, **không phải** giao diện đang chạy. 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/` và `docs/design/kai-lumi-character-reference.svg` đã có trong checkout và là bằng chứng thiết kế chuẩn.
@@ -983,3 +1021,11 @@ Nguyên tắc áp dụng:
 - UI V2 chưa được triển khai vào source; không mô tả mockup V2 như tính năng đã hoàn thành.
 - Các asset ảnh tham khảo là tài liệu thiết kế, không phải asset runtime của app.
 - Khi áp dụng V2 vào source, phải đánh giá từng màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime.
+
+### 21.3. Hướng thiết kế sau khi đồng bộ mở rộng
+
+V2 và P03–P06C là nguồn nghiên cứu, không phải các app riêng cần ghép nguyên iframe.
+[Thiết kế thống nhất](design/WORLD_EXPANSION_REDESIGN.md) thay cách xem làng như sáu
+thumbnail: world hub, nhà/sân, dự án, sổ hành trình, hải đồ, visit/pets/Arena dùng cùng
+điều hướng và ngôn ngữ hình ảnh. Không chờ AI/voice hoàn thiện mới đưa UI làng vào
+app. Những gate bảo mật voice vẫn bắt buộc trước khi phát hành voice production.

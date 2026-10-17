@@ -3,6 +3,13 @@
 Ngày: 2026-10-16. Trạng thái: **chỉ đạo sản phẩm từ người dùng + kế hoạch thiết kế**,
 không phải xác nhận bộ mockup đã được duyệt hoặc app đã triển khai xong.
 
+## Cập nhật2026-10-18 — đồng bộ toàn thế giới
+
+[WORLD_EXPANSION_REDESIGN](WORLD_EXPANSION_REDESIGN.md) và ROADMAP §14/§17 là thứ tự
+hiện hành. Bốn tài liệu gốc đã bổ sung đồng bộ nhà–đất–đảo, dự án/vật liệu, visit và
+pet. Các ưu tiên Tutor ở những gói lịch sử bên dưới không là gate chờ voice/AI hoàn
+thiện mới thiết kế/triển khai UI thế giới.011 giữ scope đã giao; R1 là gói UI kế tiếp.
+
 ## 1. Phạm vi đã làm rõ
 
 Người dùng yêu cầu: thiết kế lại **toàn bộ app**, không chỉ thay thumbnail; chất lượng
@@ -107,7 +114,10 @@ Thiết kế đủ state chứ không chỉ màn mặc định đẹp nhất.
   kiến thức Python cốt lõi hoặc dùng thiết kế gây áp lực mua.
 - Cộng đồng/bạn bè/đội/quà: quyền riêng tư, giới hạn trẻ em, moderation, báo cáo/chặn,
   trạng thái gửi/nhận; không làm mạng xã hội có feed gây áp lực.
-- Nhân vật tùy chọn, danh hiệu kỹ năng/xã hội và tiến trình dài hạn đúng tài liệu.
+- Nhà/đất/đảo, nội thất và lối đi; dự án có huy chương/vật liệu và công trình dùng
+  được. Visit có quyền/hoạt động thật, không thu gọn thành kệ profile.
+- Pet có hành vi, mua/restore và capability rõ; local AI qua benchmark riêng,
+  không biến thoại scripted thành chứng cứ AI. Nhân vật tùy chọn và danh hiệu vẫn giữ.
 - Rewarded ads chỉ khi được phê duyệt, có SDK/backend/chính sách và callback thật.
 
 Với E, thiết kế journey/state trước, chỉ bật trải nghiệm khi dependency kỹ thuật,
@@ -127,8 +137,9 @@ không phải nhận mọi tính năng cùng lúc rồi giả lập kết quả.
    mọi màn của app thiết kế xong mới bắt đầu lát cắt đã qua gate.
 4. **Nhân rộng hiện trạng:** Main Quest/editor, arcade, debug, collection và shared
    systems; mỗi module dùng foundation chung nhưng giữ nhịp chơi riêng.
-5. **Làng runtime và cast hoàn chỉnh hơn:** mở rộng từ mẫu nhỏ đã kiểm chứng, triển
-   khai nhiều lớp/NPC sau gate Tutor; không cần chờ toàn bộ làng xong để cải thiện editor.
+5. **Làng runtime và cast hoàn chỉnh hơn:** theo lane R1 của Roadmap §17, không chờ
+   voice/local AI production. Giữ regression Tutor, không lấy thử nghiệm voice làm
+   gate chung cho UI; asset/motion vẫn cần evidence riêng.
 6. **Mở rộng sản phẩm E:** chia milestone theo dependency và năng lực backend;
    giữ đủ tầm nhìn, nhưng không công bố chức năng hoàn tất khi chỉ có concept.
 
@@ -215,4 +226,5 @@ chia giai đoạn nhưng không xóa social/đội/Creator League khỏi thiết
 NPC hư cấu không thay bạn bè thật; không fake leaderboard, điểm thưởng hoặc kết quả.
 Động viên không gây áp lực cày liên tục, không mất phần thưởng đã kiếm khi nghỉ. Giữ
 private-by-default phù hợp, quyền phụ huynh/chặn/báo cáo khi thiết kế cộng đồng trẻ em.
-Đây là định hướng cần triển khai, **chưa có prototype social/thi đấu mới ở gói review này**.
+Ghi chú trên là lịch sử gói charter. P06A/P06C đã có prototype sau đó; visit thật,
+Arena và pet AI vẫn chưa được chứng minh trong Flutter. Xem blueprint mở rộng r32.

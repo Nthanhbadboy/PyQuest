@@ -32,7 +32,12 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision31: PQC-011 revision2 READY_FOR_CODE**.
+Task hiện tại là **PQD-003 revision32: CODE giữ PQC-011 revision2/r31**.
+R32 đồng bộ bốn tài liệu gốc và `WORLD_EXPANSION_REDESIGN.md`; đó là master design,
+không tự mở world/housing/AI scope. DESIGN chuẩn bị R1 UI thế giới, không đợi voice
+production. CODE tiếp tục011; không dừng để ACK và không port master design.
+Khi nhận order mới, đọc source docs trên DESIGN; không mặc định bản core docs ở
+CODE đã có toàn bộ mở rộng. Không tự merge/cherry-pick toàn nhánh DESIGN.
 Đọc toàn bộ `docs/implementation/coordination/tasks/PQC-011.md` revision2 và
 `docs/design/coordination/reviews/PQD-003-r31.md` từ DESIGN. Revision1 tại33e6cbb
 được sửa: assets/data/ không đệ quy JSON con; dùng hai JSON trực tiếp trong thư mục,
