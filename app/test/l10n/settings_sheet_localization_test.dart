@@ -488,6 +488,10 @@ void main() {
       reason: 'a correct answer must call the existing reset flow',
     );
     expect(tester.takeException(), isNull);
+    // The successful reset reinitializes EnergyService and starts a periodic refresh timer.
+    // Dispose before Flutter checks for pending fake-async timers.
+    await tester.pumpWidget(const SizedBox.shrink());
+    await _disposeServices(tester, services);
   });
 
   for (final _ViewportCase viewportCase in _viewportCases) {
@@ -564,6 +568,7 @@ void main() {
     await pumpFor(tester, const Duration(milliseconds: 300));
     await _tapVisible(tester, find.byKey(const ValueKey<String>('language_vi')));
     await pumpFor(tester, const Duration(milliseconds: 350));
+    await _waitForLocaleWriteOutcome(tester, services);
     _expectOneSelectedRadio(tester, LocalePreference.vi);
     await tester.ensureVisible(find.byKey(const ValueKey<String>('language_retry')));
     await tester.pump();
@@ -706,6 +711,8 @@ Future<AppServices> _createServices(
   return services as AppServices;
 }
 
+final Expando<bool> _disposedServices = Expando<bool>('disposed test services');
+
 Future<AppServices> _openServices(WidgetTester tester) async {
   final AppServices services = await _createServices(tester);
   addTearDown(() async {
@@ -719,6 +726,8 @@ Future<AppServices> _openServices(WidgetTester tester) async {
 }
 
 Future<void> _disposeServices(WidgetTester tester, AppServices services) async {
+  if (_disposedServices[services] == true) return;
+  _disposedServices[services] = true;
   try {
     services.dispose();
   } finally {
