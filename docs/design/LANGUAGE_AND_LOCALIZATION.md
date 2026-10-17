@@ -2,7 +2,13 @@
 
 Ngày: 2026-10-16. Yêu cầu người dùng: **đa ngôn ngữ; mặc định theo hệ thống;
 có thể đổi trong Cài đặt**. Đây là yêu cầu sản phẩm xuyên suốt, không chỉ một toggle
-cho hội thoại. Triển khai lượt này: mẫu HTML P03/P04; **chưa triển khai Flutter**.
+cho hội thoại. Mẫu HTML P03/P04 là evidence thiết kế lịch sử.
+
+**Cập nhật2026-10-17:**014service và015Flutter foundation đã ACCEPTED;015 tại556f92d/
+run39021843114 (394ordinary+10render), không phải app đãdịchtoàndiện. Lead đã mở016
+Settings system/VI/EN và localizedSettings surface theo PQD-003r29; spec/copy ở
+coordination/specs/PQC-016-settings.md và PQC-016-copy.json. Các phần “chưatriểnkhai”
+trong ghi chú lịch sử bên dưới không phủ nhận acceptance foundation hiện tại.
 
 ## 1. Hành vi thống nhất
 

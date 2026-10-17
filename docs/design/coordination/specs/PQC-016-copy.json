@@ -1,0 +1,231 @@
+{
+  "task": "PQC-016",
+  "revision": 1,
+  "source_baseline": "556f92d6a62691f2ca1c06ea693045ab7ebb479d",
+  "format_note": "Design catalog, not ARB. Add values and metadata/typed placeholders to app_en.arb/app_vi.arb and generate with pinned Flutter. Preserve all existing foundation keys.",
+  "messages": {
+    "settingsTitle": {
+      "vi": "Cài đặt",
+      "en": "Settings",
+      "description": "PQC-016 Settings surface; settingsTitle"
+    },
+    "settingsLanguageTitle": {
+      "vi": "Ngôn ngữ",
+      "en": "Language",
+      "description": "PQC-016 Settings surface; settingsLanguageTitle"
+    },
+    "settingsLanguageSystem": {
+      "vi": "Theo hệ thống",
+      "en": "Follow device",
+      "description": "PQC-016 Settings surface; settingsLanguageSystem"
+    },
+    "settingsLanguageVi": {
+      "vi": "Tiếng Việt",
+      "en": "Tiếng Việt",
+      "description": "PQC-016 Settings surface; settingsLanguageVi"
+    },
+    "settingsLanguageEn": {
+      "vi": "English",
+      "en": "English",
+      "description": "PQC-016 Settings surface; settingsLanguageEn"
+    },
+    "settingsLanguageEffective": {
+      "vi": "Đang dùng: {language}",
+      "en": "Currently using: {language}",
+      "description": "PQC-016 Settings surface; settingsLanguageEffective",
+      "placeholders": {
+        "language": {
+          "type": "String",
+          "example": "Tiếng Việt"
+        }
+      }
+    },
+    "settingsLanguageFallback": {
+      "vi": "Ngôn ngữ của thiết bị chưa được hỗ trợ. PyQuest đang dùng English.",
+      "en": "Your device language is not supported yet. PyQuest is using English.",
+      "description": "PQC-016 Settings surface; settingsLanguageFallback"
+    },
+    "settingsLanguageScope": {
+      "vi": "Cài đặt và giao diện hệ thống đổi ngôn ngữ ngay. Một số nội dung khác đang được bổ sung bản dịch.",
+      "en": "Settings and system controls update now. Some other content is still being translated.",
+      "description": "PQC-016 Settings surface; settingsLanguageScope"
+    },
+    "settingsLanguageSaving": {
+      "vi": "Đang lưu lựa chọn…",
+      "en": "Saving your choice…",
+      "description": "PQC-016 Settings surface; settingsLanguageSaving"
+    },
+    "settingsLanguageSaveError": {
+      "vi": "Chưa lưu được lựa chọn. Ngôn ngữ vẫn được dùng trong lần mở này; lần mở sau có thể trở về lựa chọn đã lưu trước đó.",
+      "en": "Your choice could not be saved. It still applies for now; next time, PyQuest may use your previously saved choice.",
+      "description": "PQC-016 Settings surface; settingsLanguageSaveError"
+    },
+    "settingsLanguageRetry": {
+      "vi": "Thử lưu lại",
+      "en": "Retry saving",
+      "description": "PQC-016 Settings surface; settingsLanguageRetry"
+    },
+    "settingsSound": {
+      "vi": "Âm thanh hiệu ứng",
+      "en": "Sound effects",
+      "description": "PQC-016 Settings surface; settingsSound"
+    },
+    "settingsMusic": {
+      "vi": "Nhạc nền",
+      "en": "Music",
+      "description": "PQC-016 Settings surface; settingsMusic"
+    },
+    "settingsCalm": {
+      "vi": "Chế độ êm dịu (ít chuyển động)",
+      "en": "Calm mode (less motion)",
+      "description": "PQC-016 Settings surface; settingsCalm"
+    },
+    "settingsAboutPython": {
+      "vi": "Về PyQuest Python",
+      "en": "About PyQuest Python",
+      "description": "PQC-016 Settings surface; settingsAboutPython"
+    },
+    "settingsResetProgress": {
+      "vi": "Xoá toàn bộ tiến trình",
+      "en": "Reset all progress",
+      "description": "PQC-016 Settings surface; settingsResetProgress"
+    },
+    "settingsFooter": {
+      "vi": "PyQuest 0.1 · Đảo Khởi Đầu. Tiến trình được lưu trên thiết bị này.",
+      "en": "PyQuest 0.1 · Starter Island. Progress is saved on this device.",
+      "description": "PQC-016 Settings surface; settingsFooter"
+    },
+    "settingsParentTitle": {
+      "vi": "Dành cho bố mẹ",
+      "en": "For parents",
+      "description": "PQC-016 Settings surface; settingsParentTitle"
+    },
+    "settingsParentWarning": {
+      "vi": "Thao tác này xoá tiến trình, huy hiệu, mê cung tự tạo và đặt lại cài đặt trên thiết bị này. Để tiếp tục, hãy nhập kết quả:",
+      "en": "This deletes progress, badges and custom mazes, and resets settings on this device. To continue, enter the answer:",
+      "description": "PQC-016 Settings surface; settingsParentWarning"
+    },
+    "settingsParentQuestion": {
+      "vi": "{a} × {b} = ?",
+      "en": "{a} × {b} = ?",
+      "description": "PQC-016 Settings surface; settingsParentQuestion",
+      "placeholders": {
+        "a": {
+          "type": "int",
+          "example": "6"
+        },
+        "b": {
+          "type": "int",
+          "example": "7"
+        }
+      }
+    },
+    "settingsParentAnswer": {
+      "vi": "Kết quả",
+      "en": "Answer",
+      "description": "PQC-016 Settings surface; settingsParentAnswer"
+    },
+    "settingsCancel": {
+      "vi": "Huỷ",
+      "en": "Cancel",
+      "description": "PQC-016 Settings surface; settingsCancel"
+    },
+    "settingsDelete": {
+      "vi": "Xoá",
+      "en": "Delete",
+      "description": "PQC-016 Settings surface; settingsDelete"
+    },
+    "settingsPythonTitle": {
+      "vi": "PyQuest Python (mô phỏng)",
+      "en": "PyQuest Python (simulated)",
+      "description": "PQC-016 Settings surface; settingsPythonTitle"
+    },
+    "settingsPythonIntro": {
+      "vi": "Code của bạn chạy trên một phiên bản Python thu nhỏ được viết riêng cho PyQuest, ngay trên máy, không cần mạng. Nó giống Python thật ở những phần cơ bản nhưng KHÔNG phải Python đầy đủ.",
+      "en": "Your code runs on a small Python implementation made for PyQuest, on this device and without a network connection. It supports the basics, but it is NOT full Python.",
+      "description": "PQC-016 Settings surface; settingsPythonIntro"
+    },
+    "settingsPythonSupportedTitle": {
+      "vi": "Bạn có thể dùng",
+      "en": "You can use",
+      "description": "PQC-016 Settings surface; settingsPythonSupportedTitle"
+    },
+    "settingsPythonLimitsTitle": {
+      "vi": "Giới hạn",
+      "en": "Limits",
+      "description": "PQC-016 Settings surface; settingsPythonLimitsTitle"
+    },
+    "settingsPythonSupportedValues": {
+      "vi": "print(), biến, số nguyên, số thập phân, chuỗi chữ, True/False, None",
+      "en": "print(), variables, integers, decimal numbers, strings, True/False, None",
+      "description": "PQC-016 Settings surface; settingsPythonSupportedValues"
+    },
+    "settingsPythonSupportedOperators": {
+      "vi": "Phép tính + - * / // % ** và so sánh == != < > <= >=, and/or/not",
+      "en": "Arithmetic + - * / // % **, comparisons == != < > <= >=, and/or/not",
+      "description": "PQC-016 Settings surface; settingsPythonSupportedOperators"
+    },
+    "settingsPythonSupportedFlow": {
+      "vi": "if / elif / else, while, for ... in range(...), break, continue",
+      "en": "if / elif / else, while, for ... in range(...), break, continue",
+      "description": "PQC-016 Settings surface; settingsPythonSupportedFlow"
+    },
+    "settingsPythonSupportedLists": {
+      "vi": "Danh sách: [1, 2, 3], ds[0], ds.append(), len(), in",
+      "en": "Lists: [1, 2, 3], ds[0], ds.append(), len(), in",
+      "description": "PQC-016 Settings surface; settingsPythonSupportedLists"
+    },
+    "settingsPythonSupportedFunctions": {
+      "vi": "Hàm: def, return, tham số mặc định",
+      "en": "Functions: def, return, default arguments",
+      "description": "PQC-016 Settings surface; settingsPythonSupportedFunctions"
+    },
+    "settingsPythonSupportedFString": {
+      "vi": "f-string đơn giản, ví dụ: {example}",
+      "en": "Simple f-strings, for example: {example}",
+      "description": "PQC-016 Settings surface; settingsPythonSupportedFString",
+      "placeholders": {
+        "example": {
+          "type": "String",
+          "example": "f\"Xin chào {ten}\""
+        }
+      },
+      "runtime_argument_literal": "f\"Xin chào {ten}\""
+    },
+    "settingsPythonSupportedBuiltins": {
+      "vi": "Lệnh có sẵn: len, range, str, int, float, bool, abs, round, min, max, sum, list, sorted, type",
+      "en": "Built-ins: len, range, str, int, float, bool, abs, round, min, max, sum, list, sorted, type",
+      "description": "PQC-016 Settings surface; settingsPythonSupportedBuiltins"
+    },
+    "settingsPythonLimitFeatures": {
+      "vi": "Không có import, file, mạng, input(), class, dictionary, tuple, cắt chuỗi [a:b], try/except, lambda.",
+      "en": "No import, files, networking, input(), class, dictionary, tuple, slicing [a:b], try/except or lambda.",
+      "description": "PQC-016 Settings surface; settingsPythonLimitFeatures"
+    },
+    "settingsPythonLimitSteps": {
+      "vi": "Tối đa 100.000 bước chạy — vòng lặp vô tận sẽ được dừng an toàn.",
+      "en": "Up to 100,000 execution steps — endless loops are stopped safely.",
+      "description": "PQC-016 Settings surface; settingsPythonLimitSteps"
+    },
+    "settingsPythonLimitDepthOutput": {
+      "vi": "Hàm gọi lồng nhau tối đa 50 tầng; in ra tối đa 10.000 ký tự.",
+      "en": "Up to 50 nested function calls and 10,000 output characters.",
+      "description": "PQC-016 Settings surface; settingsPythonLimitDepthOutput"
+    },
+    "settingsPythonLimitIntegers": {
+      "vi": "Số nguyên giới hạn khoảng ±9 tỉ tỉ (Python thật không giới hạn).",
+      "en": "Integers are limited to about ±9 quintillion (standard Python integers have no fixed size limit).",
+      "description": "PQC-016 Settings surface; settingsPythonLimitIntegers"
+    },
+    "settingsPythonLimitOutputTiming": {
+      "vi": "Kết quả hiện ra sau khi chương trình chạy xong, không hiện từng dòng theo thời gian thực.",
+      "en": "Output appears after the program finishes, not line by line in real time.",
+      "description": "PQC-016 Settings surface; settingsPythonLimitOutputTiming"
+    },
+    "settingsPythonLimitNames": {
+      "vi": "Không cho đặt tên biến trùng print, len, range để tránh lỗi khó hiểu.",
+      "en": "Variable names cannot shadow print, len or range, to help avoid confusing errors.",
+      "description": "PQC-016 Settings surface; settingsPythonLimitNames"
+    }
+  }
+}
