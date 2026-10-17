@@ -11,8 +11,6 @@ import 'package:pyquest/data/repositories/state_repositories.dart';
 import 'package:pyquest/l10n/generated/app_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-String _debugSemantics = 'not captured';
-
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
@@ -31,8 +29,8 @@ void main() {
     expect(backVi, findsOneWidget);
     final SemanticsHandle semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
+    await tester.pump();
     final SemanticsNode button = tester.getSemantics(find.byType(IconButton));
-    _debugSemantics = button.toStringDeep();
     expect(button.tooltip, 'Quay lại');
     await _disposeHarness(tester, harness);
   });
@@ -57,6 +55,7 @@ void main() {
     expect(find.byTooltip('Quay lại'), findsOneWidget);
     final SemanticsHandle semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
+    await tester.pump();
 
     harness.osLocales
       ..clear()
@@ -67,19 +66,12 @@ void main() {
     final Finder backEn = find.byTooltip('Back');
     expect(backEn, findsOneWidget);
     final SemanticsNode button = tester.getSemantics(find.byType(IconButton));
-    _debugSemantics = button.toStringDeep();
     expect(button.tooltip, 'Back');
     await tester.tap(backEn);
     await tester.pump(const Duration(milliseconds: 150));
     await _disposeHarness(tester, harness);
   });
 
-  test('diagnostic: print the modal button semantics snapshot', () async {
-    await Future<void>.delayed(const Duration(seconds: 70));
-    // Kept temporarily so the CI report's trailing test output contains the failing node.
-    // ignore: avoid_print
-    print('LOCALE_MODAL_SEMANTICS_DUMP: $_debugSemantics');
-  });
 }
 
 Future<_LocaleHarness> _openModalHarness(WidgetTester tester) async {
