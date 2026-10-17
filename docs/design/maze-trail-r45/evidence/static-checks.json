@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "scope": "Design source/catalog/artifact/link/diff integrity ONLY; not Flutter or gameplay execution",
+  "source_pins": 7,
+  "source_levels": 10,
+  "source_cells": 246,
+  "source_costs": "MATCH",
+  "references": 4,
+  "hashed_artifacts": 11,
+  "hashed_evidence": 13,
+  "captures": 11,
+  "local_links": 61,
+  "browser_cases": 360,
+  "font_checks": 5664,
+  "flows": 16,
+  "model_checks": 18,
+  "runtime_changed": false,
+  "flutter_execution": "NOT_RUN",
+  "ci_triggered": false
+}
