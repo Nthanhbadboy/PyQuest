@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - debug/remove-ai-transcript-add-voice-logs
+      - arena/00838eb9-pyquest
   workflow_dispatch:
     inputs:
       source_sha:
@@ -24,11 +25,14 @@ permissions:
 
 jobs:
   build-android:
+    # The integration token cannot workflow_dispatch; this exact-source preview
+    # can also be requested by a marked push on the DESIGN session branch only.
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/debug/remove-ai-transcript-add-voice-logs' || contains(github.event.head_commit.message, '[preview-apk]')
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
-      BUILD_MODE: ${{ inputs.build_mode || 'debug' }}
-      SOURCE_SHA: ${{ inputs.source_sha || github.sha }}
+      BUILD_MODE: ${{ inputs.build_mode || (github.ref == 'refs/heads/arena/00838eb9-pyquest' && 'release') || 'debug' }}
+      SOURCE_SHA: ${{ inputs.source_sha || (github.ref == 'refs/heads/arena/00838eb9-pyquest' && 'a9bcdcf8e3203ee17b1a5de0b9ebff6a0e8dd32d') || github.sha }}
     defaults:
       run:
         working-directory: app
