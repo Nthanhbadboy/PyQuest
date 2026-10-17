@@ -9,6 +9,7 @@ import 'package:pyquest/app/app_services.dart';
 import 'package:pyquest/core/events.dart';
 import 'package:pyquest/modules/main_quest/lesson_screen.dart';
 import 'package:pyquest/modules/main_quest/quest_models.dart';
+import 'package:pyquest/modules/tutor/board/authored_board_repository.dart';
 import 'package:pyquest/modules/tutor/board/board_controller.dart';
 import 'package:pyquest/modules/tutor/board/board_view.dart';
 import 'package:pyquest/shared/l10n/pq_l10n.dart';
@@ -320,11 +321,28 @@ void main() {
     );
     await _advanceStoryToExample(tester);
     await _waitForBoard(tester);
+    expect(find.byKey(const ValueKey<String>('lesson_board_authored_badge')), findsOneWidget);
+    expect(find.text('Bảng soạn sẵn'), findsOneWidget);
     final Finder nextAtTwoX = find.byKey(const ValueKey<String>('board_next'));
     await tester.ensureVisible(nextAtTwoX);
     await tester.tap(nextAtTwoX);
     await tester.pump();
     expect(tester.widget<BoardView>(find.byType(BoardView)).controller.beatIndex, 1);
+
+    final Finder runAtTwoX = find.byKey(const ValueKey<String>('example_run'));
+    await tester.ensureVisible(runAtTwoX);
+    await tester.pump();
+    await tester.tap(runAtTwoX);
+    await _waitForContinueEnabled(tester);
+    await tester.pumpAndSettle();
+
+    final Finder continueAtTwoX = find.byKey(const ValueKey<String>('lesson_continue'));
+    await tester.ensureVisible(continueAtTwoX);
+    await tester.pump();
+    await tester.tap(continueAtTwoX);
+    await tester.pumpAndSettle();
+    expect(find.text('3/5'), findsOneWidget,
+        reason: 'Run enables Continue and both remain reachable at 360x640 with 2x text');
     expect(tester.takeException(), isNull);
     await _finish(tester, services);
   });
@@ -361,7 +379,8 @@ void main() {
       (WidgetTester tester) async {
     final AppServices services = await _createServices(tester);
     final Lesson lesson = services.mainQuest.byId('mq1_01')!;
-    final _GatedAssetBundle bundle = _GatedAssetBundle(rootBundle);
+    final Map<String, ByteData> authoredSources = await _preloadAuthoredAssetBytes(tester);
+    final _GatedAssetBundle bundle = _GatedAssetBundle(rootBundle, authoredSources);
     addTearDown(bundle.release);
     await _mountLesson(tester, services, lesson, bundle: bundle);
     await _advanceStoryToExample(tester);
@@ -376,17 +395,21 @@ void main() {
     expect(find.text('3/5'), findsOneWidget);
     expect(find.byType(BoardView), findsNothing);
 
+    expect(bundle.deliveredAssetKeys, isEmpty,
+        reason: 'the gate keeps both authored asset deliveries pending until after step disposal');
     bundle.release();
-    await tester.pumpAndSettle();
+    await _waitForAuthoredAssetDelivery(tester, bundle);
     expect(find.byKey(const ValueKey<String>('lesson_authored_board_mq1_01_s2')), findsNothing);
     expect(find.byType(BoardView), findsNothing);
+    expect(tester.takeException(), isNull);
     await _finish(tester, services);
   });
 
   testWidgets('late asset completion after leaving LessonScreen is ignored safely',
       (WidgetTester tester) async {
     final AppServices services = await _createServices(tester);
-    final _GatedAssetBundle bundle = _GatedAssetBundle(rootBundle);
+    final Map<String, ByteData> authoredSources = await _preloadAuthoredAssetBytes(tester);
+    final _GatedAssetBundle bundle = _GatedAssetBundle(rootBundle, authoredSources);
     addTearDown(bundle.release);
     await _mountLesson(
       tester,
@@ -400,8 +423,12 @@ void main() {
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();
+    expect(bundle.deliveredAssetKeys, isEmpty,
+        reason: 'the gate keeps both authored asset deliveries pending until after unmount');
     bundle.release();
-    await tester.pumpAndSettle();
+    await _waitForAuthoredAssetDelivery(tester, bundle);
+    expect(find.byKey(const ValueKey<String>('lesson_authored_board_mq1_01_s2')), findsNothing);
+    expect(find.byType(BoardView), findsNothing);
     expect(tester.takeException(), isNull,
         reason: 'late repository completion must not call setState/apply on a disposed lesson');
     await _finish(tester, services);
@@ -482,6 +509,29 @@ Future<void> _waitForContinueEnabled(WidgetTester tester) async {
   fail('Example run did not enable Continue');
 }
 
+Future<void> _waitForAuthoredAssetDelivery(
+  WidgetTester tester,
+  _GatedAssetBundle bundle,
+) async {
+  await tester.runAsync(
+    () => bundle.waitForAuthoredAssets().timeout(const Duration(seconds: 5)),
+  );
+  expect(bundle.deliveredAssetKeys, containsAll(_GatedAssetBundle.authoredAssetKeys));
+  await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+  await tester.pump();
+  await tester.pumpAndSettle();
+}
+
+Future<Map<String, ByteData>> _preloadAuthoredAssetBytes(WidgetTester tester) async {
+  final Map<String, ByteData>? sources = await tester.runAsync(() async => <String, ByteData>{
+        AuthoredBoardRepository.plansAssetKey:
+            await rootBundle.load(AuthoredBoardRepository.plansAssetKey),
+        AuthoredBoardRepository.copyAssetKey:
+            await rootBundle.load(AuthoredBoardRepository.copyAssetKey),
+      });
+  return sources!;
+}
+
 Future<void> _finish(WidgetTester tester, AppServices services) async {
   await tester.pumpWidget(const SizedBox.shrink());
   await tester.pump(const Duration(milliseconds: 100));
@@ -504,21 +554,41 @@ class _CorruptBoardAssetBundle extends CachingAssetBundle {
 }
 
 class _GatedAssetBundle extends CachingAssetBundle {
-  _GatedAssetBundle(this.delegate);
+  _GatedAssetBundle(this.delegate, this.authoredSources);
+
+  static const Set<String> authoredAssetKeys = <String>{
+    AuthoredBoardRepository.plansAssetKey,
+    AuthoredBoardRepository.copyAssetKey,
+  };
 
   final AssetBundle delegate;
+  final Map<String, ByteData> authoredSources;
   final Completer<void> _gate = Completer<void>();
+  final Completer<void> _allAssetsDelivered = Completer<void>();
+  final Set<String> _deliveredAssetKeys = <String>{};
+
+  Set<String> get deliveredAssetKeys => Set<String>.unmodifiable(_deliveredAssetKeys);
+
+  Future<void> waitForAuthoredAssets() => _allAssetsDelivered.future;
 
   void release() {
     if (!_gate.isCompleted) _gate.complete();
   }
 
   @override
-  Future<ByteData> load(String key) async {
-    if (key == 'assets/data/tutor_board_plans.v1.json' ||
-        key == 'assets/data/tutor_board_authored-copy.v1.json') {
-      await _gate.future;
+  Future<ByteData> load(String key) {
+    if (!authoredAssetKeys.contains(key)) return delegate.load(key);
+    final ByteData? bytes = authoredSources[key];
+    if (bytes == null) {
+      return Future<ByteData>.error(StateError('Preloaded authored bytes missing for $key'));
     }
-    return delegate.load(key);
+
+    return _gate.future.then((_) => bytes).then((ByteData deliveredBytes) {
+      _deliveredAssetKeys.add(key);
+      if (_deliveredAssetKeys.containsAll(authoredAssetKeys) && !_allAssetsDelivered.isCompleted) {
+        _allAssetsDelivered.complete();
+      }
+      return deliveredBytes;
+    });
   }
 }
