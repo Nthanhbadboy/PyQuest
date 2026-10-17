@@ -1,5 +1,8 @@
 # PyQuest — Game Design
 
+> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
+> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
 > Tài liệu này xác định **luật chơi và thông số định lượng** của PyQuest:
 > năng lượng, tiến trình hoạt động, phần thưởng, điều kiện mở khóa và cân bằng độ khó.
 > Tài liệu **không** định nghĩa lại triết lý sản phẩm (xem `PRODUCT_VISION.md`)
@@ -102,6 +105,10 @@ Chọn nhiệm vụ → Học/Chơi → Nhận thưởng → Năng lượng gi�
   gợi ý nội dung miễn phí đang có.
 
 ### 3.4. Quy tắc quảng cáo thưởng
+
+**Kế hoạch, chưa triển khai SDK** tại CODE71b0; các mức thưởng/hạn mức bên dưới
+không phải tính năng đang chạy. Không hiển thị ad reward thành công khi chưa có
+callback hợp lệ của SDK. Xem [trạng thái](PROJECT_STATUS.md).
 
 - Chỉ hiển thị nút "Nhận thêm năng lượng" khi năng lượng < tối đa.
 - Tối đa **3 lần hợp lệ/ngày**, reset vào 00:00 giờ địa phương.
@@ -578,7 +585,7 @@ Kết quả thử nghiệm sẽ quyết định điều chỉnh cụ thể.
 
 - Main Map dẫn tới Main Quest, mini-game và Nhà Thành Tích.
 - Main Quest mở khóa theo tiến trình học; không dùng XP/cấp độ toàn cục.
-- Energy hồi theo thời gian, quảng cáo thưởng có giới hạn và lưu trong database.
+- Energy hồi theo thời gian và lưu trong database. Quảng cáo thưởng là kế hoạch; rewarded-ad SDK chưa có trong source tại CODE71b0, không báo đã chạy quảng cáo thật.
 - Daily quests, achievements, màn tổng kết và Adventure Recap dùng dữ liệu đã lưu.
 - AI Tutor trong bài học: câu hỏi gõ hoặc câu nói đều vào cùng một transcript, mỗi dòng mang vai rõ ràng (Bé / nhân vật trả lời), câu chào thuộc về trợ giảng, trạng thái loading – đang nghe – đang nói – lỗi – bị ngắt lời hiển thị đúng như phiên thật, và câu trả lời luôn kèm nhãn cho biết nó do AI soạn hay do trợ giảng ngoại tuyến.
 

@@ -1,4 +1,4 @@
-name: Build PyQuest debug APK
+name: Build PyQuest APK (keyless preview)
 
 on:
   push:
@@ -38,15 +38,14 @@ jobs:
       - name: Resolve dependencies
         run: flutter pub get
 
-      - name: Build debug APK
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: flutter build apk --debug --dart-define=GEMINI_API_KEY="$GEMINI_API_KEY"
+      # Keyless preview policy r47: never compile a provider secret into CI artifacts.
+      - name: Build debug APK (keyless preview)
+        run: flutter build apk --debug --dart-define=GEMINI_API_KEY=
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: pyquest-debug-voice-diagnostics
+          name: pyquest-debug-keyless-preview
           path: app/build/app/outputs/flutter-apk/app-debug.apk
           if-no-files-found: error
           retention-days: 7

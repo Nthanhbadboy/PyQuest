@@ -3,22 +3,28 @@
 Tài liệu này dành cho người chạy thử APK. AI Tutor voice là tính năng thử nghiệm:
 nó chỉ hoạt động ở bản build có `GEMINI_API_KEY` và cần quyền micro.
 
-## Build
+## Build và quyền phân phối — cập nhật r47
 
-Từ thư mục gốc của repo:
+**APK CI mới không dùng để kiểm thử voice có xác thực.** Cả hai workflow
+`ci.yml` và `build-debug-apk.yml` không đọc Gemini repository secret, và truyền
+`--dart-define=GEMINI_API_KEY=` khi build. Không thêm lại secret vào workflow để
+bật voice. APK keyless có thể dùng để kiểm tra luồng thiếu key/fallback, nhưng
+không chứng minh PCM/audio session thật hoạt động.
 
-```bash
-cd app
-flutter pub get
-flutter run --dart-define=GEMINI_API_KEY=KEY_CUA_BAN
-```
+Source vẫn còn đường thử nghiệm cục bộ có key. Chỉ chạy trên môi trường/thiết bị
+được phép, dùng credential thử nghiệm riêng và không upload/phân phối APK đó.
+Cấu hình credential ngoài repository theo quy trình bảo mật cục bộ; không gửi key
+vào chat/issue/PR, không ghi vào shell history hoặc log. Không có credential nào
+được yêu cầu hoặc đọc trong đợt r47.
 
-Không commit key, không dán key vào issue/chat/PR. `--dart-define` được nhúng
-thẳng vào APK nên chỉ dùng cho bản thử nghiệm nội bộ; trước khi phát hành rộng
-phải đổi sang token ngắn hạn qua server trung gian và xoay vòng key đã dùng.
+Dart-define đặt giá trị vào APK; biến môi trường, repository secret hay build
+`--release` **không biến nó thành bí mật được bảo vệ trên client**. Đường phân phối
+voice phải dùng token ngắn hạn/server mediation và được nghiệm thu riêng.
 
-Bản Release trên CI lấy key từ repository secret `GEMINI_API_KEY`
-(xem `.github/workflows/ci.yml`, job `apk`).
+Các workflow cũ từng truyền Gemini key khi secret tồn tại. Sửa workflow không
+thay đổi APK cũ hoặc tự xoay key; chủ tài khoản cần kiểm tra phạm vi phân phối và
+thu hồi/xoay credential đã đưa vào bản chia sẻ nếu có. Chưa kết luận key đã lộ.
+Xem [source/evidence/release policy](../PROJECT_STATUS.md).
 
 ## Các bước kiểm tra
 

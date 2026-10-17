@@ -1,5 +1,8 @@
 # PyQuest — Product Vision
 
+> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
+> Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+
 > Tài liệu này xác định **PyQuest là trò chơi gì**, dành cho ai, bán giấc mơ gì,
 > và thế giới bên trong nó vận hành theo triết lý nào.
 > Tài liệu **không** đi vào thông số cân bằng (xem `GAME_DESIGN.md`),
@@ -901,7 +904,7 @@ Chưa triển khai hoặc chưa có bằng chứng trong source hiện tại:
 - Arena nhiều bộ môn, Creator Pro League, giải đồng đội.
 - Side Maps trả phí, Pro đầy đủ, cộng đồng/quà tặng đầy đủ.
 - Quảng cáo thưởng: năng lượng đã có, rewarded ads chưa có trong source.
-- Giọng nói ở trạng thái thử nghiệm cho bản dựng phát triển (key đưa lúc build), chưa phải đường production có token ngắn hạn qua server.
+- Giọng nói còn đường thử nghiệm cục bộ có key nằm trong APK; từ r47 workflow CI không đưa Gemini key vào bản dựng. Chưa có token ngắn hạn/server mediation production hoặc device voice PASS mới.
 
 ### 21.2. UI Direction V2
 
