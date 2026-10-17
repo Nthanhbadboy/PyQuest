@@ -226,6 +226,7 @@ jobs:
         continue-on-error: true
         working-directory: app
         run: |
+          set -euo pipefail
           dart format --output=none --set-exit-if-changed \
             lib/modules/main_quest/lesson_screen.dart \
             lib/modules/tutor/board/authored_board_repository.dart \
@@ -245,24 +246,29 @@ jobs:
         if: env.MAINTENANCE_PHASE == 'verify'
         id: l10n_tests
         continue-on-error: true
-        run: python3 ci/test_l10n_evidence.py 2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-tests.log"
+        run: |
+          set -euo pipefail
+          python3 ci/test_l10n_evidence.py 2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-tests.log"
 
       - name: Collect generated localization evidence
         if: env.MAINTENANCE_PHASE == 'verify'
         id: l10n_collect
         continue-on-error: true
         working-directory: app
-        run: >-
-          python3 ../ci/l10n_evidence.py collect --repo-root .. --app-dir .
-          --output "$RUNNER_TEMP/pqc011-l10n-evidence.json"
-          2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-collect.log"
+        run: |
+          set -euo pipefail
+          python3 ../ci/l10n_evidence.py collect --repo-root .. --app-dir . \
+            --output "$RUNNER_TEMP/pqc011-l10n-evidence.json" \
+            2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-collect.log"
 
       - name: Analyze
         if: env.MAINTENANCE_PHASE == 'verify'
         id: analyze
         continue-on-error: true
         working-directory: app
-        run: flutter analyze --no-fatal-infos 2>&1 | tee "$RUNNER_TEMP/pqc011-analyze.log"
+        run: |
+          set -euo pipefail
+          flutter analyze --no-fatal-infos 2>&1 | tee "$RUNNER_TEMP/pqc011-analyze.log"
 
       - name: Focused Settings tests
         if: env.MAINTENANCE_PHASE == 'verify'
@@ -270,7 +276,9 @@ jobs:
         continue-on-error: true
         timeout-minutes: 5
         working-directory: app
-        run: flutter test --reporter expanded --timeout 45s test/l10n/settings_sheet_localization_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-settings.log"
+        run: |
+          set -euo pipefail
+          flutter test --reporter expanded --timeout 45s test/l10n/settings_sheet_localization_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-settings.log"
 
       - name: Lesson board integration tests
         if: env.MAINTENANCE_PHASE == 'verify'
@@ -278,7 +286,9 @@ jobs:
         continue-on-error: true
         timeout-minutes: 10
         working-directory: app
-        run: flutter test --reporter expanded --timeout 45s test/lesson_board_integration_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-integration.log"
+        run: |
+          set -euo pipefail
+          flutter test --reporter expanded --timeout 45s test/lesson_board_integration_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-integration.log"
 
       - name: Ordinary Flutter suite
         if: env.MAINTENANCE_PHASE == 'verify'
@@ -286,7 +296,9 @@ jobs:
         continue-on-error: true
         timeout-minutes: 20
         working-directory: app
-        run: flutter test --reporter expanded --exclude-tags render 2>&1 | tee "$RUNNER_TEMP/pqc011-ordinary.log"
+        run: |
+          set -euo pipefail
+          flutter test --reporter expanded --exclude-tags render 2>&1 | tee "$RUNNER_TEMP/pqc011-ordinary.log"
 
       - name: Render suite
         if: env.MAINTENANCE_PHASE == 'verify'
@@ -294,7 +306,9 @@ jobs:
         continue-on-error: true
         timeout-minutes: 10
         working-directory: app
-        run: flutter test --reporter expanded --tags render test/render 2>&1 | tee "$RUNNER_TEMP/pqc011-render.log"
+        run: |
+          set -euo pipefail
+          flutter test --reporter expanded --tags render test/render 2>&1 | tee "$RUNNER_TEMP/pqc011-render.log"
 
       - name: Publish localization evidence
         if: ${{ always() && env.MAINTENANCE_PHASE == 'verify' && steps.l10n_collect.outcome == 'success' }}
@@ -302,7 +316,9 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 ci/l10n_evidence.py publish --evidence "$RUNNER_TEMP/pqc011-l10n-evidence.json" 2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-publish.log"
+        run: |
+          set -euo pipefail
+          python3 ci/l10n_evidence.py publish --evidence "$RUNNER_TEMP/pqc011-l10n-evidence.json" 2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-publish.log"
 
       - name: Verify final source cleanliness
         if: env.MAINTENANCE_PHASE == 'verify'
@@ -395,12 +411,18 @@ jobs:
               text = path.read_text(encoding='utf-8', errors='replace')
               return text[-limit:]
 
+          test_results = {
+              'Settings': test_count('pqc011-settings.log'),
+              'Lesson-board integration': test_count('pqc011-integration.log'),
+              'Ordinary suite': test_count('pqc011-ordinary.log'),
+              'Render suite': test_count('pqc011-render.log'),
+          }
           summary_rows = [
               ('Pinned SDK', 'Flutter 3.47.7 / Dart 3.13.5 / framework abaf9c523780a608bd46686fd5e53740a07077f8'),
-              ('Settings', f"{gates['Settings']}; {test_count('pqc011-settings.log')}"),
-              ('Lesson-board integration', f"{gates['lesson-board integration']}; {test_count('pqc011-integration.log')}"),
-              ('Ordinary suite', f"{gates['ordinary suite']}; {test_count('pqc011-ordinary.log')}"),
-              ('Render suite', f"{gates['render suite']}; {test_count('pqc011-render.log')}"),
+              ('Settings', f"{gates['Settings']}; {test_results['Settings']}"),
+              ('Lesson-board integration', f"{gates['lesson-board integration']}; {test_results['Lesson-board integration']}"),
+              ('Ordinary suite', f"{gates['ordinary suite']}; {test_results['Ordinary suite']}"),
+              ('Render suite', f"{gates['render suite']}; {test_results['Render suite']}"),
               ('Localization helper tests', gates['localization helper tests']),
               ('Localization evidence collection', gates['localization evidence collection']),
               ('Analyze', gates['analyze']),
@@ -411,6 +433,11 @@ jobs:
           markdown = ['| Gate | Result |', '|---|---|']
           markdown.extend(f'| {name} | {value} |' for name, value in summary_rows)
           failures = [name for name, value in gates.items() if value != 'success']
+          failures.extend(
+              f'{name} test output: {result}'
+              for name, result in test_results.items()
+              if not result.startswith('PASS:')
+          )
           conclusion = 'failure' if failures else 'success'
           text = '\n'.join([
               '### Failing gate outcomes',
@@ -459,6 +486,7 @@ jobs:
           print(f"Published exact gate counts for {os.environ['SOURCE_SHA']}: {url}")
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
               output.write(f'evidence_url={url}\n')
+              output.write(f'evidence_conclusion={conclusion}\n')
           PY
 
       - name: Summarize verification result
@@ -477,6 +505,7 @@ jobs:
           L10N_PUBLISH: ${{ steps.l10n_publish.outcome }}
           CLEAN: ${{ steps.clean.outcome }}
           GATE_EVIDENCE: ${{ steps.gate_evidence.outputs.evidence_url }}
+          GATE_CONCLUSION: ${{ steps.gate_evidence.outputs.evidence_conclusion }}
         run: |
           set -u
           {
@@ -498,6 +527,7 @@ jobs:
             echo "| source cleanliness | $CLEAN |"
           } >> "$GITHUB_STEP_SUMMARY"
           for outcome in "$PUB_GET" "$FORMAT" "$L10N_TESTS" "$L10N_COLLECT" \
-            "$ANALYZE" "$SETTINGS" "$INTEGRATION" "$ORDINARY" "$RENDER" "$CLEAN"; do
+            "$ANALYZE" "$SETTINGS" "$INTEGRATION" "$ORDINARY" "$RENDER" "$CLEAN" \
+            "$GATE_CONCLUSION"; do
             if [[ "$outcome" != success ]]; then exit 1; fi
           done

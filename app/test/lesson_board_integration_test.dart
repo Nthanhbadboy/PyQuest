@@ -32,7 +32,7 @@ void main() {
       final Lesson lesson = services.mainQuest.byId('mq1_01')!;
       await _mountLesson(tester, services, lesson);
 
-      await _advanceStoryToExample(tester);
+      await _advanceStoryToExample(tester, lesson);
       await _waitForBoard(tester);
       expect(
         find.byKey(const ValueKey<String>('lesson_authored_board_mq1_01_s2')),
@@ -80,6 +80,8 @@ void main() {
       expect(board.stepId, 'mq1_01_s2');
       expect(board.beatIndex, 3);
       expect(board.isWaitingForLearner, isTrue);
+      await tester.ensureVisible(next);
+      await tester.pump();
       await tester.tap(next);
       await tester.pump();
       expect(board.beatIndex, 3);
@@ -222,7 +224,7 @@ void main() {
       await tester.runAsync(() => services.settings.setLang(PqLang.vi));
       final Lesson lesson = services.mainQuest.byId('mq1_03')!;
       await _mountLesson(tester, services, lesson);
-      await _advanceStoryToExample(tester);
+      await _advanceStoryToExample(tester, lesson);
       await _waitForBoard(tester);
 
       final BoardView view = tester.widget<BoardView>(find.byType(BoardView));
@@ -411,14 +413,18 @@ void main() {
         }
         final MapEntry<Size, PqLang> testCase = cases[index];
         await tester.runAsync(() => services.settings.setLang(testCase.value));
+        final Lesson lesson = services.mainQuest.byId('mq1_01')!;
         await _mountLesson(
           tester,
           services,
-          services.mainQuest.byId('mq1_01')!,
+          lesson,
           viewport: testCase.key,
         );
-        await _advanceStoryToExample(tester);
-        await _waitForBoard(tester);
+        await _advanceStoryToExample(tester, lesson);
+        await _waitForBoard(
+          tester,
+          description: '${testCase.key} / ${testCase.value}',
+        );
         expect(
           find.byKey(const ValueKey<String>('lesson_board_authored_badge')),
           findsOneWidget,
@@ -474,14 +480,15 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
       await tester.runAsync(() => services.settings.setLang(PqLang.vi));
+      final Lesson lesson = services.mainQuest.byId('mq1_01')!;
       await _mountLesson(
         tester,
         services,
-        services.mainQuest.byId('mq1_01')!,
+        lesson,
         viewport: const Size(360, 640),
         textScale: 2,
       );
-      await _advanceStoryToExample(tester);
+      await _advanceStoryToExample(tester, lesson);
       await _waitForBoard(tester);
       expect(
         find.byKey(const ValueKey<String>('lesson_board_authored_badge')),
@@ -533,8 +540,9 @@ void main() {
     'unsupported ExampleStep keeps the existing read-only example UI without a blank board',
     (WidgetTester tester) async {
       final AppServices services = await _createServices(tester);
-      await _mountLesson(tester, services, services.mainQuest.byId('mq1_02')!);
-      await _advanceStoryToExample(tester);
+      final Lesson lesson = services.mainQuest.byId('mq1_02')!;
+      await _mountLesson(tester, services, lesson);
+      await _advanceStoryToExample(tester, lesson);
       expect(find.byType(BoardView), findsNothing);
       expect(
         find.byKey(const ValueKey<String>('lesson_authored_board_mq1_02_s2')),
@@ -553,16 +561,17 @@ void main() {
     'malformed authored assets show labeled fallback without blocking the lesson',
     (WidgetTester tester) async {
       final AppServices services = await _createServices(tester);
+      final Lesson lesson = services.mainQuest.byId('mq1_01')!;
       final _CorruptBoardAssetBundle bundle = _CorruptBoardAssetBundle(
         rootBundle,
       );
       await _mountLesson(
         tester,
         services,
-        services.mainQuest.byId('mq1_01')!,
+        lesson,
         bundle: bundle,
       );
-      await _advanceStoryToExample(tester);
+      await _advanceStoryToExample(tester, lesson);
       for (
         int i = 0;
         i < 30 &&
@@ -601,7 +610,7 @@ void main() {
       );
       addTearDown(bundle.release);
       await _mountLesson(tester, services, lesson, bundle: bundle);
-      await _advanceStoryToExample(tester);
+      await _advanceStoryToExample(tester, lesson);
       await tester.pump();
       expect(
         find.byKey(const ValueKey<String>('lesson_board_loading')),
@@ -648,14 +657,15 @@ void main() {
         rootBundle,
         authoredSources,
       );
+      final Lesson lesson = services.mainQuest.byId('mq1_01')!;
       addTearDown(bundle.release);
       await _mountLesson(
         tester,
         services,
-        services.mainQuest.byId('mq1_01')!,
+        lesson,
         bundle: bundle,
       );
-      await _advanceStoryToExample(tester);
+      await _advanceStoryToExample(tester, lesson);
       await tester.pump();
       expect(
         find.byKey(const ValueKey<String>('lesson_board_loading')),
@@ -751,15 +761,22 @@ double _lessonScrollOffset(WidgetTester tester) {
   return tester.state<ScrollableState>(scrollable).position.pixels;
 }
 
-Future<void> _advanceStoryToExample(WidgetTester tester) async {
-  expect(find.text('1/5'), findsOneWidget);
+Future<void> _advanceStoryToExample(
+  WidgetTester tester,
+  Lesson lesson,
+) async {
+  final String stepCount = lesson.steps.length.toString();
+  expect(find.text('1/$stepCount'), findsOneWidget);
   await tester.tap(find.byKey(const ValueKey<String>('lesson_continue')));
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 300));
-  expect(find.text('2/5'), findsOneWidget);
+  expect(find.text('2/$stepCount'), findsOneWidget);
 }
 
-Future<void> _waitForBoard(WidgetTester tester) async {
+Future<void> _waitForBoard(
+  WidgetTester tester, {
+  String description = 'authored board loads',
+}) async {
   for (
     int i = 0;
     i < 100 &&
@@ -771,7 +788,7 @@ Future<void> _waitForBoard(WidgetTester tester) async {
   ) {
     await tester.pump(const Duration(milliseconds: 100));
   }
-  expect(find.byType(BoardView), findsOneWidget);
+  expect(find.byType(BoardView), findsOneWidget, reason: description);
   expect(
     find.byKey(const ValueKey<String>('board_tutor_layer')),
     findsOneWidget,
