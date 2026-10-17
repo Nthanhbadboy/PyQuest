@@ -32,26 +32,15 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision29: PQC-015 ACCEPTED; triển khai PQC-016**.
-Đọc reviews/PQD-003-r29.md/receipt:556f92d/run39021843114 xanh394ordinary+10render,
-generation/repro và R28-A/B đãđạt. Không nghiệm thu lại010/014/015, khôngACK-only.
+Task hiện tại là **PQD-003 revision30: PQC-016 ACCEPTED; next actor DESIGN**.
+Đọc reviews/PQD-003-r30.md/receipt: a9bcdcf/run39051006962 xanh, focused12subset
+ordinary406+render10,40messagepairs/generatedverified. Không làm lại010/014/015/016.
 
-1. Đọc specs/PQC-016-settings.md, specs/PQC-016-copy.json (40messagesVI/EN), và
-   docs/implementation/coordination/tasks/PQC-016.md tại designSHA đãpin.
-2. Picker hiệnVI/EN đổi thànhsystem/vi/en; selectedtheopreference, khôngeffective.
-   Active/fallbackline, immediateapply, error/retry truthful, defaultsystem/rawnull
-   không phảierror. LatestUIrequest không bịstalecompletion ghiđè.
-3. Dịch Settings/parentdialog/Pythoninfosheet bằngARB; giữautonyms/Pythonliteral/
-   parentgate/runtime limits; không sửaengine/locale014/015/root/CI/dependencies.
-4. Giữsheet/Navigator/input/progress khi đổi; test UI thật+storagefailure/retry,
-   persistence/recreation, OSchange, smallsize/semantics theo matrix hữu hạn trongspec.
-   NativeI/O đúngrunAsync, cleanupfinally, khônglặp extraSemanticsHandle lỗi cũ.
-5. Gen2lần + committedoutput đầy đủ phải đạt trên exactSHA bàn giao. Hash015 cóthể
-   đổi do016thêmmessage, khôngkhóa hashcũ. KhôngSDKlocal thì dùngevidencecheckđãcó,
-   nói rõ limitation; khôngskiptest hoặc sửaCIđể ép xanh.
-6. Chỉscope016/settings_sheet/ARB/generated/tests/docs. Existing394ordinary+10render
-   khônglược. TrảREADY_FOR_REVIEW+exactSHA/run/evidence choDESIGN bằngCHUYEN_TIN.
-   Sau016 Lead giao011; khôngxinuserchọn lại và không tự mở taskngoàiallowlist.
+Lead đang chuẩn bị011 lesson-board tại specs/PQC-011-integration-brief.md (DRAFT).
+ChưaREADY_FOR_CODE011, chưa cóallowlist triển khai: CODE không tự copytestfixture
+vàoapp hoặc mởlesson/voice/AIprovider. Không tạoACK-onlycommit vàkhông chạy lạiCI
+chỉ đểxácnhậnđãđọcreview. Nếu được gọi trước khi cóspec011, trả trạng thái chờLead
+và trỏreviewđãđọc, không mởscope. OpenCode chuyển thôngđiệp choDESIGN tiếp tục thiết kế.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders

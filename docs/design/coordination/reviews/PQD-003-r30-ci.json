@@ -1,0 +1,102 @@
+{
+  "review": "PQD-003-r30",
+  "date": "2026-10-18",
+  "work_order": "PQC-016",
+  "verdict": "ACCEPTED",
+  "acceptance_scope": "Settings preference UX and localized Settings/parent/Python-info surfaces; not full app translation/device/live voice/root text scaling",
+  "other_work_orders": {
+    "PQC-010": "ACCEPTED @3f26603",
+    "PQC-014": "ACCEPTED @4751f11",
+    "PQC-015": "ACCEPTED @556f92d",
+    "PQC-011": "DRAFT — next actor DESIGN, not yet authorized for implementation"
+  },
+  "tested_code_commit": "a9bcdcf8e3203ee17b1a5de0b9ebff6a0e8dd32d",
+  "run_id": 39051006962,
+  "run_attempt": 1,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39051006962",
+  "run_status": "completed",
+  "run_conclusion": "success",
+  "custom_report_check_id": 117450223454,
+  "generation_evidence_check_id": 117449837940,
+  "phases": {
+    "flutter_version": 0,
+    "pub_get": 0,
+    "l10n_evidence_tests": 0,
+    "l10n_evidence": 0,
+    "analyze": 0,
+    "settings_test": 0,
+    "ordinary_tests": 0,
+    "render_tests": 0,
+    "l10n_evidence_publish": 0
+  },
+  "focused": {
+    "passed": 12,
+    "failed": 0,
+    "elapsed": "00:05",
+    "included_in_ordinary": true
+  },
+  "ordinary": {
+    "passed": 406,
+    "failed": 0,
+    "elapsed": "00:41"
+  },
+  "render": {
+    "passed": 10,
+    "failed": 0,
+    "elapsed": "00:18"
+  },
+  "analyze_seconds": 11.5,
+  "analyze_clean": true,
+  "flutter_version": "3.47.7",
+  "dart_version": "3.13.5",
+  "generated_files_verified_against_git": [
+    {
+      "path": "app/lib/l10n/generated/app_localizations.dart",
+      "sha256": "60297ef8447b9e39a94ca9aa1921a0190406d1a5c00540dfafb658f5e195d30f",
+      "size_bytes": 13125
+    },
+    {
+      "path": "app/lib/l10n/generated/app_localizations_en.dart",
+      "sha256": "6a90ab33de02893d29d1fbacff31566f9514ac3f33ce0a362443efcced18880d",
+      "size_bytes": 4750
+    },
+    {
+      "path": "app/lib/l10n/generated/app_localizations_vi.dart",
+      "sha256": "33202906cd82666584b75c55909dd4454ca187fe28cee26114f1065ea26ba9f2",
+      "size_bytes": 5207
+    }
+  ],
+  "generation_payload_fully_decoded": true,
+  "generation_runs_verified": 2,
+  "all_drift_lists_empty": true,
+  "design_message_pairs_verified": 40,
+  "source_sha256": {
+    ".circleci/config.yml": "7cb961f51f2f286026880ff020eab5cdbf4a1501b22bd0e21bd4ce5acdfbdb74",
+    ".github/workflows/ci.yml": "753279fb1deb904807eaa2f1388da4d86a640851f0e6bfa8b4ff1d030ff6f313",
+    "app/lib/app/settings_sheet.dart": "94bfcbf411dadb6aeb77bee6ccf2fb46e5f50f3ac45da5a83258226d7410c37d",
+    "app/lib/l10n/app_en.arb": "600d46fa8b88266792a485a22131420baaa05ed5e6ed9eb9abb6dd6d62f72aa6",
+    "app/lib/l10n/app_vi.arb": "c4cc7be64506f22c6341f53e21e40aa7410b31fbab69e90986919559b9424a4d",
+    "app/lib/l10n/generated/app_localizations.dart": "60297ef8447b9e39a94ca9aa1921a0190406d1a5c00540dfafb658f5e195d30f",
+    "app/lib/l10n/generated/app_localizations_en.dart": "6a90ab33de02893d29d1fbacff31566f9514ac3f33ce0a362443efcced18880d",
+    "app/lib/l10n/generated/app_localizations_vi.dart": "33202906cd82666584b75c55909dd4454ca187fe28cee26114f1065ea26ba9f2",
+    "app/test/l10n/settings_sheet_localization_test.dart": "e8584c89a97ef84746cc2efb8c1ff5c1d3e5c8d524426020470c61dd7d6726a7"
+  },
+  "branch_diff_check_passed": true,
+  "local_flutter_tests_run": false,
+  "local_gen_l10n_run": false,
+  "local_helper_tests_rerun": false,
+  "new_images_inspected": 1,
+  "preview": {
+    "name": "e02_settings",
+    "check_ids": [
+      117450107523,
+      117450109826
+    ],
+    "tested_sha": "a9bcdcf8e3203ee17b1a5de0b9ebff6a0e8dd32d",
+    "sha256": "150733cfa1026d70272ef10ec66309d953c5b9f9cbe3be0691251fcf9e8ee076",
+    "scope": "CI render, English system selection; not device or all states"
+  },
+  "circleci_used_for_acceptance": false,
+  "circleci_note": "Default run_full_suite=false and one resolver smoke test; do not infer full Settings acceptance from green CircleCI checks",
+  "next_actor": "DESIGN"
+}

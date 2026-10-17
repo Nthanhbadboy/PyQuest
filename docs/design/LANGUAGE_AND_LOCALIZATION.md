@@ -10,6 +10,12 @@ Settings system/VI/EN và localizedSettings surface theo PQD-003r29; spec/copy �
 coordination/specs/PQC-016-settings.md và PQC-016-copy.json. Các phần “chưatriểnkhai”
 trong ghi chú lịch sử bên dưới không phủ nhận acceptance foundation hiện tại.
 
+**Cập nhật2026-10-18:**016 Settings đã ACCEPTED tại a9bcdcf/run39051006962:
+system/VI/EN picker, active/fallback, saveerror/retry vàlocalizedSettings/parent/
+Pythoninfo. Fullordinary406+render10. Không coi phầncòn lại đãdịch, khôngclaim
+voiceđangphátđãđổi hoặcdeviceTalkBack. Lead tiếp011 lesson-board; các ghi chú016
+“đang mở” phía trên là lịch sửr29.
+
 ## 1. Hành vi thống nhất
 
 - Lần mở đầu: **Theo hệ thống**. Không suy ngôn ngữ từ GPS/IP/quốc gia, không hỏi trẻ
