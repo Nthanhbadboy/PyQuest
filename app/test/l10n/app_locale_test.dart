@@ -4,8 +4,6 @@ import 'dart:ui' show Locale;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-// ignore: depend_on_referenced_packages
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pyquest/app/app_services.dart';
 import 'package:pyquest/app/locale_binding.dart';
 import 'package:pyquest/app/pyquest_app.dart';
@@ -13,6 +11,7 @@ import 'package:pyquest/core/localization/locale_preference.dart';
 import 'package:pyquest/core/settings_service.dart';
 import 'package:pyquest/data/database/app_database.dart';
 import 'package:pyquest/data/repositories/state_repositories.dart';
+import 'package:pyquest/l10n/generated/app_localizations.dart';
 import 'package:pyquest/shared/l10n/pq_l10n.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

@@ -4,12 +4,9 @@ import 'dart:ui' show Locale, PlatformDispatcher;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// PQC-015: generated localization foundation (synthetic `flutter_gen` package, built by
-// `flutter pub get` from app/l10n.yaml — see the task handoff).
-// ignore: depend_on_referenced_packages
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../modules/main_map/main_map_screen.dart';
 import '../shared/characters/characters.dart';
 import '../shared/theme/app_theme.dart';
