@@ -32,26 +32,28 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision25: PQC-014 ACCEPTED @4751f11**.
-Đọc task003, `reviews/PQD-003-r25.md`, receipt r25; tiếp checklist015 trong r24.
+Task hiện tại là **PQD-003 revision26: review015 @8c8466e**.
+Đọc task003, `reviews/PQD-003-r26.md`, receipt r26, report PQC-015-r2 và checklist r24.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
-**Tiếp corrections015, không ACK-only hoặc làm lại race đã đóng:**
-1. Run39002047899/report117307744269 SUCCESS:382pass/0fail,10renderpass,
-   analyze sạch12.5s.014 đã đạt resolver/migration/persistence + hai overlap SQLite
-   regressions;010 giữ ACCEPTED. Giữ queue/request guards và tests mới.
-2.015 chưa ACCEPTED: R24-2 reload làm mất OS input, thiếu resume hook vẫn nguyên.
-   Sửa binding/root hoặc correction service014 trong allowlist đã duyệt, không đổi
-   migration rules. Kiểm system/manual/empty list, reload/resume, không recursive
-   listener hoặc persist resolved locale. Không sửa UI/app_services ngoài scope.
-3. R24-3: gen-l10n đúng SDK, commit toàn bộ output thật + chứng minh rerun không
-   diff/untracked output; dọn synthetic-package/comment cũ. Không CI/publisher/
-   SDK upgrade hoặc dependency ngoài closure015.
-4. R24-4: fresh rootvi/en/unsupported, persisted override qua recreate app+service/DB,
-   lifecycle/unmount cleanup và framework control semantics route/modal. Giữ
-   Navigator/input tests; không claim thiết bị/full relaunch từ getter hay service-only.
-5. PickerVI/EN cũ đã có, system picker/UI016 chưa mở. Không011–013/AI/voice/art/
-   social/economy/P06. Trả exactSHA/run/report + generation evidence cho015.
+**Sửa015, không ACK-only/diagnostic split vòng mới:**
+1. Run39003348774/report117315191965 failure:384pass/4fail,10renderpass,analyze sạch11.5s.
+   Đỏ: resetAllProgress, recreate app/service, modal semantics, generation probe.
+   Resume widget/service reload unit đã qua.010/014 giữ nghiệm thu, không làm lại race.
+2. Modal bỏ manual ensureSemantics+addTearDown, dùng framework-managed semanticsEnabled:true
+   hoặc finally trước callback return. Giữ getSemantics trên CloseButton thật VI/EN.
+3. Recreate đang await Directory.createTemp trong fake-async callback; đặt I/O thật
+   vào tester.runAsync hoặc fixture sync. Audit DB reads/closes mới, cleanup an toàn;
+   giữ widget pump/assert ngoài runAsync. Report thiếu first traces, không đoán
+   mọi failure do runtime/timeout hoặc tăng timeout để che test-host issue.
+4. Probe generation luôn fail; chỉ là transfer tạm. Thu output thật, commit đầy đủ
+   generated files và loại intentional fail khỏi suite bàn giao/đổi thành checks
+   thật. Không xóa probe chỉ để che thiếu artifacts. Output Git vẫn như0220f2b;
+   comment/config đổi không phải generation evidence. Rerun gen no-diff/untracked.
+5. Chạy xanh reset/recreate/modal, giữ resume/unit reload đã qua và coverage fresh
+   rootvi/en/unsupported theo r24. Không giả recreate bằng service cũ, không getter-only.
+6. Giữ queue014,board010,pickerVI/EN cũ. Không016/011–013/voice/art/economy/social/
+   P06/CIpublisher. Trả exactSHA/run/report và generation evidence, không claim thiết bị.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
