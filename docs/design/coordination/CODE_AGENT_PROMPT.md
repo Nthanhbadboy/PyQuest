@@ -32,27 +32,29 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision23: review PQC-014 @b57550d**.
-Đọc task003, `reviews/PQD-003-r23.md`, receipt r23 và report PQC-014-r1.
+Task hiện tại là **PQD-003 revision24: review014/015 @0220f2b**.
+Đọc task003, `reviews/PQD-003-r24.md`, receipt r24 và report/generator evidence PQC-015-r1.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
-**Sửa014 trong scope đã duyệt, không ACK-only:**
-1. PQC-010 vẫn ACCEPTED @3f26603, không làm lại board. CI b57550d:
-   run38974137406/report117220998820 SUCCESS,368pass/0fail,10renderpass.
-   Analyze exit0 nhưng1info unnecessary_import, không gọi sạch.
-2. R23-1: setLocalePreference dùng saveError chung, clear lúc start nhưng không
-   ràng completion theo request. A chọnVI rồi B chọnEN trước khi A xong; A fail,
-   B success → errorA còn, savedfalse dù DB/raw/sessionEN. Sửa request ownership/
-   ordering, giữ immediate session selection và persisted state đúng. Không sửa UI.
-3. Thêm regression fixture SQLite: trigger rejectVI nhưng choEN, khởi chạy hai
-   Future trước await; Afalse/Btrue, latestEN, errornull, savedtrue, DB/raw/reloadEN.
-   Kiểm chiều ngược latest fail phải giữ error/unsaved và reload persisted cũ.
-   Giữ các real migration/read/write failure tests, không đổi repository/schema.
-4. R23-2: bỏ sqflite import thừa trong settings_locale_test.dart:7, không ignore lint.
-   Giữ resolver/migration/legacy adapter; chưa claim OS widget wiring/relaunch.
-5. Trả exact SHA/run/report sau patch. Ưu tiên hoàn tất014 trước015; gate015 vẫn
-   014 implemented+CI green và minimal dependencies theo order. Không root/UI/
-   pubspec trong014; không011–013/016/AI/voice/art/economy/social/CIpublisher.
+**Sửa theo review, không ACK-only:**
+1.010 giữ ACCEPTED. Latest CI0220f2b run38987355441/report117262973964 SUCCESS:
+   380pass/0fail,10renderpass,analyze sạch12.1s.014/015 chưa ACCEPTED chỉ vì CI xanh.
+2.014: R23 overlapping-save-state vẫn nguyên; setLang throw lại error không sửa race.
+   Sửa request ownership/ordering và real SQLite overlap regressions theo r23/r24.
+3.014/015: load() không đối số đang xóa OS input đã sync; resetAllProgress có callsite
+   thật làm root system fallbackEN khi máyVI. Giữ input qua reload hoặc binding re-sync
+   an toàn, không recursive listener. Thêm resume hook + regression không dựa locale
+   event, kiểm manual override/no persisted resolution. Không sửa app_services/UI.
+4.015: chạy gen-l10n đúng SDK, commit toàn bộ output thật + evidence chạy lại không
+   diff/untracked output. SDK xuất base+_en+_vi; file91dòng inline hiện chưa khớp claim.
+   Bỏ synthetic-package obsolete, sửa comment pubspec. Không CI/publisher/SDK upgrades.
+5. Bổ sung root freshVI/EN/unsupported, explicit persisted qua recreate app+service/DB,
+   reload/resume/unmount cleanup và framework control semantics route/modal thực.
+   Giữ tests Navigator/input đã qua; không dùng getter đơn lẻ thay semantic evidence.
+6. Settings VI/EN picker đã có và không đổi. Chưa system picker/UI016; không port UI
+   trong015. Getter settings.lang không chứng minh live voice đang nói đã chuyển.
+   Sửa claims cho đúng, không voice/provider hoặc scope011–013/016/art/social/economy.
+7. Publish014/015 riêng trong allowlists đã duyệt, exactSHA/run/report/generation evidence.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
