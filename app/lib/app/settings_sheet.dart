@@ -304,15 +304,16 @@ class _LocalePreferenceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: selected ? Colors.white : PQColors.parchment,
-        border: Border.all(
+    return Material(
+      color: selected ? Colors.white : PQColors.parchment,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
           color: selected ? PQColors.ink : PQColors.inkSoft,
           width: selected ? 2.2 : 1.4,
         ),
         borderRadius: BorderRadius.circular(14),
       ),
+      clipBehavior: Clip.antiAlias,
       child: RadioListTile<LocalePreference>(
         key: ValueKey<String>('language_${value.storageValue}'),
         value: value,

@@ -203,13 +203,13 @@ void main() {
         await tester.pumpWidget(const SizedBox.shrink());
       } finally {
         try {
-          if (thirdServices != null) await _disposeServices(tester, thirdServices!);
+          if (thirdServices != null) await _disposeServices(tester, thirdServices);
         } finally {
           try {
-            if (secondServices != null) await _disposeServices(tester, secondServices!);
+            if (secondServices != null) await _disposeServices(tester, secondServices);
           } finally {
             try {
-              if (firstServices != null) await _disposeServices(tester, firstServices!);
+              if (firstServices != null) await _disposeServices(tester, firstServices);
             } finally {
               await tester.runAsync(() async {
                 if (await directory.exists()) await directory.delete(recursive: true);
@@ -222,7 +222,7 @@ void main() {
 
     final String databasePath = p.join(directory.path, AppDatabase.fileName);
     firstServices = await _createServices(tester, databasePath: databasePath);
-    final AppServices first = firstServices!;
+    final AppServices first = firstServices;
     await _mountPyQuest(tester, first);
     await _openSettings(tester);
     await _chooseLocale(tester, LocalePreference.en);
@@ -237,7 +237,7 @@ void main() {
     firstServices = null;
 
     secondServices = await _createServices(tester, databasePath: databasePath);
-    final AppServices second = secondServices!;
+    final AppServices second = secondServices;
     expect(second, isNot(same(first)));
     expect(second.db, isNot(same(first.db)));
     expect(second.settings, isNot(same(first.settings)));
@@ -259,7 +259,7 @@ void main() {
     await _disposeServices(tester, second);
     secondServices = null;
     thirdServices = await _createServices(tester, databasePath: databasePath);
-    final AppServices third = thirdServices!;
+    final AppServices third = thirdServices;
     await _mountPyQuest(tester, third);
     expect(_rootLocale(tester), const Locale('vi'));
     await _openSettings(tester);
@@ -287,7 +287,7 @@ void main() {
         await tester.pumpWidget(const SizedBox.shrink());
       } finally {
         try {
-          if (lock != null) await _releaseWriteLock(tester, lock!);
+          if (lock != null) await _releaseWriteLock(tester, lock);
         } finally {
           try {
             await _disposeServices(tester, services);
@@ -323,7 +323,7 @@ void main() {
     expect(find.text('Đang lưu lựa chọn…'), findsOneWidget);
     _expectOneSelectedRadio(tester, LocalePreference.vi);
 
-    await _releaseWriteLock(tester, lock!);
+    await _releaseWriteLock(tester, lock);
     lock = null;
     final Map<String, String> afterRace = await _settingsRows(tester, services);
     await pumpFor(tester, const Duration(milliseconds: 300));
@@ -343,7 +343,7 @@ void main() {
     await tester.pageBack();
     await pumpFor(tester, const Duration(milliseconds: 100));
     expect(find.byKey(const ValueKey<String>('settings_language_panel')), findsNothing);
-    await _releaseWriteLock(tester, lock!);
+    await _releaseWriteLock(tester, lock);
     lock = null;
     await _settingsRows(tester, services);
     await pumpFor(tester, const Duration(milliseconds: 300));
@@ -763,7 +763,7 @@ MaterialLocalizations _rootMaterial(WidgetTester tester) =>
 void _expectOneSelectedRadio(WidgetTester tester, LocalePreference expected) {
   final Map<LocalePreference, bool> checked = <LocalePreference, bool>{};
   for (final LocalePreference preference in LocalePreference.values) {
-    final SemanticsData data = tester
+    final data = tester
         .getSemantics(find.byKey(ValueKey<String>('language_${preference.storageValue}')))
         .getSemanticsData();
     expect(data.hasCheckedState, isTrue, reason: '${preference.storageValue} row must expose radio state');
@@ -779,7 +779,7 @@ void _expectToggle(
   String label, {
   required bool isToggled,
 }) {
-  final SemanticsData data = tester.getSemantics(find.byKey(ValueKey<String>(key))).getSemanticsData();
+  final data = tester.getSemantics(find.byKey(ValueKey<String>(key))).getSemanticsData();
   expect(data.label, label);
   expect(data.hasToggledState, isTrue);
   expect(data.isToggled, isToggled);
