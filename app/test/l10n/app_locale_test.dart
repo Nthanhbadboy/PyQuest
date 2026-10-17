@@ -273,7 +273,6 @@ void main() {
       expect(services.settings.lang, PqLang.en);
       services.dispose();
       services.settings.dispose();
-      await tester.runAsync(services.db.close);
     });
 
     testWidgets('resetAllProgress reload keeps the synchronized system locale without persisting it',
@@ -301,21 +300,20 @@ void main() {
       expect(services.settings.lang, PqLang.vi);
       expect(_localeOf(tester), const Locale('vi'));
       expect(services.settings.raw(SettingsService.localePreferenceKey), isNull);
-      expect((await SettingsRepository(services.db).all())[SettingsService.localePreferenceKey], isNull);
+      final Map<String, String>? resetRows =
+          await tester.runAsync(() => SettingsRepository(services.db).all());
+      expect(resetRows?[SettingsService.localePreferenceKey], isNull);
 
       await tester.pumpWidget(const SizedBox.shrink());
       services.dispose();
       services.settings.dispose();
-      await tester.runAsync(services.db.close);
     });
 
     testWidgets('persisted override survives app and service recreation against the real database',
         (WidgetTester tester) async {
       final Directory directory = await Directory.systemTemp.createTemp('pyquest-locale-recreate-');
-      addTearDown(() async {
-        await tester.runAsync(() async {
-          if (await directory.exists()) await directory.delete(recursive: true);
-        });
+      addTearDown(() {
+        if (directory.existsSync()) directory.deleteSync(recursive: true);
       });
       final String databasePath = p.join(directory.path, 'pyquest.db');
       Future<AppServices> createServices() async {
@@ -342,12 +340,13 @@ void main() {
       await tester.runAsync(() => first.settings.setLocalePreference(LocalePreference.en));
       await pumpFor(tester, const Duration(milliseconds: 100));
       expect(_localeOf(tester), const Locale('en'));
-      expect((await SettingsRepository(first.db).all())[SettingsService.localePreferenceKey], 'en');
+      final Map<String, String>? persistedRows =
+          await tester.runAsync(() => SettingsRepository(first.db).all());
+      expect(persistedRows?[SettingsService.localePreferenceKey], 'en');
 
       await tester.pumpWidget(const SizedBox.shrink());
       first.dispose();
       first.settings.dispose();
-      await tester.runAsync(first.db.close);
 
       final AppServices recreated = await createServices();
       await tester.pumpWidget(
@@ -370,7 +369,6 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       recreated.dispose();
       recreated.settings.dispose();
-      await tester.runAsync(recreated.db.close);
     });
 
     testWidgets('localized framework control semantics update on a live modal route',
@@ -414,7 +412,6 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       services.dispose();
       services.settings.dispose();
-      await tester.runAsync(services.db.close);
     });
 
     testWidgets('switching locale keeps the route and the text being typed',
