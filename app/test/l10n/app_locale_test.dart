@@ -434,12 +434,12 @@ void main() {
         } finally {
           try {
             if (secondServices != null) {
-              await _disposeAndCloseServices(tester, secondServices!);
+              await _disposeAndCloseServices(tester, secondServices);
             }
           } finally {
             try {
               if (firstServices != null) {
-                await _disposeAndCloseServices(tester, firstServices!);
+                await _disposeAndCloseServices(tester, firstServices);
               }
             } finally {
               await tester.runAsync(() async {
@@ -452,7 +452,7 @@ void main() {
 
       final String databasePath = p.join(directory.path, AppDatabase.fileName);
       firstServices = await _createFileBackedServices(tester, databasePath);
-      final AppServices first = firstServices!;
+      final AppServices first = firstServices;
       await tester.pumpWidget(
         PyQuestApp(servicesFactory: (_) async => first, minSplash: Duration.zero),
       );
@@ -483,7 +483,7 @@ void main() {
       firstServices = null;
 
       secondServices = await _createFileBackedServices(tester, databasePath);
-      final AppServices second = secondServices!;
+      final AppServices second = secondServices;
       expect(second, isNot(same(first)));
       expect(second.db, isNot(same(first.db)));
       expect(second.settings, isNot(same(first.settings)));
@@ -643,11 +643,11 @@ Future<void> _verifyFreshRootCase(WidgetTester tester, _FreshRootCase localeCase
       await tester.pumpWidget(const SizedBox.shrink());
     } finally {
       try {
-        if (services != null) await _disposeAndCloseServices(tester, services!);
+        if (services != null) await _disposeAndCloseServices(tester, services);
       } finally {
         if (directory != null) {
           await tester.runAsync(() async {
-            if (await directory!.exists()) await directory!.delete(recursive: true);
+            if (await directory.exists()) await directory.delete(recursive: true);
           });
         }
       }
@@ -667,7 +667,7 @@ Future<void> _verifyFreshRootCase(WidgetTester tester, _FreshRootCase localeCase
 
   final AppServices openedServices = await _createFileBackedServices(
     tester,
-    p.join(directory!.path, AppDatabase.fileName),
+    p.join(directory.path, AppDatabase.fileName),
   );
   services = openedServices;
   pendingServices.complete(openedServices);
