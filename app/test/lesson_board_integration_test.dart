@@ -762,6 +762,11 @@ Future<void> _waitForBoard(
   WidgetTester tester, {
   String description = 'authored board loads',
 }) async {
+  await tester.runAsync(() async {
+    await rootBundle.loadString(AuthoredBoardRepository.plansAssetKey);
+    await rootBundle.loadString(AuthoredBoardRepository.copyAssetKey);
+  });
+  await tester.pump();
   for (
     int i = 0;
     i < 100 &&
