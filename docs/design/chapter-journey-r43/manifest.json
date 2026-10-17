@@ -1,0 +1,180 @@
+{
+  "date": "2026-10-18",
+  "design_base": "37e22e12cc618e9488be3668e0b761a8bff00d0b",
+  "code_pin": "2ea5e5004e98df4aec8c1132a56b8d60bf4ddf5e",
+  "status": "DESIGN_STUDY_DELIVERED",
+  "runtime_authorized": false,
+  "art": {
+    "file": "assets/tower-garden.png",
+    "width": 848,
+    "height": 1264,
+    "mode": "opaque AI-generated scene concept; no layers/rig/navigation/camera calibration",
+    "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg"
+  },
+  "references": [
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+    },
+    {
+      "path": "docs/screenshots/12_python_tower.jpg",
+      "sha256": "78b34fef217a26ad714d5b1707459ad53c0b4bdf70349506413c4e27143e51cd"
+    },
+    {
+      "path": "docs/screenshots/42_relaunch_tower.jpg",
+      "sha256": "f4a0bf76945dfc0aa4f9242f4747534d4ca1a206a1e136a3ba4716cf80c42ae8"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "index.html",
+      "sha256": "d2d82a23253fefbfa64cb934d03063e0c5b14c41156b7b342d0b4153337d75d5",
+      "bytes": 2952
+    },
+    {
+      "path": "style.css",
+      "sha256": "852b36552e85d4bb118f9c6dd4ab615a3bbd358f4b6dd7b3b91369973714ff71",
+      "bytes": 10766
+    },
+    {
+      "path": "catalog.js",
+      "sha256": "f79a19cb71e07fb398d8a6b0a618039985459db310203961e02b656232eb10cf",
+      "bytes": 4794
+    },
+    {
+      "path": "model.js",
+      "sha256": "5a4aec3dd1026d5fddb947e5653138045f9589432f876ca64bda3295b7a77f36",
+      "bytes": 3461
+    },
+    {
+      "path": "study.js",
+      "sha256": "8d7a7fd6759aaa6f99e8ede5e4b09881df2dfc9845dca90b03951435d19459ea",
+      "bytes": 13663
+    },
+    {
+      "path": "README.md",
+      "sha256": "4f65806c04914fa885f955ccdad39fb76d43aaae419946e09a8c6b1585fcc77c",
+      "bytes": 6263
+    },
+    {
+      "path": "SPEC.md",
+      "sha256": "c930447c77d34171af316738ec00190b21fd05c6ec677f6ef3b29bfc33341d0b",
+      "bytes": 6948
+    },
+    {
+      "path": "ASSET_PLAN.md",
+      "sha256": "4a9968886494ec426f1b72e60fe1c2e5f67d20c0c6043835a3e4e7dd57f2ca30",
+      "bytes": 2515
+    },
+    {
+      "path": "source-manifest.json",
+      "sha256": "e3fac2ffeb4fc13e42db2a187a5f79474eee2586089c77d07e76abbc85e7a376",
+      "bytes": 2131
+    },
+    {
+      "path": "assets/tower-garden.png",
+      "sha256": "9f1ec8fe17c0b3476ac9a1b1e57a02a8b1bd1c9ce4687dd00b53eef044adf830",
+      "bytes": 2444406
+    },
+    {
+      "path": "assets/prompt.txt",
+      "sha256": "462a3d0c24bcb643f9c03f987e4c508224a7acc758f06118a8a5201f3648c651",
+      "bytes": 2454
+    }
+  ],
+  "evidence": [
+    {
+      "path": "evidence/browser-checks.json",
+      "sha256": "124a0e295993f9591fa68c5aae53a27548f97642c2a19818e9035f5bbb59e2bc",
+      "bytes": 58300
+    },
+    {
+      "path": "evidence/challenge-390-vi-1x.png",
+      "sha256": "ac9ccc60cc7a5237bf2063b59fc4aa43901a7722e6452516f954810065830351",
+      "bytes": 90414
+    },
+    {
+      "path": "evidence/chapter_done-390-vi-1x.png",
+      "sha256": "3be857a17cbb128b0b29e5849d126fc2769e9798f485916f58a4dff71ee4fa0e",
+      "bytes": 320541
+    },
+    {
+      "path": "evidence/desktop-overview.jpg",
+      "sha256": "ab30e90d3e163d6bd0971a411d14e8f5a5820445b1b68e27cdb2a6ea306f6aa9",
+      "bytes": 230762
+    },
+    {
+      "path": "evidence/energy_empty-360-en-2x.png",
+      "sha256": "f4f3940f792e2bf7d9fbe6702ca93baf0c45f3956728fb62f6d7e042a30d4f31",
+      "bytes": 58513
+    },
+    {
+      "path": "evidence/energy_empty-390-vi-1x.png",
+      "sha256": "1975d558a29c950ecab73b97c731fbe02680f176e6fe86880284fa3aa03aa80e",
+      "bytes": 83275
+    },
+    {
+      "path": "evidence/energy_empty-actions-360-en-2x.png",
+      "sha256": "b1eee5f554a5b7b0b1c5a036c10a0e10af71514c383cdc6c6936d19ef6754d10",
+      "bytes": 55329
+    },
+    {
+      "path": "evidence/load_error-360-vi-2x.png",
+      "sha256": "3fc3f88d46a651b456a195377fe9b86c6d583a7a0e69dd409f3b7ac09edab2e1",
+      "bytes": 46122
+    },
+    {
+      "path": "evidence/locked-390-vi-1x.png",
+      "sha256": "96e9e257f7e7cca25f9eb3fa9621c8b7f4806e466b49b610ae7e048a1200300f",
+      "bytes": 82623
+    },
+    {
+      "path": "evidence/midway-390-vi-1x.png",
+      "sha256": "3aeb645edac717f8cb08d957297b06ddab8bd48dc5d11c436e8ff1c297996c33",
+      "bytes": 357152
+    },
+    {
+      "path": "evidence/model-checks.json",
+      "sha256": "4880234af51b0c0408546472ee1f346c00b1c33c15edd7d38873c81a3dab7458",
+      "bytes": 1265
+    },
+    {
+      "path": "evidence/new-390-vi-1x.png",
+      "sha256": "859402f0eaa6fb2c0a6ac2f9f805801c5682f0089dfc5141f1f7ff6b2c0077dc",
+      "bytes": 357359
+    },
+    {
+      "path": "evidence/next_chapter-390-vi-1x.png",
+      "sha256": "2f781477e9893c165425a22b635767c67ea1921379d5d2f8ab2f515cc313e48c",
+      "bytes": 111985
+    },
+    {
+      "path": "evidence/returning-360-en-2x.png",
+      "sha256": "59a6c07c4bbb7087847cd35080f9630c4ad8bcfa89ba4cde49bd69e3870e0f95",
+      "bytes": 68082
+    },
+    {
+      "path": "evidence/returning-390-vi-1x.png",
+      "sha256": "e038479acf46c7f39b20143cfcd1e83def4cc172ba78af7b2855d60f4c673cdd",
+      "bytes": 357145
+    }
+  ],
+  "visual_review": [
+    "assets/tower-garden.png",
+    "evidence/desktop-overview.jpg",
+    "evidence/challenge-390-vi-1x.png",
+    "evidence/returning-360-en-2x.png",
+    "evidence/energy_empty-360-en-2x.png",
+    "evidence/energy_empty-actions-360-en-2x.png",
+    "evidence/next_chapter-390-vi-1x.png",
+    "evidence/locked-390-vi-1x.png"
+  ],
+  "limits": [
+    "HTML/JS fixture prototype, not Flutter after-captures",
+    "No actual energy/progress/reward changes",
+    "English translations are design copy, not released app localization",
+    "Chapter2 contains no playable content",
+    "No new CODE work order;011r42 and018 disposition unchanged"
+  ],
+  "observed_later_code_tip": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964"
+}

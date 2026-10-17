@@ -1,0 +1,50 @@
+{
+  "code_sha": "2ea5e5004e98df4aec8c1132a56b8d60bf4ddf5e",
+  "sources": [
+    {
+      "path": "app/assets/data/main_quest_ch1.json",
+      "blob": "70e155fbb7228d2b27ea4eb08ff13ddd2d2d931a",
+      "sha256": "bead251d9f290db0b8fa4475f7413976324b00e7b0f498c633a25a5e6392f8b8"
+    },
+    {
+      "path": "app/assets/config/game_config.json",
+      "blob": "1fbb4fbd75f3afb3a59456c01c6d547730b3b81d",
+      "sha256": "f7b9d1a80be65a49ad2bf7c68de46bbf33243b0a27cd5eb5e80d77467b5f15c5"
+    },
+    {
+      "path": "app/lib/modules/main_quest/main_quest_module.dart",
+      "blob": "f2b30ebdb543870183cc5ed78cd2636019c5306a",
+      "sha256": "d327b59bccfeb0a7c2c6c86df9cfb28ce027648ae7c43ee1b4eb37f024a61882"
+    },
+    {
+      "path": "app/lib/modules/main_quest/quest_models.dart",
+      "blob": "a9c96b485a638747194be5336ae825a4a6373215",
+      "sha256": "e7ba9ac1561813989e86beeda19906289789f67bb778dc201cea9fb2608c92c7"
+    },
+    {
+      "path": "app/lib/modules/energy/energy_widgets.dart",
+      "blob": "867fb6aa792c2d1d796e9147cc524a7b34e1dcb8",
+      "sha256": "969cd3298f778ecf63bca02cffbf8d9f683d26df42c4e2f24fc3ab7100e9b840"
+    },
+    {
+      "path": "app/lib/data/repositories/progress_repository.dart",
+      "blob": "a59ea0938dec6efcd48598d567fe97d6d4e566de",
+      "sha256": "cb7960c854f7270f4e61e6082a47cb1e1ab90c88980cba5f178a952f4cf2765b"
+    },
+    {
+      "path": "app/lib/shared/characters/cast.dart",
+      "blob": "a9258bbea435464ea987a38a7584659c1d5d4b8b",
+      "sha256": "b8115b14be89858802199ff8b824e4ce72c92c7ffd2948a7abbd7bdd87e53c0c"
+    }
+  ],
+  "translations": "English titles/skills/UI are design-only; VI lesson fields exact source. Tutor mapping manually matches CastRegistry.tutorForSkill, not executed Dart.",
+  "lessons": 12,
+  "chapter_count_available": 1,
+  "next_chapter": "metadata only; not a playable chapter",
+  "runtime_execution": false,
+  "observed_later_code_tip": {
+    "sha": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+    "seven_source_files_byte_unchanged": true,
+    "scope": "Delta/source-pin check only. PQC-011 correction not reviewed or accepted in this artwork turn."
+  }
+}

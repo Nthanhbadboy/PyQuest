@@ -1,0 +1,24 @@
+{
+  "result": "PASS",
+  "scope": "JavaScript design model only; not Flutter, engine or repository tests",
+  "checks": 17,
+  "results": [
+    "Twelve exact numbered lessons, one chapter and metadata-only next chapter",
+    "Only first lesson open for a new learner",
+    "Unlock requires immediately preceding completed lesson, not completion count",
+    "Return targets lesson 2; midpoint targets lesson 7",
+    "Challenge cost3; first entry cost1; completed review cost0",
+    "At 0 energy, review is available but new entry is not",
+    "Unknown energy is not zero and does not block zero-cost review",
+    "Unknown progress is not a fabricated 0/12",
+    "Locked deep link never bypasses predecessor",
+    "Group selection is browsing only; all three groups inspectable",
+    "All completed supports free review and recap, not a second playable chapter",
+    "Opening destination preview never spends energy or completes a lesson",
+    "Free playground accessible even while progress loads",
+    "Retry returns to unknown loading, not synthetic success",
+    "Invalid indices/actions cannot invent a playable destination",
+    "Close preserves selection and all progress",
+    "Every fixture has known catalog selection and no mutable cross-fixture state"
+  ]
+}
