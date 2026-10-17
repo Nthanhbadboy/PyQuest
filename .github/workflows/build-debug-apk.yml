@@ -31,7 +31,7 @@ permissions:
 
 concurrency:
   group: owner-test-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   SOURCE_SHA: ${{ inputs.source_sha || 'de01a490743982356ad5240d77ea99e9dbf8c7f5' }}
@@ -94,6 +94,8 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   build-android:
+    # Public repositories must never publish plaintext key-bearing APK artifacts.
+    if: github.event.repository.private || (github.event_name == 'workflow_dispatch' && !inputs.internal_voice)
     needs: verify-source
     runs-on: ubuntu-latest
     timeout-minutes: 40
