@@ -632,9 +632,9 @@ lane riêng; không chặn việc thiết kế/đưa UI thế giới và chơi s
   có test source (giao thức Live, vòng đời loa PCM, mô hình transcript, danh
   tính trong panel) và evidence lịch sử, nhưng **chưa** có phiên Gemini Live thật được xác
   nhận bằng tai trên máy. Tiêu chí đóng: làm theo bảng kiểm trong
-  `docs/experimental/GEMINI_LIVE_VOICE_TEST.md` trên build cục bộ được phép hoặc
-  đường token production tương lai, ghi exact SHA. Từ r47 CI không nhúng Gemini
-  key; không coi một keyless APK build thành công là voice PASS.
+  `docs/experimental/GEMINI_LIVE_VOICE_TEST.md` trên owner-test APK được phép có
+  key theo [r49](OWNER_TEST_BUILDS.md), hoặc đường token production tương lai; ghi
+  exact SHA. Token/backend/quota hoãn cho lần thử này. Build success không phải voice PASS.
 
 ### 16.3. Hạng mục áp dụng UI Direction V2
 

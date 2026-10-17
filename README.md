@@ -247,7 +247,7 @@ flutter drive --no-pub --keep-app-running \
   --driver=test_driver/integration_test.dart --target=integration_test/journey_test.dart -d <device-id>
 ```
 
-APK preview không có Gemini key (cùng chính sách workflow từ r47):
+APK preview keyless (CI thông thường; owner-test có ngoại lệ r49 bên dưới):
 
 ```bash
 cd app
@@ -255,10 +255,11 @@ flutter build apk --release --dart-define=GEMINI_API_KEY=
 ```
 
 `--release` là build mode, **không phải quyền phát hành công khai**. Direct Gemini
-Live sẽ không xác thực được khi define rỗng; không thêm lại repository secret để
-“sửa” điều này. Thử voice cục bộ có kiểm soát được mô tả trong
-[hướng dẫn thử nghiệm](docs/experimental/GEMINI_LIVE_VOICE_TEST.md), không phải
-đường phân phối artifact. Tutor ngoại tuyến/relay văn bản không bị sửa.
+Live sẽ không xác thực được khi define rỗng. **Theo quyết định người dùng r49,
+workflow owner-test được nhúng key từ repository secret để chính họ thử voice**,
+sau pinned-SDK checks; không public/store release. Xem [request và giới hạn](docs/OWNER_TEST_BUILDS.md)
+và [voice checklist](docs/experimental/GEMINI_LIVE_VOICE_TEST.md). Token/backend/quota
+hoãn cho lần thử nội bộ, không sửa Tutor ngoại tuyến/relay văn bản.
 
 CI (GitHub Actions) chạy `analyze` + `test` + render preview cho mỗi lần push vào
 `arena/**`; commit có `[apk]` build thêm Release APK (tải ở *Artifacts* của lần
@@ -267,11 +268,11 @@ job được publish thành check run (*PyQuest check*, *PyQuest emulator*) qua
 `ci/report.py` + `ci/step_outcomes.py`, nên đọc được ngay trên trang checks mà
 không cần tải log.
 
-Bảo mật: hai workflow không đọc `GEMINI_API_KEY` từ repository secrets và đặt
-define rỗng cho các lệnh build APK. Key của relay văn bản nằm phía server ở
-`RELAY_API_KEY`. Không commit hoặc đưa key vào tài liệu/log/chat. APK cũ có thể
-đã chứa key nếu secret được cấu hình; sửa workflow không thu hồi artifact hay
-xoay key cũ. Chưa có APK mới hoặc kiểm tra thiết bị được thực hiện trong r47.
+Bảo mật: CI thông thường vẫn define key rỗng; owner-test là ngoại lệ được người
+dùng cho phép. Key chỉ lấy từ repository secret trong step build, không commit
+hoặc đưa vào log/chat. APK owner-test vẫn trích xuất được key, không chia sẻ
+công khai. Key relay văn bản nằm phía server ở `RELAY_API_KEY`. Thay đổi workflow
+không thu hồi APK hoặc xoay key cũ; build success không phải device/voice PASS.
 
 ---
 

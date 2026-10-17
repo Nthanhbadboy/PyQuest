@@ -1,10 +1,14 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · cập nhật r48 · không phải chứng nhận runtime mới.**
+**2026-10-18 · cập nhật r49 · không phải chứng nhận runtime mới.**
 
 Tài liệu này phân biệt **có source**, **đã kiểm chứng tại một SHA**, **thiết kế** và
 **kế hoạch**. Product Vision/Game Design/Technical Architecture/Roadmap giữ vai trò
 riêng; không lấy checklist hoặc hình concept làm trạng thái triển khai.
+
+**Quyết định mới r49:** người dùng cho phép Actions và APK thử nội bộ có Gemini key.
+[Request/gates](OWNER_TEST_BUILDS.md) pin CODEde01a49; đang chuẩn bị thực thi, chưa
+có SDK/test/APK PASS mới. Token/backend/giới hạn token hoãn cho lần thử này.
 
 ## 1. Mốc đối chiếu
 
@@ -33,7 +37,7 @@ riêng; không lấy checklist hoặc hình concept làm trạng thái triển k
 | Energy / rewarded ads | Energy hồi theo thời gian và lưu SQLite; **rewarded-ad SDK chưa có** | Ads/quota/reward callback/policy trẻ em là kế hoạch, không phải feature đã hoạt động |
 | Interpreter mô phỏng | Có tập con Python viết bằng Dart và các bộ đếm/giới hạn | Không phải Python đầy đủ hoặc sandbox được chứng nhận; cần kiểm tra coverage, cấp phát và thời gian của từng operation |
 | Main Quest | Chặng1 có12 bài/64 bước; Tutor ngoại tuyến và relay văn bản có source | Không nói toàn bộ các chặng hoặc board AI/freehand/voice-sync đã hoàn tất |
-| Voice Gemini Live | Đường thử nghiệm direct API có trong source | Chưa có token ngắn hạn/server mediation production; CI mới không đưa key vào APK; không có device voice PASS mới |
+| Voice Gemini Live | Đường thử nghiệm direct API có trong source | Chưa có token ngắn hạn/server mediation production; r49 cho phép key trong APK owner-test, CI thường vẫn keyless; chưa có device voice PASS mới |
 | Side Maps, Pro, cộng đồng/Arena mở rộng | Thuộc kế hoạch sản phẩm, chưa đủ implementation | Không bán/claim quyền lợi chưa triển khai |
 | Nhà–đất–đảo, visit/pet và skin mới | Đã có thiết kế và các study có giới hạn | Không dùng HTML/JS/art PASS thay runtime, quyền chia sẻ hay commerce thật |
 
@@ -59,27 +63,19 @@ PROJECT_STATUS trong patch là snapshot lúc giao; disposition mới nằm tại
 r48 và đầu task019, không bắt đối tác tạo commit ACK-only để chép lại từng review.
 PQC-011 và acceptance lịch sử không bị sửa/đóng lại trong việc đồng bộ này.
 
-## 4. APK và bí mật: chính sách từ r47
+## 4. APK và bí mật: chính sách hiện hành r49
 
-- Hai workflow `.github/workflows/ci.yml` và `build-debug-apk.yml` **không đọc
-  repository secret `GEMINI_API_KEY` để build**, và truyền define rỗng rõ ràng cho
-  mọi lệnh build APK. Không thêm tùy chọn opt-in đưa key dài hạn vào CI artifact.
-- Hệ quả: APK tạo bởi cấu hình workflow mới **không có Gemini key từ đường build
-  đó**; direct Gemini Live voice không xác thực được. Đây là thay đổi có chủ ý,
-  không phải lỗi cần khắc phục bằng cách thêm lại secret. Tutor ngoại tuyến/relay
-  văn bản không bị sửa; hành vi trên APK vẫn phải được kiểm chứng khi có build.
-- `--release` chỉ là build mode, **không phải cho phép phát hành công khai**.
-  Signing, quyền phân phối, token/backend, an toàn trẻ em và kiểm tra thiết bị vẫn
-  là các gate riêng. Keyless không đồng nghĩa đã đạt mọi yêu cầu bảo mật.
-- Source vẫn cho phép đường thử nghiệm cục bộ qua dart-define; sửa workflow không
-  vô hiệu hóa mọi cách tự build có key. Đường đó không được upload/phân phối như
-  artifact tiêu chuẩn. Xem [hướng dẫn voice](experimental/GEMINI_LIVE_VOICE_TEST.md).
-- Workflow cũ có thể đã đóng gói key nếu secret tồn tại. Sửa hôm nay **không xóa
-  key khỏi APK cũ, không thu hồi artifact và không tự xoay key**. Chưa đọc secret,
-  chưa phân tích APK cũ, chưa kết luận lộ key. Chủ tài khoản cần rà soát phạm vi
-  phân phối, thu hồi/xoay key nếu đã đưa vào bản chia sẻ; không gửi key qua chat.
+- Theo quyết định mới của người dùng, workflow owner-test được lấy Gemini key
+  từ repository secret để build APK nội bộ sau pinned-SDK checks. Xem
+  [phạm vi/gates/retention](OWNER_TEST_BUILDS.md). CI thông thường vẫn keyless.
+- Không đưa giá trị key vào source/log/chat. Key trong APK vẫn trích xuất được;
+  artifact chỉ dành chủ tài khoản thử, không public/store release.
+- Token ngắn hạn/backend/quota hoãn cho lần thử nội bộ; production vẫn cần gate
+  riêng. Build success không phải chứng nhận cài/chạy hay voice trên thiết bị.
+- r47/r48 keyless-only là chính sách lịch sử, được thay thế trong scope owner-test;
+  không sửa receipt cũ, không tự thu hồi APK hoặc xoay key đã tồn tại.
 
-## 5. Giới hạn của đợt sửa
+## 5. Giới hạn lịch sử r47/r48 (không phải cấm Actions ở r49)
 
 Chỉ sửa tài liệu, cấu hình đóng gói và kiểm tra local của chính sách đó. Không sửa
 app/runtime/dependencies, không cài SDK, không dispatch/rerun CI, không tạo APK

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bounded, stdlib-only regression checks for r47's two literal APK workflows.
+"""Bounded, stdlib-only regression checks: normal CI keyless; r49 owner-test exception.
 Not a general shell/YAML security analyzer, secret scanner or APK verifier.
 Does not invoke Flutter, CI or any network operation.
 """
@@ -47,12 +47,31 @@ def check_workflow(text):
     return issues
 
 
+
+def check_internal_workflow(text):
+    """User-authorized, isolated owner-test exception; not a generic YAML analyzer."""
+    required = ['needs: verify-source', "github.ref == 'refs/heads/arena/00838eb9-pyquest'",
+                'internal_voice:', 'SOURCE_SHA:', 'OWNER_TEST_ONLY_NOT_PUBLIC',
+                'retention-days: 3', "flutter-version: '3.47.7'", 'persist-credentials: false',
+                'set +x', "trap 'rm -f \"$defines\"' EXIT", 'Missing repository GEMINI_API_KEY']
+    issues = ['Missing owner-test guard: ' + token for token in required if token not in text]
+    commands = build_commands(text)
+    if len(commands) != 1 or '--dart-define-from-file=$RUNNER_TEMP/pyquest-internal-defines.json' not in commands[0]:
+        issues.append('Owner-test build must use its temporary private define file')
+    if 'GEMINI_API_KEY' in text.split('  build-android:')[0]:
+        issues.append('Secret must not be available to verification job')
+    if 'contents: write' in text or 'git push' in text:
+        issues.append('Owner-test workflow must not write repository source')
+    return issues
+
+
 def check_tree(root):
     errors, workflows = [], []
     for path in WORKFLOWS:
         text = (root / path).read_text()
-        errors.extend(f'{path}: {message}' for message in check_workflow(text))
-        workflows.append({'path': path, 'apk_commands': len(build_commands(text))})
+        checker = check_internal_workflow if path.endswith('build-debug-apk.yml') else check_workflow
+        errors.extend(f'{path}: {message}' for message in checker(text))
+        workflows.append({'path': path, 'apk_commands': len(build_commands(text)), 'policy': 'owner-test exception r49' if path.endswith('build-debug-apk.yml') else 'keyless'})
     roadmap = (root / 'docs/ROADMAP.md').read_text()
     if re.search(r'^\s*- \[[ xX]\]', roadmap, re.M):
         errors.append('Roadmap still represents historical criteria as progress checkboxes')

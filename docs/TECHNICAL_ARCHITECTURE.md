@@ -979,14 +979,14 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 - Source Gemini Live còn đường thử nghiệm cục bộ bằng dart-define; key nằm trong
   APK và có thể bị trích xuất. `GeminiLiveWire.redactSecrets` chỉ giảm lộ trong
   log, không bảo vệ key trong client. Cần token ngắn hạn/server mediation trước
-  khi cho phép phân phối voice; việc sửa tài liệu không triển khai cơ chế đó.
-- **Từ r47, hai workflow build APK không đọc Gemini repository secret và luôn
-  truyền `--dart-define=GEMINI_API_KEY=`.** Direct voice không xác thực được trong
-  các artifact mới của đường build này. Không thêm lại key để bật voice trên CI.
-- Release-mode và quyền phát hành là hai việc khác nhau. Workflow preview không
-  phải gate store/public release. Keyless chưa có nghĩa đã đạt mọi gate bảo mật.
-  Không có APK/device evidence mới trong đợt sửa này; artifact/key cũ chưa được
-  thu hồi/xoay tự động. Xem [chính sách hiện hành](PROJECT_STATUS.md#4-apk-và-bí-mật-chính-sách-từ-r47).
+  khi cho phép phân phối voice công khai; owner-test r49 được miễn gate này theo
+  quyết định người dùng. Việc sửa tài liệu không triển khai cơ chế token.
+- **r49: người dùng cho phép nhúng Gemini key từ repository secret vào APK
+  owner-test**, sau pinned-SDK checks trên exact source SHA. CI thông thường vẫn
+  keyless. Token/backend/quota hoãn cho lần thử nội bộ; không public/store release.
+- Xem [request/gates/evidence](OWNER_TEST_BUILDS.md). Key trong APK trích xuất được;
+  không ghi key vào source/log/chat. Build success không thay device/voice tests.
+  Các receipt r47/r48 giữ nguyên là lịch sử; artifact/key cũ không tự thu hồi/xoay.
 
 ### 15.3. UI Direction V2
 

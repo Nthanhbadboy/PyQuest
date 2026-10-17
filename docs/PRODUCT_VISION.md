@@ -1019,7 +1019,7 @@ Chưa triển khai hoặc chưa có bằng chứng trong source hiện tại:
 - Arena nhiều bộ môn, Creator Pro League, giải đồng đội.
 - Side Maps trả phí, Pro đầy đủ, cộng đồng/quà tặng đầy đủ.
 - Quảng cáo thưởng: năng lượng đã có, rewarded ads chưa có trong source.
-- Giọng nói còn đường thử nghiệm cục bộ có key nằm trong APK; từ r47 workflow CI không đưa Gemini key vào bản dựng. Chưa có token ngắn hạn/server mediation production hoặc device voice PASS mới.
+- Giọng nói còn đường thử nghiệm có key nằm trong APK; r49 cho phép GitHub Actions build owner-test có key theo quyết định người dùng, CI thường vẫn keyless. Token/backend/quota hoãn cho lần thử nội bộ; chưa có production mediation hoặc device voice PASS mới. Xem [request r49](OWNER_TEST_BUILDS.md).
 
 **Mốc nghiệm thu riêng:**010 board độc lập,014 locale service,015 root localization,
 016 Settings đã được nhận trong phạm vi riêng. Run39051006962:406ordinary+10render;
