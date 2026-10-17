@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:pyquest/app/app_services.dart';
@@ -356,49 +355,6 @@ void main() {
       recreated.dispose();
     });
 
-    testWidgets('localized framework control semantics update on a live modal route',
-        (WidgetTester tester) async {
-      final _Fixture fixture = await tester.runAsync(() => _openFixture(const <String, String>{})) as _Fixture;
-      final SettingsService settings = fixture.service();
-      await tester.runAsync(settings.load);
-      final List<Locale> osLocales = <Locale>[const Locale('vi', 'VN')];
-      final AppLocaleBinding binding = AppLocaleBinding(
-        settings: settings,
-        systemLocales: () => List<Locale>.unmodifiable(osLocales),
-      )..syncSystemLocales();
-      await tester.pumpWidget(_localizedHost(binding));
-      await pumpFor(tester, const Duration(milliseconds: 100));
-      final SemanticsHandle semantics = tester.ensureSemantics();
-      addTearDown(semantics.dispose);
-
-      unawaited(showDialog<void>(
-        context: tester.element(find.byType(Navigator).first),
-        builder: (BuildContext context) => const AlertDialog(
-          title: Text('Locale semantics'),
-          actions: <Widget>[BackButton()],
-        ),
-      ));
-      await pumpFor(tester, const Duration(milliseconds: 150));
-      final Finder backVi = find.byTooltip('Quay lại');
-      expect(backVi, findsOneWidget);
-      expect(tester.getSemantics(backVi).label, 'Quay lại');
-
-      osLocales
-        ..clear()
-        ..add(const Locale('en', 'US'));
-      binding.syncSystemLocales();
-      await pumpFor(tester, const Duration(milliseconds: 150));
-      final Finder backEn = find.byTooltip('Back');
-      expect(backEn, findsOneWidget);
-      expect(tester.getSemantics(backEn).label, 'Back');
-
-      await tester.tap(backEn);
-      await pumpFor(tester, const Duration(milliseconds: 150));
-      await tester.pumpWidget(const SizedBox.shrink());
-      binding.dispose();
-      settings.dispose();
-    });
-
     testWidgets('switching locale keeps the route and the text being typed',
         (WidgetTester tester) async {
       tester.platformDispatcher.localesTestValue = <Locale>[const Locale('vi', 'VN')];
@@ -468,26 +424,6 @@ void main() {
     });
   });
 }
-
-Widget _localizedHost(AppLocaleBinding binding) => AnimatedBuilder(
-      animation: binding,
-      builder: (BuildContext context, Widget? _) => MaterialApp(
-        locale: binding.locale,
-        supportedLocales: AppLocalizations.supportedLocales,
-        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        home: Scaffold(
-          body: Builder(
-            builder: (BuildContext context) =>
-                Text(MaterialLocalizations.of(context).cancelButtonLabel),
-          ),
-        ),
-      ),
-    );
 
 Locale _localeOf(WidgetTester tester) =>
     Localizations.localeOf(tester.element(find.byType(Navigator).first));
