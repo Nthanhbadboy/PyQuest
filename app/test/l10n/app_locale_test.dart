@@ -394,24 +394,24 @@ void main() {
         context: tester.element(find.byType(Navigator).first),
         builder: (BuildContext context) => const AlertDialog(
           title: Text('Locale semantics'),
-          actions: <Widget>[CloseButton()],
+          actions: <Widget>[BackButton()],
         ),
       ));
       await pumpFor(tester, const Duration(milliseconds: 200));
-      final Finder closeControl = find.byType(CloseButton);
-      expect(closeControl, findsOneWidget);
-      expect(tester.getSemantics(closeControl).label, 'Đóng');
+      final Finder backVi = find.byTooltip('Quay lại');
+      expect(backVi, findsOneWidget);
+      expect(tester.getSemantics(backVi).label, 'Quay lại');
 
       osLocales
         ..clear()
         ..add(const Locale('en', 'US'));
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await pumpFor(tester, const Duration(milliseconds: 200));
-      final Finder closeControlEn = find.byType(CloseButton);
-      expect(closeControlEn, findsOneWidget);
-      expect(tester.getSemantics(closeControlEn).label, 'Close');
+      final Finder backEn = find.byTooltip('Back');
+      expect(backEn, findsOneWidget);
+      expect(tester.getSemantics(backEn).label, 'Back');
 
-      await tester.tap(closeControlEn);
+      await tester.tap(backEn);
       await pumpFor(tester, const Duration(milliseconds: 200));
       await tester.pumpWidget(const SizedBox.shrink());
       services.dispose();
@@ -448,6 +448,35 @@ void main() {
       expect(typed.text, 'print("hi")');
       expect(Localizations.localeOf(tester.element(find.byType(TextField))), const Locale('en'));
       expect(_materialOf(tester).cancelButtonLabel, 'Cancel');
+    });
+
+    test('Flutter-generated localization output is committed and reproducible', () {
+      final String appDirectory = Directory.current.path;
+      final String repositoryRoot = File(p.join(appDirectory, 'pubspec.yaml')).existsSync()
+          ? Directory(appDirectory).parent.path
+          : appDirectory;
+      final ProcessResult diff = Process.runSync(
+        'git',
+        <String>['diff', '--exit-code', '--', 'app/lib/l10n/generated'],
+        workingDirectory: repositoryRoot,
+      );
+      expect(diff.exitCode, 0, reason: '${diff.stdout}${diff.stderr}');
+      final ProcessResult status = Process.runSync(
+        'git',
+        <String>['status', '--porcelain', '--untracked-files=all', '--', 'app/lib/l10n/generated'],
+        workingDirectory: repositoryRoot,
+      );
+      expect(status.exitCode, 0, reason: '${status.stderr}');
+      expect(status.stdout, isEmpty, reason: 'gen-l10n must not create uncommitted output');
+
+      final List<String> generatedFiles =
+          Directory('lib/l10n/generated').listSync().whereType<File>().map((File f) => f.uri.pathSegments.last).toList()
+            ..sort();
+      expect(generatedFiles, <String>[
+        'app_localizations.dart',
+        'app_localizations_en.dart',
+        'app_localizations_vi.dart',
+      ]);
     });
 
     test('generated foundation covers both supported languages', () {
