@@ -1,9 +1,188 @@
 {
   "@@locale": "vi",
-
   "appTitle": "PyQuest",
-
   "foundationGreeting": "Xin chào {name}!",
-
-  "foundationFollowsDevice": "Bản này theo ngôn ngữ của thiết bị."
+  "foundationFollowsDevice": "Bản này theo ngôn ngữ của thiết bị.",
+  "settingsTitle": "Cài đặt",
+  "settingsLanguageTitle": "Ngôn ngữ",
+  "settingsLanguageSystem": "Theo hệ thống",
+  "settingsLanguageVi": "Tiếng Việt",
+  "settingsLanguageEn": "English",
+  "settingsLanguageEffective": "Đang dùng: {language}",
+  "settingsLanguageFallback": "Ngôn ngữ của thiết bị chưa được hỗ trợ. PyQuest đang dùng English.",
+  "settingsLanguageScope": "Cài đặt và giao diện hệ thống đổi ngôn ngữ ngay. Một số nội dung khác đang được bổ sung bản dịch.",
+  "settingsLanguageSaving": "Đang lưu lựa chọn…",
+  "settingsLanguageSaveError": "Chưa lưu được lựa chọn. Ngôn ngữ vẫn được dùng trong lần mở này; lần mở sau có thể trở về lựa chọn đã lưu trước đó.",
+  "settingsLanguageRetry": "Thử lưu lại",
+  "settingsSound": "Âm thanh hiệu ứng",
+  "settingsMusic": "Nhạc nền",
+  "settingsCalm": "Chế độ êm dịu (ít chuyển động)",
+  "settingsAboutPython": "Về PyQuest Python",
+  "settingsResetProgress": "Xoá toàn bộ tiến trình",
+  "settingsFooter": "PyQuest 0.1 · Đảo Khởi Đầu. Tiến trình được lưu trên thiết bị này.",
+  "settingsParentTitle": "Dành cho bố mẹ",
+  "settingsParentWarning": "Thao tác này xoá tiến trình, huy hiệu, mê cung tự tạo và đặt lại cài đặt trên thiết bị này. Để tiếp tục, hãy nhập kết quả:",
+  "settingsParentQuestion": "{a} × {b} = ?",
+  "settingsParentAnswer": "Kết quả",
+  "settingsCancel": "Huỷ",
+  "settingsDelete": "Xoá",
+  "settingsPythonTitle": "PyQuest Python (mô phỏng)",
+  "settingsPythonIntro": "Code của bạn chạy trên một phiên bản Python thu nhỏ được viết riêng cho PyQuest, ngay trên máy, không cần mạng. Nó giống Python thật ở những phần cơ bản nhưng KHÔNG phải Python đầy đủ.",
+  "settingsPythonSupportedTitle": "Bạn có thể dùng",
+  "settingsPythonLimitsTitle": "Giới hạn",
+  "settingsPythonSupportedValues": "print(), biến, số nguyên, số thập phân, chuỗi chữ, True/False, None",
+  "settingsPythonSupportedOperators": "Phép tính + - * / // % ** và so sánh == != < > <= >=, and/or/not",
+  "settingsPythonSupportedFlow": "if / elif / else, while, for ... in range(...), break, continue",
+  "settingsPythonSupportedLists": "Danh sách: [1, 2, 3], ds[0], ds.append(), len(), in",
+  "settingsPythonSupportedFunctions": "Hàm: def, return, tham số mặc định",
+  "settingsPythonSupportedFString": "f-string đơn giản, ví dụ: {example}",
+  "settingsPythonSupportedBuiltins": "Lệnh có sẵn: len, range, str, int, float, bool, abs, round, min, max, sum, list, sorted, type",
+  "settingsPythonLimitFeatures": "Không có import, file, mạng, input(), class, dictionary, tuple, cắt chuỗi [a:b], try/except, lambda.",
+  "settingsPythonLimitSteps": "Tối đa 100.000 bước chạy — vòng lặp vô tận sẽ được dừng an toàn.",
+  "settingsPythonLimitDepthOutput": "Hàm gọi lồng nhau tối đa 50 tầng; in ra tối đa 10.000 ký tự.",
+  "settingsPythonLimitIntegers": "Số nguyên giới hạn khoảng ±9 tỉ tỉ (Python thật không giới hạn).",
+  "settingsPythonLimitOutputTiming": "Kết quả hiện ra sau khi chương trình chạy xong, không hiện từng dòng theo thời gian thực.",
+  "settingsPythonLimitNames": "Không cho đặt tên biến trùng print, len, range để tránh lỗi khó hiểu.",
+  "@settingsTitle": {
+    "description": "PQC-016 Settings surface; settingsTitle"
+  },
+  "@settingsLanguageTitle": {
+    "description": "PQC-016 Settings surface; settingsLanguageTitle"
+  },
+  "@settingsLanguageSystem": {
+    "description": "PQC-016 Settings surface; settingsLanguageSystem"
+  },
+  "@settingsLanguageVi": {
+    "description": "PQC-016 Settings surface; settingsLanguageVi"
+  },
+  "@settingsLanguageEn": {
+    "description": "PQC-016 Settings surface; settingsLanguageEn"
+  },
+  "@settingsLanguageEffective": {
+    "description": "PQC-016 Settings surface; settingsLanguageEffective",
+    "placeholders": {
+      "language": {
+        "type": "String",
+        "example": "Tiếng Việt"
+      }
+    }
+  },
+  "@settingsLanguageFallback": {
+    "description": "PQC-016 Settings surface; settingsLanguageFallback"
+  },
+  "@settingsLanguageScope": {
+    "description": "PQC-016 Settings surface; settingsLanguageScope"
+  },
+  "@settingsLanguageSaving": {
+    "description": "PQC-016 Settings surface; settingsLanguageSaving"
+  },
+  "@settingsLanguageSaveError": {
+    "description": "PQC-016 Settings surface; settingsLanguageSaveError"
+  },
+  "@settingsLanguageRetry": {
+    "description": "PQC-016 Settings surface; settingsLanguageRetry"
+  },
+  "@settingsSound": {
+    "description": "PQC-016 Settings surface; settingsSound"
+  },
+  "@settingsMusic": {
+    "description": "PQC-016 Settings surface; settingsMusic"
+  },
+  "@settingsCalm": {
+    "description": "PQC-016 Settings surface; settingsCalm"
+  },
+  "@settingsAboutPython": {
+    "description": "PQC-016 Settings surface; settingsAboutPython"
+  },
+  "@settingsResetProgress": {
+    "description": "PQC-016 Settings surface; settingsResetProgress"
+  },
+  "@settingsFooter": {
+    "description": "PQC-016 Settings surface; settingsFooter"
+  },
+  "@settingsParentTitle": {
+    "description": "PQC-016 Settings surface; settingsParentTitle"
+  },
+  "@settingsParentWarning": {
+    "description": "PQC-016 Settings surface; settingsParentWarning"
+  },
+  "@settingsParentQuestion": {
+    "description": "PQC-016 Settings surface; settingsParentQuestion",
+    "placeholders": {
+      "a": {
+        "type": "int",
+        "example": "6"
+      },
+      "b": {
+        "type": "int",
+        "example": "7"
+      }
+    }
+  },
+  "@settingsParentAnswer": {
+    "description": "PQC-016 Settings surface; settingsParentAnswer"
+  },
+  "@settingsCancel": {
+    "description": "PQC-016 Settings surface; settingsCancel"
+  },
+  "@settingsDelete": {
+    "description": "PQC-016 Settings surface; settingsDelete"
+  },
+  "@settingsPythonTitle": {
+    "description": "PQC-016 Settings surface; settingsPythonTitle"
+  },
+  "@settingsPythonIntro": {
+    "description": "PQC-016 Settings surface; settingsPythonIntro"
+  },
+  "@settingsPythonSupportedTitle": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedTitle"
+  },
+  "@settingsPythonLimitsTitle": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitsTitle"
+  },
+  "@settingsPythonSupportedValues": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedValues"
+  },
+  "@settingsPythonSupportedOperators": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedOperators"
+  },
+  "@settingsPythonSupportedFlow": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedFlow"
+  },
+  "@settingsPythonSupportedLists": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedLists"
+  },
+  "@settingsPythonSupportedFunctions": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedFunctions"
+  },
+  "@settingsPythonSupportedFString": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedFString",
+    "placeholders": {
+      "example": {
+        "type": "String",
+        "example": "f\"Xin chào {ten}\""
+      }
+    }
+  },
+  "@settingsPythonSupportedBuiltins": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedBuiltins"
+  },
+  "@settingsPythonLimitFeatures": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitFeatures"
+  },
+  "@settingsPythonLimitSteps": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitSteps"
+  },
+  "@settingsPythonLimitDepthOutput": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitDepthOutput"
+  },
+  "@settingsPythonLimitIntegers": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitIntegers"
+  },
+  "@settingsPythonLimitOutputTiming": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitOutputTiming"
+  },
+  "@settingsPythonLimitNames": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitNames"
+  }
 }
