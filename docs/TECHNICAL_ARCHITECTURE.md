@@ -833,6 +833,23 @@ vì tài liệu này đề xuất chia lớp.
 
 ---
 
+### 11.4. Art pipeline2,5D bắt buộc, không bắt đổi engine
+
+Theo [ART_DIRECTION_2_5D](design/ART_DIRECTION_2_5D.md), mọi màn dùng chung camera
+family/material/light/actor scale. Có thể dùng pre-rendered2D layers để biểu đạt2,5D;
+không tự thêm engine3D/package. HUD/text/semantics tách scene transform.
+
+Phân biệt concept image, screen composition và production art pack. Trước runtime
+phải có layer/alpha/dimensions/pivot/footprint/occluder/hit-target/source-license;
+ảnh isometric opaque không tự có geometry hoặc animation. Asset resolution/crop
+không được làm lệch collider/touch target. Font/scale/calm/keyboard dùng UI thật,
+không chứng minh bằng chữ bake vào ảnh. VI/EN strings/code/giá không bake vào asset.
+
+Kiểm camera/shadow/contact point và độ rõ trên phone trước khi import; quality
+review concept không thay device performance hoặc runtime integration tests.
+
+---
+
 ## 12. Bảo mật & quyền riêng tư
 
 ### 12.1. Dữ liệu trẻ em
@@ -940,7 +957,8 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 - Ảnh tham khảo và SVG V2 là tài liệu thiết kế, không phải asset runtime của app.
 - 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/`, `PYQUEST_UI_DIRECTION_V2.svg`,
   `PYQUEST_VILLAGE_2_5D_CONCEPT.svg` và `docs/design/kai-lumi-character-reference.svg`
-  đã có trong checkout; đó là bằng chứng thị giác chuẩn khi đánh giá màn hình.
+  đã có trong checkout làm nguồn tham khảo. Chuẩn hiện hành là ART_DIRECTION_2_5D;
+  không dùng sự pha trộn trong ảnh gốc để hợp thức hóa nhiều style trong một app.
 - Không đưa API key, token hoặc thông tin bí mật vào tài liệu, log hay commit.
   Đường chuẩn cho trợ giảng văn bản là **relay giữ key ở server**
   (`tools/ai_relay/relay.py`, `RELAY_API_KEY`), app chỉ cấu hình endpoint

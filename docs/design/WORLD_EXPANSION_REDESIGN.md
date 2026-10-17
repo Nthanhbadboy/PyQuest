@@ -167,6 +167,11 @@ mọi nhánh phụ thuộc vào một “main quest xây nhà” toàn cục.
 
 ## 5. Mỹ thuật và chuyển động thống nhất
 
+**Chuẩn bắt buộc r33:** [ART_DIRECTION_2_5D](ART_DIRECTION_2_5D.md) áp dụng mọi màn,
+không chỉ world scene. Tài liệu r32 chưa phải bộ hình mới. Các mẫu phẳng có ảnh2,5D
+trang trí phải được thiết kế lại trước khi giao UI; nội thất/nhân vật không hạ chất
+lượng so với ngoại thất. R33 chia DESIGN neo cảnh và CODE/PQC-017 art-only.
+
 - Giữ cảm giác game màu sắc và vật liệu có khối từ ảnh tham khảo, không sao chép
   nhân vật/logo/loot-box của bên thứ ba. Đã xem lại ảnh map baseline, phone P06C và
   ba ảnh nguồn: độ sâu/ánh sáng hữu ích; pixel-art/nhân vật có thương hiệu không

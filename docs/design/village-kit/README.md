@@ -1,5 +1,11 @@
 # PyQuest — Village Kit 01 · 2.5D landmarks
 
+> **R33 /2026-10-18:** kit này là nghiên cứu landmark lịch sử, không phải art pack
+> đã duyệt cho redesign toàn app. Chuẩn hiện hành: [ART_DIRECTION_2_5D](../ART_DIRECTION_2_5D.md),
+> neo mới: [art-refresh-r33](../art-refresh-r33/README.md). Ảnh opaque/card không tự
+> trở thành layer map/sprite. Không port nguyên kit thay bộ cảnh mới.
+
+
 **2026-10-16 · Design review, chưa tích hợp vào Flutter.**
 
 Bộ minh họa đợt đầu cho **6 địa điểm hiện có**, không phải thiết kế lại toàn bộ app.

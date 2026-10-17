@@ -195,6 +195,20 @@ thường có cấp độ.
 
 ---
 
+### 2.13. Mỹ thuật 2,5D là chuẩn toàn sản phẩm
+
+Mọi màn PyQuest phải cùng một ngôn ngữ2,5D: cảnh, nhân vật, công trình, nội thất,
+đồ vật và phản hồi có khối/chiều sâu/ánh sáng nhất quán. Không chỉ đặt một hình2,5D
+vào trang thẻ phẳng rồi coi đã redesign. Áp dụng cả nhà–đất–đảo, visit/pet, Tutor,
+mini-games, Arena, thành tích và hệ thống phụ. Text/code/control giữ front-facing
+cho dễ đọc nhưng không tách khỏi bộ mỹ thuật chung.
+
+Chuẩn bắt buộc: [ART_DIRECTION_2_5D](design/ART_DIRECTION_2_5D.md). Các ảnh tham khảo
+nhiều phong cách không phải quyền trộn pixel-art/flat-vector vào thế giới. Thiết kế
+đích không đồng nghĩa artwork/runtime đã có; dùng đủ gate concept → screen → asset.
+
+---
+
 ## 3. Mô hình kinh doanh — hai vòng kiếm tiền
 
 ### 3.1. Vòng 1 — Quảng cáo thưởng để chơi tiếp
@@ -1014,10 +1028,10 @@ visit thật, mua thú/local AI và UI thế giới mới chưa có trong APK n�
 
 ### 21.2. UI Direction V2
 
-`docs/PyQuest_Reffrence_Images/PYQUEST_UI_DIRECTION_V2.svg` là tài liệu định hướng thiết kế, **không phải** giao diện đang chạy. 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/` và `docs/design/kai-lumi-character-reference.svg` đã có trong checkout và là bằng chứng thiết kế chuẩn.
+`docs/PyQuest_Reffrence_Images/PYQUEST_UI_DIRECTION_V2.svg` là tài liệu định hướng thiết kế, **không phải** giao diện đang chạy. 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/` và `docs/design/kai-lumi-character-reference.svg` đã có trong checkout làm nguồn nghiên cứu; không thay chuẩn2,5D r33 hoặc gate duyệt art.
 
 Nguyên tắc áp dụng:
-- **Ảnh tham khảo gốc là chuẩn thị giác.** UI Direction V2 chỉ là hướng tinh chỉnh trên nền đó: giao diện hiện tại bị đánh giá là quá "kindergarten", cần chín hơn về phân cấp, khoảng cách, chữ và khả năng dùng, nhưng vẫn giữ bản sắc giáo dục thân thiện với trẻ em. Không tự sinh một hướng nhìn thứ hai trái với ảnh gốc.
+- **Ảnh gốc là nguồn tham khảo, không phải21 phong cách cùng được duyệt.** Theo chỉ đạo r33, ART_DIRECTION_2_5D là chuẩn mới xuyên mọi màn; chọn độ sâu, chất liệu và khả năng đọc phù hợp từ nguồn, không trộn pixel/flat/nhân vật thương mại. V2 là lịch sử nghiên cứu; hình mới phải thuộc cùng họ2,5D, chín hơn về phân cấp nhưng vẫn dành cho trẻ dưới12.
 - UI V2 chưa được triển khai vào source; không mô tả mockup V2 như tính năng đã hoàn thành.
 - Các asset ảnh tham khảo là tài liệu thiết kế, không phải asset runtime của app.
 - Khi áp dụng V2 vào source, phải đánh giá từng màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime.

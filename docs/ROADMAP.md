@@ -71,6 +71,20 @@ thành dependency giả cho UI làng hoặc nhánh nhà solo.
 
 ---
 
+### 1.7. Gate hình ảnh2,5D trước khi giao UI
+
+Cập nhật2026-10-18 theo user: đồng bộ tài liệu chưa đủ; mọi màn phải thuộc cùng bộ
+2,5D theo [ART_DIRECTION_2_5D](design/ART_DIRECTION_2_5D.md). Dừng việc port nguyên
+P02–P06C như final UI. DESIGN làm neo làng/nhà/hải đồ; CODE được giao phần art qua
+PQC-017 design-only (Tutor/nội thất thành tích/Arena), không mở app/CI/deps.
+
+R1 vẫn là ưu tiên UI sau gate thiết kế, **chưa READY_FOR_CODE runtime**. Trước R1
+phải review concept chung, composition phone/state/copy, rồi asset export phù hợp.
+Không chờ hoàn tất local AI/voice, nhưng cũng không bỏ art gate để nhanh có APK.
+PQC-011 tại a331ac1 được bàn giao unverified; chia việc art không tự nghiệm thu011.
+
+---
+
 ## 2. Tổng quan các giai đoạn
 
 | # | Giai đoạn | Mục tiêu chính | Thời lượng dự kiến |
@@ -608,8 +622,9 @@ lane riêng; không chặn việc thiết kế/đưa UI thế giới và chơi s
 5. Cập nhật tài liệu sau khi có bằng chứng triển khai.
 
 Không đánh dấu hoàn thành chỉ vì tài liệu hoặc mockup tồn tại. Ảnh tham khảo gốc
-(21 ảnh trong `docs/PyQuest_Reffrence_Images/`) đã có trong checkout và là chuẩn
-thị giác; mockup V2 và concept SVG chỉ là định hướng, không phải bằng chứng đã làm.
+(21 ảnh trong `docs/PyQuest_Reffrence_Images/`) đã có trong checkout làm nguồn
+tham khảo; không phải mọi style trong ảnh đều được duyệt. Chuẩn bắt buộc r33 là
+ART_DIRECTION_2_5D. Mockup V2/concept SVG không phải bằng chứng đã triển khai.
 
 
 ## 17. Lộ trình redesign đồng bộ nhà–đất–đảo

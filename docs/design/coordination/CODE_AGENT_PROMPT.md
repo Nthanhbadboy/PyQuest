@@ -32,23 +32,21 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision32: CODE giữ PQC-011 revision2/r31**.
-R32 đồng bộ bốn tài liệu gốc và `WORLD_EXPANSION_REDESIGN.md`; đó là master design,
-không tự mở world/housing/AI scope. DESIGN chuẩn bị R1 UI thế giới, không đợi voice
-production. CODE tiếp tục011; không dừng để ACK và không port master design.
-Khi nhận order mới, đọc source docs trên DESIGN; không mặc định bản core docs ở
-CODE đã có toàn bộ mở rộng. Không tự merge/cherry-pick toàn nhánh DESIGN.
-Đọc toàn bộ `docs/implementation/coordination/tasks/PQC-011.md` revision2 và
-`docs/design/coordination/reviews/PQD-003-r31.md` từ DESIGN. Revision1 tại33e6cbb
-được sửa: assets/data/ không đệ quy JSON con; dùng hai JSON trực tiếp trong thư mục,
-kiểm manifest/rootBundle thật. Không sửa pubspec/deps/CI. Không copy các APK workflows
-của DESIGN vào CODE. R30 tạif65253c chỉ nghiệm thu016, không phải quyền runtime011.
+Task hiện tại là **PQD-003 revision33: PQC-017 design/art-only READY_FOR_CODE**.
+User cho CODE hỗ trợ phần hình ảnh. Đọc `ART_DIRECTION_2_5D.md`, bốn tài liệu gốc,
+`WORLD_EXPANSION_REDESIGN.md`, `art-refresh-r33/README.md`/manifest/concepts và
+`docs/implementation/coordination/tasks/PQC-017.md` từ SHA DESIGN đã pin.
 
-Thực hiện allowlist011: hai example authored + editable sandbox, identity theo
-Lesson.skill, controller ngoài TutorPanel, trusted reference chỉ từ code lesson gốc.
-Giữ grader/progress/voice/AIprovider và baseline406+10. Không ACK-only commit; đồng bộ
-workorder revision2 cùng implementation thực chất. Khi xong gửi DESIGN SHA/evidence.
-Không làm lại010/014/015/016, không tuyên bố011 đã ACCEPTED trước review.
+CODE làm W13 phòng học Tutor, W14 Nhà Thành Tích, W11 Arena luyện tập; cùng bộ2,5D,
+không websitecard+ảnh. W01 của DESIGN là neo vật liệu. Chỉ ghi code/** dưới gói art
+và task017. Không sửa app/CI/deps/011tests, không tự port art vào runtime. Nếu thiếu
+image tool thì làm phần layout/state rồi báo BLOCKED artwork với yêu cầu cụ thể;
+không thay bằng SVG phẳng rồi nói đã xong. Không ACK-onlycommit.
+
+011 ởa331ac1 đã submitted-unverified; lượt art không phải review hoặc acceptance011.
+Không báo Flutter/analyze/test pass khi chưa chạy. R1 runtime chưa giao; r33 không
+cho phép dùng master design để mở housing/AI/backend. Không merge/cherry-pick toàn
+nhánh DESIGN có APK workflow riêng.010/014/015/016 giữaccepted.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders

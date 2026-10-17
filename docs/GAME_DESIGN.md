@@ -55,6 +55,20 @@ Các nguyên tắc chi phối mọi con số trong tài liệu này:
 
 ---
 
+### 1.1. Chuẩn trình bày gameplay2,5D
+
+Toàn bộ hoạt động thuộc cùng hệ hình ảnh2,5D theo
+[ART_DIRECTION_2_5D](design/ART_DIRECTION_2_5D.md): khối, mặt đất, bóng, vật liệu,
+nhân vật và feedback phải nhất quán. Maze giữ ô/lệnh rõ; Dragon giữ side-view để
+đọc khoảng nhảy nhưng scene/actor có depth, không chuyển thành game pixel-art khác
+họ. Camera mỹ thuật không được đổi collision, grading, output, reward hoặc luật.
+
+HUD/code/điều khiển front-facing; độ nổi chỉ phục vụ nhận biết, không che thông tin.
+Cần thể hiện đủ ready/playing/result/error/locked bằng cùng bộ art, không chỉ happy
+path. Màn xây/visit/pet phải cho thấy hoạt động thực chất theo §17, không chỉ ảnh nhà.
+
+---
+
 ## 2. Vòng lặp cốt lõi
 
 ```
@@ -608,7 +622,7 @@ Kết quả thử nghiệm sẽ quyết định điều chỉnh cụ thể.
 
 ### 16.2. UI Direction V2
 
-UI Direction V2 là định hướng thiết kế, chưa phải giao diện đang chạy. 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/` đã có trong checkout và là chuẩn thị giác; V2 chỉ tinh chỉnh độ chín (phân cấp, khoảng cách, chữ, khả năng dùng) trên nền đó, không thay thế ảnh gốc. Khi áp dụng, phải đánh giá màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime. Không mô tả mockup V2 như tính năng đã hoàn thành.
+UI Direction V2 là nghiên cứu lịch sử, chưa phải giao diện đang chạy. 21 ảnh gốc là nguồn tham khảo đa phong cách, không đồng nghĩa được dùng tất cả. Chuẩn hiện hành là ART_DIRECTION_2_5D và §1.1: mọi màn cùng họ2,5D, gameplay/đáp án không đổi để khớp art. Thiết kế/ảnh mới vẫn cần layout/state, asset và runtime evidence riêng trước khi gọi là hoàn thành.
 
 
 ## 17. Nhà–đất–đảo và nhiệm vụ liên kết

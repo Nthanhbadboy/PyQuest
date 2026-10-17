@@ -31,6 +31,11 @@ Tài liệu này cụ thể hóa yêu cầu redesign; nguồn sự thật sản 
 
 ## 2. Thiết kế cho ai và theo tiêu chuẩn nào?
 
+**R33 — yêu cầu bắt buộc của user:** toàn bộ thiết kế phải2,5D theo
+[ART_DIRECTION_2_5D](ART_DIRECTION_2_5D.md), không chỉ hình hero/thumbnail. Tách
+concept/screen/production asset; UI dễ đọc không là lý do giữ nguyên web dashboard.
+
+
 `PRODUCT_VISION.md` §1 xác định **trẻ dưới 12 tuổi**, mobile Android trước.
 Câu “older children and teens” trước đây trong village brief không nhất quán với
 định vị gốc; đã sửa brief ở lượt review PQD-001 revision 3 để khớp đối tượng dưới 12,
