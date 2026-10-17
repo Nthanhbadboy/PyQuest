@@ -646,8 +646,11 @@ Future<void> _verifyFreshRootCase(WidgetTester tester, _FreshRootCase localeCase
         if (services != null) await _disposeAndCloseServices(tester, services);
       } finally {
         if (directory != null) {
+          final Directory cleanupDirectory = directory;
           await tester.runAsync(() async {
-            if (await directory.exists()) await directory.delete(recursive: true);
+            if (await cleanupDirectory.exists()) {
+              await cleanupDirectory.delete(recursive: true);
+            }
           });
         }
       }
