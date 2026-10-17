@@ -245,7 +245,7 @@ jobs:
         run: |
           set +e
           set -o pipefail
-          python3 ci/report.py "PyQuest check" status.txt flutter_version.txt pub_get.txt l10n_evidence_tests.txt l10n_evidence_collect.txt analyze.txt settings_test.txt test.txt render.txt l10n_evidence_publish.txt previews.txt \
+          python3 ci/report.py "PyQuest check" status.txt settings_test.txt flutter_version.txt pub_get.txt l10n_evidence_tests.txt l10n_evidence_collect.txt analyze.txt test.txt render.txt l10n_evidence_publish.txt previews.txt \
             --step "Flutter version=${{ steps.flutter_version.outcome }}" \
             --step "Dependencies=${{ steps.pub_get.outcome }}" \
             --step "Localization evidence tests=${{ steps.l10n_evidence_tests.outcome }}" \
