@@ -294,7 +294,7 @@ void main() {
       } finally {
         try {
           if (lock != null) {
-            final _LockedWriteDatabase heldLock = lock;
+            final _LockedWriteDatabase heldLock = lock!;
             lock = null;
             await _releaseWriteLock(tester, heldLock);
             await _waitForLocaleWriteOutcome(tester, services);
@@ -341,7 +341,7 @@ void main() {
     expect(find.text('Đang lưu lựa chọn…'), findsOneWidget);
     _expectOneSelectedRadio(tester, LocalePreference.vi);
 
-    await _releaseWriteLock(tester, lock);
+    await _releaseWriteLock(tester, lock!);
     lock = null;
     await _waitForLocaleWriteOutcome(tester, services);
     await pumpFor(tester, const Duration(milliseconds: 300));
@@ -376,7 +376,7 @@ void main() {
     Navigator.of(tester.element(find.byKey(const ValueKey<String>('settings_language_panel')))).pop();
     await pumpFor(tester, const Duration(milliseconds: 100));
     expect(find.byKey(const ValueKey<String>('settings_language_panel')), findsNothing);
-    await _releaseWriteLock(tester, lock);
+    await _releaseWriteLock(tester, lock!);
     lock = null;
     await _waitForLocaleWriteOutcome(tester, services);
     await _settingsRows(tester, services);
