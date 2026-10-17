@@ -30,9 +30,11 @@ void main() {
     final SemanticsHandle semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
     await tester.pump();
-    final SemanticsNode button = tester.getSemantics(find.byType(IconButton));
-    expect(button.label == 'Quay lại' || button.tooltip == 'Quay lại', isTrue,
-        reason: 'the VI framework control must expose its tooltip in accessibility semantics');
+    expect(
+      find.semantics.byPredicate((SemanticsNode node) => node.tooltip == 'Quay lại'),
+      findsOneWidget,
+      reason: 'the VI BackButton tooltip must appear in the accessibility semantics tree',
+    );
     await _disposeHarness(tester, harness);
   });
 
@@ -66,9 +68,11 @@ void main() {
 
     final Finder backEn = find.byTooltip('Back');
     expect(backEn, findsOneWidget);
-    final SemanticsNode button = tester.getSemantics(find.byType(IconButton));
-    expect(button.label == 'Back' || button.tooltip == 'Back', isTrue,
-        reason: 'the EN framework control must expose its tooltip in accessibility semantics');
+    expect(
+      find.semantics.byPredicate((SemanticsNode node) => node.tooltip == 'Back'),
+      findsOneWidget,
+      reason: 'the EN BackButton tooltip must appear in the accessibility semantics tree',
+    );
     await tester.tap(backEn);
     await tester.pump(const Duration(milliseconds: 150));
     await _disposeHarness(tester, harness);
