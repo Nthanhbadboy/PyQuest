@@ -293,7 +293,12 @@ void main() {
         await tester.pumpWidget(const SizedBox.shrink());
       } finally {
         try {
-          if (lock != null) await _releaseWriteLock(tester, lock);
+          if (lock != null) {
+            final _LockedWriteDatabase heldLock = lock;
+            lock = null;
+            await _releaseWriteLock(tester, heldLock);
+            await _waitForLocaleWriteOutcome(tester, services);
+          }
         } finally {
           try {
             await _disposeServices(tester, services);
@@ -338,9 +343,17 @@ void main() {
 
     await _releaseWriteLock(tester, lock);
     lock = null;
+    await _waitForLocaleWriteOutcome(tester, services);
     await pumpFor(tester, const Duration(milliseconds: 300));
     final Map<String, String> afterRace = await _settingsRows(tester, services);
-    expect(afterRace[SettingsService.localePreferenceKey], 'vi');
+    expect(
+      afterRace[SettingsService.localePreferenceKey],
+      'vi',
+      reason: 'the newest write must finish after releasing the lock; '
+          'saved=${services.settings.localePreferenceSaved}, '
+          'raw=${services.settings.raw(SettingsService.localePreferenceKey)}, '
+          'error=${services.settings.localePreferenceSaveError}',
+    );
     expect(services.settings.localePreference, LocalePreference.vi);
     expect(services.settings.localePreferenceSaveError, isNull,
         reason: 'the late failure from the older EN request must not own current status');
@@ -365,6 +378,7 @@ void main() {
     expect(find.byKey(const ValueKey<String>('settings_language_panel')), findsNothing);
     await _releaseWriteLock(tester, lock);
     lock = null;
+    await _waitForLocaleWriteOutcome(tester, services);
     await _settingsRows(tester, services);
     await pumpFor(tester, const Duration(milliseconds: 300));
     expect(tester.takeException(), isNull);
@@ -802,6 +816,21 @@ class _LockedWriteDatabase {
   final Database database;
   final Completer<void> release;
   final Future<void> transaction;
+}
+
+// Drain the real DB future before assertions/teardown; the workflow's per-test timeout is 45s.
+Future<void> _waitForLocaleWriteOutcome(WidgetTester tester, AppServices services) async {
+  final Stopwatch elapsed = Stopwatch()..start();
+  while (!services.settings.localePreferenceSaved &&
+      services.settings.localePreferenceSaveError == null) {
+    if (elapsed.elapsed >= const Duration(seconds: 5)) {
+      throw TimeoutException('Settings locale write did not resolve after releasing the DB lock');
+    }
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 10)),
+    );
+    await tester.pump();
+  }
 }
 
 Future<Map<String, String>> _settingsRows(WidgetTester tester, AppServices services) async {
