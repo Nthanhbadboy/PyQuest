@@ -94,7 +94,7 @@ void main() {
     _expectToggle(tester, 'toggle_music', 'Nhạc nền', isToggled: true);
     _expectToggle(tester, 'toggle_calm', 'Chế độ êm dịu (ít chuyển động)', isToggled: true);
 
-    await _chooseLocale(tester, LocalePreference.en);
+    await _chooseLocale(tester, services, LocalePreference.en);
     _expectSettingsBaseCopy(tester, 'en');
     expect(_rootLocale(tester), const Locale('en'));
     expect(_rootMaterial(tester).cancelButtonLabel, 'Cancel');
@@ -104,13 +104,13 @@ void main() {
     expect(find.byKey(const ValueKey<String>('settings_language_panel')), findsOneWidget);
     expect(tester.state<NavigatorState>(find.byType(Navigator).first), same(navigator));
 
-    await _chooseLocale(tester, LocalePreference.vi);
+    await _chooseLocale(tester, services, LocalePreference.vi);
     _expectSettingsBaseCopy(tester, 'vi');
     expect(_rootLocale(tester), const Locale('vi'));
     expect(find.text('Đang dùng: Tiếng Việt'), findsOneWidget);
     _expectOneSelectedRadio(tester, LocalePreference.vi);
 
-    await _chooseLocale(tester, LocalePreference.system);
+    await _chooseLocale(tester, services, LocalePreference.system);
     expect(_rootLocale(tester), const Locale('vi'));
     expect(find.text('Đang dùng: Tiếng Việt'), findsOneWidget);
     _expectOneSelectedRadio(tester, LocalePreference.system);
@@ -154,7 +154,7 @@ void main() {
     expect(_rootLocale(tester), const Locale('en'));
     await _openSettings(tester);
 
-    await _chooseLocale(tester, LocalePreference.vi);
+    await _chooseLocale(tester, services, LocalePreference.vi);
     await pumpFor(tester, const Duration(milliseconds: 250));
     expect(_rootLocale(tester), const Locale('vi'));
     expect(_rootMaterial(tester).cancelButtonLabel, 'Huỷ');
@@ -225,7 +225,7 @@ void main() {
     final AppServices first = firstServices;
     await _mountPyQuest(tester, first);
     await _openSettings(tester);
-    await _chooseLocale(tester, LocalePreference.en);
+    await _chooseLocale(tester, first, LocalePreference.en);
     expect(_rootLocale(tester), const Locale('en'));
     expect(
       (await _settingsRows(tester, first))[SettingsService.localePreferenceKey],
@@ -247,7 +247,7 @@ void main() {
     _expectOneSelectedRadio(tester, LocalePreference.en);
     expect(find.text('Currently using: English'), findsOneWidget);
 
-    await _chooseLocale(tester, LocalePreference.system);
+    await _chooseLocale(tester, second, LocalePreference.system);
     expect(_rootLocale(tester), const Locale('vi'));
     expect(second.settings.localePreference, LocalePreference.system);
     expect(
@@ -315,10 +315,10 @@ void main() {
     await pumpFor(tester, const Duration(milliseconds: 300));
 
     lock = await _holdWriteLock(tester, databasePath);
-    await _chooseLocale(tester, LocalePreference.en);
+    await _chooseLocale(tester, services, LocalePreference.en, waitForPersistence: false);
     expect(_rootLocale(tester), const Locale('en'));
     expect(find.text('Saving your choice…'), findsOneWidget);
-    await _chooseLocale(tester, LocalePreference.vi);
+    await _chooseLocale(tester, services, LocalePreference.vi, waitForPersistence: false);
     expect(_rootLocale(tester), const Locale('vi'));
     expect(find.text('Đang lưu lựa chọn…'), findsOneWidget);
     _expectOneSelectedRadio(tester, LocalePreference.vi);
@@ -338,7 +338,7 @@ void main() {
     // Start one more deliberately pending request, pop the sheet before its Future settles, then
     // let the injected write failure arrive. The unmounted panel must not call setState afterward.
     lock = await _holdWriteLock(tester, databasePath);
-    await _chooseLocale(tester, LocalePreference.en);
+    await _chooseLocale(tester, services, LocalePreference.en, waitForPersistence: false);
     expect(find.text('Saving your choice…'), findsOneWidget);
     await tester.pageBack();
     await pumpFor(tester, const Duration(milliseconds: 100));
@@ -722,9 +722,24 @@ Future<void> _tapVisible(WidgetTester tester, Finder finder) async {
   await tester.tap(finder);
 }
 
-Future<void> _chooseLocale(WidgetTester tester, LocalePreference preference) async {
+Future<void> _chooseLocale(
+  WidgetTester tester,
+  AppServices services,
+  LocalePreference preference, {
+  bool waitForPersistence = true,
+}) async {
   await _tapVisible(tester, find.byKey(ValueKey<String>('language_${preference.storageValue}')));
   await pumpFor(tester, const Duration(milliseconds: 250));
+  if (waitForPersistence) {
+    // Pumping fake time does not complete sqflite FFI work. This read runs in the real async zone
+    // and queues behind the SettingsRepository write before the test asserts its persisted result.
+    await _settingsRows(tester, services);
+  } else {
+    // For the explicit lock race, let the real FFI event loop reach the held transaction without
+    // waiting for that deliberately blocked write to settle.
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+  }
+  await tester.pump();
 }
 
 Future<_LockedWriteDatabase> _holdWriteLock(WidgetTester tester, String path) async {
