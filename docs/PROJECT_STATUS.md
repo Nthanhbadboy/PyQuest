@@ -1,12 +1,17 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · r47 · không phải chứng nhận runtime mới.**
+**2026-10-18 · cập nhật r48 · không phải chứng nhận runtime mới.**
 
 Tài liệu này phân biệt **có source**, **đã kiểm chứng tại một SHA**, **thiết kế** và
 **kế hoạch**. Product Vision/Game Design/Technical Architecture/Roadmap giữ vai trò
 riêng; không lấy checklist hoặc hình concept làm trạng thái triển khai.
 
 ## 1. Mốc đối chiếu
+
+- CODE docs/packaging mới nhất đã review: `de01a490743982356ad5240d77ea99e9dbf8c7f5`;
+  [PQC-019 r48](design/coordination/reviews/PQD-010-r48/README.md) đã nhận trong
+  phạm vi tài liệu/keyless policy. App và task011 không đổi so với71b0; không có
+  execution evidence SDK mới. Các mốc bên dưới là pin lịch sử, không PASS của tip.
 
 - CODE được đọc: `71b0fd3fd8fb07c73596ce089fa2e68f6fe87964` trên
   `arena/0d4fcb38-pyquest`. Chưa có bằng chứng thực thi pinned-SDK được nhận cho011
@@ -44,12 +49,14 @@ thu một tiêu chí cần ghi rõ scope, SHA, log/test/device evidence và gi�
 | PQC-011 | **CHANGES_REQUESTED / WAITING_FOR_PINNED_SDK_EVIDENCE**; R42-A/B **SOURCE_ADDRESSED / EXECUTION_UNVERIFIED** | [Review r44 tại DESIGN8f754a1](https://github.com/Nthanhbadboy/PyQuest/blob/8f754a16c829264747b6517c7f7bacb3c8769283/docs/design/coordination/reviews/PQD-003-r44.md) |
 | PQC-018 | **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**; không runtime/production approval | [Task revision4 tại DESIGN30394b7](https://github.com/Nthanhbadboy/PyQuest/blob/30394b7bb23ad1fcf371c8dee644fd6caaf3793d/docs/implementation/coordination/tasks/PQC-018.md) |
 | DESIGN r45 /r46 | Maze selection và Creator interaction study đã giao | [Visual status tại DESIGNc68bdcd](https://github.com/Nthanhbadboy/PyQuest/blob/c68bdcd73b400c4d449216023a54499b202bda1d/docs/design/VISUAL_DESIGN_STATUS.md) |
+| PQC-019 | **ACCEPTED_WITH_LIMITS — DOCS_AND_KEYLESS_POLICY_SCOPE_COMPLETE** tại CODEde01a49 | [Review độc lập r48](design/coordination/reviews/PQD-010-r48/README.md) |
 | Runtime R1 /R4 | Chưa mở | Cần order/asset/allowlist/gates riêng; không suy quyền từ art study |
 
-**Độ lệch nhánh đã phát hiện:** CODE71b0 còn câu ads đã có, chỉ dẫn bắt đầu
-Foundation và header018 `IN_PROGRESS`; DESIGN đã sửa các mục đó từ trước r47.
-Bản cập nhật r47 và patch đồng bộ phải được CODE áp dụng trên nhánh của CODE;
-không coi việc DESIGN push hoặc đối tác fetch là đã đồng bộ working tree.
+**Độ lệch nhánh đã được sửa trong phạm vi r47:** CODE71b0 từng còn câu ads đã có,
+chỉ dẫn bắt đầu Foundation và header018 `IN_PROGRESS`. CODEde01a49 đã áp dụng patch
+13file và DESIGN đã review độc lập tại r48, không chỉ fetch/ACK. Gói r47/receipt và
+PROJECT_STATUS trong patch là snapshot lúc giao; disposition mới nằm tại review
+r48 và đầu task019, không bắt đối tác tạo commit ACK-only để chép lại từng review.
 PQC-011 và acceptance lịch sử không bị sửa/đóng lại trong việc đồng bộ này.
 
 ## 4. APK và bí mật: chính sách từ r47

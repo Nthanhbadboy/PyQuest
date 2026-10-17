@@ -1,0 +1,115 @@
+{
+  "date": "2026-10-18",
+  "result": "PASS_EXACT_CODE_SOURCE_AND_LOCAL_POLICY_ONLY",
+  "order_sha": "b785205349059b0be584989623aada2360ef79c9",
+  "base_sha": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+  "implementation_sha": "1a673ff53290f8f6afca538ee6fb9a1dd5b46736",
+  "reviewed_sha": "de01a490743982356ad5240d77ea99e9dbf8c7f5",
+  "changed_files": 13,
+  "preimages_existing": 9,
+  "preimages_expected_absent": 4,
+  "implementation_postimages_match": 13,
+  "final_unchanged_postimages": 12,
+  "final_task_delta": "Status READY_FOR_CODE → APPLIED_SOURCE_ONLY +27-line handoff; independently read",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "f2ba2c775231b76057fa393391d2df25ba74f95d0aa73b5c25035bb28c796984",
+      "patch_match": true
+    },
+    {
+      "path": "docs/PRODUCT_VISION.md",
+      "sha256": "d38293cdcad83283bd21f2501406fac9f469198b75c71d2bea7b8f389d1a07f0",
+      "patch_match": true
+    },
+    {
+      "path": "docs/GAME_DESIGN.md",
+      "sha256": "e01a9c3cc86c673c221458cd11c2829609b5ee390b8c0f7b6f39c0ca0f9d010a",
+      "patch_match": true
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "sha256": "67c59e4c742091e56ac20b50ca17b2dcd032b0bb22ae60428cfa02da4e540c1f",
+      "patch_match": true
+    },
+    {
+      "path": "docs/TECHNICAL_ARCHITECTURE.md",
+      "sha256": "8c3f62cc3547bc050b3d1a2fc8c48cd71b6e78417f973b6c641788cf3d388a4d",
+      "patch_match": true
+    },
+    {
+      "path": "docs/experimental/GEMINI_LIVE_VOICE_TEST.md",
+      "sha256": "90aa9580df6ee3c7573153829961d53006a2be7f7cb9daaf4f84918cf0328555",
+      "patch_match": true
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "d68be4aabd0ae9ab120fd00b342b2f5d2612253b9cb1a408fe1f6aca7088622c",
+      "patch_match": true
+    },
+    {
+      "path": ".github/workflows/build-debug-apk.yml",
+      "sha256": "1aa8681f69e471a2e1ca28540cad5f13694ac2e9834d742ede7614b36b165b28",
+      "patch_match": true
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-018.md",
+      "sha256": "4c964a40feafe9f5ecf2e08cb3fb7f53e8516722c816f41e2ca1c4cbce9a363a",
+      "patch_match": true
+    },
+    {
+      "path": "docs/PROJECT_STATUS.md",
+      "sha256": "98e1eaaf06bb47c8a61e94d43928f3cee1ce8efcc18c243bfab992a6441f5d56",
+      "patch_match": true
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-019.md",
+      "sha256": "7315abcd2514bf1eb408347f6150f123cdddaa3b0e25a384ae0071def449ebdd",
+      "patch_match": false
+    },
+    {
+      "path": "tools/maintenance/check_release_policy.py",
+      "sha256": "586f3a0e9cd35c05b2bc7859b23a7e8ea2538343f2ff577d3fa5cb624d603ad8",
+      "patch_match": true
+    },
+    {
+      "path": "tools/maintenance/test_release_policy.py",
+      "sha256": "bf46f0527158b28a17cf8f9e46f01f8bea2ff4aa4378bd7f842dceeaa594d15d",
+      "patch_match": true
+    }
+  ],
+  "workflow_yaml_and_unrelated_gates": "PASS / UNCHANGED (2 files)",
+  "criteria_preserved": 64,
+  "independent_tests": 12,
+  "fake_flutter_shell_cases": 6,
+  "policy": {
+    "result": "PASS_STATIC_POLICY_ONLY",
+    "workflows": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "apk_commands": 2
+      },
+      {
+        "path": ".github/workflows/build-debug-apk.yml",
+        "apk_commands": 1
+      }
+    ],
+    "historical_criteria": 64,
+    "errors": [],
+    "flutter": "NOT_RUN",
+    "ci_triggered": false,
+    "apk_inspection": "NOT_RUN"
+  },
+  "app_and_pqc011_unchanged": true,
+  "disposition": "PQC-019 ACCEPTED_WITH_LIMITS — DOCS_AND_KEYLESS_POLICY_SCOPE_COMPLETE",
+  "flutter_execution": "NOT_RUN",
+  "apk_build_or_inspection": "NOT_RUN",
+  "ci_dispatch_or_rerun": false,
+  "credentials_read_or_rotated": false,
+  "code_worktree_clean": "Reported by CODE; not observable from remote Git",
+  "limits": [
+    "No new runtime/device/voice acceptance",
+    "Keyless workflow does not revoke old keys or artifacts",
+    "PQC-011 still WAITING_FOR_PINNED_SDK_EVIDENCE; PQC-018 remains ART_SCOPE_COMPLETE"
+  ]
+}
