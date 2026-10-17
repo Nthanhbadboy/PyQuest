@@ -1,6 +1,3 @@
-import 'dart:ui' show Locale;
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/localization/locale_preference.dart';

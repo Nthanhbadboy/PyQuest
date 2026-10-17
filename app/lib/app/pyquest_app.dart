@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show Locale;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
