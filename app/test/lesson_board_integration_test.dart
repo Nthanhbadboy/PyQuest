@@ -417,12 +417,7 @@ void main() {
         final MapEntry<Size, PqLang> testCase = cases[index];
         await tester.runAsync(() => services.settings.setLang(testCase.value));
         final Lesson lesson = services.mainQuest.byId('mq1_01')!;
-        await _mountLesson(
-          tester,
-          services,
-          lesson,
-          viewport: testCase.key,
-        );
+        await _mountLesson(tester, services, lesson, viewport: testCase.key);
         await _advanceStoryToExample(tester, lesson);
         await _waitForBoard(
           tester,
@@ -568,12 +563,7 @@ void main() {
       final _CorruptBoardAssetBundle bundle = _CorruptBoardAssetBundle(
         rootBundle,
       );
-      await _mountLesson(
-        tester,
-        services,
-        lesson,
-        bundle: bundle,
-      );
+      await _mountLesson(tester, services, lesson, bundle: bundle);
       await _advanceStoryToExample(tester, lesson);
       for (
         int i = 0;
@@ -662,12 +652,7 @@ void main() {
       );
       final Lesson lesson = services.mainQuest.byId('mq1_01')!;
       addTearDown(bundle.release);
-      await _mountLesson(
-        tester,
-        services,
-        lesson,
-        bundle: bundle,
-      );
+      await _mountLesson(tester, services, lesson, bundle: bundle);
       await _advanceStoryToExample(tester, lesson);
       await tester.pump();
       expect(
@@ -764,10 +749,7 @@ double _lessonScrollOffset(WidgetTester tester) {
   return tester.state<ScrollableState>(scrollable).position.pixels;
 }
 
-Future<void> _advanceStoryToExample(
-  WidgetTester tester,
-  Lesson lesson,
-) async {
+Future<void> _advanceStoryToExample(WidgetTester tester, Lesson lesson) async {
   final String stepCount = lesson.steps.length.toString();
   expect(find.text('1/$stepCount'), findsOneWidget);
   await tester.tap(find.byKey(const ValueKey<String>('lesson_continue')));
