@@ -32,27 +32,32 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision40**, review exactCODE4fe3b7d.
-Đọc `docs/design/coordination/reviews/PQD-003-r40.md`,
-`docs/implementation/coordination/tasks/PQC-018.md` revision4 và
-`docs/design/art-review-r40/README.md` từ DESIGN SHA mới.
+Task hiện tại là **PQD-003 revision42**, review exact CODE
+`2ea5e5004e98df4aec8c1132a56b8d60bf4ddf5e`. Đọc từ DESIGN SHA mới:
+`docs/design/coordination/reviews/PQD-003-r42.md`,
+`docs/implementation/coordination/tasks/PQC-011.md` (contract revision2, review r42)
+và relay `docs/design/coordination/reviews/PQC-011-r4/relay.md`.
 
-**R38-A/B đã CLOSED;018 REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE.**
-Independent432PASS,3,204fontassertions,48B02content/144editorfonts;9PNG giữ nguyên.
-Không còn correction018, không redo/intake/ACK-only, không port9màn vàoFlutter.
-B02 được giữ như read-only prose mock có provenance, không authoring/runtime.
-Không ghi đè snapshot4fe3b7d củaDESIGN; giữ receipt/archive packageCODE.
-W08r37 vàW14r39 làlaneDESIGN riêng, không giaoCODEđổi ref hoặc làmtravel/achievements.
+**011 vẫn CHANGES_REQUESTED.** R34-A/B/C/D đã SOURCE_ADDRESSED qua đọc source;
+không yêu cầu sửa lại và không được gọi analyzer/tests PASS. Correction tiếp theo
+chỉ R42-A/B trong `app/test/lesson_board_integration_test.dart` + task011:
+- Smoke VI/360×640/2×: giữ tap Next, thêm badge đúng/Run/đợi enabled/tap Continue thật,
+  assert3/5 và no exception. Giữ bốn case VI/EN×hai size; không mở matrix2× mới.
+- Hai late-load tests: đợi/assert hai authored asset thật sự deliver sau đổi step/
+  unmount, rồi flush continuation và kiểm no stale board/exception; mở gate rồi
+  pumpAndSettle không phải delivery barrier. Giữ rootBundle/AssetManifest happy path.
 
-Tiếp tục work order **011 revision2/R34-A/B/C/D** đã có, commitriêng theoallowlist.
-Nếu thiếu SDK/gate, báo rõ chưa chạy; không dùng artPASS để tựaccept011, không tự
-đổiSDK/deps/CI hoặc mở task khác. Không có yêu cầu user quyết định lại scope này.
+Commit test correction riêng. Không sửa runtime/controller/validator/schema/assets/
+deps/pubspec/CI/SDK/APK để xanh test. Không cài SDK hoặc tự trigger/rerun CI để đáp
+review này. Nếu SDK vẫn thiếu, ghi NOT_RUN + WAITING_FOR_PINNED_SDK_EVIDENCE, không
+ACK-only hoặc retry vòng lặp. Khi môi trường đã được phép có pinned SDK, formatter
+trong allowlist011 và execution gates cũ vẫn bắt buộc, báo exactSHA/số thực chạy:
+analyze sạch,12Settings,406ordinary+new,10render và integration011. Không tựaccept.
 
-**011 CHANGES_REQUESTED @a331ac1** vẫn hiệu lực: CI117462432865failanalyze8issues,
-suites skipped. SửaR34-A imports/compile/pumpAndSettle; BSetcontent equalitycả2;
-Cbeatassertionkhôngauto-advance; Dselection-onlykhôngackedit; coveragecũ theoorder.
-Allowlist011riêng, khôngcontroller/validator/schema/deps/pubspec/CI/SDK/APK. Không
-gộp correction011 vàoart018, khôngaccept011vì017đẹp. R1runtimechưa mở.
+**018 REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE, R38-A/B CLOSED.** Không redo9PNG,
+receipt/archive/intake/ACK-only hay portFlutter; B02 vẫn read-only prose mock.
+Không ghi đè snapshot4fe củaDESIGN. W08r37/W14r39/DailyEnergyr41 và thiết kế
+chapter-selection kế tiếp là laneDESIGN riêng. Không mở R1/R4 toàn app.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders

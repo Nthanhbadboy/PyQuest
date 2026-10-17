@@ -1,0 +1,40 @@
+Source: flutter/flutter, packages/flutter_test/lib/src/widget_tester.dart
+Revision: abaf9c523780a608bd46686fd5e53740a07077f8
+URL: https://github.com/flutter/flutter/blob/abaf9c523780a608bd46686fd5e53740a07077f8/packages/flutter_test/lib/src/widget_tester.dart#L692
+Fetched via GitHub contents API at exact ref, read-only; this is source, NOT an installed/executed SDK.
+Full fetched source SHA-256: 3ec4821f7ebec1974295dc35e554db9c6f95d27613db6b57aeef69ff5d38107e
+
+692:   Future<int> pumpAndSettle([
+693:     Duration duration = const Duration(milliseconds: 100),
+694:     EnginePhase phase = EnginePhase.sendSemanticsUpdate,
+695:     Duration timeout = const Duration(minutes: 10),
+696:   ]) {
+697:     assert(duration > Duration.zero);
+698:     assert(timeout > Duration.zero);
+699:     assert(() {
+700:       final WidgetsBinding binding = this.binding;
+701:       if (binding is LiveTestWidgetsFlutterBinding &&
+702:           binding.framePolicy == LiveTestWidgetsFlutterBindingFramePolicy.benchmark) {
+703:         matcher_expect.fail(
+704:           'When using LiveTestWidgetsFlutterBindingFramePolicy.benchmark, '
+705:           'hasScheduledFrame is never set to true. This means that pumpAndSettle() '
+706:           'cannot be used, because it has no way to know if the application has '
+707:           'stopped registering new frames.',
+708:         );
+709:       }
+710:       return true;
+711:     }());
+712:     return TestAsyncUtils.guard<int>(() async {
+713:       final DateTime endTime = binding.clock.fromNowBy(timeout);
+714:       var count = 0;
+715:       do {
+716:         if (binding.clock.now().isAfter(endTime)) {
+717:           throw FlutterError('pumpAndSettle timed out');
+718:         }
+719:         await binding.pump(duration, phase);
+720:         count += 1;
+721:       } while (binding.hasScheduledFrame);
+722:       return count;
+723:     });
+724:   }
+725:
