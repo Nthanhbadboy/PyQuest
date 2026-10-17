@@ -1,6 +1,8 @@
 # PQC-011 — lesson-board integration: brief chuẩn bị của Lead
 
-Ngày2026-10-18. **DRAFT, chưa READY_FOR_CODE.** Owner/next actorDESIGN.
+Ngày2026-10-18. **Brief lịch sử, đã được thay bằng work order011 revision2 và review PQD-003-r31.**
+Quyền hiện tại: READY_FOR_CODE theo `docs/implementation/coordination/tasks/PQC-011.md`;
+phần dưới giữ lại việc chuẩn bị r30, không phải gate đang chờ DESIGN.
 Source đọc tại a9bcdcf8e3203ee17b1a5de0b9ebff6a0e8dd32d;010/014/015/016 đãaccepted.
 Lead tự chốt thiết kế tiếp theo, không hỏi user chọn roadmap và không giao Code một
 allowlist mơ hồ. Đây là handoff cho lượtDESIGN kế tiếp, không phải quyền sửa runtime.

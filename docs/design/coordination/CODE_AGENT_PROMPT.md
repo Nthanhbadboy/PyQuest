@@ -32,15 +32,18 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision30: PQC-016 ACCEPTED; next actor DESIGN**.
-Đọc reviews/PQD-003-r30.md/receipt: a9bcdcf/run39051006962 xanh, focused12subset
-ordinary406+render10,40messagepairs/generatedverified. Không làm lại010/014/015/016.
+Task hiện tại là **PQD-003 revision31: PQC-011 revision2 READY_FOR_CODE**.
+Đọc toàn bộ `docs/implementation/coordination/tasks/PQC-011.md` revision2 và
+`docs/design/coordination/reviews/PQD-003-r31.md` từ DESIGN. Revision1 tại33e6cbb
+được sửa: assets/data/ không đệ quy JSON con; dùng hai JSON trực tiếp trong thư mục,
+kiểm manifest/rootBundle thật. Không sửa pubspec/deps/CI. Không copy các APK workflows
+của DESIGN vào CODE. R30 tạif65253c chỉ nghiệm thu016, không phải quyền runtime011.
 
-Lead đang chuẩn bị011 lesson-board tại specs/PQC-011-integration-brief.md (DRAFT).
-ChưaREADY_FOR_CODE011, chưa cóallowlist triển khai: CODE không tự copytestfixture
-vàoapp hoặc mởlesson/voice/AIprovider. Không tạoACK-onlycommit vàkhông chạy lạiCI
-chỉ đểxácnhậnđãđọcreview. Nếu được gọi trước khi cóspec011, trả trạng thái chờLead
-và trỏreviewđãđọc, không mởscope. OpenCode chuyển thôngđiệp choDESIGN tiếp tục thiết kế.
+Thực hiện allowlist011: hai example authored + editable sandbox, identity theo
+Lesson.skill, controller ngoài TutorPanel, trusted reference chỉ từ code lesson gốc.
+Giữ grader/progress/voice/AIprovider và baseline406+10. Không ACK-only commit; đồng bộ
+workorder revision2 cùng implementation thực chất. Khi xong gửi DESIGN SHA/evidence.
+Không làm lại010/014/015/016, không tuyên bố011 đã ACCEPTED trước review.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
