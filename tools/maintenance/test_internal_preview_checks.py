@@ -19,7 +19,9 @@ if '--machine' in args:
  print(json.dumps({'frameworkVersion':os.environ.get('FAKE_VERSION','3.47.7'),'frameworkRevision':'abaf9c523780a608bd46686fd5e53740a07077f8','dartSdkVersion':'3.13.5'}));sys.exit(0)
 if args[0]=='analyze':sys.exit(int(os.environ.get('FAIL_ANALYZE','0')))
 if args[0]=='test':
- count=12 if any('settings_sheet' in a for a in args) else 7 if any('lesson_board_integration' in a for a in args) else 10 if '--tags' in args else 420
+ if any('lesson_board_integration' in a for a in args) and os.environ.get('FAIL_INTEGRATION'):
+  print('00:02 +0 -7: Some tests failed.');sys.exit(1)
+ count=12 if any('settings_sheet' in a for a in args) else 7 if any('lesson_board_integration' in a for a in args) else 10 if '--tags' in args else 422
  print(f'00:01 +{count}: All tests passed!')
 sys.exit(0)
 '''
@@ -48,7 +50,7 @@ class HarnessTests(unittest.TestCase):
     def test_all_gates_and_real_count_extraction(self):
         code, status, counts = self.run_harness()
         self.assertEqual(code, 0, status)
-        self.assertEqual(counts['ordinary']['passed'], 420)
+        self.assertEqual(counts['ordinary']['passed'], 422)
         self.assertEqual(counts['integration']['passed'], 7)
         self.assertIn('tracked_source_unchanged=0', status)
 
@@ -64,6 +66,13 @@ class HarnessTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn('analyze=1', status)
         self.assertIn('count_gate=0', status)
+
+    def test_failed_suite_keeps_actual_pass_and_fail_counts(self):
+        code, status, counts = self.run_harness({'FAIL_INTEGRATION': '1'})
+        self.assertEqual(code, 1)
+        self.assertEqual(counts['integration']['passed'], 0)
+        self.assertEqual(counts['integration']['failed'], 7)
+        self.assertIn('count_gate=1', status)
 
     def test_wrong_sdk_stops_before_dependencies_and_tests(self):
         code, status, counts = self.run_harness({'FAKE_VERSION': 'wrong'})

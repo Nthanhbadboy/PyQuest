@@ -27,7 +27,7 @@ không phủ nhận review lịch sử và không cho phép public/store release
    integration, ordinary suite và render suite. Chạy các phase độc lập để lỗi
    format không che các lỗi test; bất kỳ phase fail đều làm job fail.
    Counts thật ghi `test-counts.json`, không cộng Settings/integration subset vào
-   ordinary. Ordinary giữ tối thiểu406, integration tối thiểu7, render tối thiểu10.
+   ordinary. Sau execution r49, ordinary giữ tối thiểu422, integration tối thiểu7, render tối thiểu10.
 2. `build-android` chỉ chạy sau khi `verify-source` thành công. Build release-mode
    mặc định (không phải public release), tùy chọn debug. `internal_voice=true`
    yêu cầu repository secret `GEMINI_API_KEY` không rỗng; thiếu secret thì **fail**,
@@ -62,8 +62,13 @@ không chép đè workflow DESIGN. Không đòi CODE ACK-only cho quyết địn
 
 ## Kết quả thực thi
 
-Chưa có kết quả tại lúc tạo request r49. Run/source/artifact phải được bổ sung từ
-GitHub Actions thật, không suy ra từ cấu hình hoặc bộ kiểm tra giả lập.
+**Run39078131829 đã thực thi:** SDK pin đúng, analyze sạch, Settings12pass và
+render10pass; integration0pass/7fail, ordinary415pass/7fail,13file format fail và
+lockfile drift. Build job skipped, **chưa có APK**. Xem [review và correction order](design/coordination/reviews/PQC-011-r49/README.md).
+
+Blocker hiện là source/test corrections, không còn thiếu SDK hoặc quota Actions.
+Counts gate sau review nâng ordinary floor từ406 lên422 và ghi cả pass/fail/skip;
+không dùng cải tiến extractor này để thay receipt của run đã hoàn tất.
 
 Run39077780697 đã bị hủy khi phát hiện repo public; API xác nhận build job chưa
 có step nào chạy. Push guard e6471b0 khởi chạy run39077867619 với build public bị

@@ -825,7 +825,7 @@ PyQuest cần có hệ thống vinh danh nhiều tầng. Không ép mọi thành
 ### 14.5. Kiến trúc AI, chi phí và quyền riêng tư
 
 - Trước khi chọn nhà cung cấp/model, xác định yêu cầu chất lượng tiếng Việt, độ trễ, khả năng gợi ý theo từng bước, chi phí mỗi phiên và phương án khi dịch vụ lỗi. Có thể đánh giá các nhà cung cấp như Gemini hoặc lựa chọn khác, nhưng không khóa kiến trúc vào một nhà cung cấp trước khi có thử nghiệm và quyết định được ghi nhận.
-- Khóa API và thông tin bí mật phải nằm ở backend/service an toàn; không nhúng khóa bí mật của nhà cung cấp vào ứng dụng client, file cấu hình phát hành hoặc repository.
+- Với phát hành công khai/production, khóa API phải nằm ở backend/service an toàn, không nhúng vào client. Không commit secret vào repository. [Owner-test r49](OWNER_TEST_BUILDS.md) có ngoại lệ được người dùng cho phép: nhúng key vào APK thử nội bộ, hoãn token/backend/quota cho lần thử này.
 - Dùng giới hạn token/thời lượng, rate limit, quota và theo dõi chi phí; không để một tài khoản có thể tạo chi phí không giới hạn. Cần thiết kế thông báo lỗi và phương án trợ giúp không dùng AI khi mạng yếu, quota hết hoặc nhà cung cấp không khả dụng.
 - Chỉ gửi dữ liệu tối thiểu cần thiết cho nhiệm vụ. Không yêu cầu tên thật, địa chỉ, trường học, số điện thoại, ảnh, vị trí hoặc thông tin nhạy cảm để dùng Tutor. Quy định lưu trữ, thời hạn xóa, quyền phụ huynh và sự đồng ý cần được xác định trước phát hành.
 - Xác định rõ phần nào chạy cục bộ, phần nào gửi đến dịch vụ bên ngoài; thông báo dễ hiểu cho phụ huynh về việc dùng AI/giọng nói và dữ liệu được xử lý. Không tuyên bố hội thoại hoàn toàn riêng tư hoặc không được lưu nếu kiến trúc nhà cung cấp chưa chứng minh điều đó.

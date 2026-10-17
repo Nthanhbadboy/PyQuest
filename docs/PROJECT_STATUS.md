@@ -7,19 +7,22 @@ Tài liệu này phân biệt **có source**, **đã kiểm chứng tại một 
 riêng; không lấy checklist hoặc hình concept làm trạng thái triển khai.
 
 **Quyết định mới r49:** người dùng cho phép Actions và APK thử nội bộ có Gemini key.
-[Request/gates](OWNER_TEST_BUILDS.md) pin CODEde01a49; Actions đã khởi chạy, chưa
-có nghiệm thu SDK/test/APK mới. Token/backend/giới hạn token hoãn cho lần thử này.
+[Request/gates](OWNER_TEST_BUILDS.md) pin CODEde01a49.
+[Run39078131829/review r49](design/coordination/reviews/PQC-011-r49/README.md): SDK
+đúng pin; analyze,12Settings,10render đạt;7integration fail,415ordinary pass/7fail,
+13file format fail và lockfile drift. APK chưa build; không còn thiếu SDK. Token/backend/giới hạn token hoãn cho lần thử này.
 
 ## 1. Mốc đối chiếu
 
 - CODE docs/packaging mới nhất đã review: `de01a490743982356ad5240d77ea99e9dbf8c7f5`;
   [PQC-019 r48](design/coordination/reviews/PQD-010-r48/README.md) đã nhận trong
   phạm vi tài liệu/keyless policy. App và task011 không đổi so với71b0; không có
-  execution evidence SDK mới. Các mốc bên dưới là pin lịch sử, không PASS của tip.
+  execution evidence SDK mới tại review r48. r49 đã chạy và **FAIL** như trên;
+  các mốc bên dưới là pin lịch sử, không PASS của tip.
 
 - CODE được đọc: `71b0fd3fd8fb07c73596ce089fa2e68f6fe87964` trên
-  `arena/0d4fcb38-pyquest`. Chưa có bằng chứng thực thi pinned-SDK được nhận cho011
-  tại SHA này. Không suy PASS từ việc source đã sửa.
+  `arena/0d4fcb38-pyquest`. r49 đã thực thi trên de01a49 với cùng app source,
+  nhưng chưa nghiệm thu011 vì failures. Không suy PASS từ source review.
 - DESIGN trước đợt sửa tài liệu này: `c68bdcd73b400c4d449216023a54499b202bda1d`
   trên `arena/00838eb9-pyquest`; đã giao study r46, chưa port toàn bộ vào Flutter.
 - Bằng chứng runtime lịch sử: source `a9bcdcf8e3203ee17b1a5de0b9ebff6a0e8dd32d`,
@@ -50,7 +53,7 @@ thu một tiêu chí cần ghi rõ scope, SHA, log/test/device evidence và gi�
 | Task | Disposition có thẩm quyền | Nguồn |
 |---|---|---|
 | PQC-010 /014 /015 /016 | Đã nhận trong phạm vi riêng; không có nghĩa whole-app complete | Snapshot/evidence lịch sử ở §1 |
-| PQC-011 | **CHANGES_REQUESTED / WAITING_FOR_PINNED_SDK_EVIDENCE**; R42-A/B **SOURCE_ADDRESSED / EXECUTION_UNVERIFIED** | [Review r44 tại DESIGN8f754a1](https://github.com/Nthanhbadboy/PyQuest/blob/8f754a16c829264747b6517c7f7bacb3c8769283/docs/design/coordination/reviews/PQD-003-r44.md) |
+| PQC-011 | **CHANGES_REQUESTED / PINNED_SDK_EXECUTED_FAILURE**; corrections R49-A/B/C, không thiếu SDK | [Actual Actions evidence + order r49](design/coordination/reviews/PQC-011-r49/README.md) |
 | PQC-018 | **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**; không runtime/production approval | [Task revision4 tại DESIGN30394b7](https://github.com/Nthanhbadboy/PyQuest/blob/30394b7bb23ad1fcf371c8dee644fd6caaf3793d/docs/implementation/coordination/tasks/PQC-018.md) |
 | DESIGN r45 /r46 | Maze selection và Creator interaction study đã giao | [Visual status tại DESIGNc68bdcd](https://github.com/Nthanhbadboy/PyQuest/blob/c68bdcd73b400c4d449216023a54499b202bda1d/docs/design/VISUAL_DESIGN_STATUS.md) |
 | PQC-019 | **ACCEPTED_WITH_LIMITS — DOCS_AND_KEYLESS_POLICY_SCOPE_COMPLETE** tại CODEde01a49 | [Review độc lập r48](design/coordination/reviews/PQD-010-r48/README.md) |

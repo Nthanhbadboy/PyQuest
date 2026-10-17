@@ -34,7 +34,7 @@
 | **Trạng thái dùng chung** | Một nguồn sự thật duy nhất cho tiến trình hoạt động, năng lượng, thành tích và quyền mở khóa |
 | **XP/cấp độ toàn cục** | **Không dùng**; không có bảng XP/level hay công thức tăng cấp. Main Map chỉ điều hướng/mở hoạt động theo điều kiện trực tiếp |
 | **Arena** | Các bộ môn là module độc lập; điểm/danh hiệu là lớp liên kết chung |
-| **AI Tutor** | Dịch vụ AI qua backend/service an toàn; không nhúng khóa bí mật vào client |
+| **AI Tutor** | Production qua backend/service an toàn; owner-test có ngoại lệ r49, không commit secret |
 | **Cộng đồng/quà tặng** | Module xã hội tách biệt, triển khai theo giai đoạn |
 
 **Nguyên tắc chốt:** làm một **lát cắt dọc hoàn chỉnh** trước khi mở rộng.
@@ -700,7 +700,7 @@ app/
 - **Không** gọi database trực tiếp từ UI — qua repository.
 - **Không** gọi module khác trực tiếp — qua interface.
 - **Không** tạo tầng trung gian chỉ để trông "chuẩn kiến trúc".
-- **Không** nhúng khóa bí mật của nhà cung cấp AI vào ứng dụng client, file cấu hình phát hành hoặc repository.
+- **Không** commit secret vào repository. Với production/public release, không nhúng provider key vào client; [owner-test r49](OWNER_TEST_BUILDS.md) được người dùng cho phép nhúng key để thử nội bộ, hoãn token/backend/quota.
 - **Không** tạo bảng XP/level toàn cục.
 
 ---

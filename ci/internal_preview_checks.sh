@@ -50,12 +50,15 @@ run_gate tracked_source_unchanged git diff --exit-code -- .
 python3 - "$EVIDENCE_DIR" <<'PY'
 import json,pathlib,re,sys
 p=pathlib.Path(sys.argv[1]);counts={};good=True
-for name,minimum,exact in [('settings',12,True),('integration',7,False),('ordinary',406,False),('render',10,False)]:
+for name,minimum,exact in [('settings',12,True),('integration',7,False),('ordinary',422,False),('render',10,False)]:
  text=(p/f'{name}.log').read_text(errors='replace')
- matches=re.findall(r'\+(\d+)(?:\s+~\d+)?(?:\s+-\d+)?:\s+All tests passed!',text)
- count=int(matches[-1]) if matches else None
- counts[name]={'passed':count,'minimum':minimum,'overlaps_ordinary':name in ('settings','integration')}
- if count is None or (count!=minimum if exact else count<minimum):good=False
+ matches=re.findall(r'\+(\d+)(?:\s+~(\d+))?(?:\s+-(\d+))?:\s+(All tests passed!|Some tests failed\.)',text)
+ terminal=matches[-1] if matches else None
+ count=int(terminal[0]) if terminal else None
+ failed=int(terminal[2] or 0) if terminal else None
+ skipped=int(terminal[1] or 0) if terminal else None
+ counts[name]={'passed':count,'failed':failed,'skipped':skipped,'minimum':minimum,'overlaps_ordinary':name in ('settings','integration')}
+ if count is None or failed or skipped or terminal[3]!='All tests passed!' or (count!=minimum if exact else count<minimum):good=False
 (p/'test-counts.json').write_text(json.dumps(counts,indent=2)+'\n')
 with (p/'status.txt').open('a') as f:f.write(f'count_gate={0 if good else 1}\n')
 print(json.dumps(counts,indent=2))
