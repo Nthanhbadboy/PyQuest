@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-18",
+  "tool": "Arena image generation",
+  "offer_options": false,
+  "purpose": "assets inside larger interactive screen study",
+  "prompt_record_kind": "prompt summaries; not verbatim tool invocation",
+  "originals": [
+    {
+      "path": "garden-stage.png",
+      "width": 1200,
+      "height": 896,
+      "mode": "RGB",
+      "sha256": "8349615e0cdacb46faf827f31ba08805c96163d7eefd5fa8219e2b3009a0a3db",
+      "prompt_summary": "One coherent landscape2.5D garden stage in W01 style, upper-left warm light; empty sandy clearing, dimensional hedge/flowers, sea horizon and teal-roofed workshop. No text/grid/robot/chest/gem/route; actual board is composited separately.",
+      "references": [
+        {
+          "path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        },
+        {
+          "path": "docs/design/maze-trail-r45/assets/hedge-trail.png",
+          "sha256": "acd5576de4063b656e23b40d9f71822bba4da20639d4634ec8bc3a972e2b7756"
+        }
+      ]
+    },
+    {
+      "path": "robo-portrait.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "sha256": "734a58d729a099531e6767a563e897cb8a857b1adcc7c0ac3b2cf93f55b03fd2",
+      "prompt_summary": "One full-body mint-teal robot with rounded rectangular navy face-screen, mint eyes/smile, one amber antenna tip and round amber chest light. Dimensional painted material, welcoming pose, pure white background, no text/other objects. Identity also compared with the legacy Robo study and runtime baseline.",
+      "references": [
+        {
+          "path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        }
+      ]
+    },
+    {
+      "path": "hedge-block.png",
+      "width": 1200,
+      "height": 896,
+      "mode": "RGB",
+      "sha256": "a40489d50e5e8cae1ac4dbc5eef210204670f42328a5dfd73339f0850fb8f0a4",
+      "prompt_summary": "One standalone rounded-cube clipped green hedge, broad simple foliage masses instead of noisy leaf outlines, dark front/sides, upper-left warm light. Elevated orthographic style readable at48px; plain white background, no other objects/grid/text.",
+      "references": [
+        {
+          "path": "docs/design/maze-play-r50/assets/garden-stage.png",
+          "sha256": "8349615e0cdacb46faf827f31ba08805c96163d7eefd5fa8219e2b3009a0a3db"
+        }
+      ]
+    }
+  ],
+  "derivatives": {
+    "robo-token.png": "white-matte flood fill, crop, BICUBIC thumbnail max320x380",
+    "hedge-token.png": "same processing, max256x256"
+  },
+  "exporter": "tools/design/export_maze_play_r50.py",
+  "limits": [
+    "AI-generated, not hand-painted authorship or exclusive-license claim",
+    "Alpha cutouts are study derivatives, not native layered/rigged assets",
+    "Ground shadows/edge matte need production cleanup"
+  ]
+}

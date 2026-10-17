@@ -1,6 +1,6 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · cập nhật r49 · không phải chứng nhận runtime mới.**
+**2026-10-18 · source review r49 +design r50 · không phải chứng nhận runtime mới.**
 
 Tài liệu này phân biệt **có source**, **đã kiểm chứng tại một SHA**, **thiết kế** và
 **kế hoạch**. Product Vision/Game Design/Technical Architecture/Roadmap giữ vai trò
@@ -11,6 +11,9 @@ riêng; không lấy checklist hoặc hình concept làm trạng thái triển k
 [Run39078131829/review r49](design/coordination/reviews/PQC-011-r49/README.md): SDK
 đúng pin; analyze,12Settings,10render đạt;7integration fail,415ordinary pass/7fail,
 13file format fail và lockfile drift. APK chưa build; không còn thiếu SDK. Token/backend/giới hạn token hoãn cho lần thử này.
+
+**Design mới r50:** [Maze block-play/kết quả](design/maze-play-r50/README.md) đã
+có study tương tác và browser evidence; chưa portFlutter, không thay disposition011.
 
 ## 1. Mốc đối chiếu
 
@@ -56,6 +59,7 @@ thu một tiêu chí cần ghi rõ scope, SHA, log/test/device evidence và gi�
 | PQC-011 | **CHANGES_REQUESTED / PINNED_SDK_EXECUTED_FAILURE**; corrections R49-A/B/C, không thiếu SDK | [Actual Actions evidence + order r49](design/coordination/reviews/PQC-011-r49/README.md) |
 | PQC-018 | **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**; không runtime/production approval | [Task revision4 tại DESIGN30394b7](https://github.com/Nthanhbadboy/PyQuest/blob/30394b7bb23ad1fcf371c8dee644fd6caaf3793d/docs/implementation/coordination/tasks/PQC-018.md) |
 | DESIGN r45 /r46 | Maze selection và Creator interaction study đã giao | [Visual status tại DESIGNc68bdcd](https://github.com/Nthanhbadboy/PyQuest/blob/c68bdcd73b400c4d449216023a54499b202bda1d/docs/design/VISUAL_DESIGN_STATUS.md) |
+| DESIGN r50 /PQD-011 | Block-play Maze và result study đã giao; không runtime order | [r50 spec/evidence](design/maze-play-r50/README.md) |
 | PQC-019 | **ACCEPTED_WITH_LIMITS — DOCS_AND_KEYLESS_POLICY_SCOPE_COMPLETE** tại CODEde01a49 | [Review độc lập r48](design/coordination/reviews/PQD-010-r48/README.md) |
 | Runtime R1 /R4 | Chưa mở | Cần order/asset/allowlist/gates riêng; không suy quyền từ art study |
 
