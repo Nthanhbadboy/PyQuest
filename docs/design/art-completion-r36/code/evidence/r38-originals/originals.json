@@ -1,0 +1,222 @@
+{
+  "baseline_commit": "0990fbcbf6045bd64244239e36ccbca8c8dc394b",
+  "captured_before": "R38-A/B screen correction",
+  "files": [
+    {
+      "path": "shared.css",
+      "archive_path": "shared.css",
+      "bytes": 13395,
+      "sha256": "47bd9c66e0749f430655befa64de7fe09168205465479e04a1dafa02912cfc22"
+    },
+    {
+      "path": "batch-b.css",
+      "archive_path": "batch-b.css",
+      "bytes": 3785,
+      "sha256": "ed5d1aa3b538ca30c52683ad4895e89c376b1988ad3d94b519debb442374a7a9"
+    },
+    {
+      "path": "batch-b.js",
+      "archive_path": "batch-b.js",
+      "bytes": 24688,
+      "sha256": "e372ee2a76c98448b52bc24c8cacaf57b3036be5e399da9280e7af188e48b20d"
+    },
+    {
+      "path": "b02-w12-creator-editor/layout.html",
+      "archive_path": "b02-w12-creator-editor__layout.html",
+      "bytes": 3067,
+      "sha256": "5960994cc9dfd66219c5c5404d4bdad4c00a0c0abe3535ef1bfd458ecebfd055"
+    },
+    {
+      "path": "b02-w12-creator-editor/manifest.json",
+      "archive_path": "b02-w12-creator-editor__manifest.json",
+      "bytes": 4077,
+      "sha256": "ab41753d1d58480869d78550a42c2475ede6730f8575cb40f9b532e13f8ade9b"
+    },
+    {
+      "path": "b02-w12-creator-editor/README.md",
+      "archive_path": "b02-w12-creator-editor__README.md",
+      "bytes": 898,
+      "sha256": "4294dcb7a787494c39069b5d505812417517a7f430d211f2a2ccf0c300ee83fb"
+    },
+    {
+      "path": "README.md",
+      "archive_path": "README.md",
+      "bytes": 4324,
+      "sha256": "d15d6ea348981bb14ea52f3a0519509ba23546172251953030a607ddeecedcdc"
+    },
+    {
+      "path": "index.html",
+      "archive_path": "index.html",
+      "bytes": 3683,
+      "sha256": "2e7c443203d09fbe9fb220bfe410f968b6891abd95d9097e7fb36d3ce97ae6e8"
+    },
+    {
+      "path": "reviewed-inputs.json",
+      "archive_path": "reviewed-inputs.json",
+      "bytes": 25759,
+      "sha256": "3b2945f0759f1fb0390a58be0e555905c9c02c2a00a614a067937556c07e9316"
+    },
+    {
+      "path": "evidence/BATCH_B_CHECKS.md",
+      "archive_path": "evidence__BATCH_B_CHECKS.md",
+      "bytes": 2822,
+      "sha256": "f1af6b8ef0c9138f746c5ee2655453a00071b40f61bfa7b36fe5db8f3d48ba52"
+    },
+    {
+      "path": "evidence/batch_b_browser_check.cjs",
+      "archive_path": "evidence__batch_b_browser_check.cjs",
+      "bytes": 10626,
+      "sha256": "d0d98c87e1a98acf6e3d207a3d6017d91004512cbd92bf4542dcdfa43799c3a9"
+    },
+    {
+      "path": "evidence/batch_b_static_check.py",
+      "archive_path": "evidence__batch_b_static_check.py",
+      "bytes": 7287,
+      "sha256": "6b222b01843fbf7d907ef9fe19cf961c26b5af1648c31d96cd9b0f638ee3dd2a"
+    },
+    {
+      "path": "evidence/batch-b-browser-checks.json",
+      "archive_path": "evidence__batch-b-browser-checks.json",
+      "bytes": 2252,
+      "sha256": "34d560a0666b5e59108e63313e290164afc17b9d6eef0664a6feca4ec53481e8"
+    },
+    {
+      "path": "evidence/batch-b-static-checks.json",
+      "archive_path": "evidence__batch-b-static-checks.json",
+      "bytes": 12650,
+      "sha256": "a134c29a122ead0908172c8af5b043f20179732e4c444f2fe25c46d6fb4713f3"
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-018.md",
+      "archive_path": "task-PQC-018-r3-baseline.md",
+      "bytes": 17879,
+      "sha256": "5c129b73a19b6f469f092b418fdc2755f388f0b2d666dcc4d566f2c3ca88326e"
+    },
+    {
+      "path": "a01-w04-journal/manifest.json",
+      "archive_path": "a01-w04-journal__manifest.json",
+      "bytes": 3770,
+      "sha256": "d1ae66696b56fceac6009fe1ef8cec4354727031b78e65d253945a66b92535ed"
+    },
+    {
+      "path": "a02-shared-settings/manifest.json",
+      "archive_path": "a02-shared-settings__manifest.json",
+      "bytes": 4357,
+      "sha256": "47c4515caa4f006ecc014331f140200f536981ec610e93bedc387921820fae7e"
+    },
+    {
+      "path": "a03-shared-welcome/manifest.json",
+      "archive_path": "a03-shared-welcome__manifest.json",
+      "bytes": 3664,
+      "sha256": "6458685dc4802057d1266c2d9100da20bfc0abb89263be6c716dd22eb63a5dec"
+    },
+    {
+      "path": "a04-w05-catch-stars/manifest.json",
+      "archive_path": "a04-w05-catch-stars__manifest.json",
+      "bytes": 4203,
+      "sha256": "8b05119fe44f6142633dd668b7270f154c27a482cbd511b6e7cb40fbbc662b70"
+    },
+    {
+      "path": "a05-w05-bug-hunter/manifest.json",
+      "archive_path": "a05-w05-bug-hunter__manifest.json",
+      "bytes": 4407,
+      "sha256": "787c169fc97ec3d82822f29797c75f601fb6c0646f158860140b6bb0133f8c51"
+    },
+    {
+      "path": "b01-w09-friends-invites/manifest.json",
+      "archive_path": "b01-w09-friends-invites__manifest.json",
+      "bytes": 3944,
+      "sha256": "baa97f5d050d3ff5f8cd407a921418583597f9aeabd03429b5f730188e1b0281"
+    },
+    {
+      "path": "b02-w12-creator-editor/manifest.json",
+      "archive_path": "b02-w12-creator-editor__manifest.json",
+      "bytes": 4077,
+      "sha256": "ab41753d1d58480869d78550a42c2475ede6730f8575cb40f9b532e13f8ade9b"
+    },
+    {
+      "path": "b03-w07-built-room/manifest.json",
+      "archive_path": "b03-w07-built-room__manifest.json",
+      "bytes": 4003,
+      "sha256": "6024d484e764f1553c6eea773cb282c02dcf3e29b4594be11f4edaab93a9ece7"
+    },
+    {
+      "path": "b04-w10-pet-rest/manifest.json",
+      "archive_path": "b04-w10-pet-rest__manifest.json",
+      "bytes": 3904,
+      "sha256": "7391b1591b746cf446b399ea4783565c1b4e658bc76f34610bb49e6002709656"
+    },
+    {
+      "path": "a01-w04-journal/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 2312191,
+      "sha256": "2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6"
+    },
+    {
+      "path": "a02-shared-settings/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 1978925,
+      "sha256": "99033a84778a4f9cd8a9a2c2b247ae4ab5a81f515864ed3f22051f8033de0219"
+    },
+    {
+      "path": "a03-shared-welcome/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 2406784,
+      "sha256": "35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb"
+    },
+    {
+      "path": "a04-w05-catch-stars/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 1896701,
+      "sha256": "1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718"
+    },
+    {
+      "path": "a05-w05-bug-hunter/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 2419256,
+      "sha256": "65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073"
+    },
+    {
+      "path": "b01-w09-friends-invites/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 2721961,
+      "sha256": "769336b24efdbc7561427030fa636e8301a3eee15431d1882554ec069f6b0ece"
+    },
+    {
+      "path": "b02-w12-creator-editor/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 2370490,
+      "sha256": "d37ff8e6e729400df919a0e7b94abb7800f2754ed481facea53eecc78955442e"
+    },
+    {
+      "path": "b03-w07-built-room/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 2108457,
+      "sha256": "88f1e9c4ec20c070a35a00f0430b61837ce13a49f8fd2f3b430ef8ee4df3b63d"
+    },
+    {
+      "path": "b04-w10-pet-rest/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 2684317,
+      "sha256": "f0a7e8896ef8ba6298e79d4579f7c463bb7b57e109dcbcf24aa4e0e6c8a62317"
+    },
+    {
+      "path": "b01-w09-friends-invites/README.md",
+      "archive_path": "b01-w09-friends-invites__README.md",
+      "bytes": 980,
+      "sha256": "54315a859dd5da90888d3ec9d6d6816d4ee63781b9474319bd86622a9f5433ea"
+    },
+    {
+      "path": "b03-w07-built-room/README.md",
+      "archive_path": "b03-w07-built-room__README.md",
+      "bytes": 1000,
+      "sha256": "c4627272c3ac1c131d698db229211245d47e7f26dbc4281989be1a99f80de56f"
+    },
+    {
+      "path": "b04-w10-pet-rest/README.md",
+      "archive_path": "b04-w10-pet-rest__README.md",
+      "bytes": 924,
+      "sha256": "d4f535fd566be46850b960c2875ded37df72103deadf37a52ac6d992b221a3c7"
+    }
+  ]
+}

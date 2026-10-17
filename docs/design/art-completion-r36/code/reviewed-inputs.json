@@ -325,21 +325,20 @@
     "catalog_hashes_verified_before_visual_review": true,
     "runtime_or_production_approval": false,
     "full_42_state_visual_screenshot_audit": false,
-    "browser_test_for_pqc018": "NOT_RUN",
-    "notes": "The original active catalog paths and hashes above were verified against the exact r35 catalog at the pinned DESIGN commit before review."
+    "browser_test_for_pqc018": "PASS — R38 A240 + B192 static HTML fixture regression; see evidence/r38a-browser-checks.json and evidence/r38-batch-b-browser-checks.json.",
+    "notes": "The original active catalog paths and hashes above were verified against the exact r35 catalog at the pinned DESIGN commit before review. R38 correction regression completed in Chromium 153; no production/device validation."
   },
   "latest_screen_review": {
-    "pin": "68f2590b5883ca8aa746ffde0814d60a32dacb3c",
-    "review_path": "docs/design/coordination/reviews/PQD-003-r36.md",
-    "disposition": "SCREEN_CHANGES_REQUESTED; R36-A/B/C correction implemented by CODE, awaiting DESIGN re-review",
+    "pin": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2",
+    "review_path": "docs/design/coordination/reviews/PQD-003-r38.md",
+    "disposition": "SCREEN_CHANGES_REQUESTED; R38-A/B implemented by CODE, awaiting DESIGN re-review; not self-accepted",
     "findings": [
-      "R36-A computed font scale",
-      "R36-A 48px back target/title overlap",
-      "R36-B child-facing source IDs and state copy",
-      "R36-C scene-first composition and reviewer/product separation"
+      "R38-A shared product-bar title/pill collision and collapsed inner title text",
+      "R38-B B02 editor sample content missing"
     ],
-    "five_concept_pngs": "retained byte-for-byte; original SHA-256 values unchanged",
-    "batch_b": "four concepts and state fixtures delivered; awaiting DESIGN re-review"
+    "pngs": "All nine concept PNGs retained byte-for-byte with original hashes.",
+    "batch_a": "R38-A shared bar wraps/stack title and pill at full font scale; A240 browser regression PASS in Chromium 153.",
+    "batch_b": "R38-B B02 read-only editor contains three authored fictional prose lines with explicit provenance; no game API/lesson oracle/grader/interpreter/persistence/publishing; CTA remains disabled."
   },
   "batch_b_artifacts": {
     "generated_from_design_pin": "68f2590b5883ca8aa746ffde0814d60a32dacb3c",
@@ -503,5 +502,13 @@
       }
     ],
     "status": "CONCEPTS_COMPLETE; awaiting DESIGN review"
+  },
+  "r38_correction": {
+    "design_pin": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2",
+    "code_baseline_commit": "0990fbcbf6045bd64244239e36ccbca8c8dc394b",
+    "originals_archive": "evidence/r38-originals/originals.json",
+    "pngs_regenerated": false,
+    "self_accepted": false,
+    "status": "Implemented; exact correction commit awaits DESIGN review"
   }
 }

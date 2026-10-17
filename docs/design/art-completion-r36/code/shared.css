@@ -134,9 +134,38 @@ button[data-scale] { padding-inline: 2px; font-size: .68rem; white-space: nowrap
 }
 
 .product-screen { margin: 12px; border: 2px solid #8a6340; border-radius: 20px; overflow: hidden; background: #efe0c2; box-shadow: 0 5px 0 rgba(112, 72, 47, .18); }
-.product-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 42px; padding: 7px 11px; color: #fff8e8; background: #355c59; font-size: .78rem; font-weight: 900; }
-.product-bar span { min-width: 0; overflow-wrap: anywhere; }
-.product-pill { flex: 0 0 auto; padding: 4px 8px; border: 1px solid rgba(255,255,255,.65); border-radius: 999px; font-size: .66rem; text-align: center; }
+.product-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 4px 8px;
+  min-height: 42px;
+  padding: 7px 11px;
+  color: #fff8e8;
+  background: #355c59;
+  font-size: .78rem;
+  font-weight: 900;
+}
+.product-bar > span:first-child {
+  flex: 1 1 100%;
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.product-bar span { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.product-pill {
+  flex: 0 1 auto;
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .66rem;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .product-copy { min-width: 0; padding: 12px; }
 .product-copy h2 { margin: 0 0 5px; font-size: 1.12rem; line-height: 1.2; font-weight: 900; overflow-wrap: anywhere; }
 .product-copy p { margin: 0 0 9px; font-size: .94rem; overflow-wrap: anywhere; }

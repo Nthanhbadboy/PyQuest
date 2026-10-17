@@ -1,0 +1,242 @@
+@font-face {
+  font-family: 'PyQuest Nunito';
+  src: url('../../../../app/assets/fonts/Nunito-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PyQuest Nunito';
+  src: url('../../../../app/assets/fonts/Nunito-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PyQuest Nunito';
+  src: url('../../../../app/assets/fonts/Nunito-ExtraBold.ttf') format('truetype');
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PyQuest Mono';
+  src: url('../../../../app/assets/fonts/JetBrainsMono-Medium.ttf') format('truetype');
+  font-weight: 500 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+  font-family: 'PyQuest Nunito', 'Trebuchet MS', sans-serif;
+  font-size: calc(16px * var(--text-scale, 1));
+  color: #183c46;
+  --ink: #183c46;
+  --ink-soft: #4d6d70;
+  --paper: #fff8e8;
+  --paper-deep: #f2e4c7;
+  --wood: #986340;
+  --wood-dark: #70482f;
+  --stone: #e8d9b8;
+  --sea: #286d73;
+  --sea-light: #d8efea;
+  --amber: #e7ad45;
+  --coral: #ce7763;
+  --mint: #d6e9dc;
+  --text-scale: 1;
+}
+
+* { box-sizing: border-box; }
+html { min-width: 320px; background: #d8e9e3; }
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--ink);
+  background: radial-gradient(ellipse at 50% 0%, #f5f0df 0, #d8e9e3 72%);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+button, select { font: inherit; color: inherit; }
+button:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #087d8b; outline-offset: 3px; }
+[hidden] { display: none !important; }
+
+.page-shell { width: min(100%, 480px); min-height: 100vh; margin: 0 auto; padding: 10px; }
+.study {
+  min-height: calc(100vh - 20px);
+  border: 2px solid rgba(24, 60, 70, .78);
+  border-radius: 24px;
+  background: var(--paper);
+  box-shadow: 0 14px 38px rgba(24, 60, 70, .16);
+}
+.review-banner {
+  padding: 7px 12px;
+  color: #fffaf0;
+  background: var(--sea);
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.review-header { padding: 12px 14px 10px; border-bottom: 1px solid #ddc9a4; }
+.review-head-row { display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 9px; }
+.back-link {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #c49a68;
+  border-radius: 12px;
+  background: #f0d7a8;
+  color: var(--ink);
+  font-weight: 900;
+  text-decoration: none;
+}
+.review-heading { min-width: 0; }
+.review-heading h1 { margin: 0; font-size: 1.28rem; line-height: 1.12; font-weight: 900; overflow-wrap: anywhere; }
+.review-heading p { margin: 3px 0 0; color: var(--ink-soft); font-size: .84rem; line-height: 1.25; overflow-wrap: anywhere; }
+
+.reviewer-controls { padding: 11px 14px 13px; border-bottom: 2px solid #c9ae84; background: #fbf1db; }
+.reviewer-controls h2 { margin: 0 0 8px; font-size: .88rem; line-height: 1.25; }
+.controls-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.tool-group { min-width: 0; }
+.tool-label { display: block; margin: 0 0 4px; color: var(--ink-soft); font-size: .7rem; font-weight: 900; overflow-wrap: anywhere; }
+.segmented { display: flex; min-width: 0; gap: 4px; }
+.segmented button {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 48px;
+  padding: 5px 6px;
+  border: 1px solid #9eb8b2;
+  border-radius: 10px;
+  background: #fffdf7;
+  font-size: .76rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+button[data-scale] { padding-inline: 2px; font-size: .68rem; white-space: nowrap; }
+.segmented button[aria-pressed="true"] { border: 2px solid var(--sea); background: #dcefe8; }
+.state-picker { display: grid; grid-template-columns: 1fr; gap: 4px; margin-top: 9px; }
+.state-picker label { color: var(--ink-soft); font-size: .7rem; font-weight: 900; }
+.state-picker select {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 7px 36px 7px 11px;
+  border: 1.5px solid #829e98;
+  border-radius: 12px;
+  background: #fffdf7;
+  font-weight: 800;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.product-screen { margin: 12px; border: 2px solid #8a6340; border-radius: 20px; overflow: hidden; background: #efe0c2; box-shadow: 0 5px 0 rgba(112, 72, 47, .18); }
+.product-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 42px; padding: 7px 11px; color: #fff8e8; background: #355c59; font-size: .78rem; font-weight: 900; }
+.product-bar span { min-width: 0; overflow-wrap: anywhere; }
+.product-pill { flex: 0 0 auto; padding: 4px 8px; border: 1px solid rgba(255,255,255,.65); border-radius: 999px; font-size: .66rem; text-align: center; }
+.product-copy { min-width: 0; padding: 12px; }
+.product-copy h2 { margin: 0 0 5px; font-size: 1.12rem; line-height: 1.2; font-weight: 900; overflow-wrap: anywhere; }
+.product-copy p { margin: 0 0 9px; font-size: .94rem; overflow-wrap: anywhere; }
+.facts { display: grid; gap: 6px; margin: 9px 0 10px; padding: 0; list-style: none; }
+.facts li { min-width: 0; padding: 8px 9px; border: 1px solid #d9c7a5; border-radius: 10px; background: #fffdf7; font-size: .84rem; font-weight: 750; overflow-wrap: anywhere; }
+.mock-cta {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  padding: 9px 12px;
+  border: 2px solid #8b9e96;
+  border-radius: 13px;
+  color: #536963;
+  background: #e3e4d9;
+  font-weight: 900;
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: not-allowed;
+}
+
+/* A01: a front-facing paper spread grows out of the illustrated reading nook. */
+.journal-product { background: #b98959; }
+.journal-scene { position: relative; height: clamp(155px, 48vw, 210px); overflow: hidden; border-bottom: 3px solid #70482f; }
+.journal-scene img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 44%; }
+.journal-caption { position: absolute; left: 10px; bottom: 9px; max-width: calc(100% - 20px); padding: 5px 9px; border-radius: 8px; color: #fff8e8; background: rgba(24,60,70,.91); font-size: .7rem; font-weight: 900; overflow-wrap: anywhere; }
+.journal-paper { position: relative; margin: -1px 8px 9px; padding: 12px; border: 1px solid #bca174; border-radius: 4px 4px 14px 14px; background: repeating-linear-gradient(180deg,#fff9e9 0,#fff9e9 28px,#e8dcc2 29px,#fff9e9 30px); box-shadow: 0 5px 9px rgba(61,40,23,.17); }
+.journal-paper .product-copy { padding: 0; }
+.journal-paper .facts li { background: rgba(255,253,247,.92); }
+
+/* A02: the room image is the setting; a timber control board is physically nested into it. */
+.settings-product { background: #e8d9b8; }
+.settings-alcove { height: 230px; overflow: hidden; background: #a7865d; }
+.settings-alcove img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 47%; }
+.settings-board { position: relative; margin: -28px 8px 9px; padding: 10px; border: 3px solid #70482f; border-radius: 15px; background: linear-gradient(135deg,#d4b17a,#f0dbb1 28%,#d9bb87); box-shadow: 0 6px 0 rgba(75,48,28,.25); }
+.settings-board-inner { padding: 10px; border: 1px solid #9e7449; border-radius: 10px; background: #fff8e8; }
+.settings-board .product-copy { padding: 2px 1px 8px; }
+.setting-samples { padding: 8px 0 0; border-top: 1px solid #d9c7a5; }
+.setting-samples h3 { margin: 0 0 5px; font-size: .82rem; }
+.setting-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; min-height: 48px; margin-top: 5px; padding: 7px 8px; border: 1px solid #d9c7a5; border-radius: 9px; background: #fffdf7; font-size: .8rem; font-weight: 800; }
+.setting-row > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.sample-value { flex: 0 0 auto; max-width: 45%; padding: 4px 7px; border-radius: 999px; color: #315e56; background: #e4f0de; font-size: .62rem; font-weight: 900; text-align: center; overflow-wrap: anywhere; }
+
+/* A03: the welcome copy is an arrival plaque over the full-bleed gate scene. */
+.welcome-product { background: #d6c19a; }
+.welcome-stage { position: relative; min-height: 370px; background: #a6c8bd; }
+.welcome-stage > img { display: block; width: 100%; height: 370px; object-fit: cover; object-position: 50% 46%; }
+.welcome-plaque { position: relative; margin: -58px 10px 10px; padding: 12px; border: 2px solid #986340; border-radius: 15px; background: rgba(255,248,232,.97); box-shadow: 0 5px 0 rgba(75,48,28,.2); }
+.welcome-plaque .product-copy { padding: 0; }
+.welcome-wayfinding { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+.welcome-wayfinding span { padding: 4px 8px; border-radius: 999px; color: #234d4b; background: #d6e9dc; font-size: .68rem; font-weight: 900; overflow-wrap: anywhere; }
+
+/* A04: a clear, uninterrupted observatory lane with the catcher scene visible. */
+.catch-product { background: #263e50; border-color: #344e60; }
+.catch-product .product-bar { background: #203849; }
+.catch-stage { position: relative; min-height: 290px; background: #152c3b; }
+.catch-stage img { display: block; width: 100%; height: clamp(280px, 78vw, 345px); object-fit: cover; object-position: 50% 46%; }
+.catch-lane-label { position: absolute; top: 10px; left: 10px; max-width: calc(100% - 20px); padding: 5px 9px; border: 1px solid rgba(255,255,255,.7); border-radius: 8px; color: #fff; background: rgba(25,48,63,.9); font-size: .68rem; font-weight: 900; overflow-wrap: anywhere; }
+.catch-dock { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 8px; padding: 8px 10px; color: #fff7dc; background: #203849; }
+.catch-dock strong { font-size: .74rem; overflow-wrap: anywhere; }
+.catch-dock span { padding: 5px 8px; border: 1px solid #c5a864; border-radius: 999px; font-size: .7rem; font-weight: 900; }
+.catch-copy { margin: 0 8px 9px; padding: 10px; border: 1px solid #9ab0b2; border-radius: 13px; color: #eaf2eb; background: #304c5c; }
+.catch-copy .facts li { color: #183c46; }
+.catch-copy .mock-cta { color: #536963; }
+
+/* A05: Bitsy sits beside a readable, front-facing editor and separate output tray. */
+.bug-product { background: #d7c4a0; }
+.bug-workshop { position: relative; overflow: hidden; border-bottom: 3px solid #70482f; background: #d9c8a9; }
+.bug-workshop img { display: block; width: 100%; height: auto; object-fit: contain; object-position: center; }
+.bug-sign { position: absolute; left: 9px; top: 9px; max-width: calc(100% - 18px); padding: 5px 9px; border: 1px solid #eee0bd; border-radius: 8px; color: #fff8e8; background: rgba(30,49,54,.9); font-size: .68rem; font-weight: 900; }
+.bug-board { margin: -1px 8px 9px; padding: 10px; border: 2px solid #755335; border-radius: 6px 6px 14px 14px; background: #f4ead3; box-shadow: 0 5px 0 rgba(61,40,23,.2); }
+.bug-board-heading { display: flex; justify-content: space-between; gap: 7px; align-items: center; margin-bottom: 8px; font-size: .76rem; font-weight: 900; }
+.code-panel { padding: 9px; border: 1px solid #72928e; border-radius: 10px; background: #f1f5ed; }
+.code-panel h3 { margin: 0 0 7px; font-size: .82rem; }
+.code-lines { display: grid; gap: 4px; }
+.code-line { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; padding: 6px; border-radius: 7px; background: #173f49; color: #f8f5e9; }
+.code-line.is-error { outline: 2px solid var(--coral); background: #5a3032; }
+.line-number { color: #b9cbd0; text-align: right; font: 700 .75rem/1.45 monospace; }
+.code-line code { min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 500 .8rem/1.45 'PyQuest Mono', ui-monospace, SFMono-Regular, Consolas, monospace; }
+.code-output { margin-top: 8px; padding: 8px; border-radius: 8px; background: #e4f0e8; }
+.code-output strong { display: block; font-size: .7rem; overflow-wrap: anywhere; }
+.code-output pre { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 500 .82rem/1.4 'PyQuest Mono', ui-monospace, SFMono-Regular, Consolas, monospace; }
+.bug-product .product-copy { padding: 0 2px 9px; }
+
+.reviewer-notes { margin: 12px; padding: 10px 12px; border: 1px dashed #809a91; border-radius: 12px; background: #f4f6ed; }
+.reviewer-notes summary { min-height: 48px; display: flex; align-items: center; color: #285b61; font-weight: 900; cursor: pointer; }
+.reviewer-notes p { margin: 5px 0; font-size: .78rem; overflow-wrap: anywhere; }
+.reviewer-note-label { margin: 0 0 5px; color: #4d6d70; font-size: .72rem; font-weight: 900; }
+.page-foot { padding: 10px 14px 14px; border-top: 1px solid #ddc9a4; color: var(--ink-soft); font-size: .76rem; overflow-wrap: anywhere; }
+.page-foot a { display: inline-flex; align-items: center; min-height: 48px; padding: 7px 0; color: #155965; font-weight: 800; }
+
+@media (max-width: 360px) {
+  .page-shell { padding: 5px; }
+  .study { min-height: calc(100vh - 10px); border-radius: 18px; }
+  .review-header { padding-inline: 10px; }
+  .reviewer-controls { padding-inline: 10px; }
+  .product-screen { margin: 9px; }
+  .product-copy { padding: 10px; }
+  .settings-alcove { height: 205px; }
+  .welcome-stage, .welcome-stage > img { min-height: 330px; height: 330px; }
+  .catch-stage img { height: 300px; }
+  .reviewer-notes { margin: 9px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }

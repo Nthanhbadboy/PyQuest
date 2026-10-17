@@ -11,9 +11,16 @@ const PQC018_BATCH_B_COMMON = {
   sources: { vi: 'Nguồn & phạm vi', en: 'Sources & scope' },
   friendsBar: { vi: 'Góc cộng đồng', en: 'Community nook' },
   creatorBar: { vi: 'Xưởng sáng tạo', en: 'Creator workshop' },
-  creatorEditor: { vi: 'Trình chỉnh sửa', en: 'Editor' },
-  creatorPreview: { vi: 'Vùng thử', en: 'Preview' },
-  creatorTray: { vi: 'Khay phiên bản', en: 'Version tray' },
+  creatorEditor: { vi: 'Trình chỉnh sửa · chỉ đọc', en: 'Editor · read only' },
+  creatorReadOnly: { vi: 'MẪU TĨNH · KHÔNG CHẠY', en: 'STATIC SAMPLE · NOT RUNNABLE' },
+  creatorEditorSource: { vi: 'Văn xuôi hư cấu viết riêng cho study · không phải mã hay nội dung game', en: 'Fictional prose authored for this study · not game code or canon' },
+  creatorCopy1: { vi: 'Khu vườn nhỏ nằm cạnh ao.', en: 'A small garden sits beside a pond.' },
+  creatorCopy2: { vi: 'Một hạt giống chờ dưới lớp đất.', en: 'One seed waits beneath the soil.' },
+  creatorCopy3: { vi: 'Đèn giấy khẽ sáng lúc hoàng hôn.', en: 'A paper lantern glows at dusk.' },
+  creatorPreview: { vi: 'Vùng thử · khung minh họa riêng', en: 'Preview · separate illustrative frame' },
+  creatorTrayAria: { vi: 'Khay phiên bản mẫu', en: 'Sample version tray' },
+
+  creatorTray: { vi: 'Khay phiên bản · thẻ mẫu', en: 'Version tray · sample cards' },
   creatorVersionA: { vi: 'Bản mẫu A', en: 'Sample version A' },
   creatorVersionB: { vi: 'Bản mẫu B', en: 'Sample version B' },
   roomBar: { vi: 'Phòng tầng trệt', en: 'Ground-floor room' },
@@ -90,10 +97,10 @@ const PQC018_BATCH_B_SCENES = {
   'b02-w12-creator-editor': {
     title: { vi: 'Xưởng sáng tạo', en: 'Creator workshop' },
     subtitle: { vi: 'Trình chỉnh sửa, vùng thử và khay phiên bản', en: 'An editor, preview area and version tray' },
-    alt: { vi: 'Xưởng sáng tạo bằng gỗ có bảng chỉnh sửa trống, khung thử riêng và khay thẻ trống.', en: 'A timber creator workshop with a blank editor board, separate preview frame and blank card tray.' },
+    alt: { vi: 'Xưởng gỗ có bảng văn xuôi mẫu chỉ đọc, khung thử riêng và khay thẻ phiên bản.', en: 'A timber workshop with a read-only sample prose panel, separate preview frame and version-card tray.' },
     reviewerNotes: {
-      vi: 'Tham chiếu W12/W12b và W13. Editor/vùng thử/khay phiên bản là mock đọc-only. Trạng thái lưu riêng và moderation là fixtures; không tuyên bố đã lưu, công bố, chạy test, chấm điểm hay nhận thưởng.',
-      en: 'References W12/W12b and W13. The editor, preview and version tray are read-only mocks. Private-save and moderation states are fixtures; nothing is persisted, published, tested, graded or rewarded.'
+      vi: 'Tham chiếu W12/W12b và W13. Ba dòng trong editor là văn xuôi hư cấu do CODE viết riêng cho study, chỉ làm mẫu biên tập; không phải API, mã, nội dung canon, đáp án bài học hay grader của game. Editor/vùng thử/khay phiên bản chỉ là mock đọc-only; không có interpreter, lưu trữ hoặc xuất bản. Trạng thái lưu riêng và moderation là fixtures; không tuyên bố đã lưu, công bố, chạy test, chấm điểm hay nhận thưởng.',
+      en: 'References W12/W12b and W13. The editor’s three lines are fictional prose authored by CODE for this study as an editing sample only; they are not a game API, code, canon, lesson answer or grader. The editor, preview and version tray are read-only mocks; there is no interpreter, persistence or publishing. Private-save and moderation states are fixtures; nothing is persisted, published, tested, graded or rewarded.'
     },
     states: {
       draft_unsaved: {

@@ -9,9 +9,9 @@
   },
   "description": "Friends & Invites design concept with 6 static VI/EN state fixtures; no live feature or service is claimed.",
   "design_pin": "cbb0f8bed808a888ae607bb31ba6343c182bf0b8",
-  "design_review_pin": "68f2590b5883ca8aa746ffde0814d60a32dacb3c",
+  "design_review_pin": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2",
   "runtime_identity_pin": "a331ac110f19de63e9be6884d08db8c436054f50",
-  "screen_review_status": "DESIGN review pending; not self-accepted",
+  "screen_review_status": "R38-A/B correction implemented by CODE; DESIGN review pending; not self-accepted",
   "references": [
     {
       "id": "w01-village",
@@ -77,13 +77,13 @@
       "390x844",
       "360x640"
     ],
-    "controls": "Local state/language/scale preview only; primary CTA disabled.",
-    "shared_css_sha256": "47bd9c66e0749f430655befa64de7fe09168205465479e04a1dafa02912cfc22",
+    "controls": "Localized static editor sample/preview controls only; editor is read-only, no interpreter/persistence/publishing; primary CTA disabled.",
+    "shared_css_sha256": "63df474b632a97c26d6ef02e52e6f5bf3da0e5d98de5b3955713162a64cf01d3",
     "shared_js_sha256": "e2d80ee83952358c52ebcf20f41c21834cc610f99aa6e97028d0fb548b1d2bc7",
     "batch_css": "../batch-b.css",
-    "batch_css_sha256": "ed5d1aa3b538ca30c52683ad4895e89c376b1988ad3d94b519debb442374a7a9",
+    "batch_css_sha256": "9e2751863f7f166f6283803e7f090e70823c9ed33cbdf5426816021ae477106c",
     "batch_js": "../batch-b.js",
-    "batch_js_sha256": "e372ee2a76c98448b52bc24c8cacaf57b3036be5e399da9280e7af188e48b20d"
+    "batch_js_sha256": "17f60911954e1129364672b3568e15de20599749658f811c390577458cf30099"
   },
   "runtime_ready": false,
   "production_approved": false,
@@ -91,17 +91,24 @@
   "game_or_transaction_executed": false,
   "checks": {
     "static": "PASS",
-    "static_report": "../evidence/batch-b-static-checks.json",
+    "static_report": "../evidence/r38-static-checks.json",
     "browser": "PASS",
-    "browser_report": "../evidence/batch-b-browser-checks.json",
+    "browser_report": "../evidence/r38-batch-b-browser-checks.json",
     "browser_cases": 192,
     "horizontal_overflow_cases": 0,
-    "computed_font_assertions": 960,
+    "computed_font_assertions": 1296,
     "header_overlap_cases": 0,
     "interactive_target_checks": 1728,
     "footer_reachable_checks": 192,
     "all_primary_ctas_disabled": true,
-    "all_images_decoded": true
+    "all_images_decoded": true,
+    "product_bar_title_checks": 192,
+    "product_bar_pill_bounds_checks": 192,
+    "general_computed_font_assertions": 1152,
+    "editor_visible_content_checks": 0,
+    "editor_computed_font_assertions": 0,
+    "static_check_count": 129,
+    "static_passed": 129
   },
   "generation_input_refs": [
     "w09-visit",

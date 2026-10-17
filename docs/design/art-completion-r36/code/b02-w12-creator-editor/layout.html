@@ -12,9 +12,17 @@
     <div class="product-bar"><span data-common="creatorBar"></span><span class="product-pill" data-tag></span></div>
     <div class="creator-scene"><img data-scene-image src="concept.png" alt=""></div>
     <div class="creator-workspace">
-      <div class="creator-workspace-head"><span data-common="creatorEditor"></span><span data-common="creatorPreview"></span></div>
-      <div class="creator-preview"><strong data-common="creatorPreview"></strong><div class="preview-blocks" aria-hidden="true"><span></span><span></span><span></span></div></div>
-      <div class="version-tray"><span data-common="creatorTray"></span><span data-common="creatorVersionA"></span><span data-common="creatorVersionB"></span></div>
+      <section class="creator-editor" aria-label="Creator editor · read only">
+        <div class="creator-editor-heading"><strong data-common="creatorEditor"></strong><span data-common="creatorReadOnly"></span></div>
+        <p class="creator-editor-provenance" data-common="creatorEditorSource"></p>
+        <div class="creator-editor-surface" role="textbox" aria-readonly="true" aria-multiline="true" aria-label="" data-common-aria="creatorEditor" tabindex="0">
+          <div class="creator-editor-line"><span class="creator-line-number" aria-hidden="true">1</span><span data-common="creatorCopy1"></span></div>
+          <div class="creator-editor-line"><span class="creator-line-number" aria-hidden="true">2</span><span data-common="creatorCopy2"></span></div>
+          <div class="creator-editor-line"><span class="creator-line-number" aria-hidden="true">3</span><span data-common="creatorCopy3"></span></div>
+        </div>
+      </section>
+      <section class="creator-preview"><strong data-common="creatorPreview"></strong><div class="preview-blocks" aria-hidden="true"><span></span><span></span><span></span></div></section>
+      <section class="version-tray" aria-label="" data-common-aria="creatorTrayAria"><span data-common="creatorTray"></span><span data-common="creatorVersionA"></span><span data-common="creatorVersionB"></span></section>
       <article class="product-copy"><h2 data-state-title></h2><p data-body></p><ul class="facts" data-facts></ul><button class="mock-cta" type="button" disabled data-cta></button></article>
     </div>
   </section>
