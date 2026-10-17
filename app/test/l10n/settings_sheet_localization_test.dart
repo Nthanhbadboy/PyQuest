@@ -693,6 +693,9 @@ Future<void> _disposeServices(WidgetTester tester, AppServices services) async {
 }
 
 Future<void> _mountPyQuest(WidgetTester tester, AppServices services) async {
+  // Keep the welcome gate out of Settings-focused root fixtures. This is setup state only;
+  // it deliberately does not persist ui_locale_preference or resolve the system locale.
+  await tester.runAsync(services.settings.setIntroSeen);
   await tester.pumpWidget(
     PyQuestApp(servicesFactory: (_) async => services, minSplash: Duration.zero),
   );
@@ -703,8 +706,12 @@ Future<void> _openSettings(WidgetTester tester) async {
   final Finder button = find.byKey(const ValueKey<String>('settings_button')).first;
   await tester.ensureVisible(button);
   await tester.pump();
-  // Match the working root-navigation tap used by the existing render suite.
-  await tester.tap(button, warnIfMissed: false);
+  expect(
+    button.hitTestable(),
+    findsOneWidget,
+    reason: 'the real Settings button must be unoccluded and hit-testable before tapping',
+  );
+  await tester.tap(button);
   await pumpFor(tester, const Duration(milliseconds: 900));
   expect(find.byKey(const ValueKey<String>('settings_language_panel')), findsOneWidget);
 }
