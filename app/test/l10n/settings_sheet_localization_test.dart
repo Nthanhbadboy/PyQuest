@@ -280,7 +280,13 @@ void main() {
     final Directory directory = await tester.runAsync(
         () => Directory.systemTemp.createTemp('pyquest-settings-race-')) as Directory;
     final String databasePath = p.join(directory.path, AppDatabase.fileName);
-    final AppServices services = await _createServices(tester, databasePath: databasePath);
+    // The no-isolate FFI run reported SQLITE_BUSY before the pending-state assertion. Use the
+    // isolate-backed factory here so the widget frame can render while the held file lock is active.
+    final AppServices services = await _createServices(
+      tester,
+      databasePath: databasePath,
+      databaseFactory: databaseFactoryFfi,
+    );
     _LockedWriteDatabase? lock;
     addTearDown(() async {
       try {
@@ -671,10 +677,14 @@ const List<_ViewportCase> _viewportCases = <_ViewportCase>[
   _ViewportCase('390x844 EN', Size(390, 844), 1.0, LocalePreference.en),
 ];
 
-Future<AppServices> _createServices(WidgetTester tester, {String? databasePath}) async {
+Future<AppServices> _createServices(
+  WidgetTester tester, {
+  String? databasePath,
+  DatabaseFactory? databaseFactory,
+}) async {
   final AppServices? services = await tester.runAsync(() => AppServices.create(
         bundle: rootBundle,
-        databaseFactory: databaseFactoryFfiNoIsolate,
+        databaseFactory: databaseFactory ?? databaseFactoryFfiNoIsolate,
         databasePath: databasePath ?? inMemoryDatabasePath,
         audioEnabled: false,
         startSessionTimer: false,
@@ -749,9 +759,8 @@ Future<void> _chooseLocale(
     // and queues behind the SettingsRepository write before the test asserts its persisted result.
     await _settingsRows(tester, services);
   } else {
-    // For the explicit lock race, let the real FFI event loop reach the held transaction without
-    // waiting for that deliberately blocked write to settle.
-    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    // The lock-race case intentionally observes the pending UI before the real FFI write settles.
+    // Do not add a runAsync barrier here: SQLite may promptly return SQLITE_BUSY rather than queue.
   }
   await tester.pump();
 }
