@@ -117,6 +117,16 @@ productionapproval cho16ảnh: geometry/character/materialgaps vẫn trongSTYLE_
 W01vẫnneo chính. **CODE phải xem đủ16ảnh +layouts** trước018, khôngchỉthumbnail.
 018giao9ảnh cònthiếu theoA5+B4; không tựmởruntime hoặc ghiđèmaster.
 
+### Cập nhật r36 · 2026-10-18 —018 BatchA nhận ở mức concept
+
+[Reviewr36](coordination/reviews/PQD-003-r36.md) giữ5concept CODE1053973: journal,
+Settings, Welcome, CatchStars vàBugHunter. Inventoryreview21ảnh(16canonicalr35+5A),
+khôngthaycatalog16cũ. **ScreenA CHANGES_REQUESTED**: scale thực160/240fail,header360
+lấnbox120/240,sourceIDs/copy vàcompositionhero+card. Khôngsinh lại5PNG; sửaHTML/CSS
+scene-first theo brief, rồiB4riêng. Record16ảnhCODEđãđốichiếu, khônglặpintakeACK.
+Chưa có layer/animation/productionpack;011/R1 khôngđổi vì art. Các thiếu sót này
+không được che bằng0overflow hoặc galleryđẹp; phải đạt screen gate riêng.
+
 ## 7. Quality gate trước R1 UI
 
 - [ ] Ba concept DESIGN và ba concept CODE cùng họ2,5D; không mang nhân vật/logo lạ.

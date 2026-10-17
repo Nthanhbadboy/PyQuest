@@ -32,25 +32,25 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision35**. Bản tinr35 thay bảnr34 user chưa chuyển.
-Đọc reviewr35, `docs/design/art-sync-r35/README.md`, `catalog.json`, `STYLE_SYNC.md`
-và `docs/implementation/coordination/tasks/PQC-018.md` từ DESIGN SHA đã pin.
+Task hiện tại là **PQD-003 revision36**, review CODE018 BatchA exact1053973.
+Đọc `docs/design/coordination/reviews/PQD-003-r36.md`, `docs/design/art-review-r36/README.md`
+và `docs/implementation/coordination/tasks/PQC-018.md` revision2 từ DESIGN SHA mới.
 
-**017 đã REVIEWED_WITH_CORRECTIONS** từexacte3ec5f1.20filegốc giữ nguyên; W13/W11giữ
-concept, W14active làcorrectionr35 cutaway3/4/tủbục trống. Layout gốc28/56overflow;
-bản synced0/64, bỏdebugID, thêmemptythật. Dùnglayoutcanonicalr35, khônglàm lại cả017.
-Không tựproductionapprove; activecatalog16bao gồm13DESIGN+3CODE/correction.
+**Giữ5conceptA; SCREEN_CHANGES_REQUESTED.** Không sinh lại5PNG, không lặp intake16ảnh
+đã có record khớp. CorrectionA riêng: R36-A root-rem/font scaling thực +header48px;
+R36-B childcopy/IDs/source/pause/locale; R36-C scene-first composition, không5hero+card.
+Independent240cases có0overflow nhưng160fontfail/120headeroverlap. Chạy checkcomputed
+font sizes, không coi selector2× làđãscale; report vàscript reproducible trongallowlist.
 
-**BẮT BUỘC mở xem tất cả16ảnhactive đã đồngbộ, đủkíchthước, vàcáclayout/state.**
-Khôngchỉ đọcmanifest/thumbnail. Ghi16id/path/hash/observation vàDESIGN SHA trong
-reviewed-inputs.json cùngcommitart018. W01làneo; khôngsaochép lỗi geometry/actor ghi
-trongSTYLE_SYNC hoặc cacheW02/W08selected-original. Khônggiảđãxem nếu thiếuviewer.
+Sau correctioncommit tiếp tục **B4** (friends/invites, Creator editor, completedroomtừW03,
+Miu camrest) trongcommitriêng. Khôngxinuserchọnroadmap, khôngACK-only. BatchB dùnggrammar
+đãsửa, đủstates; khôngbackend/economy/AI/presenceclaims. W01neo/W14corrected, r35catalog16
+khôngđổi; galleryreviewr36gồm21ảnhkhôngproductionapprove. 017khôngvẽlạicảgói.
 
-**018 READY_FOR_CODE art-only9ảnh**, A5bàn giao trước rồiB4: A journal/settings/welcome/
-CatchStars/BugHunter; B friends-invites/Creator-editor/built-room/pet-rest. Chỉghi
-art-completion-r36/code/** +own018, giữmasterr33/r34/r35 nguyên. Cóconcept riêng,
-VIENphone/state, provenance vàchecksthật; `[skip ci]`, khôngapp/deps/CI/APK.
-Khôngvẽpolygonphẳngthay2,5D, khôngretryvượttool limit; báoBLOCKED thật nếu cần.
+Allowlist018chỉ `docs/design/art-completion-r36/code/**` +own018. Giữoriginalbytes/hashes
+trướcfix, manifests vàevidence thật. Khôngcopy immutable CODEsnapshot1053973 từDESIGN
+đèbảnđangsửa. Khôngapp/deps/CI/APK; `[skip ci]`; giữstash. Khôngthêmruntime/layer/animation
+đểgiảhoàntấtart. Đọc reviewđầyđủ, đừngchỉlấy tóm tắtnày rồi tựaccept.
 
 **011 CHANGES_REQUESTED @a331ac1** vẫn hiệu lực: CI117462432865failanalyze8issues,
 suites skipped. SửaR34-A imports/compile/pumpAndSettle; BSetcontent equalitycả2;

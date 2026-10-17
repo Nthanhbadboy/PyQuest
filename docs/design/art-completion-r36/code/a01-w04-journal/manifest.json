@@ -1,0 +1,92 @@
+{
+  "task": "PQC-018",
+  "scene_id": "a01-w04-journal",
+  "batch": "A",
+  "status": "CONCEPT_AND_SCREEN_STUDY",
+  "title": {
+    "vi": "Sổ hành trình",
+    "en": "Journey Journal"
+  },
+  "description": "A physical journal study with a followed project kept separate from daily goals and pending results; each item is a fixture, not a grant or receipt.",
+  "design_pin": "cbb0f8bed808a888ae607bb31ba6343c182bf0b8",
+  "runtime_identity_pin": "a331ac110f19de63e9be6884d08db8c436054f50",
+  "references": [
+    {
+      "id": "w01-village",
+      "path": "../art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+    },
+    {
+      "id": "w07-interior",
+      "path": "../art-refresh-r34/concepts/w07-interior.jpg",
+      "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad"
+    },
+    {
+      "id": "w06-result",
+      "path": "../art-refresh-r34/concepts/w06-result.jpg",
+      "sha256": "36ef11d66cc5270ab52b8e8421c7796374a7d382b0132301775248147a220cd2"
+    }
+  ],
+  "reference_rationale": "W01 fixes the shared stone/wood/light language; W07 lends worktable-scale prop staging but its faulty threshold is excluded; W06 informs a calm, neutral pending-result vignette without implying a grant. W04 journal contents remain separate UI overlays and are sourced from the world-expansion design, not invented economy.",
+  "source_paths": [
+    "docs/design/WORLD_EXPANSION_REDESIGN.md §3 W04–W07",
+    "docs/design/experience-blueprint/P06C_LINKED_JOURNEYS.md"
+  ],
+  "pinned_runtime_source_files": [],
+  "image": {
+    "path": "concept.png",
+    "format": "PNG",
+    "dimensions": [
+      928,
+      1152
+    ],
+    "png_color_type": 2,
+    "bytes": 2312191,
+    "sha256": "2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6",
+    "origin": "Arena image generation; one standalone image from one model",
+    "prompt_path": "prompt.txt",
+    "prompt_sha256": "6a44ad77467a583faf6b483bc12720382f5f795c35717b33f0616e233bf67a0c",
+    "prompt_record": "Exact generation prompt stored; no seed-perfect reproducibility is claimed.",
+    "alpha_layers_separated": false
+  },
+  "layout": {
+    "path": "layout.html",
+    "sha256": "47aa9dc14cbeb0051b2ae5e7f6eb863497718709328cd6d2a66c1e96913968af",
+    "shared_css": "../shared.css",
+    "shared_js": "../shared.js",
+    "states": [
+      "following",
+      "not_following",
+      "pending_results",
+      "load_error"
+    ],
+    "locales": [
+      "vi",
+      "en"
+    ],
+    "text_scales": [
+      "1",
+      "1.3",
+      "2"
+    ],
+    "viewport_targets": [
+      "390x844",
+      "360x640"
+    ],
+    "controls": "Local state/language/scale preview only; primary CTA disabled.",
+    "shared_css_sha256": "aaa90cba523a311934ba0ed23f8a3bbed33e9c476afe36c1ae483670299893b1",
+    "shared_js_sha256": "19657dc24c33b9fbe21b7b678688fefa693ee1c1b2aa008739c46dbec73b458e"
+  },
+  "runtime_ready": false,
+  "production_approved": false,
+  "animation_present": false,
+  "game_or_transaction_executed": false,
+  "checks": {
+    "static": "PASS",
+    "browser": "PASS",
+    "browser_report": "../evidence/browser-checks.json",
+    "browser_cases": 240,
+    "horizontal_overflow_cases": 0,
+    "all_primary_ctas_disabled": true
+  }
+}

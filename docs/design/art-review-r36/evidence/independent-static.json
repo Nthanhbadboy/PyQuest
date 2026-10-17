@@ -1,0 +1,17 @@
+{
+  "review_inventory_assets": 21,
+  "r35_catalog_unchanged": true,
+  "reviewed_sha": "1053973da1ad11378f7263d7b13a4d61667133af",
+  "design_pin": "cbb0f8bed808a888ae607bb31ba6343c182bf0b8",
+  "exact_imports": 54,
+  "catalog_assets_and_review_records": 16,
+  "scene_manifests": 5,
+  "source_blob_checks": 15,
+  "states": 20,
+  "app_ci_changes_since_runtime_pin": [],
+  "limits": [
+    "Recorded full-size viewing is a CODE declaration; provenance checking alone cannot prove human viewing.",
+    "DESIGN separately opened all five new concept images.",
+    "Static provenance PASS is not layout or runtime acceptance."
+  ]
+}

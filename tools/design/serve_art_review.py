@@ -17,7 +17,7 @@ class ArtHandler(SimpleHTTPRequestHandler):
         path = unquote(urlsplit(self.path).path)
         if path == '/':
             self.send_response(302)
-            self.send_header('Location', '/docs/design/art-sync-r35/index.html')
+            self.send_header('Location', '/docs/design/art-review-r36/index.html')
             self.end_headers()
             return
         target = (ROOT / path.lstrip('/')).resolve()
