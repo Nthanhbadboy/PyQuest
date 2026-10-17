@@ -1,0 +1,360 @@
+name: PQC-011 pinned SDK maintenance
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: Normalize the bounded allowlist, then dispatch verify on the resulting branch tip
+        required: true
+        type: choice
+        options:
+          - normalize
+          - verify
+        default: normalize
+
+permissions:
+  contents: write
+  checks: write
+
+concurrency:
+  group: pqc011-maintenance-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  maintenance:
+    if: github.ref == 'refs/heads/arena/0d4fcb38-pyquest'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - name: Checkout exact CODE source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Set up pinned Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+          cache: true
+
+      - name: Verify source and SDK pins
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          flutter --version --machine > "$RUNNER_TEMP/flutter-version.json"
+          python3 - "$RUNNER_TEMP/flutter-version.json" <<'PY'
+          import json, sys
+          info = json.load(open(sys.argv[1], encoding='utf-8'))
+          expected = {
+              'frameworkVersion': '3.47.7',
+              'dartSdkVersion': '3.13.5',
+              'frameworkRevision': 'abaf9c523780a608bd46686fd5e53740a07077f8',
+          }
+          actual = {key: info.get(key) for key in expected}
+          print(json.dumps(actual, indent=2))
+          if actual != expected:
+              raise SystemExit(f'Pinned SDK mismatch: expected {expected!r}')
+          PY
+
+      - name: Normalize the authorized 13 Dart files and pub lock
+        if: inputs.phase == 'normalize'
+        env:
+          BASE_SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH"
+          remote_sha="$(git rev-parse FETCH_HEAD)"
+          test "$remote_sha" = "$BASE_SHA" || {
+            echo "Remote moved: expected $BASE_SHA, found $remote_sha" >&2
+            exit 1
+          }
+
+          cd app
+          flutter pub get
+          lock_after_first="$(sha256sum pubspec.lock | cut -d' ' -f1)"
+          flutter pub get
+          lock_after_second="$(sha256sum pubspec.lock | cut -d' ' -f1)"
+          test "$lock_after_first" = "$lock_after_second" || {
+            echo 'pub get changed pubspec.lock on its second run' >&2
+            exit 1
+          }
+          dart format \
+            lib/modules/main_quest/lesson_screen.dart \
+            lib/modules/tutor/board/authored_board_repository.dart \
+            lib/modules/tutor/board/board_view.dart \
+            test/lesson_board_integration_test.dart \
+            test/board/authored_board_repository_test.dart \
+            test/board/board_boundaries_test.dart \
+            test/board/board_controller_test.dart \
+            test/board/board_layout_test.dart \
+            test/board/board_plan_codec_test.dart \
+            test/board/board_previews_test.dart \
+            test/board/board_test_support.dart \
+            test/board/board_view_test.dart \
+            test/tutor_board_content_pack_test.dart
+          cd ..
+
+          python3 - <<'PY'
+          import subprocess, sys
+          allowed = {
+              'app/pubspec.lock',
+              'app/lib/modules/main_quest/lesson_screen.dart',
+              'app/lib/modules/tutor/board/authored_board_repository.dart',
+              'app/lib/modules/tutor/board/board_view.dart',
+              'app/test/lesson_board_integration_test.dart',
+              'app/test/board/authored_board_repository_test.dart',
+              'app/test/board/board_boundaries_test.dart',
+              'app/test/board/board_controller_test.dart',
+              'app/test/board/board_layout_test.dart',
+              'app/test/board/board_plan_codec_test.dart',
+              'app/test/board/board_previews_test.dart',
+              'app/test/board/board_test_support.dart',
+              'app/test/board/board_view_test.dart',
+              'app/test/tutor_board_content_pack_test.dart',
+          }
+          records = subprocess.check_output(
+              ['git', 'status', '--porcelain=v1', '--untracked-files=all', '--no-renames']
+          ).decode('utf-8').splitlines()
+          changed = {record[3:] for record in records if record}
+          unexpected = sorted(changed - allowed)
+          if unexpected:
+              print('Refusing to stage paths outside PQC-011 r49 allowlist:', file=sys.stderr)
+              print('\n'.join(unexpected), file=sys.stderr)
+              raise SystemExit(1)
+          PY
+          git diff --check
+          git add -- \
+            app/pubspec.lock \
+            app/lib/modules/main_quest/lesson_screen.dart \
+            app/lib/modules/tutor/board/authored_board_repository.dart \
+            app/lib/modules/tutor/board/board_view.dart \
+            app/test/lesson_board_integration_test.dart \
+            app/test/board/authored_board_repository_test.dart \
+            app/test/board/board_boundaries_test.dart \
+            app/test/board/board_controller_test.dart \
+            app/test/board/board_layout_test.dart \
+            app/test/board/board_plan_codec_test.dart \
+            app/test/board/board_previews_test.dart \
+            app/test/board/board_test_support.dart \
+            app/test/board/board_view_test.dart \
+            app/test/tutor_board_content_pack_test.dart
+          python3 - <<'PY'
+          import subprocess, sys
+          allowed = {
+              'app/pubspec.lock',
+              'app/lib/modules/main_quest/lesson_screen.dart',
+              'app/lib/modules/tutor/board/authored_board_repository.dart',
+              'app/lib/modules/tutor/board/board_view.dart',
+              'app/test/lesson_board_integration_test.dart',
+              'app/test/board/authored_board_repository_test.dart',
+              'app/test/board/board_boundaries_test.dart',
+              'app/test/board/board_controller_test.dart',
+              'app/test/board/board_layout_test.dart',
+              'app/test/board/board_plan_codec_test.dart',
+              'app/test/board/board_previews_test.dart',
+              'app/test/board/board_test_support.dart',
+              'app/test/board/board_view_test.dart',
+              'app/test/tutor_board_content_pack_test.dart',
+          }
+          staged = set(subprocess.check_output(
+              ['git', 'diff', '--cached', '--name-only'], text=True
+          ).splitlines())
+          unexpected = sorted(staged - allowed)
+          if unexpected:
+              print('Refusing staged paths outside PQC-011 r49 allowlist:', file=sys.stderr)
+              print('\n'.join(unexpected), file=sys.stderr)
+              raise SystemExit(1)
+          print(f'Allowlisted staged paths: {len(staged)}')
+          PY
+
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m '[skip ci] maintenance: normalize PQC-011 r49 allowlist'
+            git push origin "HEAD:refs/heads/$BRANCH"
+          fi
+          final_sha="$(git rev-parse HEAD)"
+          printf 'normalized_sha=%s\n' "$final_sha" >> "$GITHUB_OUTPUT"
+          {
+            echo '### PQC-011 normalization'
+            echo "Source started at: \\`$BASE_SHA\\`"
+            echo "Normalized CODE SHA: \\`$final_sha\\`"
+            echo 'This phase only formats the 13 ordered Dart files and resolves the existing pub lock; verification must be dispatched on the normalized SHA.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Confirm verification is attached to current branch tip
+        if: inputs.phase == 'verify'
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH"
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$EXPECTED_SHA"
+          test -z "$(git status --porcelain)"
+          echo "Verified source SHA: $EXPECTED_SHA"
+
+      - name: Check pub get reproducibility
+        if: inputs.phase == 'verify'
+        id: pub_get
+        continue-on-error: true
+        working-directory: app
+        run: |
+          set -euo pipefail
+          flutter pub get 2>&1 | tee ../pqc011-pub-get.log
+          git diff --exit-code -- pubspec.lock
+
+      - name: Check formatting on the 13-file allowlist
+        if: inputs.phase == 'verify'
+        id: format
+        continue-on-error: true
+        working-directory: app
+        run: |
+          dart format --output=none --set-exit-if-changed \
+            lib/modules/main_quest/lesson_screen.dart \
+            lib/modules/tutor/board/authored_board_repository.dart \
+            lib/modules/tutor/board/board_view.dart \
+            test/lesson_board_integration_test.dart \
+            test/board/authored_board_repository_test.dart \
+            test/board/board_boundaries_test.dart \
+            test/board/board_controller_test.dart \
+            test/board/board_layout_test.dart \
+            test/board/board_plan_codec_test.dart \
+            test/board/board_previews_test.dart \
+            test/board/board_test_support.dart \
+            test/board/board_view_test.dart \
+            test/tutor_board_content_pack_test.dart 2>&1 | tee ../pqc011-format.log
+
+      - name: Localization evidence helper tests
+        if: inputs.phase == 'verify'
+        id: l10n_tests
+        continue-on-error: true
+        run: python3 ci/test_l10n_evidence.py 2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-tests.log"
+
+      - name: Collect generated localization evidence
+        if: inputs.phase == 'verify'
+        id: l10n_collect
+        continue-on-error: true
+        working-directory: app
+        run: >-
+          python3 ../ci/l10n_evidence.py collect --repo-root .. --app-dir .
+          --output "$RUNNER_TEMP/pqc011-l10n-evidence.json"
+          2>&1 | tee ../pqc011-l10n-collect.log
+
+      - name: Analyze
+        if: inputs.phase == 'verify'
+        id: analyze
+        continue-on-error: true
+        working-directory: app
+        run: flutter analyze --no-fatal-infos 2>&1 | tee ../pqc011-analyze.log
+
+      - name: Focused Settings tests
+        if: inputs.phase == 'verify'
+        id: settings
+        continue-on-error: true
+        timeout-minutes: 5
+        working-directory: app
+        run: flutter test --reporter expanded --timeout 45s test/l10n/settings_sheet_localization_test.dart 2>&1 | tee ../pqc011-settings.log
+
+      - name: Lesson board integration tests
+        if: inputs.phase == 'verify'
+        id: integration
+        continue-on-error: true
+        timeout-minutes: 10
+        working-directory: app
+        run: flutter test --reporter expanded --timeout 45s test/lesson_board_integration_test.dart 2>&1 | tee ../pqc011-integration.log
+
+      - name: Ordinary Flutter suite
+        if: inputs.phase == 'verify'
+        id: ordinary
+        continue-on-error: true
+        timeout-minutes: 20
+        working-directory: app
+        run: flutter test --reporter expanded --exclude-tags render 2>&1 | tee ../pqc011-ordinary.log
+
+      - name: Render suite
+        if: inputs.phase == 'verify'
+        id: render
+        continue-on-error: true
+        timeout-minutes: 10
+        working-directory: app
+        run: flutter test --reporter expanded --tags render test/render 2>&1 | tee ../pqc011-render.log
+
+      - name: Publish localization evidence
+        if: ${{ always() && inputs.phase == 'verify' && steps.l10n_collect.outcome == 'success' }}
+        id: l10n_publish
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 ci/l10n_evidence.py publish --evidence "$RUNNER_TEMP/pqc011-l10n-evidence.json" 2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-publish.log"
+
+      - name: Verify final source cleanliness
+        if: inputs.phase == 'verify'
+        id: clean
+        continue-on-error: true
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          git diff --check
+          test -z "$(git status --porcelain)"
+
+      - name: Upload pinned SDK logs
+        if: ${{ always() && inputs.phase == 'verify' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pqc011-r49-${{ github.sha }}-diagnostics
+          path: |
+            pqc011-*.log
+            ${{ runner.temp }}/pqc011-l10n-tests.log
+            ${{ runner.temp }}/pqc011-l10n-evidence.json
+            ${{ runner.temp }}/pqc011-l10n-publish.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Summarize verification result
+        if: ${{ always() && inputs.phase == 'verify' }}
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+          PUB_GET: ${{ steps.pub_get.outcome }}
+          FORMAT: ${{ steps.format.outcome }}
+          L10N_TESTS: ${{ steps.l10n_tests.outcome }}
+          L10N_COLLECT: ${{ steps.l10n_collect.outcome }}
+          ANALYZE: ${{ steps.analyze.outcome }}
+          SETTINGS: ${{ steps.settings.outcome }}
+          INTEGRATION: ${{ steps.integration.outcome }}
+          ORDINARY: ${{ steps.ordinary.outcome }}
+          RENDER: ${{ steps.render.outcome }}
+          L10N_PUBLISH: ${{ steps.l10n_publish.outcome }}
+          CLEAN: ${{ steps.clean.outcome }}
+        run: |
+          set -u
+          {
+            echo '### PQC-011 r49 pinned SDK verification'
+            echo "Source SHA: \\`$SOURCE_SHA\\`"
+            echo '| Gate | Outcome |'
+            echo '|---|---|'
+            echo "| pub get / lock reproducibility | $PUB_GET |"
+            echo "| formatter | $FORMAT |"
+            echo "| localization helper tests | $L10N_TESTS |"
+            echo "| localization evidence collection | $L10N_COLLECT |"
+            echo "| analyze | $ANALYZE |"
+            echo "| Settings | $SETTINGS |"
+            echo "| lesson-board integration | $INTEGRATION |"
+            echo "| ordinary suite | $ORDINARY |"
+            echo "| render suite | $RENDER |"
+            echo "| localization evidence publication | $L10N_PUBLISH |"
+            echo "| source cleanliness | $CLEAN |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          for outcome in "$PUB_GET" "$FORMAT" "$L10N_TESTS" "$L10N_COLLECT" \
+            "$ANALYZE" "$SETTINGS" "$INTEGRATION" "$ORDINARY" "$RENDER" "$CLEAN"; do
+            if [[ "$outcome" != success ]]; then exit 1; fi
+          done

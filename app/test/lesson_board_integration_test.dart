@@ -116,7 +116,7 @@ void main() {
     await tester.ensureVisible(find.byKey(const ValueKey<String>('example_run')));
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey<String>('example_run')));
-    await tester.pumpAndSettle();
+    await _waitForContinueEnabled(tester);
     expect(find.text('Xin chào!'), findsWidgets);
     expect(board.beatIndex, 3);
     expect(board.isWaitingForLearner, isFalse,
@@ -152,7 +152,11 @@ void main() {
     await tester.ensureVisible(find.byKey(const ValueKey<String>('example_run')));
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey<String>('example_run')));
-    await tester.pumpAndSettle();
+    await _waitForCondition(
+      tester,
+      () => find.text('Đã sửa').evaluate().isNotEmpty,
+      'edited example output is rendered',
+    );
     expect(find.text('Đã sửa'), findsWidgets);
     expect(board.stepId, 'mq1_01_s2');
     expect(board.beatIndex, 3);
@@ -196,15 +200,24 @@ void main() {
     await tester.ensureVisible(find.byKey(const ValueKey<String>('example_run')));
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey<String>('example_run')));
-    await tester.pumpAndSettle();
+    await _waitForContinueEnabled(tester);
     expect(find.text('12'), findsOneWidget);
 
     final double scrollOffsetBeforeTutor = _lessonScrollOffset(tester);
     await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
-    await tester.pumpAndSettle();
+    await _waitForCondition(
+      tester,
+      () => find.byKey(const ValueKey<String>('tutor_close')).evaluate().isNotEmpty,
+      'tutor sheet opening completes',
+    );
     expect(find.byKey(const ValueKey<String>('tutor_close')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey<String>('tutor_close')));
-    await tester.pumpAndSettle();
+    await _waitForCondition(
+      tester,
+      () => find.byKey(const ValueKey<String>('tutor_close')).evaluate().isEmpty &&
+          editor.focusNode!.hasFocus,
+      'tutor sheet closes and restores editor focus',
+    );
 
     final BoardController afterTutor = tester.widget<BoardView>(find.byType(BoardView)).controller;
     expect(identical(afterTutor, board), isTrue);
@@ -218,10 +231,19 @@ void main() {
     expect(_lessonScrollOffset(tester), closeTo(scrollOffsetBeforeTutor, 0.5));
 
     await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
-    await tester.pumpAndSettle();
+    await _waitForCondition(
+      tester,
+      () => find.byKey(const ValueKey<String>('tutor_close')).evaluate().isNotEmpty,
+      'tutor sheet opening completes',
+    );
     expect(find.byKey(const ValueKey<String>('tutor_close')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey<String>('tutor_close')));
-    await tester.pumpAndSettle();
+    await _waitForCondition(
+      tester,
+      () => find.byKey(const ValueKey<String>('tutor_close')).evaluate().isEmpty &&
+          editor.focusNode!.hasFocus,
+      'tutor sheet closes and restores editor focus after reopening',
+    );
     expect(identical(tester.widget<BoardView>(find.byType(BoardView)).controller, board), isTrue);
     expect(board.beatIndex, 1);
     expect(board.learner.note, 'test-only marker');
@@ -233,7 +255,11 @@ void main() {
     expect(_lessonScrollOffset(tester), closeTo(scrollOffsetBeforeTutor, 0.5));
 
     await tester.runAsync(() => services.settings.setLang(PqLang.en));
-    await tester.pumpAndSettle();
+    await _waitForCondition(
+      tester,
+      () => board.locale == 'en' && find.text('Authored example').evaluate().isNotEmpty,
+      'English board labels follow the persisted locale',
+    );
     expect(board.locale, 'en');
     expect(board.beatIndex, 1);
     expect(find.text('Authored example'), findsOneWidget);
@@ -245,7 +271,11 @@ void main() {
     expect(editor.controller.selection, const TextSelection.collapsed(offset: 8));
 
     await tester.runAsync(() => services.settings.setLang(PqLang.vi));
-    await tester.pumpAndSettle();
+    await _waitForCondition(
+      tester,
+      () => board.locale == 'vi' && find.text('Bảng soạn sẵn').evaluate().isNotEmpty,
+      'Vietnamese board labels follow the persisted locale',
+    );
     expect(board.locale, 'vi');
     expect(board.beatIndex, 1);
     expect(find.text('Bảng soạn sẵn'), findsOneWidget);
@@ -298,12 +328,16 @@ void main() {
       await tester.ensureVisible(run);
       await tester.pump();
       await tester.tap(run);
-      await tester.pumpAndSettle();
+      await _waitForContinueEnabled(tester);
       final Finder continueButton = find.byKey(const ValueKey<String>('lesson_continue'));
       await tester.ensureVisible(continueButton);
       await tester.pump();
       await tester.tap(continueButton);
-      await tester.pumpAndSettle();
+      await _waitForCondition(
+        tester,
+        () => find.text('3/5').evaluate().isNotEmpty,
+        'Continue advances to the next lesson step',
+      );
       expect(find.text('3/5'), findsOneWidget,
           reason: '${testCase.key}/${testCase.value}: existing lesson Continue remains reachable');
       expect(tester.takeException(), isNull);
@@ -334,13 +368,16 @@ void main() {
     await tester.pump();
     await tester.tap(runAtTwoX);
     await _waitForContinueEnabled(tester);
-    await tester.pumpAndSettle();
 
     final Finder continueAtTwoX = find.byKey(const ValueKey<String>('lesson_continue'));
     await tester.ensureVisible(continueAtTwoX);
     await tester.pump();
     await tester.tap(continueAtTwoX);
-    await tester.pumpAndSettle();
+    await _waitForCondition(
+      tester,
+      () => find.text('3/5').evaluate().isNotEmpty,
+      'Continue advances at 360x640 with 2x text',
+    );
     expect(find.text('3/5'), findsOneWidget,
         reason: 'Run enables Continue and both remain reachable at 360x640 with 2x text');
     expect(tester.takeException(), isNull);
@@ -391,7 +428,11 @@ void main() {
     await tester.tap(find.byKey(const ValueKey<String>('example_run')));
     await _waitForContinueEnabled(tester);
     await tester.tap(find.byKey(const ValueKey<String>('lesson_continue')));
-    await tester.pumpAndSettle();
+    await _waitForCondition(
+      tester,
+      () => find.text('3/5').evaluate().isNotEmpty,
+      'Continue advances before the late asset delivery',
+    );
     expect(find.text('3/5'), findsOneWidget);
     expect(find.byType(BoardView), findsNothing);
 
@@ -467,10 +508,15 @@ Future<void> _mountLesson(
     ),
     home: AppScope(services: services, child: screen),
   ));
-  await tester.pumpAndSettle(
-    const Duration(milliseconds: 50),
-    EnginePhase.sendSemanticsUpdate,
-    const Duration(seconds: 10),
+  // Lesson stories use an intentional repeating character animation, so a
+  // settle-until-idle pump can never complete. Readiness is the initial step
+  // and its Continue control being present, not animation quiescence.
+  await tester.pump();
+  await _waitForCondition(
+    tester,
+    () => find.text('1/${lesson.steps.length}').evaluate().isNotEmpty &&
+        find.byKey(const ValueKey<String>('lesson_continue')).evaluate().isNotEmpty,
+    'initial lesson step and Continue control mount',
   );
 }
 
@@ -500,6 +546,18 @@ Future<void> _waitForBoard(WidgetTester tester) async {
   expect(find.byKey(const ValueKey<String>('board_tutor_layer')), findsOneWidget);
 }
 
+Future<void> _waitForCondition(
+  WidgetTester tester,
+  bool Function() condition,
+  String description,
+) async {
+  for (int frame = 0; frame < 20; frame++) {
+    if (condition()) return;
+    await tester.pump(const Duration(milliseconds: 50));
+  }
+  expect(condition(), isTrue, reason: 'Timed out waiting for $description');
+}
+
 Future<void> _waitForContinueEnabled(WidgetTester tester) async {
   final Finder continueFinder = find.byKey(const ValueKey<String>('lesson_continue'));
   for (int i = 0; i < 100; i++) {
@@ -519,7 +577,6 @@ Future<void> _waitForAuthoredAssetDelivery(
   expect(bundle.deliveredAssetKeys, containsAll(_GatedAssetBundle.authoredAssetKeys));
   await tester.runAsync(() => Future<void>.delayed(Duration.zero));
   await tester.pump();
-  await tester.pumpAndSettle();
 }
 
 Future<Map<String, ByteData>> _preloadAuthoredAssetBytes(WidgetTester tester) async {
