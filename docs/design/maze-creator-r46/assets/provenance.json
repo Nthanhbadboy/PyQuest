@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-18",
+  "method": "Arena generate_image; each call generated one internal study asset; offer_options=false",
+  "reference": "../../maze-trail-r45/assets/hedge-trail.png",
+  "canonical_style_anchor": "../../art-refresh-r33/concepts/w01-village.jpg",
+  "license_claim": "No CC0, exclusive license or hand-painted authorship claim",
+  "production_ready": false,
+  "assets": [
+    {
+      "file": "workbench.png",
+      "prompt": "One standalone 2.5D storybook game environment painting, portrait approximately 4:5. Strictly match the supplied PyQuest maze garden reference: rounded warm stone, substantial restrained wood, teal tiled roofs, sculpted green foliage, upper-left warm light and soft contact shadows. Inside the little open-air Maze Workshop beside the garden. A magnificent broad wooden maker's table occupies the middle and lower canvas; its rectangular working surface is nearly front-facing and visually quiet, EMPTY warm parchment-colored inset surface with a thick carved timber rim, reserved for a real interactive grid overlaid later. No drawn grid, no model maze on the table. At the rear upper third, shelves hold a few wooden trays of small green hedge blocks, a ceramic water jug, a folded blank paper, a brass lamp and a closed small treasure chest; visible chunky roof rafters and teal roof edge frame the top. Through the open left side see a little garden and stone wall, not a whole village. Lower foreground reveals the table's substantial apron and legs, a low stool, a small basket of tools. Objects must have believable depth, grounded proportions, clear front/middle/background, no plastic toy aesthetic. Frame leaves only at corners. Palette cream stone, warm walnut wood, teal, fresh sculpted green, muted violet as a small cloth accent. Keep the central tabletop large and clear. No characters, no text, no UI, no code, no symbols, no numbers, no letters, no collage. High-quality cohesive environment art for an actual children's creative game ages8–12.",
+      "review": "Opened full-size. Opaque painted scene; table perspective is not calibrated to the front-facing live grid. Not a layered room pack."
+    },
+    {
+      "file": "hedge-tile.png",
+      "prompt": "One standalone square game prop image: a single chunky, neatly clipped cubic green hedge bush on one small square grassy earth tile, filling the square composition. Three-quarter view with clearly visible top and two sides, sculpted small rounded leaf clusters, light from upper left and darker soft contact shadow lower right. Match the attached PyQuest maze garden's hedge material exactly, polished dimensional storybook game art, not flat vector, not photorealism, not glossy plastic. The tile fills the image edge to edge with grass green ground; no white background, no labels, no text, no numbers, no UI, no other props, no collage. This is one tile used as an opaque illustrative brush texture in a prototype, not an atlas.",
+      "review": "Opened full-size. Opaque grass background. Leaf detail and ink are heavier than W01; cleanup needed for production. Used as an illustrative cell texture only."
+    }
+  ]
+}

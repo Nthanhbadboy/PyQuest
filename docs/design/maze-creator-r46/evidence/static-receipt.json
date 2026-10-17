@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-18",
+  "result": "PASS_SOURCE_ARTIFACT_LINK_SCOPE_ONLY",
+  "code_pin": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+  "design_base": "30a562f56faf85bbf7b3c7811b24eb56c007f7bc",
+  "source_pins": 8,
+  "exact_excerpt_blocks": 17,
+  "artifacts": 15,
+  "references": 9,
+  "evidence": 16,
+  "local_links": 42,
+  "captures": 14,
+  "contrast_tokens": [
+    {
+      "foreground": "#233b36",
+      "background": "#f7efd9",
+      "ratio": 10.46
+    },
+    {
+      "foreground": "#fff7e6",
+      "background": "#304f52",
+      "ratio": 8.33
+    },
+    {
+      "foreground": "#ffffff",
+      "background": "#286d66",
+      "ratio": 6.05
+    },
+    {
+      "foreground": "#713728",
+      "background": "#fae2d3",
+      "ratio": 7.41
+    },
+    {
+      "foreground": "#4e5949",
+      "background": "#e5d9b9",
+      "ratio": 5.25
+    },
+    {
+      "foreground": "#6e563b",
+      "background": "#f7efd9",
+      "ratio": 5.99
+    },
+    {
+      "foreground": "#255f3e",
+      "background": "#dfedde",
+      "ratio": 6.21
+    },
+    {
+      "foreground": "#922e27",
+      "background": "#fff0e8",
+      "ratio": 7.15
+    },
+    {
+      "foreground": "#59604c",
+      "background": "#f7efd9",
+      "ratio": 5.72
+    }
+  ],
+  "unexpected_files": [],
+  "preexisting_dirty_jpegs_excluded": true,
+  "runtime_authorized": false,
+  "flutter_execution": "NOT_RUN",
+  "ci_triggered": false,
+  "limits": [
+    "Static token contrast only, not all art pixels or a full accessibility audit",
+    "HTML/JS evidence is not Dart engine parity, Python execution, or database verification",
+    "Source observations and proposed safeguards do not open a CODE work order"
+  ]
+}
