@@ -27,8 +27,12 @@ class SettingsService extends ChangeNotifier {
   ///
   /// OS locales are supplied by the caller; this service does not read platform APIs.
   Future<void> load({Iterable<String>? systemLocales}) async {
-    _systemLocaleInputProvided = systemLocales != null;
-    _systemLocales = List<String>.unmodifiable(systemLocales ?? const <String>[]);
+    // A reload/reset on the existing service must not erase the OS session input. A caller
+    // can still explicitly replace it with an empty list to select the English fallback.
+    if (systemLocales != null) {
+      _systemLocaleInputProvided = true;
+      _systemLocales = List<String>.unmodifiable(systemLocales);
+    }
     _loaded = false;
     _localeLoadError = null;
     late final Map<String, String> loadedValues;

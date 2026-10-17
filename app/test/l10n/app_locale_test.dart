@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 import 'package:pyquest/app/app_services.dart';
 import 'package:pyquest/app/locale_binding.dart';
 import 'package:pyquest/app/pyquest_app.dart';
@@ -202,6 +204,215 @@ void main() {
       await pumpFor(tester, const Duration(milliseconds: 300));
       expect(_localeOf(tester), const Locale('vi'));
       expect(services.settings.lang, PqLang.vi);
+    });
+
+    testWidgets('resume re-reads system locales on the splash and after app load',
+        (WidgetTester tester) async {
+      final List<Locale> osLocales = <Locale>[const Locale('en', 'US')];
+      await tester.pumpWidget(
+        PyQuestApp(
+          servicesFactory: (_) => Completer<AppServices>().future,
+          systemLocalesReader: () => List<Locale>.unmodifiable(osLocales),
+          minSplash: Duration.zero,
+        ),
+      );
+      await pumpFor(tester, const Duration(milliseconds: 150));
+      expect(
+        Localizations.localeOf(tester.element(find.text('Build Your Game. Rule Your World.'))),
+        const Locale('en'),
+      );
+
+      osLocales
+        ..clear()
+        ..add(const Locale('vi', 'VN'));
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+      expect(
+        Localizations.localeOf(tester.element(find.text('Build Your Game. Rule Your World.'))),
+        const Locale('vi'),
+      );
+
+      final AppServices services = await _openServices(tester);
+      await tester.pumpWidget(
+        PyQuestApp(
+          key: const ValueKey<String>('loaded-root'),
+          servicesFactory: (_) async => services,
+          systemLocalesReader: () => List<Locale>.unmodifiable(osLocales),
+          minSplash: Duration.zero,
+        ),
+      );
+      await pumpFor(tester, const Duration(milliseconds: 300));
+      expect(_localeOf(tester), const Locale('vi'));
+
+      await tester.runAsync(() => services.settings.setLocalePreference(LocalePreference.vi));
+      await pumpFor(tester, const Duration(milliseconds: 100));
+      osLocales
+        ..clear()
+        ..add(const Locale('en', 'US'));
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await pumpFor(tester, const Duration(milliseconds: 100));
+      expect(_localeOf(tester), const Locale('vi'), reason: 'manual preference must win on resume');
+      expect(services.settings.lang, PqLang.vi);
+
+      await tester.runAsync(() => services.settings.setLocalePreference(LocalePreference.system));
+      await pumpFor(tester, const Duration(milliseconds: 100));
+      expect(_localeOf(tester), const Locale('en'),
+          reason: 'system mode uses the OS list refreshed on resume');
+      expect(services.settings.raw(SettingsService.localePreferenceKey), 'system');
+
+      // Unmount removes both the lifecycle observer and settings listener. A later resume
+      // must not mutate the detached service through the old root binding.
+      await tester.pumpWidget(const SizedBox.shrink());
+      osLocales
+        ..clear()
+        ..add(const Locale('vi', 'VN'));
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+      expect(services.settings.lang, PqLang.en);
+      services.dispose();
+      services.settings.dispose();
+      await services.db.close();
+    });
+
+    testWidgets('resetAllProgress reload keeps the synchronized system locale without persisting it',
+        (WidgetTester tester) async {
+      final List<Locale> osLocales = <Locale>[const Locale('vi', 'VN')];
+      final AppServices services = await _openServices(tester);
+      await tester.pumpWidget(
+        PyQuestApp(
+          servicesFactory: (_) async => services,
+          systemLocalesReader: () => List<Locale>.unmodifiable(osLocales),
+          minSplash: Duration.zero,
+        ),
+      );
+      await pumpFor(tester, const Duration(milliseconds: 300));
+      expect(_localeOf(tester), const Locale('vi'));
+
+      await tester.runAsync(() => services.settings.setLocalePreference(LocalePreference.en));
+      await pumpFor(tester, const Duration(milliseconds: 100));
+      expect(_localeOf(tester), const Locale('en'));
+
+      await tester.runAsync(services.resetAllProgress);
+      await pumpFor(tester, const Duration(milliseconds: 150));
+      expect(services.settings.localePreference, LocalePreference.system);
+      expect(services.settings.localeResolution.languageCode, 'vi');
+      expect(services.settings.lang, PqLang.vi);
+      expect(_localeOf(tester), const Locale('vi'));
+      expect(services.settings.raw(SettingsService.localePreferenceKey), isNull);
+      expect((await SettingsRepository(services.db).all())[SettingsService.localePreferenceKey], isNull);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      services.dispose();
+      services.settings.dispose();
+      await services.db.close();
+    });
+
+    testWidgets('persisted override survives app and service recreation against the real database',
+        (WidgetTester tester) async {
+      final Directory directory = await Directory.systemTemp.createTemp('pyquest-locale-recreate-');
+      addTearDown(() async {
+        if (await directory.exists()) await directory.delete(recursive: true);
+      });
+      final String databasePath = p.join(directory.path, 'pyquest.db');
+      Future<AppServices> createServices() async {
+        final AppServices? services = await tester.runAsync(() => AppServices.create(
+              bundle: rootBundle,
+              databaseFactory: databaseFactoryFfiNoIsolate,
+              databasePath: databasePath,
+              audioEnabled: false,
+              startSessionTimer: false,
+            ));
+        return services!;
+      }
+
+      final List<Locale> osLocales = <Locale>[const Locale('vi', 'VN')];
+      final AppServices first = await createServices();
+      await tester.pumpWidget(
+        PyQuestApp(
+          servicesFactory: (_) async => first,
+          systemLocalesReader: () => List<Locale>.unmodifiable(osLocales),
+          minSplash: Duration.zero,
+        ),
+      );
+      await pumpFor(tester, const Duration(milliseconds: 300));
+      await tester.runAsync(() => first.settings.setLocalePreference(LocalePreference.en));
+      await pumpFor(tester, const Duration(milliseconds: 100));
+      expect(_localeOf(tester), const Locale('en'));
+      expect((await SettingsRepository(first.db).all())[SettingsService.localePreferenceKey], 'en');
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      first.dispose();
+      first.settings.dispose();
+      await first.db.close();
+
+      final AppServices recreated = await createServices();
+      await tester.pumpWidget(
+        PyQuestApp(
+          servicesFactory: (_) async => recreated,
+          systemLocalesReader: () => List<Locale>.unmodifiable(osLocales),
+          minSplash: Duration.zero,
+        ),
+      );
+      await pumpFor(tester, const Duration(milliseconds: 300));
+      expect(recreated.settings.localePreference, LocalePreference.en);
+      expect(recreated.settings.lang, PqLang.en);
+      expect(_localeOf(tester), const Locale('en'));
+
+      await tester.runAsync(() => recreated.settings.setLocalePreference(LocalePreference.system));
+      await pumpFor(tester, const Duration(milliseconds: 100));
+      expect(_localeOf(tester), const Locale('vi'));
+      expect(recreated.settings.lang, PqLang.vi);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      recreated.dispose();
+      recreated.settings.dispose();
+      await recreated.db.close();
+    });
+
+    testWidgets('localized framework control semantics update on a live modal route',
+        (WidgetTester tester) async {
+      final List<Locale> osLocales = <Locale>[const Locale('vi', 'VN')];
+      final AppServices services = await _openServices(tester);
+      await tester.pumpWidget(
+        PyQuestApp(
+          servicesFactory: (_) async => services,
+          systemLocalesReader: () => List<Locale>.unmodifiable(osLocales),
+          minSplash: Duration.zero,
+        ),
+      );
+      await pumpFor(tester, const Duration(milliseconds: 300));
+      final SemanticsHandle semantics = tester.ensureSemantics();
+      addTearDown(semantics.dispose);
+
+      unawaited(showDialog<void>(
+        context: tester.element(find.byType(Navigator).first),
+        builder: (BuildContext context) => const AlertDialog(
+          title: Text('Locale semantics'),
+          actions: <Widget>[CloseButton()],
+        ),
+      ));
+      await tester.pumpAndSettle();
+      final Finder closeVi = find.byTooltip('Đóng');
+      expect(closeVi, findsOneWidget);
+      expect(tester.getSemantics(closeVi).label, 'Đóng');
+
+      osLocales
+        ..clear()
+        ..add(const Locale('en', 'US'));
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      final Finder closeEn = find.byTooltip('Close');
+      expect(closeEn, findsOneWidget);
+      expect(tester.getSemantics(closeEn).label, 'Close');
+
+      await tester.tap(closeEn);
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(const SizedBox.shrink());
+      services.dispose();
+      services.settings.dispose();
+      await services.db.close();
     });
 
     testWidgets('switching locale keeps the route and the text being typed',

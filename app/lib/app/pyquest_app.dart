@@ -18,9 +18,15 @@ import 'locale_binding.dart';
 typedef ServicesFactory = Future<AppServices> Function(AssetBundle bundle);
 
 class PyQuestApp extends StatefulWidget {
-  const PyQuestApp({super.key, this.servicesFactory, this.minSplash = const Duration(milliseconds: 900)});
+  const PyQuestApp({
+    super.key,
+    this.servicesFactory,
+    this.systemLocalesReader,
+    this.minSplash = const Duration(milliseconds: 900),
+  });
 
   final ServicesFactory? servicesFactory;
+  final SystemLocalesReader? systemLocalesReader;
   final Duration minSplash;
 
   @override
@@ -40,11 +46,15 @@ class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
   AppServices? _services;
   AppLocaleBinding? _localeBinding;
   Object? _error;
-  List<Locale> _systemLocales = WidgetsBinding.instance.platformDispatcher.locales;
+  List<Locale> _systemLocales = const <Locale>[];
+
+  List<Locale> get _readSystemLocales =>
+      widget.systemLocalesReader?.call() ?? WidgetsBinding.instance.platformDispatcher.locales;
 
   @override
   void initState() {
     super.initState();
+    _systemLocales = _readSystemLocales;
     WidgetsBinding.instance.addObserver(this);
     _boot();
   }
@@ -54,7 +64,19 @@ class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
   @override
   void didChangeLocales(List<Locale>? locales) {
     super.didChangeLocales(locales);
-    _systemLocales = locales ?? WidgetsBinding.instance.platformDispatcher.locales;
+    _systemLocales = locales ?? _readSystemLocales;
+    _localeBinding?.syncSystemLocales();
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state != AppLifecycleState.resumed) return;
+
+    // Locale change callbacks may be delivered while the app is backgrounded (or missed by
+    // a platform). Re-read on resume rather than trusting the last callback payload.
+    _systemLocales = _readSystemLocales;
     _localeBinding?.syncSystemLocales();
     if (mounted) setState(() {});
   }
@@ -80,8 +102,10 @@ class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
       // Before this point no OS list reached the settings service, so its `lang` still
       // followed the legacy row; pushing the real list here is what makes cast dialogue
       // and the live tutor voice follow the device language.
-      final AppLocaleBinding binding = AppLocaleBinding(settings: services.settings)
-        ..syncSystemLocales();
+      final AppLocaleBinding binding = AppLocaleBinding(
+        settings: services.settings,
+        systemLocales: widget.systemLocalesReader,
+      )..syncSystemLocales();
       setState(() {
         _services = services;
         _localeBinding?.dispose();

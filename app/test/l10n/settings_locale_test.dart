@@ -84,6 +84,28 @@ void main() {
       expect(settings.raw(SettingsService.legacyLanguageKey), 'vi');
     });
 
+    test('reload preserves the last OS input while an explicit empty list means fallback', () async {
+      final _Fixture fixture = await _openFixture(<String, String>{});
+      addTearDown(fixture.close);
+      final SettingsService settings = fixture.service();
+      addTearDown(settings.dispose);
+
+      await settings.load(systemLocales: <String>['vi-VN']);
+      expect(settings.lang, PqLang.vi);
+      await settings.load();
+      expect(settings.localePreference, LocalePreference.system);
+      expect(settings.localeResolution.languageCode, 'vi');
+      expect(settings.lang, PqLang.vi);
+      expect(settings.raw(SettingsService.localePreferenceKey), isNull);
+      expect((await fixture.repository.all())[SettingsService.localePreferenceKey], isNull);
+
+      await settings.load(systemLocales: const <String>[]);
+      expect(settings.localePreference, LocalePreference.system);
+      expect(settings.localeResolution.languageCode, 'en');
+      expect(settings.localeResolution.usedEnglishFallback, isTrue);
+      expect(settings.lang, PqLang.en);
+    });
+
     test('legacy PqLang adapter remains unchanged until the root supplies OS locales', () async {
       final _Fixture fixture = await _openFixture(<String, String>{});
       addTearDown(fixture.close);

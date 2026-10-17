@@ -32,8 +32,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  # PQC-015: `flutter pub get` runs `flutter gen-l10n` from l10n.yaml into
-  # .dart_tool/flutter_gen (synthetic package, not committed).
+  # PQC-015: `flutter pub get` runs `flutter gen-l10n` from l10n.yaml into the
+  # committed lib/l10n/generated output directory.
   generate: true
 
   assets:
