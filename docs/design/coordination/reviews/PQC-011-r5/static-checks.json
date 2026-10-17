@@ -1,0 +1,14 @@
+{
+  "result": "PASS_SOURCE_ARCHIVE_ONLY",
+  "code_pin": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+  "source_files": 2,
+  "exact_patch_verified": true,
+  "default_scale_matrix_unchanged": true,
+  "repository_rootBundle_AssetManifest_tests_unchanged": true,
+  "local_doc_links": 13,
+  "github_checks": 0,
+  "github_workflow_runs": 0,
+  "format_analyze_flutter_tests": "NOT_RUN",
+  "ci_triggered": false,
+  "scope": "Git/source archive integrity, not runtime correctness or test execution"
+}

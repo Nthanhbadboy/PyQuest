@@ -1,0 +1,68 @@
+SDK source only, not an installed/executed Flutter SDK.
+URL: https://github.com/flutter/flutter/blob/abaf9c523780a608bd46686fd5e53740a07077f8/packages/flutter_test/lib/src/binding.dart
+Full fetched source SHA-256: 7fc560454d2dd0d209b7911ead99b2038e0f8e2dcf3f21c2669d79e868452011
+
+2249:   Future<void> pump([Duration? duration, EnginePhase newPhase = EnginePhase.sendSemanticsUpdate]) {
+2250:     return TestAsyncUtils.guard<void>(() {
+2251:       assert(inTest);
+2252:       assert(_clock != null);
+2253:       if (duration != null) {
+2254:         _currentFakeAsync!.elapse(duration);
+2255:       }
+2256:       _phase = newPhase;
+2257:       if (hasScheduledFrame) {
+2258:         _currentFakeAsync!.flushMicrotasks();
+2259:         handleBeginFrame(Duration(microseconds: _clock!.now().microsecondsSinceEpoch));
+2260:         _currentFakeAsync!.flushMicrotasks();
+2261:         handleDrawFrame();
+2262:       }
+2263:       _currentFakeAsync!.flushMicrotasks();
+2264:       return Future<void>.value();
+2265:     });
+
+2282:     final Zone realAsyncZone = Zone.current.fork(
+2283:       specification: ZoneSpecification(
+2284:         scheduleMicrotask: (Zone self, ZoneDelegate parent, Zone zone, void Function() f) {
+2285:           _rootDelegate.scheduleMicrotask(zone, f);
+2286:         },
+2287:         createTimer:
+2288:             (Zone self, ZoneDelegate parent, Zone zone, Duration duration, void Function() f) {
+2289:               return _rootDelegate.createTimer(zone, duration, f);
+2290:             },
+2291:         createPeriodicTimer:
+2292:             (
+2293:               Zone self,
+2294:               ZoneDelegate parent,
+2295:               Zone zone,
+2296:               Duration period,
+2297:               void Function(Timer timer) f,
+2298:             ) {
+2299:               return _rootDelegate.createPeriodicTimer(zone, period, f);
+2300:             },
+2301:       ),
+2302:     );
+2303:
+2304:     return realAsyncZone.run<Future<T?>>(() {
+2305:       final result = Completer<T?>();
+
+2495:       // testBodyResult is a Future that was created in the Zone of the
+2496:       // fakeAsync. This means that if we await it here, it will register a
+2497:       // microtask to handle the future _in the fake async zone_. We avoid this
+2498:       // by calling '.then' in the current zone. While flushing the microtasks
+2499:       // of the fake-zone below, the new future will be completed and can then
+2500:       // be used without fakeAsync.
+2501:
+2502:       final Future<void> resultFuture = testBodyResult.then<void>((_) {
+2503:         // Do nothing.
+2504:       });
+2505:
+2506:       // Resolve interplay between fake async and real async calls.
+2507:       fakeAsync.flushMicrotasks();
+2508:       while (_pendingAsyncTasks != null) {
+2509:         await _pendingAsyncTasks!.future;
+2510:         fakeAsync.flushMicrotasks();
+2511:       }
+2512:       return resultFuture;
+2513:     });
+2514:   }
+2515:

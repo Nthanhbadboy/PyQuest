@@ -32,32 +32,27 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision42**, review exact CODE
-`2ea5e5004e98df4aec8c1132a56b8d60bf4ddf5e`. Đọc từ DESIGN SHA mới:
-`docs/design/coordination/reviews/PQD-003-r42.md`,
-`docs/implementation/coordination/tasks/PQC-011.md` (contract revision2, review r42)
-và relay `docs/design/coordination/reviews/PQC-011-r4/relay.md`.
+Task hiện tại là **PQD-003 revision44**, review exact CODE
+`71b0fd3fd8fb07c73596ce089fa2e68f6fe87964`. Đọc từ DESIGN SHA mới:
+`docs/design/coordination/reviews/PQD-003-r44.md`,
+`docs/implementation/coordination/tasks/PQC-011.md` (contract revision2, review r44)
+và `docs/design/coordination/reviews/PQC-011-r5/relay.md`.
 
-**011 vẫn CHANGES_REQUESTED.** R34-A/B/C/D đã SOURCE_ADDRESSED qua đọc source;
-không yêu cầu sửa lại và không được gọi analyzer/tests PASS. Correction tiếp theo
-chỉ R42-A/B trong `app/test/lesson_board_integration_test.dart` + task011:
-- Smoke VI/360×640/2×: giữ tap Next, thêm badge đúng/Run/đợi enabled/tap Continue thật,
-  assert3/5 và no exception. Giữ bốn case VI/EN×hai size; không mở matrix2× mới.
-- Hai late-load tests: đợi/assert hai authored asset thật sự deliver sau đổi step/
-  unmount, rồi flush continuation và kiểm no stale board/exception; mở gate rồi
-  pumpAndSettle không phải delivery barrier. Giữ rootBundle/AssetManifest happy path.
+**Không có correction source mới.** R34-A/B/C/D và R42-A/B đã SOURCE_ADDRESSED,
+EXECUTION_UNVERIFIED. Không làm lại patches hoặc tạo commit ACK-only.
+**011 vẫn CHANGES_REQUESTED**, blocker **WAITING_FOR_PINNED_SDK_EVIDENCE**.
+Không suy PASS từ source/diff/art; GitHub exact71b0 hiện0checks/0workflowruns.
 
-Commit test correction riêng. Không sửa runtime/controller/validator/schema/assets/
-deps/pubspec/CI/SDK/APK để xanh test. Không cài SDK hoặc tự trigger/rerun CI để đáp
-review này. Nếu SDK vẫn thiếu, ghi NOT_RUN + WAITING_FOR_PINNED_SDK_EVIDENCE, không
-ACK-only hoặc retry vòng lặp. Khi môi trường đã được phép có pinned SDK, formatter
-trong allowlist011 và execution gates cũ vẫn bắt buộc, báo exactSHA/số thực chạy:
-analyze sạch,12Settings,406ordinary+new,10render và integration011. Không tựaccept.
+Không cài/đổiSDK/deps/CI hoặc tự trigger/rerun để đáp review này. Khi môi trường
+pinned SDK đã được phép sẵn sàng, formatter theoallowlist và gates hiện hữu vẫn
+cần: analyze sạch,12Settings,406ordinary baseline+new,10render và integration011.
+Gửi exact finalSHA/log/counts thực chạy; format/fix đổiSHA thì evidence theoSHA mới.
+Nếu có failure thật, báo repro/log để triage trongallowlist011, không tự mởscope.
+Trong lúc thiếutoolchain: chờevidence, khôngcorrection/ACK/CIloop hoặc giảwatcher.
 
-**018 REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE, R38-A/B CLOSED.** Không redo9PNG,
-receipt/archive/intake/ACK-only hay portFlutter; B02 vẫn read-only prose mock.
-Không ghi đè snapshot4fe củaDESIGN. W08r37/W14r39/DailyEnergyr41 và thiết kế
-chapter-selection kế tiếp là laneDESIGN riêng. Không mở R1/R4 toàn app.
+018 giữ **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**, R38-A/Bclosed. Không redo9PNG,
+receipt/archive/intake hay portFlutter; B02vẫnprosemock. DESIGN đã giaochapterselection
+r43, tiếp tụcMazelevels/actualCreator độc lập. Không mởR1/R4; không giaoCODEstudy mới.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
