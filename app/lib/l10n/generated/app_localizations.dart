@@ -43,7 +43,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
       SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
 
   @override
-  bool isSupported(Locale locale) => supportedLocales
+  bool isSupported(Locale locale) => AppLocalizations.supportedLocales
       .map((Locale supported) => supported.languageCode)
       .contains(locale.languageCode);
 

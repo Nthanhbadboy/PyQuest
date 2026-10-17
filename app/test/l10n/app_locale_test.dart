@@ -105,25 +105,46 @@ void main() {
 
   // ------------------------------------------------------------------ app root
   group('app root locale wiring', () {
-    testWidgets('splash carries the delegates and follows the OS before settings exist',
-        (WidgetTester tester) async {
+    // A factory that never resolves keeps the app on the splash: the stored preference is
+    // unknown there, so the OS list is the only input.
+    Future<void> pumpSplash(WidgetTester tester) async {
       tester.platformDispatcher.localesTestValue = <Locale>[const Locale('vi', 'VN')];
       addTearDown(tester.platformDispatcher.clearLocalesTestValue);
-
-      // A factory that never resolves keeps the app on the splash: the stored preference
-      // is unknown there, so the OS list is the only input.
-      await tester.pumpWidget(PyQuestApp(servicesFactory: (_) => Completer<AppServices>().future));
+      await tester.pumpWidget(
+        PyQuestApp(servicesFactory: (_) => Completer<AppServices>().future, minSplash: Duration.zero),
+      );
       await pumpFor(tester, const Duration(milliseconds: 600));
+    }
 
+    testWidgets('splash shows the motto while the services are still loading',
+        (WidgetTester tester) async {
+      await pumpSplash(tester);
       expect(find.text('Build Your Game. Rule Your World.'), findsOneWidget);
+    });
+
+    testWidgets('splash locale follows the OS list before settings exist',
+        (WidgetTester tester) async {
+      await pumpSplash(tester);
       final BuildContext context = tester.element(find.text('Build Your Game. Rule Your World.'));
       expect(Localizations.localeOf(context), const Locale('vi'));
-      // Framework strings really come from the Vietnamese delegate, not the English one.
+    });
+
+    testWidgets('splash framework strings come from the Vietnamese delegate',
+        (WidgetTester tester) async {
+      await pumpSplash(tester);
+      final BuildContext context = tester.element(find.text('Build Your Game. Rule Your World.'));
       expect(MaterialLocalizations.of(context).cancelButtonLabel, 'Huỷ');
       expect(MaterialLocalizations.of(context).closeButtonLabel, 'Đóng');
+    });
+
+    testWidgets('splash generated greeting is Vietnamese', (WidgetTester tester) async {
+      await pumpSplash(tester);
+      final BuildContext context = tester.element(find.text('Build Your Game. Rule Your World.'));
+      expect(AppLocalizations.delegate.isSupported(const Locale('vi')), isTrue);
       final AppLocalizations? l10n = AppLocalizations.of(context);
       expect(l10n, isNotNull);
-      expect(l10n!.foundationGreeting('Pip'), 'Xin chào Pip!');
+      expect(l10n!.localeName, 'vi');
+      expect(l10n.foundationGreeting('Pip'), 'Xin chào Pip!');
     });
 
     testWidgets('loaded app follows the OS list; framework strings and tutor language switch',
