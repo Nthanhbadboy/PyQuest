@@ -101,60 +101,81 @@ class _SettingsSheet extends StatelessWidget {
     final math.Random random = math.Random();
     final int a = 6 + random.nextInt(4);
     final int b = 6 + random.nextInt(4);
-    final TextEditingController controller = TextEditingController();
     final bool? ok = await showDialog<bool>(
       context: context,
-      builder: (BuildContext dialogContext) {
-        final AppLocalizations l10n = AppLocalizations.of(dialogContext)!;
-        return AlertDialog(
-          backgroundColor: PQColors.parchment,
-          title: Text(
-            l10n.settingsParentTitle,
-            key: const ValueKey<String>('settings_parent_title'),
-            style: PQText.h2,
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                l10n.settingsParentWarning,
-                key: const ValueKey<String>('settings_parent_warning'),
-                style: PQText.body,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.settingsParentQuestion(a, b),
-                key: const ValueKey<String>('settings_parent_question'),
-                style: PQText.h2,
-              ),
-              TextField(
-                key: const ValueKey<String>('parent_gate_field'),
-                controller: controller,
-                keyboardType: TextInputType.number,
-                style: PQText.h3,
-                decoration: InputDecoration(labelText: l10n.settingsParentAnswer),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.settingsCancel, style: PQText.label),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(controller.text.trim() == '${a * b}'),
-              child: Text(l10n.settingsDelete, style: PQText.label.copyWith(color: PQColors.danger)),
-            ),
-          ],
-        );
-      },
+      builder: (_) => _SettingsParentGateDialog(a: a, b: b),
     );
-    controller.dispose();
     if (ok == true && context.mounted) {
       await AppScope.of(context).resetAllProgress();
       if (context.mounted) Navigator.of(context).pop();
     }
+  }
+}
+
+class _SettingsParentGateDialog extends StatefulWidget {
+  const _SettingsParentGateDialog({required this.a, required this.b});
+
+  final int a;
+  final int b;
+
+  @override
+  State<_SettingsParentGateDialog> createState() => _SettingsParentGateDialogState();
+}
+
+class _SettingsParentGateDialogState extends State<_SettingsParentGateDialog> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    return AlertDialog(
+      backgroundColor: PQColors.parchment,
+      title: Text(
+        l10n.settingsParentTitle,
+        key: const ValueKey<String>('settings_parent_title'),
+        style: PQText.h2,
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            l10n.settingsParentWarning,
+            key: const ValueKey<String>('settings_parent_warning'),
+            style: PQText.body,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.settingsParentQuestion(widget.a, widget.b),
+            key: const ValueKey<String>('settings_parent_question'),
+            style: PQText.h2,
+          ),
+          TextField(
+            key: const ValueKey<String>('parent_gate_field'),
+            controller: _controller,
+            keyboardType: TextInputType.number,
+            style: PQText.h3,
+            decoration: InputDecoration(labelText: l10n.settingsParentAnswer),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(l10n.settingsCancel, style: PQText.label),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(_controller.text.trim() == '${widget.a * widget.b}'),
+          child: Text(l10n.settingsDelete, style: PQText.label.copyWith(color: PQColors.danger)),
+        ),
+      ],
+    );
   }
 }
 
