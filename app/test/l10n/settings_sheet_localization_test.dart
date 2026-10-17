@@ -181,8 +181,8 @@ void main() {
       'vi',
     );
 
-    Navigator.of(tester.element(find.byKey(const ValueKey<String>('settings_language_panel')))).pop();
-    await pumpFor(tester, const Duration(milliseconds: 250));
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
     await _openSettings(tester);
     _expectOneSelectedRadio(tester, LocalePreference.vi);
     expect(find.byKey(const ValueKey<String>('language_save_error')), findsNothing);
@@ -373,8 +373,8 @@ void main() {
           'raw=${services.settings.raw(SettingsService.localePreferenceKey)}, '
           'error=${services.settings.localePreferenceSaveError}',
     );
-    Navigator.of(tester.element(find.byKey(const ValueKey<String>('settings_language_panel')))).pop();
-    await pumpFor(tester, const Duration(milliseconds: 250));
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey<String>('settings_language_panel')), findsNothing);
     await _releaseWriteLock(tester, lock!);
     lock = null;
@@ -429,8 +429,8 @@ void main() {
     }
     expect(tester.takeException(), isNull);
 
-    Navigator.of(tester.element(find.byKey(const ValueKey<String>('python_info_sheet')))).pop();
-    await pumpFor(tester, const Duration(milliseconds: 250));
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
     await _tapVisible(tester, find.byKey(const ValueKey<String>('settings_reset_progress')));
     await pumpFor(tester, const Duration(milliseconds: 250));
     _expectParentCopy(tester, 'en');
