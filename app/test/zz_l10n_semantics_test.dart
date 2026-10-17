@@ -28,7 +28,7 @@ void main() {
     expect(backVi, findsOneWidget);
     final SemanticsHandle semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
-    expect(tester.getSemantics(backVi).tooltip, 'Quay lại');
+    expect(tester.getSemantics(find.byType(IconButton)).tooltip, 'Quay lại');
     await _disposeHarness(tester, harness);
   });
 
@@ -61,7 +61,7 @@ void main() {
 
     final Finder backEn = find.byTooltip('Back');
     expect(backEn, findsOneWidget);
-    expect(tester.getSemantics(backEn).tooltip, 'Back');
+    expect(tester.getSemantics(find.byType(IconButton)).tooltip, 'Back');
     await tester.tap(backEn);
     await tester.pump(const Duration(milliseconds: 150));
     await _disposeHarness(tester, harness);
