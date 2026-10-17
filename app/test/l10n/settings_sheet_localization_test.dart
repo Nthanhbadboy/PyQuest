@@ -325,8 +325,8 @@ void main() {
 
     await _releaseWriteLock(tester, lock);
     lock = null;
-    final Map<String, String> afterRace = await _settingsRows(tester, services);
     await pumpFor(tester, const Duration(milliseconds: 300));
+    final Map<String, String> afterRace = await _settingsRows(tester, services);
     expect(afterRace[SettingsService.localePreferenceKey], 'vi');
     expect(services.settings.localePreference, LocalePreference.vi);
     expect(services.settings.localePreferenceSaveError, isNull,
@@ -468,8 +468,8 @@ void main() {
 
         final AppServices services = await _openServices(tester);
         await tester.runAsync(() => services.settings.load(systemLocales: <String>['vi-VN']));
-        if (viewportCase.locale == LocalePreference.en) {
-          await tester.runAsync(() => services.settings.setLocalePreference(LocalePreference.en));
+        if (viewportCase.locale.isExplicit) {
+          await tester.runAsync(() => services.settings.setLocalePreference(viewportCase.locale));
         }
         await tester.pumpWidget(_settingsComponentHost(services));
         await tester.pump();
@@ -510,6 +510,14 @@ void main() {
     await tester.runAsync(() => services.db.db.execute('''
       CREATE TRIGGER reject_locale_scale
       BEFORE INSERT ON settings
+      WHEN NEW.key = '${SettingsService.localePreferenceKey}'
+      BEGIN
+        SELECT RAISE(ABORT, 'scale retry fixture');
+      END
+    '''));
+    await tester.runAsync(() => services.db.db.execute('''
+      CREATE TRIGGER reject_locale_scale_update
+      BEFORE UPDATE ON settings
       WHEN NEW.key = '${SettingsService.localePreferenceKey}'
       BEGIN
         SELECT RAISE(ABORT, 'scale retry fixture');
@@ -692,8 +700,11 @@ Future<void> _mountPyQuest(WidgetTester tester, AppServices services) async {
 }
 
 Future<void> _openSettings(WidgetTester tester) async {
-  await tester.tap(find.byKey(const ValueKey<String>('settings_button')));
-  await pumpFor(tester, const Duration(milliseconds: 300));
+  await tapAndSettle(
+    tester,
+    find.byKey(const ValueKey<String>('settings_button')),
+    wait: const Duration(milliseconds: 900),
+  );
   expect(find.byKey(const ValueKey<String>('settings_language_panel')), findsOneWidget);
 }
 
