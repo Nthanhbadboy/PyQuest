@@ -269,9 +269,19 @@
           "id": "w12-creator",
           "path": "../art-refresh-r34/concepts/w12-creator.jpg",
           "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f"
+        },
+        {
+          "id": "w12b-friends-gifts",
+          "path": "../art-refresh-r34/concepts/w12b-friends-gifts.jpg",
+          "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0"
+        },
+        {
+          "id": "w13-tutor",
+          "path": "../art-refresh-r33/code/w13-tutor/concept.png",
+          "sha256": "611acdf2acd18110c30984f797da6a091bcac57adc99a119c28a06adcdd75d84"
         }
       ],
-      "why": "W01 anchors materials; W12 supplies the existing workshop continuity. The requested editor, test zone and version tray are explicit front-facing study UI, not generated mechanics or claims that a marble run has physics."
+      "why": "W01 anchors material/light; W12 is the maker-workshop reference; W12b is cited only for continuity, not as the editor or a gift system; W13 informs clear, front-facing learning/code surfaces. The new scene makes an editor, separate preview and version tray visible without claiming a live editor."
     },
     {
       "scene": "B03-w07-built-room",
@@ -292,7 +302,7 @@
           "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad"
         }
       ],
-      "why": "W01 fixes the world materials; W03 is the one-room project example; W07 supplies the useful workshop furniture scale. Both known door/ghost geometry defects are expressly avoided: this new concept uses a solid continuous floor, a real threshold, and no cyan ghost, and is not a W02 blueprint."
+      "why": "W03 provides the ground-floor project context and W01 the shared world anchor. W07 contributes room-material scale only; its known threshold/door issue is not copied. The new scene has solid floor and a real ground-level doorway; W02’s separate two-storey study is not this blueprint."
     },
     {
       "scene": "B04-w10-pet-rest",
@@ -306,14 +316,9 @@
           "id": "w10-pet",
           "path": "../art-refresh-r34/concepts/w10-pet.jpg",
           "sha256": "52b623e516cbb1afd64c13c557d39018a9faaef6639a248b236f4e6d95f752d8"
-        },
-        {
-          "id": "w10b-pet-shop",
-          "path": "../art-refresh-r34/concepts/w10b-pet-shop.jpg",
-          "sha256": "0106104a69095e63fe54124abaeb4276c8bc0e5c98330ed16db27122f6176a89"
         }
       ],
-      "why": "W10 alone defines Miu's orange-tabby garden identity and pergola setting; W10b is used only as a warning against drifting to the gray shop kitten. The rest pose remains a single static scene with baseline behavior, no AI, sadness or purchase pressure."
+      "why": "W10 alone is the positive character/scene reference for the same orange Miu under the existing pergola; W01 anchors materials/light. W10b gray shop kitten is an explicit exclusion, not a generation input."
     }
   ],
   "boundaries": {
@@ -334,6 +339,169 @@
       "R36-C scene-first composition and reviewer/product separation"
     ],
     "five_concept_pngs": "retained byte-for-byte; original SHA-256 values unchanged",
-    "batch_b": "pending four distinct concepts"
+    "batch_b": "four concepts and state fixtures delivered; awaiting DESIGN re-review"
+  },
+  "batch_b_artifacts": {
+    "generated_from_design_pin": "68f2590b5883ca8aa746ffde0814d60a32dacb3c",
+    "fullsize_review": "All four newly generated images were opened and visually inspected individually at native full-size; this does not imply DESIGN acceptance.",
+    "assets": [
+      {
+        "scene_id": "b01-w09-friends-invites",
+        "image_path": "b01-w09-friends-invites/concept.png",
+        "sha256": "769336b24efdbc7561427030fa636e8301a3eee15431d1882554ec069f6b0ece",
+        "prompt_path": "b01-w09-friends-invites/prompt.txt",
+        "prompt_sha256": "c70bdb7df9a895435f021b95ea610ec03162a27dc25657cbff34821059de8f69",
+        "dimensions": [
+          928,
+          1152
+        ],
+        "viewed_fullsize": true,
+        "observation": "A timber community pergola, seating, blank paper and an open garden gate read as an inviting outdoor nook; it is not a post office and contains no fake UI text, names or online cues.",
+        "references": [
+          {
+            "id": "w01-village",
+            "path": "../art-refresh-r33/concepts/w01-village.jpg",
+            "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+          },
+          {
+            "id": "w09-visit",
+            "path": "../art-refresh-r34/concepts/w09-visit.jpg",
+            "sha256": "a32b1fe065bb020df46f8fe6b3445300abd55c7bad69991473a80f3601713638"
+          },
+          {
+            "id": "w12b-friends-gifts",
+            "path": "../art-refresh-r34/concepts/w12b-friends-gifts.jpg",
+            "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0"
+          }
+        ],
+        "excluded_references": [],
+        "generation_input_refs": [
+          "w09-visit",
+          "w12b-friends-gifts"
+        ]
+      },
+      {
+        "scene_id": "b02-w12-creator-editor",
+        "image_path": "b02-w12-creator-editor/concept.png",
+        "sha256": "d37ff8e6e729400df919a0e7b94abb7800f2754ed481facea53eecc78955442e",
+        "prompt_path": "b02-w12-creator-editor/prompt.txt",
+        "prompt_sha256": "e515cee6522931be8793ec6fd06b33bc88e471b4dd775e95d74c281fb074010b",
+        "dimensions": [
+          928,
+          1152
+        ],
+        "viewed_fullsize": true,
+        "observation": "A timber/stone maker workshop has blank editor surfaces, a separate preview frame and a tray; readable controls are supplied as front-facing HTML UI, not perspective-baked text.",
+        "references": [
+          {
+            "id": "w01-village",
+            "path": "../art-refresh-r33/concepts/w01-village.jpg",
+            "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+          },
+          {
+            "id": "w12-creator",
+            "path": "../art-refresh-r34/concepts/w12-creator.jpg",
+            "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f"
+          },
+          {
+            "id": "w12b-friends-gifts",
+            "path": "../art-refresh-r34/concepts/w12b-friends-gifts.jpg",
+            "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0"
+          },
+          {
+            "id": "w13-tutor",
+            "path": "../art-refresh-r33/code/w13-tutor/concept.png",
+            "sha256": "611acdf2acd18110c30984f797da6a091bcac57adc99a119c28a06adcdd75d84"
+          },
+          {
+            "id": "w12b-friends-gifts",
+            "path": "../art-refresh-r34/concepts/w12b-friends-gifts.jpg",
+            "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0"
+          },
+          {
+            "id": "w13-tutor",
+            "path": "../art-refresh-r33/code/w13-tutor/concept.png",
+            "sha256": "611acdf2acd18110c30984f797da6a091bcac57adc99a119c28a06adcdd75d84"
+          }
+        ],
+        "excluded_references": [],
+        "generation_input_refs": [
+          "w12-creator",
+          "w13-tutor"
+        ]
+      },
+      {
+        "scene_id": "b03-w07-built-room",
+        "image_path": "b03-w07-built-room/concept.png",
+        "sha256": "88f1e9c4ec20c070a35a00f0430b61837ce13a49f8fd2f3b430ef8ee4df3b63d",
+        "prompt_path": "b03-w07-built-room/prompt.txt",
+        "prompt_sha256": "f3ed70e726096859d1c45863f34a973c702fde13b0f139530d530f504daafd3c",
+        "dimensions": [
+          928,
+          1152
+        ],
+        "viewed_fullsize": true,
+        "observation": "A completed single-storey room has a continuous solid floor, a real open ground-level doorway and a workbench on the floor; no cyan ghost or projected volume is visible.",
+        "references": [
+          {
+            "id": "w01-village",
+            "path": "../art-refresh-r33/concepts/w01-village.jpg",
+            "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+          },
+          {
+            "id": "w03-project",
+            "path": "../art-refresh-r34/concepts/w03-project.jpg",
+            "sha256": "c24f72a647a9cab08249e22e385c57af2d3c0b49ba6d1249fa7db6b9936752c7"
+          },
+          {
+            "id": "w07-interior",
+            "path": "../art-refresh-r34/concepts/w07-interior.jpg",
+            "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad"
+          }
+        ],
+        "excluded_references": [],
+        "generation_input_refs": [
+          "w03-project",
+          "w01-village"
+        ]
+      },
+      {
+        "scene_id": "b04-w10-pet-rest",
+        "image_path": "b04-w10-pet-rest/concept.png",
+        "sha256": "f0a7e8896ef8ba6298e79d4579f7c463bb7b57e109dcbcf24aa4e0e6c8a62317",
+        "prompt_path": "b04-w10-pet-rest/prompt.txt",
+        "prompt_sha256": "97612f13d113e271b0f29e56d7cf231be3fc85ac1b40ad842d1b53c2158d55c4",
+        "dimensions": [
+          848,
+          1264
+        ],
+        "viewed_fullsize": true,
+        "observation": "The same orange tabby Miu is curled on a cushion under the pergola; one still pose, no gray shop cat, no extra pet or purchase cue.",
+        "references": [
+          {
+            "id": "w01-village",
+            "path": "../art-refresh-r33/concepts/w01-village.jpg",
+            "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+          },
+          {
+            "id": "w10-pet",
+            "path": "../art-refresh-r34/concepts/w10-pet.jpg",
+            "sha256": "52b623e516cbb1afd64c13c557d39018a9faaef6639a248b236f4e6d95f752d8"
+          }
+        ],
+        "excluded_references": [
+          {
+            "id": "w10b-pet-shop",
+            "path": "../art-refresh-r34/concepts/w10b-pet-shop.jpg",
+            "sha256": "0106104a69095e63fe54124abaeb4276c8bc0e5c98330ed16db27122f6176a89",
+            "reason": "Explicitly excluded; gray shop kitten is not orange Miu."
+          }
+        ],
+        "generation_input_refs": [
+          "w10-pet"
+        ]
+      }
+    ],
+    "status": "CONCEPTS_COMPLETE; awaiting DESIGN review"
   }
 }
