@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:pyquest/app/app_services.dart';
@@ -424,6 +425,26 @@ void main() {
     });
   });
 }
+
+Widget _localizedHost(AppLocaleBinding binding) => AnimatedBuilder(
+      animation: binding,
+      builder: (BuildContext context, Widget? _) => MaterialApp(
+        locale: binding.locale,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        home: Scaffold(
+          body: Builder(
+            builder: (BuildContext context) =>
+                Text(MaterialLocalizations.of(context).cancelButtonLabel),
+          ),
+        ),
+      ),
+    );
 
 Locale _localeOf(WidgetTester tester) =>
     Localizations.localeOf(tester.element(find.byType(Navigator).first));

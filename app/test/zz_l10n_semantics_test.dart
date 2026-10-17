@@ -14,30 +14,49 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
 
-  testWidgets('Vietnamese BackButton exposes its localized semantic label on a modal route',
+  testWidgets('Vietnamese modal BackButton has its localized tooltip',
       (WidgetTester tester) async {
-    final _LocaleHarness harness = await _createHarness(tester);
-    await _showModal(tester);
+    final _LocaleHarness harness = await _openModalHarness(tester);
+    final SemanticsHandle semantics = tester.ensureSemantics();
+    addTearDown(semantics.dispose);
+
+    expect(find.byTooltip('Quay lại'), findsOneWidget);
+    await _disposeHarness(tester, harness);
+  });
+
+  testWidgets('Vietnamese modal BackButton exposes its localized semantic label',
+      (WidgetTester tester) async {
+    final _LocaleHarness harness = await _openModalHarness(tester);
     final SemanticsHandle semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
 
     final Finder backVi = find.byTooltip('Quay lại');
-    expect(backVi, findsOneWidget, reason: 'Vietnamese BackButton tooltip missing');
-    expect(tester.getSemantics(backVi).label, 'Quay lại',
-        reason: 'Vietnamese BackButton semantic label was not localized');
-
+    expect(backVi, findsOneWidget);
+    expect(tester.getSemantics(backVi).label, 'Quay lại');
     await _disposeHarness(tester, harness);
   });
 
-  testWidgets('modal BackButton semantic label follows a system locale change',
+  testWidgets('modal BackButton tooltip tracks a system locale change',
       (WidgetTester tester) async {
-    final _LocaleHarness harness = await _createHarness(tester);
-    await _showModal(tester);
+    final _LocaleHarness harness = await _openModalHarness(tester);
+    expect(find.byTooltip('Quay lại'), findsOneWidget);
+    harness.osLocales
+      ..clear()
+      ..add(const Locale('en', 'US'));
+    harness.binding.syncSystemLocales();
+    await tester.pump(const Duration(milliseconds: 150));
+
+    expect(find.byTooltip('Back'), findsOneWidget);
+    await _disposeHarness(tester, harness);
+  });
+
+  testWidgets('modal BackButton semantic label tracks a system locale change',
+      (WidgetTester tester) async {
+    final _LocaleHarness harness = await _openModalHarness(tester);
     final SemanticsHandle semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
+    expect(find.byTooltip('Quay lại'), findsOneWidget);
 
-    expect(find.byTooltip('Quay lại'), findsOneWidget,
-        reason: 'modal route did not start in Vietnamese');
     harness.osLocales
       ..clear()
       ..add(const Locale('en', 'US'));
@@ -45,17 +64,15 @@ void main() {
     await tester.pump(const Duration(milliseconds: 150));
 
     final Finder backEn = find.byTooltip('Back');
-    expect(backEn, findsOneWidget, reason: 'English BackButton tooltip did not replace Vietnamese');
-    expect(tester.getSemantics(backEn).label, 'Back',
-        reason: 'English BackButton semantic label was not localized');
-
+    expect(backEn, findsOneWidget);
+    expect(tester.getSemantics(backEn).label, 'Back');
     await tester.tap(backEn);
     await tester.pump(const Duration(milliseconds: 150));
     await _disposeHarness(tester, harness);
   });
 }
 
-Future<_LocaleHarness> _createHarness(WidgetTester tester) async {
+Future<_LocaleHarness> _openModalHarness(WidgetTester tester) async {
   final AppDatabase database = await tester.runAsync(() => AppDatabase.open(
         factory: databaseFactoryFfiNoIsolate,
         path: inMemoryDatabasePath,
@@ -69,10 +86,7 @@ Future<_LocaleHarness> _createHarness(WidgetTester tester) async {
   )..syncSystemLocales();
   await tester.pumpWidget(_localizedHost(binding));
   await tester.pump(const Duration(milliseconds: 100));
-  return _LocaleHarness(settings, binding, osLocales);
-}
-
-Future<void> _showModal(WidgetTester tester) async {
+  final _LocaleHarness harness = _LocaleHarness(settings, binding, osLocales);
   unawaited(showDialog<void>(
     context: tester.element(find.byType(Navigator).first),
     builder: (BuildContext context) => const AlertDialog(
@@ -81,6 +95,7 @@ Future<void> _showModal(WidgetTester tester) async {
     ),
   ));
   await tester.pump(const Duration(milliseconds: 150));
+  return harness;
 }
 
 Future<void> _disposeHarness(WidgetTester tester, _LocaleHarness harness) async {
