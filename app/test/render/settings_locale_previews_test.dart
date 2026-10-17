@@ -19,18 +19,21 @@ void main() {
     );
     final List<String> lines = '${result.stdout}\n${result.stderr}'.split('\n');
     final RegExp interesting = RegExp(
-      r'\[E\]|Expected:|Actual:|Which:|══╡|EXCEPTION|Exception:|Error:|overflowed|RenderFlex|RenderBox was not laid out|Bad state:|DatabaseException|Null check|Failed assertion|Failing tests:|Python information|Settings fits|UI choices|overlapping UI|failed locale|restart|uncapped scale',
+      r'^(══╡|Expected:|Actual:|Which:|Bad state:|Exception:|StateError:|NoSuchMethodError:|LateInitializationError:|A RenderFlex|RenderBox was not laid out|The test description was:|Failing tests:)',
       caseSensitive: false,
     );
-    stdout.writeln('PQC-016 focused diagnostics child exit=${result.exitCode}');
-    int printed = 0;
+    final Set<String> selected = <String>{};
     for (final String line in lines) {
-      if (interesting.hasMatch(line)) {
-        stdout.writeln(line);
-        printed++;
+      final String trimmed = line.trimLeft();
+      if (interesting.hasMatch(trimmed) ||
+          (line.contains(' [E]') && line.contains('settings_sheet_localization_test.dart:'))) {
+        selected.add(trimmed);
       }
-      if (printed >= 100) break;
     }
-    stdout.writeln('PQC-016 focused diagnostics emitted $printed matching lines.');
+    stdout.writeln('PQC-016 focused diagnostics child exit=${result.exitCode}');
+    for (final String line in selected) {
+      stdout.writeln(line);
+    }
+    stdout.writeln('PQC-016 focused diagnostics emitted ${selected.length} unique lines.');
   });
 }
