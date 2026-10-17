@@ -14,8 +14,6 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
-  setUp(() => debugDefaultTargetPlatformOverride = TargetPlatform.android);
-  tearDown(() => debugDefaultTargetPlatformOverride = null);
 
   testWidgets('Vietnamese modal BackButton has its localized tooltip',
       (WidgetTester tester) async {
@@ -26,6 +24,8 @@ void main() {
 
   testWidgets('Vietnamese modal BackButton exposes its localized semantic label',
       (WidgetTester tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
     final _LocaleHarness harness = await _openModalHarness(tester);
     final Finder backVi = find.byTooltip('Quay lại');
     expect(backVi, findsOneWidget);
@@ -52,6 +52,8 @@ void main() {
 
   testWidgets('modal BackButton semantic label tracks a system locale change',
       (WidgetTester tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
     final _LocaleHarness harness = await _openModalHarness(tester);
     expect(find.byTooltip('Quay lại'), findsOneWidget);
     final SemanticsHandle semantics = tester.ensureSemantics();
