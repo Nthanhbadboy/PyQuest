@@ -273,7 +273,7 @@ void main() {
       expect(services.settings.lang, PqLang.en);
       services.dispose();
       services.settings.dispose();
-      await services.db.close();
+      await tester.runAsync(services.db.close);
     });
 
     testWidgets('resetAllProgress reload keeps the synchronized system locale without persisting it',
@@ -306,14 +306,16 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       services.dispose();
       services.settings.dispose();
-      await services.db.close();
+      await tester.runAsync(services.db.close);
     });
 
     testWidgets('persisted override survives app and service recreation against the real database',
         (WidgetTester tester) async {
       final Directory directory = await Directory.systemTemp.createTemp('pyquest-locale-recreate-');
       addTearDown(() async {
-        if (await directory.exists()) await directory.delete(recursive: true);
+        await tester.runAsync(() async {
+          if (await directory.exists()) await directory.delete(recursive: true);
+        });
       });
       final String databasePath = p.join(directory.path, 'pyquest.db');
       Future<AppServices> createServices() async {
@@ -345,7 +347,7 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       first.dispose();
       first.settings.dispose();
-      await first.db.close();
+      await tester.runAsync(first.db.close);
 
       final AppServices recreated = await createServices();
       await tester.pumpWidget(
@@ -368,7 +370,7 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       recreated.dispose();
       recreated.settings.dispose();
-      await recreated.db.close();
+      await tester.runAsync(recreated.db.close);
     });
 
     testWidgets('localized framework control semantics update on a live modal route',
@@ -412,7 +414,7 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       services.dispose();
       services.settings.dispose();
-      await services.db.close();
+      await tester.runAsync(services.db.close);
     });
 
     testWidgets('switching locale keeps the route and the text being typed',
