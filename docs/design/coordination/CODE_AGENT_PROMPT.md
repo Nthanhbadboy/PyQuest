@@ -32,25 +32,27 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision22: PQC-010 ACCEPTED @3f26603**.
-Đọc task003, `reviews/PQD-003-r22.md`, receipt r22 và report PQC-010-r16.
+Task hiện tại là **PQD-003 revision23: review PQC-014 @b57550d**.
+Đọc task003, `reviews/PQD-003-r23.md`, receipt r23 và report PQC-014-r1.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
-**Chuyển sang gói nền tiếp theo, không ACK-only:**
-1. PQC-010 đã nghiệm thu:run38971885352/report117213662636 SUCCESS,
-   352pass/0fail,10renderpass,analyze sạch8.2s,phases0/0/0/0. Output-node identity,
-   negative locale guards và managed handles đều đạt. Không làm lại010/thêm split.
-2. Tiếp **PQC-014**: đọc work order và contract locale preference/system resolver/
-   migration/persistence. Chỉ allowlist014, không dependency hoặc UI app-root.
-   Nếu đã triển khai, trả exact SHA/evidence riêng để review; không tự coi010 xanh
-   là014 đã đạt. Giữ regression010 và các phần đã nghiệm thu.
-3. **PQC-015** sau014 implemented+exact-SHA CI green. Minimal dependencies/delegates/
-   generation/app binding chỉ theo allowlist015; không pub upgrade blanket.
-4. Nhận010 chỉ là board authored độc lập, chưa nối LessonScreen/AI/voice và chưa
-   chứng nhận TalkBack/VoiceOver thiết bị. Không tự mở011–013/016/art/social/economy/
-   P06/CIpublisher, không apply lại guard hoặc hỏi lại authorization đã có.
-5. Bàn giao gói tiếp theo bằng code/tested SHA, run/check report, diff allowlist và
-   giới hạn; giữ hai nhánh riêng, không merge/cherry-pick toàn nhánh design.
+**Sửa014 trong scope đã duyệt, không ACK-only:**
+1. PQC-010 vẫn ACCEPTED @3f26603, không làm lại board. CI b57550d:
+   run38974137406/report117220998820 SUCCESS,368pass/0fail,10renderpass.
+   Analyze exit0 nhưng1info unnecessary_import, không gọi sạch.
+2. R23-1: setLocalePreference dùng saveError chung, clear lúc start nhưng không
+   ràng completion theo request. A chọnVI rồi B chọnEN trước khi A xong; A fail,
+   B success → errorA còn, savedfalse dù DB/raw/sessionEN. Sửa request ownership/
+   ordering, giữ immediate session selection và persisted state đúng. Không sửa UI.
+3. Thêm regression fixture SQLite: trigger rejectVI nhưng choEN, khởi chạy hai
+   Future trước await; Afalse/Btrue, latestEN, errornull, savedtrue, DB/raw/reloadEN.
+   Kiểm chiều ngược latest fail phải giữ error/unsaved và reload persisted cũ.
+   Giữ các real migration/read/write failure tests, không đổi repository/schema.
+4. R23-2: bỏ sqflite import thừa trong settings_locale_test.dart:7, không ignore lint.
+   Giữ resolver/migration/legacy adapter; chưa claim OS widget wiring/relaunch.
+5. Trả exact SHA/run/report sau patch. Ưu tiên hoàn tất014 trước015; gate015 vẫn
+   014 implemented+CI green và minimal dependencies theo order. Không root/UI/
+   pubspec trong014; không011–013/016/AI/voice/art/economy/social/CIpublisher.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
