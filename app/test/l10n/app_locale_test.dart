@@ -170,6 +170,15 @@ void main() {
       expect(l10n.foundationGreeting('Pip'), 'Xin chào Pip!');
     });
 
+    for (final _FreshRootCase localeCase in _nonVietnameseFreshRootCases) {
+      testWidgets(
+        'fresh splash and loaded root resolve ${localeCase.name} without persisting the system locale',
+        (WidgetTester tester) async {
+          await _verifyFreshRootCase(tester, localeCase);
+        },
+      );
+    }
+
     testWidgets('loaded app follows the OS list; framework strings and tutor language switch',
         (WidgetTester tester) async {
       tester.platformDispatcher.localesTestValue = <Locale>[const Locale('vi', 'VN')];
@@ -187,6 +196,9 @@ void main() {
       expect(services.settings.lang, PqLang.vi);
       // Following the OS must not persist a resolved language (PQC-014 contract).
       expect(services.settings.raw(SettingsService.localePreferenceKey), isNull);
+      final Map<String, String>? systemRows =
+          await tester.runAsync(() => SettingsRepository(services.db).all());
+      expect(systemRows?[SettingsService.localePreferenceKey], isNull);
 
       tester.platformDispatcher.localesTestValue = <Locale>[const Locale('fr', 'FR')];
       await pumpFor(tester, const Duration(milliseconds: 300));
@@ -407,6 +419,102 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
     });
 
+    testWidgets('persisted locale survives a fresh PyQuestApp and AppServices recreation',
+        (WidgetTester tester) async {
+      tester.platformDispatcher.localesTestValue = <Locale>[const Locale('vi', 'VN')];
+      addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+
+      final Directory directory = await tester.runAsync(
+          () => Directory.systemTemp.createTemp('pyquest-app-restart-locale-')) as Directory;
+      AppServices? firstServices;
+      AppServices? secondServices;
+      addTearDown(() async {
+        try {
+          await tester.pumpWidget(const SizedBox.shrink());
+        } finally {
+          try {
+            if (secondServices != null) {
+              await _disposeAndCloseServices(tester, secondServices!);
+            }
+          } finally {
+            try {
+              if (firstServices != null) {
+                await _disposeAndCloseServices(tester, firstServices!);
+              }
+            } finally {
+              await tester.runAsync(() async {
+                if (await directory.exists()) await directory.delete(recursive: true);
+              });
+            }
+          }
+        }
+      });
+
+      final String databasePath = p.join(directory.path, AppDatabase.fileName);
+      firstServices = await _createFileBackedServices(tester, databasePath);
+      final AppServices first = firstServices!;
+      await tester.pumpWidget(
+        PyQuestApp(servicesFactory: (_) async => first, minSplash: Duration.zero),
+      );
+      await pumpFor(tester, const Duration(milliseconds: 600));
+      expect(_localeOf(tester), const Locale('vi'));
+      expect(_materialOf(tester).cancelButtonLabel, 'Huỷ');
+      expect(first.settings.raw(SettingsService.localePreferenceKey), isNull);
+      final Map<String, String>? firstRows = await tester.runAsync(
+          () => SettingsRepository(first.db).all());
+      expect(firstRows?[SettingsService.localePreferenceKey], isNull);
+
+      expect(
+        await tester.runAsync(() => first.settings.setLocalePreference(LocalePreference.en)),
+        isTrue,
+      );
+      await pumpFor(tester, const Duration(milliseconds: 150));
+      expect(_localeOf(tester), const Locale('en'));
+      expect(_materialOf(tester).cancelButtonLabel, 'Cancel');
+      expect(first.settings.raw(SettingsService.localePreferenceKey), 'en');
+      final Map<String, String>? englishRows = await tester.runAsync(
+          () => SettingsRepository(first.db).all());
+      expect(englishRows?[SettingsService.localePreferenceKey], 'en');
+
+      // A real app restart: unmount, dispose every service, and close DB#1 before
+      // AppServices.create opens the same file into a distinct DB#2 connection.
+      await tester.pumpWidget(const SizedBox.shrink());
+      await _disposeAndCloseServices(tester, first);
+      firstServices = null;
+
+      secondServices = await _createFileBackedServices(tester, databasePath);
+      final AppServices second = secondServices!;
+      expect(second, isNot(same(first)));
+      expect(second.db, isNot(same(first.db)));
+      expect(second.settings, isNot(same(first.settings)));
+      await tester.pumpWidget(
+        PyQuestApp(servicesFactory: (_) async => second, minSplash: Duration.zero),
+      );
+      await pumpFor(tester, const Duration(milliseconds: 600));
+
+      // Persisted EN wins over the fresh OS=VI input on the new app and service graph.
+      expect(_localeOf(tester), const Locale('en'));
+      expect(_materialOf(tester).cancelButtonLabel, 'Cancel');
+      expect(second.settings.localePreference, LocalePreference.en);
+      expect(second.settings.raw(SettingsService.localePreferenceKey), 'en');
+      final Map<String, String>? reopenedRows = await tester.runAsync(
+          () => SettingsRepository(second.db).all());
+      expect(reopenedRows?[SettingsService.localePreferenceKey], 'en');
+
+      expect(
+        await tester.runAsync(() => second.settings.setLocalePreference(LocalePreference.system)),
+        isTrue,
+      );
+      await pumpFor(tester, const Duration(milliseconds: 150));
+      expect(_localeOf(tester), const Locale('vi'));
+      expect(_materialOf(tester).cancelButtonLabel, 'Huỷ');
+      expect(second.settings.localePreference, LocalePreference.system);
+      expect(second.settings.raw(SettingsService.localePreferenceKey), 'system');
+      final Map<String, String>? systemRows = await tester.runAsync(
+          () => SettingsRepository(second.db).all());
+      expect(systemRows?[SettingsService.localePreferenceKey], 'system');
+    });
+
     testWidgets('switching locale keeps the route and the text being typed',
         (WidgetTester tester) async {
       tester.platformDispatcher.localesTestValue = <Locale>[const Locale('vi', 'VN')];
@@ -502,6 +610,136 @@ Locale _localeOf(WidgetTester tester) =>
 
 MaterialLocalizations _materialOf(WidgetTester tester) =>
     MaterialLocalizations.of(tester.element(find.byType(Navigator).first));
+
+const List<_FreshRootCase> _nonVietnameseFreshRootCases = <_FreshRootCase>[
+  _FreshRootCase(
+    name: 'English en-US',
+    systemLocale: Locale('en', 'US'),
+    expectedLocale: Locale('en'),
+    cancelLabel: 'Cancel',
+    closeLabel: 'Close',
+    greeting: 'Hello Pip!',
+  ),
+  _FreshRootCase(
+    name: 'unsupported French fr-FR',
+    systemLocale: Locale('fr', 'FR'),
+    expectedLocale: Locale('en'),
+    cancelLabel: 'Cancel',
+    closeLabel: 'Close',
+    greeting: 'Hello Pip!',
+    expectsEnglishFallback: true,
+  ),
+];
+
+Future<void> _verifyFreshRootCase(WidgetTester tester, _FreshRootCase localeCase) async {
+  tester.platformDispatcher.localesTestValue = <Locale>[localeCase.systemLocale];
+  addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+
+  Directory? directory;
+  AppServices? services;
+  final Completer<AppServices> pendingServices = Completer<AppServices>();
+  addTearDown(() async {
+    try {
+      await tester.pumpWidget(const SizedBox.shrink());
+    } finally {
+      try {
+        if (services != null) await _disposeAndCloseServices(tester, services!);
+      } finally {
+        if (directory != null) {
+          await tester.runAsync(() async {
+            if (await directory!.exists()) await directory!.delete(recursive: true);
+          });
+        }
+      }
+    }
+  });
+
+  directory = await tester.runAsync(
+      () => Directory.systemTemp.createTemp('pyquest-fresh-root-locale-')) as Directory;
+  await tester.pumpWidget(
+    PyQuestApp(
+      servicesFactory: (_) => pendingServices.future,
+      minSplash: Duration.zero,
+    ),
+  );
+  await tester.pump();
+  _expectFreshRootLocalization(tester, localeCase);
+
+  final AppServices openedServices = await _createFileBackedServices(
+    tester,
+    p.join(directory!.path, AppDatabase.fileName),
+  );
+  services = openedServices;
+  pendingServices.complete(openedServices);
+  await pumpFor(tester, const Duration(milliseconds: 600));
+  _expectFreshRootLocalization(tester, localeCase);
+
+  expect(openedServices.settings.localePreference, LocalePreference.system);
+  expect(openedServices.settings.raw(SettingsService.localePreferenceKey), isNull);
+  expect(openedServices.settings.localeResolution.usedEnglishFallback,
+      localeCase.expectsEnglishFallback);
+  final Map<String, String>? rows = await tester.runAsync(
+      () => SettingsRepository(openedServices.db).all());
+  expect(rows?[SettingsService.localePreferenceKey], isNull);
+}
+
+void _expectFreshRootLocalization(WidgetTester tester, _FreshRootCase localeCase) {
+  expect(_localeOf(tester), localeCase.expectedLocale);
+  expect(_materialOf(tester).cancelButtonLabel, localeCase.cancelLabel);
+  expect(_materialOf(tester).closeButtonLabel, localeCase.closeLabel);
+  final AppLocalizations? l10n = AppLocalizations.of(
+    tester.element(find.byType(Navigator).first),
+  );
+  expect(l10n, isNotNull);
+  expect(l10n!.localeName, localeCase.expectedLocale.languageCode);
+  expect(l10n.foundationGreeting('Pip'), localeCase.greeting);
+}
+
+Future<AppServices> _createFileBackedServices(
+  WidgetTester tester,
+  String databasePath,
+) async {
+  final AppServices? services = await tester.runAsync(() => AppServices.create(
+        bundle: rootBundle,
+        databaseFactory: databaseFactoryFfiNoIsolate,
+        databasePath: databasePath,
+        audioEnabled: false,
+        startSessionTimer: false,
+      ));
+  return services as AppServices;
+}
+
+Future<void> _disposeAndCloseServices(WidgetTester tester, AppServices services) async {
+  try {
+    services.dispose();
+  } finally {
+    try {
+      services.settings.dispose();
+    } finally {
+      await tester.runAsync(services.db.close);
+    }
+  }
+}
+
+class _FreshRootCase {
+  const _FreshRootCase({
+    required this.name,
+    required this.systemLocale,
+    required this.expectedLocale,
+    required this.cancelLabel,
+    required this.closeLabel,
+    required this.greeting,
+    this.expectsEnglishFallback = false,
+  });
+
+  final String name;
+  final Locale systemLocale;
+  final Locale expectedLocale;
+  final String cancelLabel;
+  final String closeLabel;
+  final String greeting;
+  final bool expectsEnglishFallback;
+}
 
 Future<AppServices> _openServices(WidgetTester tester) async {
   final AppServices? services = await tester.runAsync(() => AppServices.create(
