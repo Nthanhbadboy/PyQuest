@@ -1,0 +1,91 @@
+{
+  "review": "PQD-003-r28",
+  "date": "2026-10-17",
+  "work_order": "PQC-015",
+  "verdict": "CHANGES_REQUESTED",
+  "remaining_findings": [
+    "R28-A actual PyQuestApp + AppServices + reopened database recreation coverage",
+    "R28-B fresh-root startup matrix vi/en/unsupported coverage"
+  ],
+  "closed_findings": [
+    "Generation output/provenance/reproducibility/committed-drift",
+    "Framework modal semantics harness + lifecycle",
+    "Reset host I/O and existing resume/reset/Navigator regressions"
+  ],
+  "other_work_orders": {
+    "PQC-010": "ACCEPTED @3f26603",
+    "PQC-014": "ACCEPTED @4751f11"
+  },
+  "tested_code_commit": "7bdb2525fd2c5f5bf27b80de2826e3ea0632f87b",
+  "run_id": 39018932273,
+  "run_attempt": 1,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39018932273",
+  "run_status": "completed",
+  "run_conclusion": "success",
+  "custom_report_check_id": 117357471514,
+  "generation_evidence_check_id": 117357121650,
+  "phases": {
+    "pub_get": 0,
+    "l10n_evidence_tests": 0,
+    "l10n_evidence": 0,
+    "analyze": 0,
+    "test": 0,
+    "render": 0,
+    "l10n_evidence_publish": 0
+  },
+  "ordinary": {
+    "passed": 391,
+    "failed": 0,
+    "elapsed": "01:06"
+  },
+  "render_passed": 10,
+  "analyze_clean": true,
+  "analyze_seconds": 11.7,
+  "flutter_version": "3.47.7",
+  "dart_version": "3.13.5",
+  "framework_revision_reported": "abaf9c5237",
+  "generated_files_verified_against_git": [
+    {
+      "path": "app/lib/l10n/generated/app_localizations.dart",
+      "sha256": "ac5c9058315a2273a383f38f9f7f155ac7f5fb126983048a0706ab5e941b7254",
+      "size_bytes": 5153
+    },
+    {
+      "path": "app/lib/l10n/generated/app_localizations_en.dart",
+      "sha256": "63f084135554a1d4b5afd59f9aa34f0683cf8e283b52d016a562d06d957e5c47",
+      "size_bytes": 527
+    },
+    {
+      "path": "app/lib/l10n/generated/app_localizations_vi.dart",
+      "sha256": "b243910b5ece43f820bba67f1dbc626c2330433686b96f129c6f531e98340c14",
+      "size_bytes": 535
+    }
+  ],
+  "generation_payload_fully_decoded": true,
+  "generation_runs_verified": 2,
+  "all_drift_lists_empty": true,
+  "source_sha256": {
+    ".github/workflows/ci.yml": "f697e76a6fb04684efce939f88b36874846838bc557f6f2c89746f97b360264d",
+    "app/lib/l10n/generated/app_localizations.dart": "ac5c9058315a2273a383f38f9f7f155ac7f5fb126983048a0706ab5e941b7254",
+    "app/lib/l10n/generated/app_localizations_en.dart": "63f084135554a1d4b5afd59f9aa34f0683cf8e283b52d016a562d06d957e5c47",
+    "app/lib/l10n/generated/app_localizations_vi.dart": "b243910b5ece43f820bba67f1dbc626c2330433686b96f129c6f531e98340c14",
+    "app/test/l10n/app_locale_test.dart": "8c5a39384fe4fff5304b0464ebce77823cc0ecbed7def98e7f1089cb8de3ff82",
+    "app/test/l10n/generation_probe_test.dart": null,
+    "app/test/zz_l10n_semantics_test.dart": "92e8689c2b1048df33431c7e1aae1fd30e6c1e1fcd22b3369300b65b5fd45574",
+    "ci/l10n_evidence.py": "c1b421d4f307721196f2a7d5e97b9bd2dd68cf6b80bc13a31c245988fcff7331",
+    "ci/test_l10n_evidence.py": "9d8cbda0c34af9b402e4f866fe924f0a516b2e543b592b64fc89ea59db425232",
+    "docs/implementation/coordination/tasks/PQC-015.md": "e31bf3acdecfc3618b96ea9aaf640dade84ced28f4fec704331c2553567b3c7a"
+  },
+  "local_helper_tests": {
+    "passed": 8,
+    "failed": 0,
+    "source_sha": "7bdb2525fd2c5f5bf27b80de2826e3ea0632f87b"
+  },
+  "local_python_compile_passed": true,
+  "branch_diff_check_passed": true,
+  "local_flutter_tests_run": false,
+  "local_gen_l10n_run": false,
+  "new_images_inspected": 0,
+  "runtime_regression_confirmed": false,
+  "scope_note": "Keep existing passing semantics harness at app/test/zz_l10n_semantics_test.dart; no new root-modal demand. Follow-up is root integration tests only."
+}

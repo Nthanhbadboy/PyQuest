@@ -32,28 +32,25 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision27: hoàn tất015 sau review07fc897/source6dd62c8**.
-Đọc task003, reviews/PQD-003-r27.md, receipt r27 và PQC-015-r3/evidence-channel.md.
-Đọc LEAD_MANDATE_2026-10-17: người dùng giao Lead quyết định/tiếp tục phát triển app;
-không xin user chọn task mỗi vòng. CODE vẫn làm đúng order/allowlist Lead đã publish.
+Task hiện tại là **PQD-003 revision28: chỉ hoàn tất root coverage015 @7bdb252**.
+Đọc reviews/PQD-003-r28.md/receipt và PQC-015-r4 evidence; giữ Lead mandate/relay.
 
-**Gộp sửa015 còn lại, không ACK-only/diagnostic split:**
-1. Run07:39004969823/report117319893254,384pass/7fail,10render,analyze sạch8.4s.
-   Ba app integration đỏ +4probe fail, chỉ chunk0 được thu; không có payload đầy đủ.
-   Source6dd đã runAsync5DBcloses nhưng createTemp/DBreads/semantics/cleanup còn lại.
-   Kiểm CI6dd39006531482 đúng SHA, không dùng số07 cho6dd.
-2. Bỏ extra ensureSemantics+addTearDown, dùng framework-managed semanticsEnabled:true
-   hoặc finally trước callback return; giữ CloseButton VI/EN/getSemantics assertions.
-3. Sửa createTemp fakeasync; audit DBreads, cleanup kể cả assertion fail. Pump/assert
-   trong widget zone, native I/O đúng boundary. Giữ resume/reload/Navigator/input coverage.
-4. Lead mở ngoại lệ CI015 hẹp: job check trong ci.yml + ci/l10n_evidence.py + tests.
-   Làm theo evidence-channel.md để publish đủ SDKgenerated output/hashes, gen lần2 và
-   committed drift. Không sửa ci/report.py/previews/SDK/deps/APK/emulator; không
-   pipeline overhaul. Bỏ intentional-fail probe khi đường evidence thật hoạt động.
-5. Không giấu failures/skip tests. Commit generated files thật sau thu; rerun trên
-   SHA có output để chứng minh không drift/untracked. Trả exactSHA/run/report.
-6.010/014 giữ nghiệm thu. Sau015, Lead chuẩn bị016 rồi011; CODE chưa tự làm hai gói
-   này hoặc đổi runtime ngoài015. Phạm vi không đồng nghĩa app đã hoàn thiện.
+1. ExactSHA7bdb/run39018932273/report117357471514/evidence117357121650 success:
+   391ordinary+10render,analyze11.7s sạch. Reviewer xác minh đủ3generated sources,
+   hashes/2genruns/drift và chạy8Python helper tests. SDKthật3.47.7.
+2. **Đóng generation/channel/semantics harness**. Không làm lại finder/platform,
+   helper/workflow/generated, không thêm root-modal test mới hoặc rename filezz.
+3. R28-A: giữ harness tests; thêm actualPyQuestApp+AppServices recreation với DB file
+   close/reopen, object mới, persistedEN thắngOSvi rồi system theoOS. Hiện chỉ hai
+   SettingsService/cùngDB đang mở và một MaterialApp test, không đủ apprestart.
+4. R28-B: hoàn tất fresh-root matrixvi/en/unsupported cho splash+loaded/framework,
+   khôngpersist resolved language. Thêm phần còn thiếu, không dùng OS-change thay startup.
+5. Test-only app/test/l10n/** + handoff. NativeI/O/runAsync, cleanup cả khi fail.
+   Focused tests trước nếu cóSDK rồi full CI bàn giao một patch; không bỏ391tests.
+   Không claim CIđỏ/runtimebug vì đây là coverage gap. Nếu phát hiện bug thật, trả
+   first exception/finding cho Lead, không tự weaken assertion.
+6. Handoff cùng patch dọn mô tả cũsynthetic-package/fileinline, phân biệt SHA code/docs.
+   010/014 giữaccepted; sau015 Lead tiếp016Settings rồi011lesson, không xinuserchọn lại.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
