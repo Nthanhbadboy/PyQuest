@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,13 +22,12 @@ void main() {
 
   testWidgets('Vietnamese modal BackButton exposes its localized semantic label',
       (WidgetTester tester) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.android;
     await _openModalHarness(tester);
     expect(find.byTooltip('Quay lại'), findsOneWidget);
     final Finder backIcon = find.byType(Icon);
     expect(backIcon, findsOneWidget);
     expect(tester.getSemantics(backIcon).label, 'Quay lại');
-  }, semanticsEnabled: true);
+  }, semanticsEnabled: true, variant: TargetPlatformVariant.only(TargetPlatform.android));
 
   testWidgets('modal BackButton tooltip tracks a system locale change',
       (WidgetTester tester) async {
@@ -46,7 +44,6 @@ void main() {
 
   testWidgets('modal BackButton semantic label tracks a system locale change',
       (WidgetTester tester) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.android;
     final _LocaleHarness harness = await _openModalHarness(tester);
     expect(find.byTooltip('Quay lại'), findsOneWidget);
 
@@ -63,7 +60,7 @@ void main() {
     expect(tester.getSemantics(backIcon).label, 'Back');
     await tester.tap(backEn);
     await tester.pump(const Duration(milliseconds: 150));
-  }, semanticsEnabled: true);
+  }, semanticsEnabled: true, variant: TargetPlatformVariant.only(TargetPlatform.android));
 }
 
 Future<_LocaleHarness> _openModalHarness(WidgetTester tester) async {
@@ -80,11 +77,7 @@ Future<_LocaleHarness> _openModalHarness(WidgetTester tester) async {
         try {
           settings?.dispose();
         } finally {
-          try {
-            if (database != null) await tester.runAsync(database.close);
-          } finally {
-            debugDefaultTargetPlatformOverride = null;
-          }
+          if (database != null) await tester.runAsync(database.close);
         }
       }
     }
