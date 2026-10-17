@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-18",
+  "timezone": "Asia/Saigon",
+  "kind": "HTML design study checks, NOT Flutter/device/accessibility acceptance",
+  "browser": "153.0.8010.0",
+  "scenes": 10,
+  "states": 42,
+  "matrixCases": 504,
+  "passed": 504,
+  "ctaTransitions": 42,
+  "locales": [
+    "vi",
+    "en"
+  ],
+  "phoneViewports": [
+    "390x844",
+    "360x640"
+  ],
+  "textScales": [
+    1,
+    1.3,
+    2
+  ],
+  "checks": [
+    "local font load",
+    "paired phone copy",
+    "valid transition targets",
+    "no phone horizontal overflow",
+    "primary CTA >=48px and hit-testable",
+    "scroll end reachable",
+    "text scaling not capped",
+    "revoked/offline visit removes scene image",
+    "CTA transition per state",
+    "locale preserves active state",
+    "360px host shell smoke"
+  ],
+  "errors": [],
+  "failures": [],
+  "screenshots": [
+    "w07-interior-390x844-vi.png",
+    "w03-project-390x844-vi.png",
+    "w09-visit-390x844-vi.png",
+    "w10-pet-390x844-vi.png",
+    "w10b-pet-shop-390x844-vi.png",
+    "w12-creator-390x844-vi.png",
+    "w12b-friends-gifts-390x844-vi.png",
+    "w05-maze-390x844-vi.png",
+    "w05-dragon-390x844-vi.png",
+    "w06-result-390x844-vi.png",
+    "w09-visit-revoked-390x844-vi.png",
+    "w03-project-pending-390x844-vi.png",
+    "w10-pet-unsupported-390x844-vi.png",
+    "w12-creator-error-390x844-vi.png",
+    "w03-project-360x640-en-text2-scrolled.png",
+    "gallery-overview.png"
+  ],
+  "limits": [
+    "No Flutter run",
+    "No OS keyboard or device test",
+    "No real housing/AI/social/commerce/gameplay",
+    "No exhaustive screenreader or contrast audit",
+    "Art remains opaque and some state-specific art is missing"
+  ]
+}

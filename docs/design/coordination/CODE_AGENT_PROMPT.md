@@ -32,21 +32,27 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision33: PQC-017 design/art-only READY_FOR_CODE**.
-User cho CODE hỗ trợ phần hình ảnh. Đọc `ART_DIRECTION_2_5D.md`, bốn tài liệu gốc,
-`WORLD_EXPANSION_REDESIGN.md`, `art-refresh-r33/README.md`/manifest/concepts và
-`docs/implementation/coordination/tasks/PQC-017.md` từ SHA DESIGN đã pin.
+Task hiện tại là **PQD-003 revision34**. Đọc `reviews/PQD-003-r34.md` và
+`docs/implementation/coordination/tasks/PQC-011.md` từ SHA DESIGN đã pin.
 
-CODE làm W13 phòng học Tutor, W14 Nhà Thành Tích, W11 Arena luyện tập; cùng bộ2,5D,
-không websitecard+ảnh. W01 của DESIGN là neo vật liệu. Chỉ ghi code/** dưới gói art
-và task017. Không sửa app/CI/deps/011tests, không tự port art vào runtime. Nếu thiếu
-image tool thì làm phần layout/state rồi báo BLOCKED artwork với yêu cầu cụ thể;
-không thay bằng SVG phẳng rồi nói đã xong. Không ACK-onlycommit.
+**011 CHANGES_REQUESTED @a331ac1.** CI117462432865 đã fail analyze8issues;
+Settings/ordinary/render skipped, không còn chỉ là "chưa biết CI". Sửa compile/
+imports/pumpAndSettle, equality nội dung cả2Set, assertion beat và selection-only
+acknowledge; hoàn thiện matrix revision2. Runtime/tests chỉ allowlist011 cũ, không
+controller/validator/schema/deps/pubspec/CI/SDK/APK. Không sửa test cho xanh bằng
+cách auto-advance board hoặc bỏ assertion. Báo evidence thực chạy trước acceptance.
 
-011 ởa331ac1 đã submitted-unverified; lượt art không phải review hoặc acceptance011.
-Không báo Flutter/analyze/test pass khi chưa chạy. R1 runtime chưa giao; r33 không
-cho phép dùng master design để mở housing/AI/backend. Không merge/cherry-pick toàn
-nhánh DESIGN có APK workflow riêng.010/014/015/016 giữaccepted.
+**017 vẫn READY_FOR_CODE design/art-only.** Giữ công việc artwork đang làm, không
+hủy/restart; W13 Tutor, W14 Nhà Thành Tích, W11 Arena luyện tập. W01r33 là neo.
+Đọc ART_DIRECTION_2_5D, WORLD_EXPANSION_REDESIGN và task017. Ghi code/** dưới gói art
+và own017; không port vào app. Tách commit017 với correction011. Nếu thiếu image
+tool: giao layout/state có thể làm, báo artworkBLOCKED, không SVGphẳng thay concept.
+
+DESIGN bổ sung10concept ở art-refresh-r34 cùng phone/state studies; không overwrite
+master art. Journal/settings/welcome art riêng chưa sinh được do limit; CatchStars/
+BugHunter và các state production còn thiếu. Không tự coi toàn app đã đủ hình.
+R1runtime chưa giao;010/014/015/016 giữaccepted. Không merge/cherry-pick toàn nhánh
+DESIGN hoặc nhập APKworkflow. Không ACK-onlycommit.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders

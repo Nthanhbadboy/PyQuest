@@ -97,6 +97,17 @@ SVG vẫn dùng được cho sơ đồ/callout/icon, không phải lối né qua
   panels còn lại. Chưa vẽ đủ thì đánh dấu missing, không dùng ba concept đại diện
   để tuyên bố toàn app đã đồng bộ hình ảnh.
 
+### Cập nhật r34 · 2026-10-18
+
+[art-refresh-r34](art-refresh-r34/README.md) bổ sung10concept DESIGN cho nội thất,
+dự án, visit, pet/shop, Creator/quà, Maze/Dragon và result; có42state HTML và kiểm
+phone VI/EN. Đây là concept/screen study, chưa production pack; geometry cửa/nền,
+character consistency và scene states còn gap ghi trong manifest. Không thay W01
+làm neo style bằng cách lấy trung bình mọi sai khác của các ảnh mới.
+Journal/Settings/Welcome chưa có ảnh mới vì tool limit10ảnh/lượt. CatchStars/
+BugHunter, friends list và editor sâu vẫn thiếu.017 củaCODE chưa được nhận trong
+reviewr34. Các checklist dưới đây vẫn chưa đạt toàn bộ; R1 không tự mở.
+
 ## 7. Quality gate trước R1 UI
 
 - [ ] Ba concept DESIGN và ba concept CODE cùng họ2,5D; không mang nhân vật/logo lạ.
