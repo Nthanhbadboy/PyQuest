@@ -1,6 +1,6 @@
 # APK thử nội bộ — thay đổi chính sách r49
 
-**2026-10-18 · user-authorized · chưa phải kết quả thực thi.**
+**2026-10-18 · user-authorized · Actions đã khởi chạy; chưa nghiệm thu.**
 
 Người dùng cho phép nhúng Gemini key trong APK để chính họ thử, hoãn token ngắn
 hạn/backend/giới hạn token; đồng thời xác nhận GitHub Actions có thể dùng thoải mái.
@@ -34,7 +34,11 @@ không phủ nhận review lịch sử và không cho phép public/store release
    không lặng lẽ giao bản keyless rồi gọi là bản voice. `false` tạo define rỗng.
 
 Key chỉ cấp cho step build; file define tạm quyền0600 ngoài source được xóa khi
-step kết thúc. Không ghi key vào repository/log/receipt/chat. APK **có thể bị
+step kết thúc. Repository được xác nhận **public**: artifact chỉ được upload dưới
+dạng CMS mã hóa AES-256-GCM + RSA-OAEP SHA256 bằng certificate công khai pin theo
+workflow SHA. Private recipient key chỉ ở workspace ngoài Git, không nằm trên
+Actions. APK/ZIP dạng thường và file define không nằm trong upload allowlist.
+Không ghi key vào repository/log/receipt/chat. APK sau giải mã **có thể bị
 trích xuất key**; secret tại Actions không bảo vệ key bên trong APK. Chỉ chủ tài
 khoản tải/cài thử, không chia sẻ công khai. Artifact owner-test giữ3ngày, evidence
 không chứa secret giữ14ngày; thời hạn retention không thu hồi bản đã tải xuống.
@@ -60,3 +64,13 @@ không chép đè workflow DESIGN. Không đòi CODE ACK-only cho quyết địn
 
 Chưa có kết quả tại lúc tạo request r49. Run/source/artifact phải được bổ sung từ
 GitHub Actions thật, không suy ra từ cấu hình hoặc bộ kiểm tra giả lập.
+
+Run39077780697 đã bị hủy khi phát hiện repo public; API xác nhận build job chưa
+có step nào chạy. Push guard e6471b0 khởi chạy run39077867619 với build public bị
+chặn. Workflow tiếp theo bổ sung encrypted transport và cập nhật GitHub Checks
+trực tiếp trên source CODE để đọc được evidence khi Azure artifact download từ
+workspace trả EOF. Đây là lỗi đường tải, không phải lỗi test hoặc thiếu SDK.
+
+Local đã thử roundtrip crypto với payload tổng hợp; chưa có APK thật để giải mã.
+Không tự coi artifact là “chỉ owner truy cập” chỉ vì tên chứa owner-test.
+Giá trị key không được lấy về/đọc qua API; repository secret chỉ dùng trong runner.

@@ -53,13 +53,16 @@ def check_internal_workflow(text):
     required = ['needs: verify-source', "github.ref == 'refs/heads/arena/00838eb9-pyquest'",
                 'internal_voice:', 'SOURCE_SHA:', 'OWNER_TEST_ONLY_NOT_PUBLIC',
                 'retention-days: 3', "flutter-version: '3.47.7'", 'persist-credentials: false',
-                'set +x', "trap 'rm -f \"$defines\"' EXIT", 'Missing repository GEMINI_API_KEY']
+                'set +x', 'openssl cms -encrypt -binary -aes-256-gcm',
+                'apk-delivery/pyquest-owner-test.cms', 'rsa_padding_mode:oaep', "trap 'rm -f \"$defines\"' EXIT", 'Missing repository GEMINI_API_KEY']
     issues = ['Missing owner-test guard: ' + token for token in required if token not in text]
     commands = build_commands(text)
     if len(commands) != 1 or '--dart-define-from-file=$RUNNER_TEMP/pyquest-internal-defines.json' not in commands[0]:
         issues.append('Owner-test build must use its temporary private define file')
     if 'GEMINI_API_KEY' in text.split('  build-android:')[0]:
         issues.append('Secret must not be available to verification job')
+    if 'path: apk-delivery/' in text or 'path: source/app/build' in text:
+        issues.append('Artifact upload must use the encrypted transport allowlist')
     if 'contents: write' in text or 'git push' in text:
         issues.append('Owner-test workflow must not write repository source')
     return issues

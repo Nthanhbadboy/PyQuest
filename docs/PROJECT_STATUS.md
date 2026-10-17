@@ -7,8 +7,8 @@ Tài liệu này phân biệt **có source**, **đã kiểm chứng tại một 
 riêng; không lấy checklist hoặc hình concept làm trạng thái triển khai.
 
 **Quyết định mới r49:** người dùng cho phép Actions và APK thử nội bộ có Gemini key.
-[Request/gates](OWNER_TEST_BUILDS.md) pin CODEde01a49; đang chuẩn bị thực thi, chưa
-có SDK/test/APK PASS mới. Token/backend/giới hạn token hoãn cho lần thử này.
+[Request/gates](OWNER_TEST_BUILDS.md) pin CODEde01a49; Actions đã khởi chạy, chưa
+có nghiệm thu SDK/test/APK mới. Token/backend/giới hạn token hoãn cho lần thử này.
 
 ## 1. Mốc đối chiếu
 
@@ -69,7 +69,8 @@ PQC-011 và acceptance lịch sử không bị sửa/đóng lại trong việc �
   từ repository secret để build APK nội bộ sau pinned-SDK checks. Xem
   [phạm vi/gates/retention](OWNER_TEST_BUILDS.md). CI thông thường vẫn keyless.
 - Không đưa giá trị key vào source/log/chat. Key trong APK vẫn trích xuất được;
-  artifact chỉ dành chủ tài khoản thử, không public/store release.
+  APK chỉ dành chủ tài khoản thử, không public/store release. Repo public nên
+  artifact vận chuyển được mã hóa cho private key ngoài Git, không upload APK dạng thường.
 - Token ngắn hạn/backend/quota hoãn cho lần thử nội bộ; production vẫn cần gate
   riêng. Build success không phải chứng nhận cài/chạy hay voice trên thiết bị.
 - r47/r48 keyless-only là chính sách lịch sử, được thay thế trong scope owner-test;

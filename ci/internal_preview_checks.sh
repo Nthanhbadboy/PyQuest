@@ -17,6 +17,9 @@ run_gate() {
   local code=${codes[0]}
   if (( code == 0 && codes[1] != 0 )); then code=${codes[1]}; fi
   printf '%s=%s\n' "$name" "$code" >> "$EVIDENCE_DIR/status.txt"
+  if [[ -n "${CHECK_PUBLISHER:-}" ]]; then
+    VERIFY_OUTCOME=in_progress python3 "$CHECK_PUBLISHER" || echo "Live check publication failed; final publication remains required"
+  fi
   return "$code"
 }
 flutter --version --machine > "$EVIDENCE_DIR/flutter-version.json" || exit 1
