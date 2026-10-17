@@ -1,6 +1,7 @@
-import 'dart:ui' show Locale, PlatformDispatcher;
+import 'dart:ui' show Locale;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 import '../core/localization/locale_preference.dart';
 import '../core/settings_service.dart';
@@ -28,7 +29,9 @@ class AppLocaleBinding extends ChangeNotifier {
     settings.addListener(_onSettingsChanged);
   }
 
-  static List<Locale> _platformLocales() => PlatformDispatcher.instance.locales;
+  /// Reads the list through the binding, so a test host that overrides
+  /// `platformDispatcher` (or a future platform channel) is honoured too.
+  static List<Locale> _platformLocales() => WidgetsBinding.instance.platformDispatcher.locales;
 
   final SettingsService settings;
   final SystemLocalesReader _readSystemLocales;

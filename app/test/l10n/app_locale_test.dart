@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui' show Locale;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

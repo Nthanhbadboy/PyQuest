@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show Locale, PlatformDispatcher;
+import 'dart:ui' show Locale;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,7 +41,7 @@ class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
   AppServices? _services;
   AppLocaleBinding? _localeBinding;
   Object? _error;
-  List<Locale> _systemLocales = PlatformDispatcher.instance.locales;
+  List<Locale> _systemLocales = WidgetsBinding.instance.platformDispatcher.locales;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
   @override
   void didChangeLocales(List<Locale>? locales) {
     super.didChangeLocales(locales);
-    _systemLocales = PlatformDispatcher.instance.locales;
+    _systemLocales = locales ?? WidgetsBinding.instance.platformDispatcher.locales;
     _localeBinding?.syncSystemLocales();
     if (mounted) setState(() {});
   }
