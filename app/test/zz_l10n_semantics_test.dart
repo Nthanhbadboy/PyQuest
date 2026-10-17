@@ -26,7 +26,7 @@ void main() {
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
     await _openModalHarness(tester);
     expect(find.byTooltip('Quay lại'), findsOneWidget);
-    expect(find.semantics.byLabel('Quay lại'), findsOneWidget);
+    expect(tester.getSemantics(find.byTooltip('Quay lại')).label, 'Quay lại');
   }, semanticsEnabled: true);
 
   testWidgets('modal BackButton tooltip tracks a system locale change',
@@ -56,7 +56,7 @@ void main() {
 
     final Finder backEn = find.byTooltip('Back');
     expect(backEn, findsOneWidget);
-    expect(find.semantics.byLabel('Back'), findsOneWidget);
+    expect(tester.getSemantics(backEn).label, 'Back');
     await tester.tap(backEn);
     await tester.pump(const Duration(milliseconds: 150));
   }, semanticsEnabled: true);
@@ -77,7 +77,7 @@ Future<_LocaleHarness> _openModalHarness(WidgetTester tester) async {
           settings?.dispose();
         } finally {
           try {
-            if (database != null) await tester.runAsync(database!.close);
+            if (database != null) await tester.runAsync(database.close);
           } finally {
             debugDefaultTargetPlatformOverride = null;
           }

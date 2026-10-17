@@ -348,7 +348,7 @@ void main() {
                 recreated?.dispose();
               } finally {
                 try {
-                  if (database != null) await tester.runAsync(database!.close);
+                  if (database != null) await tester.runAsync(database.close);
                 } finally {
                   await tester.runAsync(() async {
                     if (await directory.exists()) await directory.delete(recursive: true);
@@ -367,26 +367,26 @@ void main() {
       database = openedDatabase;
       final _Fixture fixture = _Fixture(openedDatabase);
       original = fixture.service();
-      await tester.runAsync(original!.load);
+      await tester.runAsync(original.load);
       expect(
         await tester.runAsync(() => original!.setLocalePreference(LocalePreference.en)),
         isTrue,
       );
-      expect(original!.raw(SettingsService.localePreferenceKey), 'en');
+      expect(original.raw(SettingsService.localePreferenceKey), 'en');
 
       // Recreate the service against the real SQLite database; it must read the persisted
       // explicit choice rather than relying on the first service's in-memory state.
       recreated = fixture.service();
       expect(recreated, isNot(same(original)));
-      await tester.runAsync(recreated!.load);
-      expect(recreated!.localePreference, LocalePreference.en);
+      await tester.runAsync(recreated.load);
+      expect(recreated.localePreference, LocalePreference.en);
 
       final List<Locale> osLocales = <Locale>[const Locale('vi', 'VN')];
       binding = AppLocaleBinding(
-        settings: recreated!,
+        settings: recreated,
         systemLocales: () => List<Locale>.unmodifiable(osLocales),
       )..syncSystemLocales();
-      await tester.pumpWidget(_localizedHost(binding!));
+      await tester.pumpWidget(_localizedHost(binding));
       await pumpFor(tester, const Duration(milliseconds: 100));
       expect(_localeOf(tester), const Locale('en'));
       expect(_materialOf(tester).cancelButtonLabel, 'Cancel');
@@ -395,11 +395,11 @@ void main() {
         await tester.runAsync(() => recreated!.setLocalePreference(LocalePreference.system)),
         isTrue,
       );
-      binding!.syncSystemLocales();
+      binding.syncSystemLocales();
       await pumpFor(tester, const Duration(milliseconds: 100));
       expect(_localeOf(tester), const Locale('vi'));
       expect(_materialOf(tester).cancelButtonLabel, 'Huỷ');
-      expect(recreated!.raw(SettingsService.localePreferenceKey), 'system');
+      expect(recreated.raw(SettingsService.localePreferenceKey), 'system');
       final Map<String, String>? persisted =
           await tester.runAsync(fixture.repository.all);
       expect(persisted?[SettingsService.localePreferenceKey], 'system');
