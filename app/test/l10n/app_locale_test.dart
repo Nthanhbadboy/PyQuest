@@ -315,8 +315,9 @@ void main() {
       addTearDown(() {
         if (directory.existsSync()) directory.deleteSync(recursive: true);
       });
-      final String databasePath = p.join(directory.path, 'pyquest.db');
-      Future<AppServices> createServices() async {
+      final String firstDatabasePath = p.join(directory.path, 'first.db');
+      final String recreatedDatabasePath = p.join(directory.path, 'recreated.db');
+      Future<AppServices> createServices(String databasePath) async {
         final AppServices? services = await tester.runAsync(() => AppServices.create(
               bundle: rootBundle,
               databaseFactory: databaseFactoryFfiNoIsolate,
@@ -328,7 +329,7 @@ void main() {
       }
 
       final List<Locale> osLocales = <Locale>[const Locale('vi', 'VN')];
-      final AppServices first = await createServices();
+      final AppServices first = await createServices(firstDatabasePath);
       await tester.pumpWidget(
         PyQuestApp(
           servicesFactory: (_) async => first,
@@ -347,8 +348,11 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       first.dispose();
       first.settings.dispose();
+      // Snapshot the committed SQLite file after its write, then construct a fresh service/app
+      // against that disk state. The second path avoids sqflite's per-path singleton cache.
+      File(firstDatabasePath).copySync(recreatedDatabasePath);
 
-      final AppServices recreated = await createServices();
+      final AppServices recreated = await createServices(recreatedDatabasePath);
       await tester.pumpWidget(
         PyQuestApp(
           servicesFactory: (_) async => recreated,
@@ -394,20 +398,20 @@ void main() {
         ),
       ));
       await pumpFor(tester, const Duration(milliseconds: 200));
-      final Finder closeVi = find.byTooltip('Đóng');
-      expect(closeVi, findsOneWidget);
-      expect(tester.getSemantics(closeVi).label, 'Đóng');
+      final Finder closeControl = find.byType(CloseButton);
+      expect(closeControl, findsOneWidget);
+      expect(tester.getSemantics(closeControl).label, 'Đóng');
 
       osLocales
         ..clear()
         ..add(const Locale('en', 'US'));
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await pumpFor(tester, const Duration(milliseconds: 200));
-      final Finder closeEn = find.byTooltip('Close');
-      expect(closeEn, findsOneWidget);
-      expect(tester.getSemantics(closeEn).label, 'Close');
+      final Finder closeControlEn = find.byType(CloseButton);
+      expect(closeControlEn, findsOneWidget);
+      expect(tester.getSemantics(closeControlEn).label, 'Close');
 
-      await tester.tap(closeEn);
+      await tester.tap(closeControlEn);
       await pumpFor(tester, const Duration(milliseconds: 200));
       await tester.pumpWidget(const SizedBox.shrink());
       services.dispose();

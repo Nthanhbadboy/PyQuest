@@ -19,7 +19,7 @@ void main() {
     GZipCodec(level: 9).encode(utf8.encode(jsonEncode(generated))),
   );
   const int chunkSize = 900;
-  for (var start = 0, index = 0; start < payload.length; start += chunkSize, index++) {
+  for (var start = 1800, index = 2; start < payload.length; start += chunkSize, index++) {
     final String chunk = payload.substring(
       start,
       start + chunkSize < payload.length ? start + chunkSize : payload.length,
