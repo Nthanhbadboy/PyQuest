@@ -21,22 +21,31 @@ import 'package:pyquest/shared/characters/cast.dart';
 
 const String kBoardAssetPath = 'assets/data/tutor_board_plans.v1.json';
 const String kCopyAssetPath = 'assets/data/tutor_board_authored-copy.v1.json';
-const List<String> kSupportedExampleStepIds = <String>['mq1_01_s2', 'mq1_03_s2'];
-const Map<String, List<String>> _hostRegisteredObjectsByStep = <String, List<String>>{
-  'mq1_01_s2': <String>['cmd-print', 'quote-open', 'quote-close', 'out-box'],
-  'mq1_03_s2': <String>[
-    'expr-add',
-    'lit-text',
-    'out-box',
-    'stone-1',
-    'stone-2',
-    'stone-3',
-    'stone-4',
-    'stone-5',
-    'stone-6',
-    'stone-7',
-  ],
-};
+const List<String> kSupportedExampleStepIds = <String>[
+  'mq1_01_s2',
+  'mq1_03_s2',
+];
+const Map<String, List<String>> _hostRegisteredObjectsByStep =
+    <String, List<String>>{
+      'mq1_01_s2': <String>[
+        'cmd-print',
+        'quote-open',
+        'quote-close',
+        'out-box',
+      ],
+      'mq1_03_s2': <String>[
+        'expr-add',
+        'lit-text',
+        'out-box',
+        'stone-1',
+        'stone-2',
+        'stone-3',
+        'stone-4',
+        'stone-5',
+        'stone-6',
+        'stone-7',
+      ],
+    };
 
 Map<String, dynamic> _readJson(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
@@ -65,7 +74,8 @@ Map<String, dynamic> boardProvenance() =>
 /// Copy VI/EN đã duyệt của design, theo `beatId`, kèm `waitForLearner` gốc của gói.
 Map<String, Map<String, dynamic>> copyPackByBeat() {
   final Map<String, dynamic> pack = _readJson(kCopyAssetPath);
-  final Map<String, Map<String, dynamic>> out = <String, Map<String, dynamic>>{};
+  final Map<String, Map<String, dynamic>> out =
+      <String, Map<String, dynamic>>{};
   for (final dynamic rawPlan in pack['plans']! as List<dynamic>) {
     final Map<String, dynamic> plan = rawPlan as Map<String, dynamic>;
     for (final dynamic raw in plan['beats']! as List<dynamic>) {
@@ -83,18 +93,28 @@ Map<String, Map<String, dynamic>> copyPackByBeat() {
 Map<String, dynamic> composedPlan(int index) {
   final Map<String, dynamic> doc = _readJson(kBoardAssetPath);
   final Map<String, dynamic> plan =
-      jsonDecode(jsonEncode((doc['plans']! as List<dynamic>)[index])) as Map<String, dynamic>;
+      jsonDecode(jsonEncode((doc['plans']! as List<dynamic>)[index]))
+          as Map<String, dynamic>;
   final Map<String, Map<String, dynamic>> pack = copyPackByBeat();
   final String hostStepId = kSupportedExampleStepIds[index];
-  plan['characterId'] = CastRegistry.tutorForSkill(_lessonForStep(hostStepId).skill).id.name;
+  plan['characterId'] = CastRegistry.tutorForSkill(
+    _lessonForStep(hostStepId).skill,
+  ).id.name;
   for (final dynamic raw in plan['beats']! as List<dynamic>) {
     final Map<String, dynamic> beat = raw as Map<String, dynamic>;
     final Map<String, dynamic>? entry = pack[beat['beatId']! as String];
     // Ghép thất bại phải nổ ngay tại đây, không âm thầm vẽ beat thiếu copy.
-    expect(entry, isNotNull, reason: 'gói copy design không có beat ${beat['beatId']}');
+    expect(
+      entry,
+      isNotNull,
+      reason: 'gói copy design không có beat ${beat['beatId']}',
+    );
     beat['copy'] = entry!['copy'];
-    expect(beat['waitForLearner'], entry['waitForLearner'],
-        reason: 'waitForLearner của plan phải khớp gói design đã duyệt');
+    expect(
+      beat['waitForLearner'],
+      entry['waitForLearner'],
+      reason: 'waitForLearner của plan phải khớp gói design đã duyệt',
+    );
   }
   return plan;
 }
@@ -127,7 +147,9 @@ void _applyAt(Map<String, dynamic> plan, List<Object> path, Object? value) {
   Object? node = plan;
   for (int i = 0; i < path.length - 1; i++) {
     final Object key = path[i];
-    node = key is int ? (node! as List<dynamic>)[key] : (node! as Map<String, dynamic>)[key];
+    node = key is int
+        ? (node! as List<dynamic>)[key]
+        : (node! as Map<String, dynamic>)[key];
   }
   final Object last = path.last;
   if (value is _Removed) {
@@ -188,7 +210,9 @@ BoardValidation validateComposed(
     locale: locale,
     expectedLessonId: lessonId ?? hostLessonId,
     expectedStepId: stepId ?? hostStepId,
-    registeredObjects: List<String>.unmodifiable(_hostRegisteredObjectsByStep[hostStepId]!),
+    registeredObjects: List<String>.unmodifiable(
+      _hostRegisteredObjectsByStep[hostStepId]!,
+    ),
     requiredLocales: const <String>['vi', 'en'],
   );
 }

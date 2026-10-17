@@ -26,13 +26,15 @@ const List<String> kForbiddenApiWords = <String>[
 ];
 
 void main() {
-  BoardController newController({String locale = 'vi', String session = 'lesson-session-1'}) =>
-      BoardController(
-        sessionId: session,
-        locale: locale,
-        lessonId: 'mq1_01',
-        stepId: 'mq1_01_s2',
-      );
+  BoardController newController({
+    String locale = 'vi',
+    String session = 'lesson-session-1',
+  }) => BoardController(
+    sessionId: session,
+    locale: locale,
+    lessonId: 'mq1_01',
+    stepId: 'mq1_01_s2',
+  );
 
   /// Controller **đúng owner** của plan `index` (rev 7 §R7-D). Test tích cực với plan numbers
   /// mà mượn owner của bài 1 thì đang khen chính cái lỗ hổng cần chặn.
@@ -46,13 +48,17 @@ void main() {
     );
   }
 
-  BoardValidation valid(int index, {String locale = 'vi'}) => validateComposed(index, locale: locale);
+  BoardValidation valid(int index, {String locale = 'vi'}) =>
+      validateComposed(index, locale: locale);
 
   group('envelope token', () {
     test('đúng session + revision + turn + locale thì nhận', () {
       final BoardController c = newController();
       final BoardValidation validation = valid(0);
-      expect(c.applyPlan(c.currentToken, validation), BoardApplyOutcome.applied);
+      expect(
+        c.applyPlan(c.currentToken, validation),
+        BoardApplyOutcome.applied,
+      );
       expect(c.beatIndex, 0);
       expect(c.beatCount, 4);
       expect(c.currentCopy!.caption, isNotEmpty);
@@ -111,7 +117,10 @@ void main() {
         turnId: c.turnId,
         locale: 'en',
       );
-      expect(c.applyPlan(en, valid(0, locale: 'en')), BoardApplyOutcome.tokenRejected);
+      expect(
+        c.applyPlan(en, valid(0, locale: 'en')),
+        BoardApplyOutcome.tokenRejected,
+      );
       c.dispose();
     });
 
@@ -130,36 +139,64 @@ void main() {
   });
 
   group('tính atomic của reject', () {
-    test('plan hỏng -> bảng cũ còn nguyên, có nhãn fallback, không beat nào bị cắt', () {
-      final BoardController c = controllerFor(0);
-      expect(c.applyPlan(c.currentToken, valid(0)), BoardApplyOutcome.applied);
-      final int beatBefore = c.beatIndex;
-      final TeachingPlan planBefore = c.plan!;
+    test(
+      'plan hỏng -> bảng cũ còn nguyên, có nhãn fallback, không beat nào bị cắt',
+      () {
+        final BoardController c = controllerFor(0);
+        expect(
+          c.applyPlan(c.currentToken, valid(0)),
+          BoardApplyOutcome.applied,
+        );
+        final int beatBefore = c.beatIndex;
+        final TeachingPlan planBefore = c.plan!;
 
-      final BoardValidation broken = validateComposed(
-        1,
-        // `ops[2]` mới là op `output` của b2 (b2 = clear + tokenGroup + output): sửa vào
-        // `ops[1]` là sửa... một trường không tồn tại của tokenGroup, tức là test xanh giả.
-        source: mutatedSource(1, <Object>['beats', 1, 'ops', 2, 'value'], '8'),
-      );
-      expect(broken.accepted, isFalse);
-      expect(c.applyPlan(c.currentToken, broken), BoardApplyOutcome.rejectedPlan);
-      expect(c.plan, same(planBefore), reason: 'phải giữ nguyên plan đang hiển thị');
-      expect(c.beatIndex, beatBefore);
-      // Rev 7 §R7-C: board giữ **mã** lý do, không giữ một câu đã dịch.
-      expect(c.fallbackReason, BoardFallbackReason.rejectedPlan);
-      expect(c.lastIssues, isNotEmpty);
+        final BoardValidation broken = validateComposed(
+          1,
+          // `ops[2]` mới là op `output` của b2 (b2 = clear + tokenGroup + output): sửa vào
+          // `ops[1]` là sửa... một trường không tồn tại của tokenGroup, tức là test xanh giả.
+          source: mutatedSource(1, <Object>[
+            'beats',
+            1,
+            'ops',
+            2,
+            'value',
+          ], '8'),
+        );
+        expect(broken.accepted, isFalse);
+        expect(
+          c.applyPlan(c.currentToken, broken),
+          BoardApplyOutcome.rejectedPlan,
+        );
+        expect(
+          c.plan,
+          same(planBefore),
+          reason: 'phải giữ nguyên plan đang hiển thị',
+        );
+        expect(c.beatIndex, beatBefore);
+        // Rev 7 §R7-C: board giữ **mã** lý do, không giữ một câu đã dịch.
+        expect(c.fallbackReason, BoardFallbackReason.rejectedPlan);
+        expect(c.lastIssues, isNotEmpty);
 
-      // Sửa nội dung -> cùng token vẫn nhận được, fallback biến mất.
-      expect(c.applyPlan(c.currentToken, valid(0)), BoardApplyOutcome.applied);
-      expect(c.fallbackReason, isNull);
-      c.dispose();
-    });
+        // Sửa nội dung -> cùng token vẫn nhận được, fallback biến mất.
+        expect(
+          c.applyPlan(c.currentToken, valid(0)),
+          BoardApplyOutcome.applied,
+        );
+        expect(c.fallbackReason, isNull);
+        c.dispose();
+      },
+    );
 
     test('plan rỗng bị từ chối chứ không phải "thành công 0 beat"', () {
       final BoardController c = newController();
-      final BoardValidation empty = validateComposed(0, source: mutatedSource(0, <Object>['beats'], <Object>[]));
-      expect(c.applyPlan(c.currentToken, empty), BoardApplyOutcome.rejectedPlan);
+      final BoardValidation empty = validateComposed(
+        0,
+        source: mutatedSource(0, <Object>['beats'], <Object>[]),
+      );
+      expect(
+        c.applyPlan(c.currentToken, empty),
+        BoardApplyOutcome.rejectedPlan,
+      );
       expect(c.hasPlan, isFalse);
       expect(c.currentBeat, isNull);
       c.dispose();
@@ -175,7 +212,11 @@ void main() {
       expect(c.next(), isTrue);
       expect(c.next(), isTrue);
       expect(c.beatIndex, 3);
-      expect(c.isWaitingForLearner, isTrue, reason: 'beat cuối của cả hai plan chờ trẻ thao tác');
+      expect(
+        c.isWaitingForLearner,
+        isTrue,
+        reason: 'beat cuối của cả hai plan chờ trẻ thao tác',
+      );
       expect(c.next(), isFalse, reason: 'không được bỏ qua beat chờ');
       c.learnerActed();
       expect(c.isWaitingForLearner, isFalse);
@@ -194,29 +235,41 @@ void main() {
         final Map<String, dynamic> plan = composedPlan(index);
         for (final Object? raw in plan['beats']! as List<dynamic>) {
           final Map<String, dynamic> beat = raw! as Map<String, dynamic>;
-          expect(beat['waitForLearner'], pack[beat['beatId']! as String]!['waitForLearner'],
-              reason: 'beat ${beat['beatId']} lệch cờ chờ so với gói design');
+          expect(
+            beat['waitForLearner'],
+            pack[beat['beatId']! as String]!['waitForLearner'],
+            reason: 'beat ${beat['beatId']} lệch cờ chờ so với gói design',
+          );
         }
       }
-      expect(pack.values.where((Map<String, dynamic> e) => e['waitForLearner'] == true), hasLength(2),
-          reason: 'mỗi bước đúng một beat chờ, ở cuối — nhiều hơn là design đổi ý');
+      expect(
+        pack.values.where(
+          (Map<String, dynamic> e) => e['waitForLearner'] == true,
+        ),
+        hasLength(2),
+        reason:
+            'mỗi bước đúng một beat chờ, ở cuối — nhiều hơn là design đổi ý',
+      );
     });
 
-    test('beat đầu đã chờ thì next bị chặn, trẻ tác động rồi mới đi tiếp được', () {
-      final BoardController c = controllerFor(1);
-      c.applyPlan(c.currentToken, valid(1));
-      // beat 3 chờ; lùi về 2 rồi lên lại để kiểm tra chiều quay lại của trạng thái chờ.
-      c.next();
-      c.next();
-      c.next();
-      expect(c.isWaitingForLearner, isTrue);
-      expect(c.previous(), isTrue);
-      expect(c.isWaitingForLearner, isFalse);
-      c.next();
-      c.learnerActed();
-      expect(c.isWaitingForLearner, isFalse);
-      c.dispose();
-    });
+    test(
+      'beat đầu đã chờ thì next bị chặn, trẻ tác động rồi mới đi tiếp được',
+      () {
+        final BoardController c = controllerFor(1);
+        c.applyPlan(c.currentToken, valid(1));
+        // beat 3 chờ; lùi về 2 rồi lên lại để kiểm tra chiều quay lại của trạng thái chờ.
+        c.next();
+        c.next();
+        c.next();
+        expect(c.isWaitingForLearner, isTrue);
+        expect(c.previous(), isTrue);
+        expect(c.isWaitingForLearner, isFalse);
+        c.next();
+        c.learnerActed();
+        expect(c.isWaitingForLearner, isFalse);
+        c.dispose();
+      },
+    );
 
     test('replay quay về beat 0, giữ plan, không phát tín hiệu nào khác', () {
       final BoardController c = newController();
@@ -243,59 +296,100 @@ void main() {
       expect(c.isWaitingForLearner, isTrue);
       final BoardPlanToken before = c.currentToken;
       c.cancelTurn();
-      expect(c.isWaitingForLearner, isTrue,
-          reason: 'trẻ chưa xác nhận thì bảng vẫn phải chờ — stop audio không phải skip');
-      expect(c.applyPlan(before, valid(0)), BoardApplyOutcome.tokenRejected,
-          reason: 'turn cũ vẫn mất hiệu lực như trước');
-      expect(c.isWaitingForLearner, isTrue, reason: 'reply bị chặn cũng không được gỡ wait');
-      c.learnerActed();
-      expect(c.isWaitingForLearner, isFalse);
-      c.dispose();
-    });
-
-    test('setLocale giữ wait; đã learnerActed rồi thì locale mới không khóa lại', () {
-      final BoardController c = controllerFor(0);
-      c.applyPlan(c.currentToken, valid(0));
-      c.next();
-      c.next();
-      c.next();
-      expect(c.isWaitingForLearner, isTrue);
-      c.setLocale('en');
-      expect(c.locale, 'en');
-      expect(c.isWaitingForLearner, isTrue, reason: 'đổi ngôn ngữ không phải lượt của trẻ');
-      expect(c.beatIndex, 3);
-      c.learnerActed();
-      expect(c.isWaitingForLearner, isFalse);
-      c.setLocale('vi');
-      expect(c.isWaitingForLearner, isFalse, reason: 'wait đã nhả thì không bị dựng lại khi đổi locale');
-      c.dispose();
-    });
-
-    test('wait ở beat GIỮA plan: next nội bộ bị chặn, bấm Tiếp của trẻ thì đi tiếp', () {
-      // Gói design đặt wait ở beat cuối của cả hai plan, nên ca "next bỏ qua wait" phải cần
-      // một wait giữa plan — nếu không thì kế thừa behavior sai không ai thấy.
-      // Đây là override chỉ có trong test (đánh dấu rõ), không phải cách plan thật được sửa.
-      final BoardValidation withMidWait = validateComposed(
-        0,
-        source: mutatedSource(0, <Object>['beats', 1, 'waitForLearner'], true),
+      expect(
+        c.isWaitingForLearner,
+        isTrue,
+        reason:
+            'trẻ chưa xác nhận thì bảng vẫn phải chờ — stop audio không phải skip',
       );
-      expect(withMidWait.accepted, isTrue, reason: '${withMidWait.issues}');
-      final BoardController c = controllerFor(0);
-      c.applyPlan(c.currentToken, withMidWait);
-      expect(c.next(), isTrue);
-      expect(c.beatIndex, 1);
-      expect(c.isWaitingForLearner, isTrue);
-      expect(c.next(), isFalse, reason: 'advance nội bộ không được qua mặt beat chờ');
-      expect(c.previous(), isTrue);
-      expect(c.beatIndex, 0, reason: 'lùi vẫn được: wait chỉ chặn tiến, không giam trẻ');
-      c.next();
-      expect(c.beatIndex, 1);
-      expect(c.canGoNext, isTrue, reason: 'nút Tiếp phải bật khi đang chờ');
-      expect(c.learnerAdvance(), isTrue, reason: 'ý định của trẻ là đường hợp lệ để qua wait');
-      expect(c.beatIndex, 2);
+      expect(
+        c.applyPlan(before, valid(0)),
+        BoardApplyOutcome.tokenRejected,
+        reason: 'turn cũ vẫn mất hiệu lực như trước',
+      );
+      expect(
+        c.isWaitingForLearner,
+        isTrue,
+        reason: 'reply bị chặn cũng không được gỡ wait',
+      );
+      c.learnerActed();
       expect(c.isWaitingForLearner, isFalse);
       c.dispose();
     });
+
+    test(
+      'setLocale giữ wait; đã learnerActed rồi thì locale mới không khóa lại',
+      () {
+        final BoardController c = controllerFor(0);
+        c.applyPlan(c.currentToken, valid(0));
+        c.next();
+        c.next();
+        c.next();
+        expect(c.isWaitingForLearner, isTrue);
+        c.setLocale('en');
+        expect(c.locale, 'en');
+        expect(
+          c.isWaitingForLearner,
+          isTrue,
+          reason: 'đổi ngôn ngữ không phải lượt của trẻ',
+        );
+        expect(c.beatIndex, 3);
+        c.learnerActed();
+        expect(c.isWaitingForLearner, isFalse);
+        c.setLocale('vi');
+        expect(
+          c.isWaitingForLearner,
+          isFalse,
+          reason: 'wait đã nhả thì không bị dựng lại khi đổi locale',
+        );
+        c.dispose();
+      },
+    );
+
+    test(
+      'wait ở beat GIỮA plan: next nội bộ bị chặn, bấm Tiếp của trẻ thì đi tiếp',
+      () {
+        // Gói design đặt wait ở beat cuối của cả hai plan, nên ca "next bỏ qua wait" phải cần
+        // một wait giữa plan — nếu không thì kế thừa behavior sai không ai thấy.
+        // Đây là override chỉ có trong test (đánh dấu rõ), không phải cách plan thật được sửa.
+        final BoardValidation withMidWait = validateComposed(
+          0,
+          source: mutatedSource(0, <Object>[
+            'beats',
+            1,
+            'waitForLearner',
+          ], true),
+        );
+        expect(withMidWait.accepted, isTrue, reason: '${withMidWait.issues}');
+        final BoardController c = controllerFor(0);
+        c.applyPlan(c.currentToken, withMidWait);
+        expect(c.next(), isTrue);
+        expect(c.beatIndex, 1);
+        expect(c.isWaitingForLearner, isTrue);
+        expect(
+          c.next(),
+          isFalse,
+          reason: 'advance nội bộ không được qua mặt beat chờ',
+        );
+        expect(c.previous(), isTrue);
+        expect(
+          c.beatIndex,
+          0,
+          reason: 'lùi vẫn được: wait chỉ chặn tiến, không giam trẻ',
+        );
+        c.next();
+        expect(c.beatIndex, 1);
+        expect(c.canGoNext, isTrue, reason: 'nút Tiếp phải bật khi đang chờ');
+        expect(
+          c.learnerAdvance(),
+          isTrue,
+          reason: 'ý định của trẻ là đường hợp lệ để qua wait',
+        );
+        expect(c.beatIndex, 2);
+        expect(c.isWaitingForLearner, isFalse);
+        c.dispose();
+      },
+    );
 
     test('nút Tiếp tắt khi hết beat và không còn gì để chờ', () {
       final BoardController c = controllerFor(0);
@@ -306,32 +400,68 @@ void main() {
       c.next();
       c.next();
       expect(c.beatIndex, 3);
-      expect(c.isWaitingForLearner, isTrue, reason: 'beat 4 của gói design chờ trẻ');
-      expect(c.canGoNext, isTrue, reason: 'đang chờ thì nút vẫn phải bấm được để xác nhận');
-      expect(c.learnerAdvance(), isFalse, reason: 'hết beat: nhả wait, không nhảy ra ngoài plan');
+      expect(
+        c.isWaitingForLearner,
+        isTrue,
+        reason: 'beat 4 của gói design chờ trẻ',
+      );
+      expect(
+        c.canGoNext,
+        isTrue,
+        reason: 'đang chờ thì nút vẫn phải bấm được để xác nhận',
+      );
+      expect(
+        c.learnerAdvance(),
+        isFalse,
+        reason: 'hết beat: nhả wait, không nhảy ra ngoài plan',
+      );
       expect(c.isWaitingForLearner, isFalse);
-      expect(c.canGoNext, isFalse, reason: 'không còn beat nào thì nút phải tắt, không bật mà vô ích');
+      expect(
+        c.canGoNext,
+        isFalse,
+        reason: 'không còn beat nào thì nút phải tắt, không bật mà vô ích',
+      );
       expect(c.canGoPrevious, isTrue);
       c.dispose();
     });
 
-    test('plan của bài/bước khác: token đúng vẫn bị chặn, bảng cũ còn nguyên', () {
-      final BoardController c = controllerFor(0);
-      expect(c.applyPlan(c.currentToken, valid(0)), BoardApplyOutcome.applied);
-      final TeachingPlan before = c.plan!;
-      final BoardValidation numbers = valid(1);
-      expect(numbers.accepted, isTrue, reason: 'plan numbers tự nó hợp lệ: ${numbers.issues}');
-      expect(c.applyPlan(c.currentToken, numbers), BoardApplyOutcome.foreignLesson);
-      expect(c.plan, same(before), reason: 'reject atomic: không ghi chữ bài 3 lên bảng bài 1');
-      expect(c.beatIndex, 0);
-      expect(c.fallbackReason, BoardFallbackReason.foreignLesson);
-      // Cùng plan đó, đúng owner thì nhận — chứng minh đây là chặn owner chứ không phải plan hỏng.
-      final BoardController other = controllerFor(1);
-      expect(other.applyPlan(other.currentToken, numbers), BoardApplyOutcome.applied);
-      expect(other.fallbackReason, isNull);
-      other.dispose();
-      c.dispose();
-    });
+    test(
+      'plan của bài/bước khác: token đúng vẫn bị chặn, bảng cũ còn nguyên',
+      () {
+        final BoardController c = controllerFor(0);
+        expect(
+          c.applyPlan(c.currentToken, valid(0)),
+          BoardApplyOutcome.applied,
+        );
+        final TeachingPlan before = c.plan!;
+        final BoardValidation numbers = valid(1);
+        expect(
+          numbers.accepted,
+          isTrue,
+          reason: 'plan numbers tự nó hợp lệ: ${numbers.issues}',
+        );
+        expect(
+          c.applyPlan(c.currentToken, numbers),
+          BoardApplyOutcome.foreignLesson,
+        );
+        expect(
+          c.plan,
+          same(before),
+          reason: 'reject atomic: không ghi chữ bài 3 lên bảng bài 1',
+        );
+        expect(c.beatIndex, 0);
+        expect(c.fallbackReason, BoardFallbackReason.foreignLesson);
+        // Cùng plan đó, đúng owner thì nhận — chứng minh đây là chặn owner chứ không phải plan hỏng.
+        final BoardController other = controllerFor(1);
+        expect(
+          other.applyPlan(other.currentToken, numbers),
+          BoardApplyOutcome.applied,
+        );
+        expect(other.fallbackReason, isNull);
+        other.dispose();
+        c.dispose();
+      },
+    );
   });
 
   group('cô lập lớp và locale', () {
@@ -348,26 +478,40 @@ void main() {
       c.dispose();
     });
 
-    test('đổi locale: giữ nguyên plan/beat/ink, chỉ đổi copy; reply cũ bị chặn', () {
-      final BoardController c = newController();
-      c.applyPlan(c.currentToken, valid(0));
-      c.next();
-      final String viTitle = c.currentCopy!.title;
-      c.learner.addStroke('nét-của-trẻ');
-      final BoardPlanToken beforeSwap = c.currentToken;
-      final int beatBefore = c.beatIndex;
+    test(
+      'đổi locale: giữ nguyên plan/beat/ink, chỉ đổi copy; reply cũ bị chặn',
+      () {
+        final BoardController c = newController();
+        c.applyPlan(c.currentToken, valid(0));
+        c.next();
+        final String viTitle = c.currentCopy!.title;
+        c.learner.addStroke('nét-của-trẻ');
+        final BoardPlanToken beforeSwap = c.currentToken;
+        final int beatBefore = c.beatIndex;
 
-      c.setLocale('en');
-      expect(c.locale, 'en');
-      expect(c.beatIndex, beatBefore, reason: 'đổi ngôn ngữ không được đưa trẻ về beat đầu');
-      expect(c.plan!.beats, hasLength(4));
-      expect(c.learner.strokes, <String>['nét-của-trẻ']);
-      expect(c.currentCopy!.title, isNotEmpty);
-      expect(c.currentCopy!.title, isNot(equals(viTitle)), reason: 'copy phải đổi thật, không chỉ đổi nhãn');
-      expect(c.applyPlan(beforeSwap, valid(0, locale: 'en')), BoardApplyOutcome.tokenRejected,
-          reason: 'reply đang bay của locale cũ phải bị chặn');
-      c.dispose();
-    });
+        c.setLocale('en');
+        expect(c.locale, 'en');
+        expect(
+          c.beatIndex,
+          beatBefore,
+          reason: 'đổi ngôn ngữ không được đưa trẻ về beat đầu',
+        );
+        expect(c.plan!.beats, hasLength(4));
+        expect(c.learner.strokes, <String>['nét-của-trẻ']);
+        expect(c.currentCopy!.title, isNotEmpty);
+        expect(
+          c.currentCopy!.title,
+          isNot(equals(viTitle)),
+          reason: 'copy phải đổi thật, không chỉ đổi nhãn',
+        );
+        expect(
+          c.applyPlan(beforeSwap, valid(0, locale: 'en')),
+          BoardApplyOutcome.tokenRejected,
+          reason: 'reply đang bay của locale cũ phải bị chặn',
+        );
+        c.dispose();
+      },
+    );
 
     test('setLocale giống hệt thì không tăng revision', () {
       final BoardController c = newController();
@@ -396,7 +540,8 @@ void main() {
       final List<String> offenders = <String>[];
       for (final String raw in File(kControllerPath).readAsLinesSync()) {
         final String line = raw.trim();
-        if (line.isEmpty || line.startsWith('//') || line.startsWith('///')) continue;
+        if (line.isEmpty || line.startsWith('//') || line.startsWith('///'))
+          continue;
         if (RegExp(r"^'[A-Za-z_]+',$").hasMatch(line)) continue;
         for (final String needle in kForbiddenApiWords) {
           if (line.toLowerCase().contains(needle)) {

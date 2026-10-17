@@ -43,7 +43,8 @@ enum _Feedback { none, correct, wrong }
 class _LessonScreenState extends State<LessonScreen> {
   static int _nextBoardSession = 0;
 
-  late final String _boardSessionId = '${widget.lesson.id}:${++_nextBoardSession}';
+  late final String _boardSessionId =
+      '${widget.lesson.id}:${++_nextBoardSession}';
   int _boardGeneration = 0;
   bool _boardSyncScheduled = false;
   bool _boardLoading = false;
@@ -113,7 +114,9 @@ class _LessonScreenState extends State<LessonScreen> {
       expectedOutput: expected,
       lessonHint: lessonHint,
       learnerCode: _code?.text,
-      lastError: run == null || run.success ? null : (run.pythonError ?? run.errorMessage),
+      lastError: run == null || run.success
+          ? null
+          : (run.pythonError ?? run.errorMessage),
       fails: _stepFails,
     );
   }
@@ -134,6 +137,7 @@ class _LessonScreenState extends State<LessonScreen> {
       editorFocus!.requestFocus();
     }
   }
+
   bool _running = false;
   final GlobalKey<_RobotRunnerState> _robotKey = GlobalKey();
 
@@ -178,7 +182,8 @@ class _LessonScreenState extends State<LessonScreen> {
 
   void _syncBoardForCurrentStep() {
     final LessonStep step = _step;
-    if (step is! ExampleStep || !AuthoredBoardRepository.supportsStep(step.id)) {
+    if (step is! ExampleStep ||
+        !AuthoredBoardRepository.supportsStep(step.id)) {
       if (_boardController != null) {
         setState(_disposeBoard);
       }
@@ -198,21 +203,24 @@ class _LessonScreenState extends State<LessonScreen> {
     final int generation = ++_boardGeneration;
     final CastMember tutor = CastRegistry.tutorForSkill(widget.lesson.skill);
     final AssetBundle bundle = DefaultAssetBundle.of(context);
-    final SimulatedPythonRuntime referenceRuntime =
-        SimulatedPythonRuntime(limits: services.config.pythonLimits);
+    final SimulatedPythonRuntime referenceRuntime = SimulatedPythonRuntime(
+      limits: services.config.pythonLimits,
+    );
     _boardController = controller;
     _boardStepId = step.id;
     _boardLoading = true;
     setState(() {});
-    unawaited(_loadBoard(
-      generation: generation,
-      controller: controller,
-      step: step,
-      lessonId: widget.lesson.id,
-      characterId: tutor.id.name,
-      bundle: bundle,
-      referenceRuntime: referenceRuntime,
-    ));
+    unawaited(
+      _loadBoard(
+        generation: generation,
+        controller: controller,
+        step: step,
+        lessonId: widget.lesson.id,
+        characterId: tutor.id.name,
+        bundle: bundle,
+        referenceRuntime: referenceRuntime,
+      ),
+    );
   }
 
   Future<void> _loadBoard({
@@ -226,7 +234,8 @@ class _LessonScreenState extends State<LessonScreen> {
   }) async {
     BoardValidation validation;
     try {
-      final AuthoredBoardRepository repository = await AuthoredBoardRepository.load(bundle);
+      final AuthoredBoardRepository repository =
+          await AuthoredBoardRepository.load(bundle);
       if (!_ownsBoard(controller, generation, step.id)) return;
       validation = repository.validateFor(
         lessonId: lessonId,
@@ -238,7 +247,10 @@ class _LessonScreenState extends State<LessonScreen> {
       );
     } on Object {
       validation = BoardValidation.rejected(<BoardIssue>[
-        const BoardIssue(BoardIssueCode.invalidJson, 'Authored board asset could not be loaded'),
+        const BoardIssue(
+          BoardIssueCode.invalidJson,
+          'Authored board asset could not be loaded',
+        ),
       ]);
     }
     if (!_ownsBoard(controller, generation, step.id)) return;
@@ -348,39 +360,52 @@ class _LessonScreenState extends State<LessonScreen> {
     _clock.stop();
     final lesson = widget.lesson;
     final score = math.max(50, 100 - _mistakes * 5);
-    final outcome = await s.events.emit(StandardEvent(
-      type: EventTypes.lessonCompleted,
-      sourceId: 'main_quest',
-      data: {'lesson_id': lesson.id, 'chapter_id': lesson.chapterId, 'skills': lesson.skillIds, 'score': score},
-    ));
+    final outcome = await s.events.emit(
+      StandardEvent(
+        type: EventTypes.lessonCompleted,
+        sourceId: 'main_quest',
+        data: {
+          'lesson_id': lesson.id,
+          'chapter_id': lesson.chapterId,
+          'skills': lesson.skillIds,
+          'score': score,
+        },
+      ),
+    );
     _notices.addAll(outcome.notices);
     var chapterDone = false;
     final completed = await s.progress.completedLessons();
     final content = s.mainQuest;
     if (content.lessons.every((l) => completed.contains(l.id))) {
-      final firstTime = !await s.progress.isClaimed('chapter:${content.chapterId}');
+      final firstTime = !await s.progress.isClaimed(
+        'chapter:${content.chapterId}',
+      );
       if (firstTime) {
-        final o = await s.events.emit(StandardEvent(
-          type: EventTypes.chapterCompleted,
-          sourceId: 'main_quest',
-          data: {'chapter_id': content.chapterId},
-        ));
+        final o = await s.events.emit(
+          StandardEvent(
+            type: EventTypes.chapterCompleted,
+            sourceId: 'main_quest',
+            data: {'chapter_id': content.chapterId},
+          ),
+        );
         _notices.addAll(o.notices);
         chapterDone = true;
       }
     }
     if (!mounted) return;
-    await Navigator.of(context).pushReplacement(MaterialPageRoute<void>(
-      builder: (_) => LessonCompleteScreen(
-        lesson: lesson,
-        firstTime: outcome.firstCompletion,
-        exercises: lesson.exerciseCount,
-        mistakes: _mistakes,
-        duration: _clock.elapsed,
-        notices: List.of(_notices),
-        chapterCompleted: chapterDone,
+    await Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) => LessonCompleteScreen(
+          lesson: lesson,
+          firstTime: outcome.firstCompletion,
+          exercises: lesson.exerciseCount,
+          mistakes: _mistakes,
+          duration: _clock.elapsed,
+          notices: List.of(_notices),
+          chapterCompleted: chapterDone,
+        ),
       ),
-    ));
+    );
   }
 
   Future<void> _markSolved({String? extra}) async {
@@ -392,16 +417,24 @@ class _LessonScreenState extends State<LessonScreen> {
       _feedbackText = extra ?? _praise();
       _canContinue = true;
     });
-    final outcome = await s.events.emit(StandardEvent(
-      type: EventTypes.exerciseSolved,
-      sourceId: 'main_quest',
-      data: {'exercise_id': _step.id, 'skills': _step.skills},
-    ));
+    final outcome = await s.events.emit(
+      StandardEvent(
+        type: EventTypes.exerciseSolved,
+        sourceId: 'main_quest',
+        data: {'exercise_id': _step.id, 'skills': _step.skills},
+      ),
+    );
     _notices.addAll(outcome.notices);
   }
 
   String _praise() {
-    const lines = ['Chính xác!', 'Giỏi quá!', 'Tuyệt vời!', 'Đúng rồi!', 'Xuất sắc!'];
+    const lines = [
+      'Chính xác!',
+      'Giỏi quá!',
+      'Tuyệt vời!',
+      'Đúng rồi!',
+      'Xuất sắc!',
+    ];
     return lines[(_index + _solved) % lines.length];
   }
 
@@ -416,25 +449,34 @@ class _LessonScreenState extends State<LessonScreen> {
   }
 
   String? _hintFor(LessonStep s) => switch (s) {
-        WriteStep w => w.hint,
-        RobotStep r => r.hint,
-        FillStep f => f.explain,
-        ChoiceStep c => c.explain,
-        _ => null,
-      };
+    WriteStep w => w.hint,
+    RobotStep r => r.hint,
+    FillStep f => f.explain,
+    ChoiceStep c => c.explain,
+    _ => null,
+  };
 
-  Future<ExecutionResult> _execute(String code, {ExecutionContext? execContext}) async {
+  Future<ExecutionResult> _execute(
+    String code, {
+    ExecutionContext? execContext,
+  }) async {
     final s = AppScope.of(context);
     setState(() => _running = true);
     final r = await s.python.execute(code, context: execContext);
     final recovered = r.success && _hadLimitError;
     if (r.hitLimit) _hadLimitError = true;
     if (recovered) _hadLimitError = false;
-    final outcome = await s.events.emit(StandardEvent(
-      type: EventTypes.codeRun,
-      sourceId: 'main_quest',
-      data: {'success': r.success, 'context': 'lesson', 'recovered_from_limit': recovered},
-    ));
+    final outcome = await s.events.emit(
+      StandardEvent(
+        type: EventTypes.codeRun,
+        sourceId: 'main_quest',
+        data: {
+          'success': r.success,
+          'context': 'lesson',
+          'recovered_from_limit': recovered,
+        },
+      ),
+    );
     _notices.addAll(outcome.notices);
     if (mounted) setState(() => _running = false);
     return r;
@@ -450,26 +492,38 @@ class _LessonScreenState extends State<LessonScreen> {
         if (_choice == c.answer) {
           await _markSolved(extra: '${_praise()} ${c.explain}');
         } else {
-          _markWrong(_stepFails >= 1 ? c.explain : 'Chưa đúng rồi. Đọc lại câu hỏi và thử lần nữa nhé!');
+          _markWrong(
+            _stepFails >= 1
+                ? c.explain
+                : 'Chưa đúng rồi. Đọc lại câu hỏi và thử lần nữa nhé!',
+          );
         }
       case FillStep f:
         if (_picks.any((p) => p == null)) return;
         final r = await _execute(f.build(_picks));
         setState(() => _run = r);
-        if (r.success && compareOutput(r.output, f.expectedOutput) == OutputMatch.exact) {
+        if (r.success &&
+            compareOutput(r.output, f.expectedOutput) == OutputMatch.exact) {
           await _markSolved(extra: '${_praise()} ${f.explain}');
         } else {
-          _markWrong(r.success ? 'Chương trình chạy được nhưng in ra chưa đúng. Thử mảnh ghép khác nhé!' : 'Mảnh ghép này làm code bị lỗi. Thử lại nhé!');
+          _markWrong(
+            r.success
+                ? 'Chương trình chạy được nhưng in ra chưa đúng. Thử mảnh ghép khác nhé!'
+                : 'Mảnh ghép này làm code bị lỗi. Thử lại nhé!',
+          );
         }
       case OrderStep o:
         if (_orderPicked.length != _orderPool.length) return;
         final code = [for (final i in _orderPicked) _orderPool[i]].join('\n');
         final r = await _execute(code);
         setState(() => _run = r);
-        if (r.success && compareOutput(r.output, o.expectedOutput) == OutputMatch.exact) {
+        if (r.success &&
+            compareOutput(r.output, o.expectedOutput) == OutputMatch.exact) {
           await _markSolved();
         } else {
-          _markWrong('Thứ tự chưa đúng. Chạm vào dòng đã chọn để trả nó về và thử lại!');
+          _markWrong(
+            'Thứ tự chưa đúng. Chạm vào dòng đã chọn để trả nó về và thử lại!',
+          );
         }
       case WriteStep w:
         await _checkWrite(w);
@@ -486,12 +540,16 @@ class _LessonScreenState extends State<LessonScreen> {
     final r = await _execute(code);
     setState(() => _run = r);
     if (!r.success) {
-      _markWrong('Code có lỗi. Đọc lời nhắc của thầy Py bên dưới rồi sửa lại nhé!');
+      _markWrong(
+        'Code có lỗi. Đọc lời nhắc của thầy Py bên dưới rồi sửa lại nhé!',
+      );
       return;
     }
     final missing = missingParts(code, w.mustContain);
     if (missing.isNotEmpty) {
-      _markWrong('Chương trình chạy rồi, nhưng bài này cần dùng: ${missing.join(', ')}');
+      _markWrong(
+        'Chương trình chạy rồi, nhưng bài này cần dùng: ${missing.join(', ')}',
+      );
       return;
     }
     if (w.anyOutput || w.expectedOutput == null) {
@@ -506,25 +564,47 @@ class _LessonScreenState extends State<LessonScreen> {
     if (match == OutputMatch.exact) {
       await _markSolved();
     } else if (match == OutputMatch.loose && w.lenient) {
-      await _markSolved(extra: 'Đúng rồi! (Mẹo nhỏ: máy tính in ra chính xác từng chữ, từng dấu bạn viết.)');
+      await _markSolved(
+        extra:
+            'Đúng rồi! (Mẹo nhỏ: máy tính in ra chính xác từng chữ, từng dấu bạn viết.)',
+      );
     } else {
-      _markWrong('Gần được rồi! Máy in ra:\n${normalizeOutput(r.output)}\nnhưng đề bài cần:\n${w.expectedOutput}');
+      _markWrong(
+        'Gần được rồi! Máy in ra:\n${normalizeOutput(r.output)}\nnhưng đề bài cần:\n${w.expectedOutput}',
+      );
     }
   }
 
-  Future<void> _onRobotFinished(bool reached, String code, ExecutionResult? result) async {
+  Future<void> _onRobotFinished(
+    bool reached,
+    String code,
+    ExecutionResult? result,
+  ) async {
     final step = _step;
     if (step is! RobotStep) return;
-    setState(() => _run = (result != null && !result.success && result.errorKind != ExecutionErrorKind.halted) ? result : null);
+    setState(
+      () => _run =
+          (result != null &&
+              !result.success &&
+              result.errorKind != ExecutionErrorKind.halted)
+          ? result
+          : null,
+    );
     if (!reached) {
-      _markWrong(result != null && !result.success && result.errorKind != ExecutionErrorKind.halted
-          ? 'Code có lỗi nên Robo chưa đi được. Xem lời nhắc bên dưới nhé!'
-          : 'Robo chưa tới rương. Kiểm tra lại các bước nhé!');
+      _markWrong(
+        result != null &&
+                !result.success &&
+                result.errorKind != ExecutionErrorKind.halted
+            ? 'Code có lỗi nên Robo chưa đi được. Xem lời nhắc bên dưới nhé!'
+            : 'Robo chưa tới rương. Kiểm tra lại các bước nhé!',
+      );
       return;
     }
     final missing = missingParts(code, step.mustContain);
     if (missing.isNotEmpty) {
-      _markWrong('Robo tới nơi rồi! Nhưng bài này yêu cầu dùng: ${missing.join(', ')}');
+      _markWrong(
+        'Robo tới nơi rồi! Nhưng bài này yêu cầu dùng: ${missing.join(', ')}',
+      );
       return;
     }
     await _markSolved();
@@ -538,13 +618,21 @@ class _LessonScreenState extends State<LessonScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: PQColors.parchment,
         title: Text('Tạm dừng bài học?', style: PQText.h2),
-        content: Text('Bạn có thể học lại bài này bất cứ lúc nào. Tiến trình của bài đang học sẽ không được lưu.',
-            style: PQText.body),
+        content: Text(
+          'Bạn có thể học lại bài này bất cứ lúc nào. Tiến trình của bài đang học sẽ không được lưu.',
+          style: PQText.body,
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text('Học tiếp', style: PQText.label)),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text('Học tiếp', style: PQText.label),
+          ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text('Thoát', style: PQText.label.copyWith(color: PQColors.coralDeep)),
+            child: Text(
+              'Thoát',
+              style: PQText.label.copyWith(color: PQColors.coralDeep),
+            ),
           ),
         ],
       ),
@@ -560,7 +648,8 @@ class _LessonScreenState extends State<LessonScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        if (await _confirmExit() && context.mounted) Navigator.of(context).pop();
+        if (await _confirmExit() && context.mounted)
+          Navigator.of(context).pop();
       },
       child: Scaffold(
         body: PQBackground(
@@ -579,7 +668,8 @@ class _LessonScreenState extends State<LessonScreen> {
                         size: 44,
                         tooltip: 'Thoát',
                         onPressed: () async {
-                          if (await _confirmExit() && context.mounted) Navigator.of(context).pop();
+                          if (await _confirmExit() && context.mounted)
+                            Navigator.of(context).pop();
                         },
                       ),
                       const SizedBox(width: 10),
@@ -587,15 +677,28 @@ class _LessonScreenState extends State<LessonScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Bài ${lesson.number}: ${lesson.title}',
-                                maxLines: 1, overflow: TextOverflow.ellipsis, style: PQText.h3.copyWith(fontSize: 18)),
+                            Text(
+                              'Bài ${lesson.number}: ${lesson.title}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: PQText.h3.copyWith(fontSize: 18),
+                            ),
                             const SizedBox(height: 4),
-                            ChunkyProgress(value: (_index + (_canContinue ? 1 : 0)) / lesson.steps.length, color: PQColors.pyBlue, height: 14),
+                            ChunkyProgress(
+                              value:
+                                  (_index + (_canContinue ? 1 : 0)) /
+                                  lesson.steps.length,
+                              color: PQColors.pyBlue,
+                              height: 14,
+                            ),
                           ],
                         ),
                       ),
                       const SizedBox(width: 10),
-                      Text('${_index + 1}/${lesson.steps.length}', style: PQText.number.copyWith(fontSize: 18)),
+                      Text(
+                        '${_index + 1}/${lesson.steps.length}',
+                        style: PQText.number.copyWith(fontSize: 18),
+                      ),
                       const SizedBox(width: 6),
                       RoundIconButton(
                         key: const ValueKey('lesson_tutor'),
@@ -613,7 +716,10 @@ class _LessonScreenState extends State<LessonScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 250),
-                      child: KeyedSubtree(key: ValueKey(step.id), child: _stepBody(step)),
+                      child: KeyedSubtree(
+                        key: ValueKey(step.id),
+                        child: _stepBody(step),
+                      ),
                     ),
                   ),
                 ),
@@ -635,17 +741,29 @@ class _LessonScreenState extends State<LessonScreen> {
             children: [
               CharacterView(id: s.speaker, size: 150, mood: s.mood),
               const SizedBox(height: 10),
-              PQPanel(child: Text(s.text, key: const ValueKey('story_text'), style: PQText.bodyStrong.copyWith(fontSize: 18))),
+              PQPanel(
+                child: Text(
+                  s.text,
+                  key: const ValueKey('story_text'),
+                  style: PQText.bodyStrong.copyWith(fontSize: 18),
+                ),
+              ),
             ],
           ),
         );
       case ExampleStep e:
         final bool editable = AuthoredBoardRepository.supportsStep(e.id);
-        final BoardController? board = _boardStepId == e.id ? _boardController : null;
+        final BoardController? board = _boardStepId == e.id
+            ? _boardController
+            : null;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(character: CharacterId.py, text: e.text, portraitSize: 70),
+            SpeechBubble(
+              character: CharacterId.py,
+              text: e.text,
+              portraitSize: 70,
+            ),
             const SizedBox(height: 12),
             if (editable)
               CodeEditor(
@@ -670,7 +788,9 @@ class _LessonScreenState extends State<LessonScreen> {
                       final String code = _code?.text ?? e.code;
                       final ExecutionResult r = await _execute(code);
                       if (!mounted) return;
-                      AppScope.of(context).audio.play(r.success ? Sfx.sparkle : Sfx.bonk);
+                      AppScope.of(
+                        context,
+                      ).audio.play(r.success ? Sfx.sparkle : Sfx.bonk);
                       board
                         ?..bumpContext()
                         ..learnerActed();
@@ -698,7 +818,10 @@ class _LessonScreenState extends State<LessonScreen> {
               portraitSize: 64,
               mood: _feedback == _Feedback.wrong ? Mood.thinking : Mood.happy,
             ),
-            if (c.code != null) ...[const SizedBox(height: 10), CodeView(code: c.code!)],
+            if (c.code != null) ...[
+              const SizedBox(height: 10),
+              CodeView(code: c.code!),
+            ],
             const SizedBox(height: 12),
             for (var i = 0; i < c.options.length; i++)
               Padding(
@@ -706,17 +829,22 @@ class _LessonScreenState extends State<LessonScreen> {
                 child: _OptionCard(
                   key: ValueKey('choice_$i'),
                   text: c.options[i],
-                  code: c.options[i].contains('(') || c.options[i].contains('"') || c.options[i].contains('\n'),
+                  code:
+                      c.options[i].contains('(') ||
+                      c.options[i].contains('"') ||
+                      c.options[i].contains('\n'),
                   selected: _choice == i,
                   state: _feedback == _Feedback.correct && i == c.answer
                       ? _OptionState.correct
-                      : (_feedback == _Feedback.wrong && _choice == i ? _OptionState.wrong : _OptionState.idle),
+                      : (_feedback == _Feedback.wrong && _choice == i
+                            ? _OptionState.wrong
+                            : _OptionState.idle),
                   onTap: _feedback == _Feedback.correct
                       ? null
                       : () => setState(() {
-                            _choice = i;
-                            _feedback = _Feedback.none;
-                          }),
+                          _choice = i;
+                          _feedback = _Feedback.none;
+                        }),
                 ),
               ),
           ],
@@ -726,11 +854,18 @@ class _LessonScreenState extends State<LessonScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(character: CharacterId.py, text: f.prompt, portraitSize: 64),
+            SpeechBubble(
+              character: CharacterId.py,
+              text: f.prompt,
+              portraitSize: 64,
+            ),
             const SizedBox(height: 8),
             _ExpectedBox(expected: f.expectedOutput),
             const SizedBox(height: 10),
-            CodeView(code: code.replaceAll('___', '▢▢▢'), errorLine: _run?.errorLine),
+            CodeView(
+              code: code.replaceAll('___', '▢▢▢'),
+              errorLine: _run?.errorLine,
+            ),
             const SizedBox(height: 12),
             Text('Chạm mảnh ghép để đặt vào chỗ trống:', style: PQText.small),
             const SizedBox(height: 6),
@@ -743,7 +878,9 @@ class _LessonScreenState extends State<LessonScreen> {
                     key: ValueKey('fill_option_$i'),
                     text: _fillOptions[i],
                     used: _picks.contains(_fillOptions[i]),
-                    onTap: _feedback == _Feedback.correct ? null : () => _pickToken(_fillOptions[i]),
+                    onTap: _feedback == _Feedback.correct
+                        ? null
+                        : () => _pickToken(_fillOptions[i]),
                   ),
               ],
             ),
@@ -759,14 +896,21 @@ class _LessonScreenState extends State<LessonScreen> {
                   label: Text('Bỏ chọn', style: PQText.small),
                 ),
               ),
-            if (_run != null) ...[const SizedBox(height: 8), OutputConsole(result: _run)],
+            if (_run != null) ...[
+              const SizedBox(height: 8),
+              OutputConsole(result: _run),
+            ],
           ],
         );
       case OrderStep o:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(character: CharacterId.py, text: o.prompt, portraitSize: 64),
+            SpeechBubble(
+              character: CharacterId.py,
+              text: o.prompt,
+              portraitSize: 64,
+            ),
             const SizedBox(height: 8),
             _ExpectedBox(expected: o.expectedOutput),
             const SizedBox(height: 10),
@@ -786,7 +930,13 @@ class _LessonScreenState extends State<LessonScreen> {
                   if (_orderPicked.isEmpty)
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Text('Chạm các dòng bên dưới theo thứ tự...', style: PQText.code.copyWith(color: PQColors.codeComment, fontSize: 14)),
+                      child: Text(
+                        'Chạm các dòng bên dưới theo thứ tự...',
+                        style: PQText.code.copyWith(
+                          color: PQColors.codeComment,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
                   for (var k = 0; k < _orderPicked.length; k++)
                     GestureDetector(
@@ -794,20 +944,31 @@ class _LessonScreenState extends State<LessonScreen> {
                       onTap: _feedback == _Feedback.correct
                           ? null
                           : () => setState(() {
-                                _orderPicked.removeAt(k);
-                                _feedback = _Feedback.none;
-                              }),
+                              _orderPicked.removeAt(k);
+                              _feedback = _Feedback.none;
+                            }),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         child: Row(
                           children: [
                             SizedBox(
                               width: 26,
-                              child: Text('${k + 1}', style: PQText.code.copyWith(color: PQColors.codeLine, fontSize: 14)),
+                              child: Text(
+                                '${k + 1}',
+                                style: PQText.code.copyWith(
+                                  color: PQColors.codeLine,
+                                  fontSize: 14,
+                                ),
+                              ),
                             ),
                             Expanded(
                               child: Text.rich(
-                                TextSpan(children: highlightPython(_orderPool[_orderPicked[k]], PQText.code.copyWith(fontSize: 15))),
+                                TextSpan(
+                                  children: highlightPython(
+                                    _orderPool[_orderPicked[k]],
+                                    PQText.code.copyWith(fontSize: 15),
+                                  ),
+                                ),
                                 style: PQText.code.copyWith(fontSize: 15),
                               ),
                             ),
@@ -836,17 +997,31 @@ class _LessonScreenState extends State<LessonScreen> {
                     }),
                   ),
                 ),
-            if (_run != null) ...[const SizedBox(height: 8), OutputConsole(result: _run)],
+            if (_run != null) ...[
+              const SizedBox(height: 8),
+              OutputConsole(result: _run),
+            ],
           ],
         );
       case WriteStep w:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(character: CharacterId.py, text: w.prompt, portraitSize: 64),
+            SpeechBubble(
+              character: CharacterId.py,
+              text: w.prompt,
+              portraitSize: 64,
+            ),
             const SizedBox(height: 10),
-            if (w.expectedOutput != null) ...[_ExpectedBox(expected: w.expectedOutput!), const SizedBox(height: 10)],
-            CodeEditor(controller: _code!, errorLine: _run?.errorLine, minLines: 4),
+            if (w.expectedOutput != null) ...[
+              _ExpectedBox(expected: w.expectedOutput!),
+              const SizedBox(height: 10),
+            ],
+            CodeEditor(
+              controller: _code!,
+              errorLine: _run?.errorLine,
+              minLines: 4,
+            ),
             if (_stepFails >= 2 && w.hint.isNotEmpty) ...[
               const SizedBox(height: 10),
               _HintBox(text: w.hint),
@@ -859,9 +1034,22 @@ class _LessonScreenState extends State<LessonScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(character: CharacterId.robo, text: r.prompt, portraitSize: 64),
+            SpeechBubble(
+              character: CharacterId.robo,
+              text: r.prompt,
+              portraitSize: 64,
+            ),
             const SizedBox(height: 8),
-            SizedBox(height: 170, child: _RobotRunner(key: _robotKey, rows: r.rows, code: _code!, onFinished: _onRobotFinished, execute: _execute)),
+            SizedBox(
+              height: 170,
+              child: _RobotRunner(
+                key: _robotKey,
+                rows: r.rows,
+                code: _code!,
+                onFinished: _onRobotFinished,
+                execute: _execute,
+              ),
+            ),
             const SizedBox(height: 8),
             CodeEditor(
               controller: _code!,
@@ -874,8 +1062,14 @@ class _LessonScreenState extends State<LessonScreen> {
                 CodeKey('up()', 'up()'),
               ],
             ),
-            if (_stepFails >= 2 && r.hint.isNotEmpty) ...[const SizedBox(height: 10), _HintBox(text: r.hint)],
-            if (_run != null && !_run!.success) ...[const SizedBox(height: 8), ErrorCard(result: _run!, helper: CharacterId.robo)],
+            if (_stepFails >= 2 && r.hint.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              _HintBox(text: r.hint),
+            ],
+            if (_run != null && !_run!.success) ...[
+              const SizedBox(height: 8),
+              ErrorCard(result: _run!, helper: CharacterId.robo),
+            ],
           ],
         );
     }
@@ -902,14 +1096,17 @@ class _LessonScreenState extends State<LessonScreen> {
                 children: <Widget>[
                   CharacterView(id: tutor.id, size: 48),
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(tutor.name, style: PQText.h3),
-                  ),
+                  Expanded(child: Text(tutor.name, style: PQText.h3)),
                   Semantics(
                     label: labels.authoredBadge,
                     child: Container(
-                      key: const ValueKey<String>('lesson_board_authored_badge'),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                      key: const ValueKey<String>(
+                        'lesson_board_authored_badge',
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 5,
+                      ),
                       decoration: BoxDecoration(
                         color: PQColors.sun.withValues(alpha: 0.35),
                         borderRadius: BorderRadius.circular(10),
@@ -922,7 +1119,9 @@ class _LessonScreenState extends State<LessonScreen> {
               ),
               const SizedBox(height: 8),
               if (_boardLoading)
-                const LinearProgressIndicator(key: ValueKey<String>('lesson_board_loading'))
+                const LinearProgressIndicator(
+                  key: ValueKey<String>('lesson_board_loading'),
+                )
               else
                 BoardView(
                   key: ValueKey<String>('lesson_board_view_${step.id}'),
@@ -963,13 +1162,21 @@ class _LessonScreenState extends State<LessonScreen> {
       _ => true,
     };
     final showFeedback = _feedback != _Feedback.none;
-    final hint = _feedback == _Feedback.wrong && _stepFails >= 3 ? _hintFor(step) : null;
+    final hint = _feedback == _Feedback.wrong && _stepFails >= 3
+        ? _hintFor(step)
+        : null;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
       decoration: BoxDecoration(
-        color: !showFeedback ? Colors.transparent : (_feedback == _Feedback.correct ? const Color(0xFFDDF5D2) : const Color(0xFFFFE6DC)),
-        border: showFeedback ? const Border(top: BorderSide(color: PQColors.ink, width: 2.4)) : null,
+        color: !showFeedback
+            ? Colors.transparent
+            : (_feedback == _Feedback.correct
+                  ? const Color(0xFFDDF5D2)
+                  : const Color(0xFFFFE6DC)),
+        border: showFeedback
+            ? const Border(top: BorderSide(color: PQColors.ink, width: 2.4))
+            : null,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -979,8 +1186,15 @@ class _LessonScreenState extends State<LessonScreen> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(_feedback == _Feedback.correct ? Icons.check_circle_rounded : Icons.error_rounded,
-                    color: _feedback == _Feedback.correct ? PQColors.success : PQColors.coralDeep, size: 30),
+                Icon(
+                  _feedback == _Feedback.correct
+                      ? Icons.check_circle_rounded
+                      : Icons.error_rounded,
+                  color: _feedback == _Feedback.correct
+                      ? PQColors.success
+                      : PQColors.coralDeep,
+                  size: 30,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -988,18 +1202,25 @@ class _LessonScreenState extends State<LessonScreen> {
                     key: const ValueKey('feedback_text'),
                     style: PQText.bodyStrong.copyWith(
                       fontSize: 16,
-                      color: _feedback == _Feedback.correct ? PQColors.successDeep : PQColors.coralDeep,
+                      color: _feedback == _Feedback.correct
+                          ? PQColors.successDeep
+                          : PQColors.coralDeep,
                     ),
                   ),
                 ),
               ],
             ),
-            if (hint != null && hint.isNotEmpty) ...[const SizedBox(height: 6), Text('Gợi ý: $hint', style: PQText.body.copyWith(fontSize: 15))],
+            if (hint != null && hint.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text('Gợi ý: $hint', style: PQText.body.copyWith(fontSize: 15)),
+            ],
             if (_feedback == _Feedback.wrong) ...[
               const SizedBox(height: 8),
               ChunkyButton(
                 key: const ValueKey('lesson_ask_tutor'),
-                label: _stepFails >= 3 ? 'Hỏi trợ giảng cùng gỡ' : 'Hỏi trợ giảng',
+                label: _stepFails >= 3
+                    ? 'Hỏi trợ giảng cùng gỡ'
+                    : 'Hỏi trợ giảng',
                 icon: Icons.support_agent_rounded,
                 tone: PQTone.grass,
                 size: ChunkySize.small,
@@ -1014,7 +1235,9 @@ class _LessonScreenState extends State<LessonScreen> {
           if (_canContinue || !isExercise)
             ChunkyButton(
               key: const ValueKey('lesson_continue'),
-              label: _index == widget.lesson.steps.length - 1 ? 'Hoàn thành bài học' : 'Tiếp tục',
+              label: _index == widget.lesson.steps.length - 1
+                  ? 'Hoàn thành bài học'
+                  : 'Tiếp tục',
               icon: Icons.arrow_forward_rounded,
               tone: PQTone.grass,
               expand: true,
@@ -1023,8 +1246,12 @@ class _LessonScreenState extends State<LessonScreen> {
           else
             ChunkyButton(
               key: const ValueKey('lesson_check'),
-              label: step is WriteStep || step is RobotStep ? 'Chạy và kiểm tra' : 'Kiểm tra',
-              icon: step is WriteStep || step is RobotStep ? Icons.play_arrow_rounded : Icons.check_rounded,
+              label: step is WriteStep || step is RobotStep
+                  ? 'Chạy và kiểm tra'
+                  : 'Kiểm tra',
+              icon: step is WriteStep || step is RobotStep
+                  ? Icons.play_arrow_rounded
+                  : Icons.check_rounded,
               tone: PQTone.py,
               expand: true,
               sfx: null,
@@ -1039,7 +1266,14 @@ class _LessonScreenState extends State<LessonScreen> {
 enum _OptionState { idle, correct, wrong }
 
 class _OptionCard extends StatelessWidget {
-  const _OptionCard({super.key, required this.text, required this.code, required this.selected, required this.state, required this.onTap});
+  const _OptionCard({
+    super.key,
+    required this.text,
+    required this.code,
+    required this.selected,
+    required this.state,
+    required this.onTap,
+  });
   final String text;
   final bool code;
   final bool selected;
@@ -1049,16 +1283,20 @@ class _OptionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = code
-        ? (selected || state != _OptionState.idle ? PQColors.codeBgSoft : PQColors.codeBg)
+        ? (selected || state != _OptionState.idle
+              ? PQColors.codeBgSoft
+              : PQColors.codeBg)
         : switch (state) {
             _OptionState.correct => const Color(0xFFDDF5D2),
             _OptionState.wrong => const Color(0xFFFFE0D6),
-            _OptionState.idle => selected ? const Color(0xFFFFF1C2) : PQColors.cream,
+            _OptionState.idle =>
+              selected ? const Color(0xFFFFF1C2) : PQColors.cream,
           };
     final border = switch (state) {
       _OptionState.correct => PQColors.success,
       _OptionState.wrong => PQColors.coralDeep,
-      _OptionState.idle => selected ? (code ? PQColors.pyYellow : PQColors.sunDeep) : PQColors.ink,
+      _OptionState.idle =>
+        selected ? (code ? PQColors.pyYellow : PQColors.sunDeep) : PQColors.ink,
     };
     return GestureDetector(
       onTap: onTap,
@@ -1068,20 +1306,43 @@ class _OptionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: border, width: selected || state != _OptionState.idle ? 3 : 2.2),
-          boxShadow: [BoxShadow(color: PQColors.ink.withValues(alpha: 0.15), offset: const Offset(0, 3), blurRadius: 0)],
+          border: Border.all(
+            color: border,
+            width: selected || state != _OptionState.idle ? 3 : 2.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: PQColors.ink.withValues(alpha: 0.15),
+              offset: const Offset(0, 3),
+              blurRadius: 0,
+            ),
+          ],
         ),
         child: Row(
           children: [
             Expanded(
               child: code
-                  ? Text.rich(TextSpan(children: highlightPython(text, PQText.code.copyWith(fontSize: 16))),
-                      style: PQText.code.copyWith(fontSize: 16))
+                  ? Text.rich(
+                      TextSpan(
+                        children: highlightPython(
+                          text,
+                          PQText.code.copyWith(fontSize: 16),
+                        ),
+                      ),
+                      style: PQText.code.copyWith(fontSize: 16),
+                    )
                   : Text(text, style: PQText.bodyStrong),
             ),
             if (state != _OptionState.idle)
-              Icon(state == _OptionState.correct ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                  color: state == _OptionState.correct ? PQColors.success : PQColors.coralDeep, size: 26),
+              Icon(
+                state == _OptionState.correct
+                    ? Icons.check_circle_rounded
+                    : Icons.cancel_rounded,
+                color: state == _OptionState.correct
+                    ? PQColors.success
+                    : PQColors.coralDeep,
+                size: 26,
+              ),
           ],
         ),
       ),
@@ -1090,7 +1351,12 @@ class _OptionCard extends StatelessWidget {
 }
 
 class _TokenChip extends StatelessWidget {
-  const _TokenChip({super.key, required this.text, required this.used, required this.onTap});
+  const _TokenChip({
+    super.key,
+    required this.text,
+    required this.used,
+    required this.onTap,
+  });
   final String text;
   final bool used;
   final VoidCallback? onTap;
@@ -1108,9 +1374,22 @@ class _TokenChip extends StatelessWidget {
             color: PQColors.codeBgSoft,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: PQColors.ink, width: 2.2),
-            boxShadow: const [BoxShadow(color: PQColors.ink, offset: Offset(0, 3), blurRadius: 0)],
+            boxShadow: const [
+              BoxShadow(
+                color: PQColors.ink,
+                offset: Offset(0, 3),
+                blurRadius: 0,
+              ),
+            ],
           ),
-          child: Text(text, style: PQText.code.copyWith(fontSize: 17, color: Colors.white, fontWeight: FontWeight.w700)),
+          child: Text(
+            text,
+            style: PQText.code.copyWith(
+              fontSize: 17,
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ),
       ),
     );
@@ -1139,8 +1418,20 @@ class _ExpectedBox extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Kết quả cần in ra:', style: PQText.small.copyWith(color: PQColors.sunDeep, fontWeight: FontWeight.w900)),
-                Text(expected, style: PQText.code.copyWith(fontSize: 15, color: PQColors.ink)),
+                Text(
+                  'Kết quả cần in ra:',
+                  style: PQText.small.copyWith(
+                    color: PQColors.sunDeep,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                Text(
+                  expected,
+                  style: PQText.code.copyWith(
+                    fontSize: 15,
+                    color: PQColors.ink,
+                  ),
+                ),
               ],
             ),
           ),
@@ -1164,7 +1455,9 @@ class _HintBox extends StatelessWidget {
         children: [
           const Icon(Icons.lightbulb_rounded, color: PQColors.sunDeep),
           const SizedBox(width: 8),
-          Expanded(child: Text(text, style: PQText.body.copyWith(fontSize: 15.5))),
+          Expanded(
+            child: Text(text, style: PQText.body.copyWith(fontSize: 15.5)),
+          ),
         ],
       ),
     );
@@ -1173,21 +1466,45 @@ class _HintBox extends StatelessWidget {
 
 /// Small maze + robot driven by the child's Python code (lessons 11–12).
 class _RobotRunner extends StatefulWidget {
-  const _RobotRunner({super.key, required this.rows, required this.code, required this.onFinished, required this.execute});
+  const _RobotRunner({
+    super.key,
+    required this.rows,
+    required this.code,
+    required this.onFinished,
+    required this.execute,
+  });
   final List<String> rows;
   final PythonCodeController code;
-  final Future<void> Function(bool reached, String code, ExecutionResult? result) onFinished;
-  final Future<ExecutionResult> Function(String code, {ExecutionContext? execContext}) execute;
+  final Future<void> Function(
+    bool reached,
+    String code,
+    ExecutionResult? result,
+  )
+  onFinished;
+  final Future<ExecutionResult> Function(
+    String code, {
+    ExecutionContext? execContext,
+  })
+  execute;
 
   @override
   State<_RobotRunner> createState() => _RobotRunnerState();
 }
 
-class _RobotRunnerState extends State<_RobotRunner> with TickerProviderStateMixin {
-  late final MazeLevel _level =
-      MazeLevel.fromRows(id: 'lesson', title: '', rows: widget.rows, commandLimit: 99, allowLoops: true);
+class _RobotRunnerState extends State<_RobotRunner>
+    with TickerProviderStateMixin {
+  late final MazeLevel _level = MazeLevel.fromRows(
+    id: 'lesson',
+    title: '',
+    rows: widget.rows,
+    commandLimit: 99,
+    allowLoops: true,
+  );
   late final MazePlayback _pb = MazePlayback(_level)..reset(_level);
-  late final AnimationController _time = AnimationController(vsync: this, duration: const Duration(seconds: 8))..repeat();
+  late final AnimationController _time = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 8),
+  )..repeat();
   bool _busy = false;
 
   @override
@@ -1204,15 +1521,19 @@ class _RobotRunnerState extends State<_RobotRunner> with TickerProviderStateMixi
     _pb.reset(_level);
     final sim = MazeSimulation(_level);
     final code = widget.code.text;
-    final result = await widget.execute(code,
-        execContext: ExecutionContext(hostFunctions: {
+    final result = await widget.execute(
+      code,
+      execContext: ExecutionContext(
+        hostFunctions: {
           for (final d in Dir.values)
             d.py: (args) {
               if (!sim.move(d)) throw HostHalt('stop');
               return null;
             },
           'at_chest': (args) => sim.position == _level.goal,
-        }));
+        },
+      ),
+    );
     final ok = result.success || result.errorKind == ExecutionErrorKind.halted;
     if (!mounted) return;
     if (ok) {
@@ -1221,14 +1542,17 @@ class _RobotRunnerState extends State<_RobotRunner> with TickerProviderStateMixi
       for (final d in sim.moves) {
         if (!mounted) return;
         final next = Cell(pos.x + d.dx, pos.y + d.dy);
-        final blocked = !_level.inside(next) || _level.tileAt(next) == Tile.wall;
+        final blocked =
+            !_level.inside(next) || _level.tileAt(next) == Tile.wall;
         const frames = 8;
         for (var f = 1; f <= frames; f++) {
           await Future<void>.delayed(const Duration(milliseconds: 34));
           final t = f / frames;
           final target = Offset(next.x.toDouble(), next.y.toDouble());
           final from = Offset(pos.x.toDouble(), pos.y.toDouble());
-          _pb.robot = blocked ? Offset.lerp(from, target, 0.3 * (1 - (t - 0.5).abs() * 2))! : Offset.lerp(from, target, t)!;
+          _pb.robot = blocked
+              ? Offset.lerp(from, target, 0.3 * (1 - (t - 0.5).abs() * 2))!
+              : Offset.lerp(from, target, t)!;
           _pb.hop = blocked ? 0 : (1 - (t * 2 - 1).abs()) * 0.5;
           _pb.update();
         }
@@ -1259,6 +1583,9 @@ class _RobotRunnerState extends State<_RobotRunner> with TickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: MazeBoardPainter(level: _level, playback: _pb, time: _time), size: Size.infinite);
+    return CustomPaint(
+      painter: MazeBoardPainter(level: _level, playback: _pb, time: _time),
+      size: Size.infinite,
+    );
   }
 }

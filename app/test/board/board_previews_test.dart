@@ -47,8 +47,12 @@ const List<List<Object>> kPrimaryCaptures = <List<Object>>[
   <Object>[0, 0, 'code-highlight', '', ''],
   <Object>[0, 1, 'quote-tokens', '', ''],
   <Object>[
-      0, 2, 'connector-single-output', 'board_code_line_0', 'board_output_2_',
-    ],
+    0,
+    2,
+    'connector-single-output',
+    'board_code_line_0',
+    'board_output_2_',
+  ],
   <Object>[0, 3, 'wait-task', '', ''],
   <Object>[1, 0, 'groups-3-4-line-highlight', '', ''],
   <Object>[1, 1, 'cleared-group-7-first-line', '', ''],
@@ -59,8 +63,12 @@ const List<List<Object>> kPrimaryCaptures = <List<Object>>[
 /// Bốn khung hẹp nhất (360×640, font 2.0) — nơi dễ tràn chữ nhất, chụp cả vi và en.
 const List<List<Object>> kSmallCaptures = <List<Object>>[
   <Object>[
-      0, 2, 'connector-single-output', 'board_code_line_0', 'board_output_2_',
-    ],
+    0,
+    2,
+    'connector-single-output',
+    'board_code_line_0',
+    'board_output_2_',
+  ],
   <Object>[0, 3, 'wait-task', '', ''],
   <Object>[1, 0, 'groups-3-4-line-highlight', '', ''],
   <Object>[1, 2, 'whole-run-two-lines', '', ''],
@@ -89,17 +97,21 @@ class _Shot {
   final int width;
   final int height;
   final String path;
+
   /// Số hàng ảnh có điểm tối trong dải nối của `connector` và tổng số hàng của dải (-1 / 0 khi
   /// ảnh không có mũi tên). Đây là bằng chứng "mũi tên cắt ngang khoảng trống", không phải
   /// "trên ảnh có một nét nào đó".
   final int inkRows;
   final int inkSpan;
+
   /// Một trong hai hộp mà mũi tên phải nối **không có** trên cây widget.
   final bool boxesMissing;
+
   /// Hai prefix đã dùng để tra hộp, để dòng manifest tự giải thích phép đo.
   final String gapNote;
 
-  String describe(String name) => '$name | ${width}x$height | $bytes B | $levels mức sáng | '
+  String describe(String name) =>
+      '$name | ${width}x$height | $bytes B | $levels mức sáng | '
       'góc RGBA ${corner.join(',')}'
       '${inkRows >= 0 ? ' | mực dải nối $inkRows/$inkSpan hàng' : ''}'
       '${boxesMissing ? ' | THIẾU HỘP NỐI ($gapNote)' : ''}'
@@ -109,7 +121,9 @@ class _Shot {
 /// `tested_code_commit` của run CI; rỗng khi chạy ở máy cá nhân thì nói rõ là local.
 String _commit() {
   final String? sha = Platform.environment['GITHUB_SHA'];
-  return (sha == null || sha.isEmpty) ? 'local' : sha.substring(0, sha.length < 12 ? sha.length : 12);
+  return (sha == null || sha.isEmpty)
+      ? 'local'
+      : sha.substring(0, sha.length < 12 ? sha.length : 12);
 }
 
 void main() {
@@ -125,54 +139,129 @@ void main() {
   // field (plan, beat, nhãn, fromPrefix, toPrefix) còn vòng build `jobs` chỉ sinh BỐN, nên
   // `job[4]`/`job[5]` ném RangeError trước cả cú chụp. Kiểm hợp đồng dữ liệu ở đây để lần sau
   // sai là đỏ ĐÚNG TÊN, không phải im lặng mất trọn bộ ảnh.
-  test('cấu trúc capture: mỗi entry 5 field, jobs ra 40 combo, chỉ beat có mũi tên khai hai hộp', () {
-    final List<List<Object>> all = <List<Object>>[...kPrimaryCaptures, ...kSmallCaptures];
-    for (final List<Object> e in all) {
-      expect(e, hasLength(5),
-          reason: 'mỗi entry phải là [plan, beat, nhãn, fromPrefix, toPrefix], thấy ${e.length}');
-      expect(e[0] as int, inInclusiveRange(0, 1), reason: 'chỉ có hai plan authored: $e');
-      expect(e[1] as int, inInclusiveRange(0, 3), reason: 'mỗi plan bốn beat: $e');
-      final String why = e[2] as String;
-      expect(why, isNotEmpty);
-      final bool hasArrow = why.contains('connector');
-      expect((e[3] as String).isNotEmpty, hasArrow,
-          reason: '$why: beat có mũi tên BẮT BUỘC khai hộp ở hai đầu, beat khác thì không');
-      expect((e[4] as String).isNotEmpty, hasArrow, reason: '$why: thiếu prefix hộp đích');
-    }
-    // Khổ hẹp chỉ chụp font 2.0 (case xấu nhất) nên số combo là 8*2*2 + 4*2, không phải *4.
-    final int combos =
-        kPrimaryCaptures.length * kPreviewLocales.length * kPreviewScales.length +
-            kSmallCaptures.length * kPreviewLocales.length;
-    expect(combos, 40, reason: 'bộ ảnh dự kiến là 40 combo, không phải $combos');
-  });
+  test(
+    'cấu trúc capture: mỗi entry 5 field, jobs ra 40 combo, chỉ beat có mũi tên khai hai hộp',
+    () {
+      final List<List<Object>> all = <List<Object>>[
+        ...kPrimaryCaptures,
+        ...kSmallCaptures,
+      ];
+      for (final List<Object> e in all) {
+        expect(
+          e,
+          hasLength(5),
+          reason:
+              'mỗi entry phải là [plan, beat, nhãn, fromPrefix, toPrefix], thấy ${e.length}',
+        );
+        expect(
+          e[0] as int,
+          inInclusiveRange(0, 1),
+          reason: 'chỉ có hai plan authored: $e',
+        );
+        expect(
+          e[1] as int,
+          inInclusiveRange(0, 3),
+          reason: 'mỗi plan bốn beat: $e',
+        );
+        final String why = e[2] as String;
+        expect(why, isNotEmpty);
+        final bool hasArrow = why.contains('connector');
+        expect(
+          (e[3] as String).isNotEmpty,
+          hasArrow,
+          reason:
+              '$why: beat có mũi tên BẮT BUỘC khai hộp ở hai đầu, beat khác thì không',
+        );
+        expect(
+          (e[4] as String).isNotEmpty,
+          hasArrow,
+          reason: '$why: thiếu prefix hộp đích',
+        );
+      }
+      // Khổ hẹp chỉ chụp font 2.0 (case xấu nhất) nên số combo là 8*2*2 + 4*2, không phải *4.
+      final int combos =
+          kPrimaryCaptures.length *
+              kPreviewLocales.length *
+              kPreviewScales.length +
+          kSmallCaptures.length * kPreviewLocales.length;
+      expect(
+        combos,
+        40,
+        reason: 'bộ ảnh dự kiến là 40 combo, không phải $combos',
+      );
+    },
+  );
 
   // R9-A (yêu cầu "chụp một combo và mở ảnh publish đúng SHA, rồi 40 ảnh"): ca này chạy TRƯỚC và
   // ghi thẳng vào `build/previews` với đúng tên mà job đầu tiên của vòng 40 sẽ dùng, nên nếu vòng
   // đó chết giữa đường, publisher vẫn còn MỘT ảnh board ở đúng SHA để reviewer mở. Nó vẫn tự chụp
   // chứ không đọc lại ảnh của test khác (đọc ảnh người khác viết thì ảnh cũ trên đĩa vẫn cho xanh).
-  testWidgets('pipeline ảnh còn sống: chụp MỘT combo, mở lại bằng chính số đo của nó',
-      (WidgetTester tester) async {
-    final Directory outDir = Directory('build/previews');
-    final _Shot shot = await _captureBoard(tester, outDir,
-        'board-mq1_01_s2-b1-code-highlight-390x844-font1.0-vi', 0, 0, kPrimarySurface, 1.0, 'vi');
-    final File file = File(shot.path);
-    expect(file.existsSync(), isTrue, reason: 'ảnh phải được chính ca này ghi ra: ${file.path}');
-    final Uint8List bytes = file.readAsBytesSync();
-    expect(bytes.sublist(0, 8), <int>[137, 80, 78, 71, 13, 10, 26, 10],
-        reason: 'không phải PNG hợp lệ thì không có gì để mở');
-    expect(shot.bytes, greaterThan(4000), reason: 'ảnh quá nhỏ, nhiều khả năng chỉ có nền');
-    // Một dải màu đặc = 1 mức sáng. Font Ahem (thiếu `loadAppFonts`) hoặc mất nền trong boundary
-    // đều cho ảnh "to nhưng không có chữ"; số cấp sáng là thứ phân biệt được hai trường hợp đó.
-    expect(shot.levels, greaterThanOrEqualTo(8),
-        reason: 'chỉ ${shot.levels} mức sáng = một dải màu, không phải chữ đọc được');
-    expect(shot.corner, <int>[255, 255, 255, 255],
-        reason: 'góc trên-trái phải là nền trắng opaque, không phải transparent (publisher ra nền đen)');
-    expect(shot.width, (kPrimarySurface.width * 1.5).round(), reason: 'ảnh không đúng khổ đã khai');
-    expect(shot.height, (kPrimarySurface.height * 1.5).round(), reason: 'ảnh không đúng khổ đã khai');
-  });
+  testWidgets(
+    'pipeline ảnh còn sống: chụp MỘT combo, mở lại bằng chính số đo của nó',
+    (WidgetTester tester) async {
+      final Directory outDir = Directory('build/previews');
+      final _Shot shot = await _captureBoard(
+        tester,
+        outDir,
+        'board-mq1_01_s2-b1-code-highlight-390x844-font1.0-vi',
+        0,
+        0,
+        kPrimarySurface,
+        1.0,
+        'vi',
+      );
+      final File file = File(shot.path);
+      expect(
+        file.existsSync(),
+        isTrue,
+        reason: 'ảnh phải được chính ca này ghi ra: ${file.path}',
+      );
+      final Uint8List bytes = file.readAsBytesSync();
+      expect(bytes.sublist(0, 8), <int>[
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+      ], reason: 'không phải PNG hợp lệ thì không có gì để mở');
+      expect(
+        shot.bytes,
+        greaterThan(4000),
+        reason: 'ảnh quá nhỏ, nhiều khả năng chỉ có nền',
+      );
+      // Một dải màu đặc = 1 mức sáng. Font Ahem (thiếu `loadAppFonts`) hoặc mất nền trong boundary
+      // đều cho ảnh "to nhưng không có chữ"; số cấp sáng là thứ phân biệt được hai trường hợp đó.
+      expect(
+        shot.levels,
+        greaterThanOrEqualTo(8),
+        reason:
+            'chỉ ${shot.levels} mức sáng = một dải màu, không phải chữ đọc được',
+      );
+      expect(
+        shot.corner,
+        <int>[255, 255, 255, 255],
+        reason:
+            'góc trên-trái phải là nền trắng opaque, không phải transparent (publisher ra nền đen)',
+      );
+      expect(
+        shot.width,
+        (kPrimarySurface.width * 1.5).round(),
+        reason: 'ảnh không đúng khổ đã khai',
+      );
+      expect(
+        shot.height,
+        (kPrimarySurface.height * 1.5).round(),
+        reason: 'ảnh không đúng khổ đã khai',
+      );
+    },
+  );
 
-  testWidgets('chụp board-<step>-<beat>-<khổ>-<font>-<locale>.png và đo điểm ảnh',
-      (WidgetTester tester) async {
+  testWidgets('chụp board-<step>-<beat>-<khổ>-<font>-<locale>.png và đo điểm ảnh', (
+    WidgetTester tester,
+  ) async {
     final Directory outDir = Directory('build/previews');
     if (!outDir.existsSync()) outDir.createSync(recursive: true);
     final List<String> manifest = <String>[];
@@ -188,8 +277,11 @@ void main() {
     // R9-A chính là chỗ này: entry capture có NĂM field, `jobs` chèn thêm surface thành SÁU. Vòng
     // `8647916` jobs chỉ có bốn field nên `job[4]`/`job[5]` ném RangeError TRƯỚC cả `_captureBoard`
     // -> không một ảnh nào được ghi, publisher không có gì đăng, và báo cáo chỉ còn bốn cái tên.
-    expect(jobs.every((List<Object> j) => j.length == 6), isTrue,
-        reason: 'jobs phải mang đủ plan/beat/nhãn/surface/fromPrefix/toPrefix');
+    expect(
+      jobs.every((List<Object> j) => j.length == 6),
+      isTrue,
+      reason: 'jobs phải mang đủ plan/beat/nhãn/surface/fromPrefix/toPrefix',
+    );
     for (final List<Object> job in jobs) {
       final int planIndex = job[0] as int;
       final int beatIndex = job[1] as int;
@@ -202,12 +294,23 @@ void main() {
         for (final double scale in kPreviewScales) {
           // Khổ hẹp chỉ cần font 2.0 (case xấu nhất); khổ chính chạy cả hai font, hai locale.
           if (small && scale != 2.0) continue;
-          final String name = 'board-${stepName(planIndex)}-b${beatIndex + 1}-$why-'
+          final String name =
+              'board-${stepName(planIndex)}-b${beatIndex + 1}-$why-'
               '${surface.width.round()}x${surface.height.round()}'
               '-font${scale.toStringAsFixed(1)}-$locale';
           try {
-            final _Shot shot = await _captureBoard(tester, outDir, name, planIndex, beatIndex,
-                surface, scale, locale, fromPrefix, toPrefix);
+            final _Shot shot = await _captureBoard(
+              tester,
+              outDir,
+              name,
+              planIndex,
+              beatIndex,
+              surface,
+              scale,
+              locale,
+              fromPrefix,
+              toPrefix,
+            );
             manifest.add(shot.describe(name));
           } on Object catch (e, st) {
             // Một phép đo hỏng không được khai tử cả bộ ảnh: publisher chỉ lấy những file đã ghi ra
@@ -225,7 +328,9 @@ void main() {
     // giá trị chẩn đoán — lại không chạy.
     // `render.txt`/`test.txt` là kênh CI in đủ; MANIFEST đi cùng ảnh để ảnh tự giải thích nó là
     // gì, chụp từ commit nào, và đã được đo ra sao.
-    File('${outDir.path}/MANIFEST.txt').writeAsStringSync('${manifest.join('\n')}\n');
+    File(
+      '${outDir.path}/MANIFEST.txt',
+    ).writeAsStringSync('${manifest.join('\n')}\n');
     // ignore: avoid_print
     print('board previews (${manifest.length} ảnh) @ ${_commit()}');
     for (final String line in manifest) {
@@ -235,24 +340,43 @@ void main() {
     // Nhãn bắt buộc của §acceptance: ảnh là board TÁC GIẢ dựng trong test host, chưa nối
     // LessonScreen/AI/voice — dòng này đi vào `test.txt` nên nằm cạnh danh sách ảnh trong báo cáo.
     // ignore: avoid_print
-    print('board previews label: ảnh renderer PQC-010 — chưa nối LessonScreen/AI/voice, '
-        'không phải bằng chứng chạy trên thiết bị hay TalkBack.');
-    expect(manifest, hasLength(kPrimaryCaptures.length * 4 + kSmallCaptures.length * 2),
-        reason: 'bộ ảnh phải phủ từng beat ở vi/en và font 2.0: ${manifest.length}');
-    expect(manifest.where((String n) => n.contains('-b1-')), isNotEmpty,
-        reason: 'tên ảnh phải chứa beat, không chỉ plan');
-    expect(failures, isEmpty,
-        reason: '${failures.length} combo đo ảnh hỏng: ${failures.join(', ')} — chi tiết ở '
-            'MANIFEST.txt và ở các dòng in phía trên');
+    print(
+      'board previews label: ảnh renderer PQC-010 — chưa nối LessonScreen/AI/voice, '
+      'không phải bằng chứng chạy trên thiết bị hay TalkBack.',
+    );
+    expect(
+      manifest,
+      hasLength(kPrimaryCaptures.length * 4 + kSmallCaptures.length * 2),
+      reason:
+          'bộ ảnh phải phủ từng beat ở vi/en và font 2.0: ${manifest.length}',
+    );
+    expect(
+      manifest.where((String n) => n.contains('-b1-')),
+      isNotEmpty,
+      reason: 'tên ảnh phải chứa beat, không chỉ plan',
+    );
+    expect(
+      failures,
+      isEmpty,
+      reason:
+          '${failures.length} combo đo ảnh hỏng: ${failures.join(', ')} — chi tiết ở '
+          'MANIFEST.txt và ở các dòng in phía trên',
+    );
     // Bộ đếm này nói thẳng publisher có gì trong tay, thay vì để người đọc suy ra từ số ảnh đã đăng.
-    final List<String> onDisk = outDir
-        .listSync()
-        .map((FileSystemEntity e) => e.uri.pathSegments.last)
-        .where((String n) => n.startsWith('board-') && n.endsWith('.png'))
-        .toList()..sort();
-    expect(onDisk, hasLength(40),
-        reason: 'build/previews phải có 40 ảnh board để publish, thấy ${onDisk.length}: '
-            '${onDisk.take(3).join(", ")}');
+    final List<String> onDisk =
+        outDir
+            .listSync()
+            .map((FileSystemEntity e) => e.uri.pathSegments.last)
+            .where((String n) => n.startsWith('board-') && n.endsWith('.png'))
+            .toList()
+          ..sort();
+    expect(
+      onDisk,
+      hasLength(40),
+      reason:
+          'build/previews phải có 40 ảnh board để publish, thấy ${onDisk.length}: '
+          '${onDisk.take(3).join(", ")}',
+    );
   });
 }
 
@@ -282,38 +406,53 @@ Future<_Shot> _captureBoard(
   );
   addTearDown(controller.dispose);
   expect(
-    controller.applyPlan(controller.currentToken, validateComposed(planIndex, locale: locale)),
+    controller.applyPlan(
+      controller.currentToken,
+      validateComposed(planIndex, locale: locale),
+    ),
     BoardApplyOutcome.applied,
     reason: '$name: plan bị reject thì ảnh cũng vô nghĩa',
   );
   for (int i = 0; i < beatIndex; i++) {
-    expect(controller.next(), isTrue, reason: '$name: không tới được beat $beatIndex');
+    expect(
+      controller.next(),
+      isTrue,
+      reason: '$name: không tới được beat $beatIndex',
+    );
   }
   tester.view.physicalSize = surface;
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
-  await tester.pumpWidget(MediaQuery(
-    data: MediaQueryData(size: surface, textScaler: TextScaler.linear(scale)),
-    // Host của ảnh bằng chứng KHÔNG mượn `TextScaler` đã kẹp 1.2 của app: `MediaQueryData` trực
-    // tiếp ở đây means fontScale 2.0 đến renderer nguyên 2.0 — đó là thứ thiết bị sẽ làm.
-    child: MaterialApp(
-      theme: ThemeData(fontFamily: PQFonts.body, scaffoldBackgroundColor: Colors.white),
-      home: Scaffold(
-        body: SafeArea(
-          // `RepaintBoundary` ngoài cùng + `ColoredBox` BÊN TRONG: `toImage` chỉ chụp subtree của
-          // boundary, và `convert('RGB')` của CI không ghép alpha nên mọi vùng transparent sẽ
-          // thành nền đen. Đặt màu nền ngoài boundary = ảnh đen dù màn hình vẫn trắng.
-          child: RepaintBoundary(
-            key: boundary,
-            child: ColoredBox(
-              color: Colors.white,
-              child: SizedBox(
-                width: surface.width,
-                height: surface.height,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: BoardView(controller: controller, codeText: exampleCodeForStep(stepId)),
+  await tester.pumpWidget(
+    MediaQuery(
+      data: MediaQueryData(size: surface, textScaler: TextScaler.linear(scale)),
+      // Host của ảnh bằng chứng KHÔNG mượn `TextScaler` đã kẹp 1.2 của app: `MediaQueryData` trực
+      // tiếp ở đây means fontScale 2.0 đến renderer nguyên 2.0 — đó là thứ thiết bị sẽ làm.
+      child: MaterialApp(
+        theme: ThemeData(
+          fontFamily: PQFonts.body,
+          scaffoldBackgroundColor: Colors.white,
+        ),
+        home: Scaffold(
+          body: SafeArea(
+            // `RepaintBoundary` ngoài cùng + `ColoredBox` BÊN TRONG: `toImage` chỉ chụp subtree của
+            // boundary, và `convert('RGB')` của CI không ghép alpha nên mọi vùng transparent sẽ
+            // thành nền đen. Đặt màu nền ngoài boundary = ảnh đen dù màn hình vẫn trắng.
+            child: RepaintBoundary(
+              key: boundary,
+              child: ColoredBox(
+                color: Colors.white,
+                child: SizedBox(
+                  width: surface.width,
+                  height: surface.height,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: BoardView(
+                      controller: controller,
+                      codeText: exampleCodeForStep(stepId),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -321,7 +460,7 @@ Future<_Shot> _captureBoard(
         ),
       ),
     ),
-  ));
+  );
   expect(tester.takeException(), isNull, reason: '$name: board nổ khi dựng');
   await tester.pump(const Duration(milliseconds: 50));
   // Capture the authored teaching target in the viewport before reading any geometry. The old
@@ -329,18 +468,35 @@ Future<_Shot> _captureBoard(
   // lower half from its screenshots. For connector beats, bring the destination output into view;
   // for wait/snippet beats, prefer the snippet/example box when present.
   final Finder target = fromPrefix.isNotEmpty
-      ? find.byWidgetPredicate((Widget w) =>
-          w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith(toPrefix))
-      : find.byWidgetPredicate((Widget w) => w.key is ValueKey<String> &&
-          ((w.key! as ValueKey<String>).value.startsWith('board_code_snippet_') ||
-              (w.key! as ValueKey<String>).value.startsWith('board_output_') ||
-              (beatIndex == 0 && (w.key! as ValueKey<String>).value.startsWith('board_group_'))));
+      ? find.byWidgetPredicate(
+          (Widget w) =>
+              w.key is ValueKey<String> &&
+              (w.key! as ValueKey<String>).value.startsWith(toPrefix),
+        )
+      : find.byWidgetPredicate(
+          (Widget w) =>
+              w.key is ValueKey<String> &&
+              ((w.key! as ValueKey<String>).value.startsWith(
+                    'board_code_snippet_',
+                  ) ||
+                  (w.key! as ValueKey<String>).value.startsWith(
+                    'board_output_',
+                  ) ||
+                  (beatIndex == 0 &&
+                      (w.key! as ValueKey<String>).value.startsWith(
+                        'board_group_',
+                      ))),
+        );
   if (target.evaluate().isNotEmpty) {
     await tester.ensureVisible(target.first);
     await tester.pumpAndSettle();
   }
   expect(controller.beatIndex, beatIndex);
-  expect(controller.currentCopy!.caption, isNotEmpty, reason: '$name: beat không có caption');
+  expect(
+    controller.currentCopy!.caption,
+    isNotEmpty,
+    reason: '$name: beat không có caption',
+  );
 
   // rev 8 §R8-B1: với beat có `connector`, phải thấy **mực vẽ băng qua khoảng trống** giữa hai hộp.
   // Hai hộp lấy từ CHÍNH cây widget đang dựng — key của hộp nguồn và hộp đích do bảng capture khai
@@ -363,8 +519,14 @@ Future<_Shot> _captureBoard(
     // Không `expect` ở đây: mọi thứ trước cú `toImage` đều có thể làm mất cả ảnh, mà ảnh là bằng
     // chứng design cần mở. Thiếu hộp thì chỉ đánh dấu, và kiểm tra sẽ chạy SAU khi ảnh đã ghi.
     boxesMissing = from == null || to == null;
-    final double gapTop = from == null ? 0 : (to == null ? 0 : (from.bottom < to.bottom ? from.bottom : to.bottom));
-    final double gapBottom = from == null ? 0 : (to == null ? 0 : (from.top > to.top ? from.top : to.top));
+    final double gapTop = from == null
+        ? 0
+        : (to == null
+              ? 0
+              : (from.bottom < to.bottom ? from.bottom : to.bottom));
+    final double gapBottom = from == null
+        ? 0
+        : (to == null ? 0 : (from.top > to.top ? from.top : to.top));
     bandTop = ((gapTop - origin.dy) * 1.5).round();
     bandBottom = ((gapBottom - origin.dy) * 1.5).round();
     if (bandBottom < bandTop) {
@@ -402,8 +564,13 @@ Future<_Shot> _captureBoard(
         for (int x = 0; x < image.width; x++) {
           final int at = (y * image.width + x) * 4;
           if (at + 3 >= pixels.length) break;
-          if (pixels[at + 3] != 255) continue; // chỉ tính điểm opaque; transparent là lỗi khác
-          final int lum = (pixels[at] * 299 + pixels[at + 1] * 587 + pixels[at + 2] * 114) ~/ 1000;
+          if (pixels[at + 3] != 255)
+            continue; // chỉ tính điểm opaque; transparent là lỗi khác
+          final int lum =
+              (pixels[at] * 299 +
+                  pixels[at + 1] * 587 +
+                  pixels[at + 2] * 114) ~/
+              1000;
           if (lum < 150) {
             rows++;
             break;
@@ -422,7 +589,8 @@ Future<_Shot> _captureBoard(
       inkRows: inkRows,
       inkSpan: bandBottom - bandTop + 1,
       boxesMissing: boxesMissing,
-      gapNote: '$fromPrefix|$toPrefix from=$fromRectMeasured to=$toRectMeasured '
+      gapNote:
+          '$fromPrefix|$toPrefix from=$fromRectMeasured to=$toRectMeasured '
           'band=$bandTop..$bandBottom viewport=${surface.width}x${surface.height}',
     );
     image.dispose();
@@ -435,30 +603,78 @@ Future<_Shot> _captureBoard(
   final _Shot s = shot!;
   // Assert đặt NGOÀI `runAsync`: trong zone fake-async của `testWidgets`, một exception từ
   // `runAsync` có thể bị nuốt; số liệu đưa ra ngoài rồi kiểm vẫn rõ ràng khi đọc log CI.
-  expect(s.bytes, greaterThan(4000), reason: '$name: ảnh quá nhỏ, nhiều khả năng chỉ có nền');
-  expect(s.levels, greaterThanOrEqualTo(8),
-      reason: '$name: chỉ ${s.levels} mức sáng = một dải màu đặc, không phải chữ đọc được');
-  expect(s.corner[3], 255, reason: '$name: góc trên-trái trong suốt -> publisher ra nền đen');
-  expect(s.corner[0], greaterThan(200), reason: '$name: nền capture không sáng như đã khai');
+  expect(
+    s.bytes,
+    greaterThan(4000),
+    reason: '$name: ảnh quá nhỏ, nhiều khả năng chỉ có nền',
+  );
+  expect(
+    s.levels,
+    greaterThanOrEqualTo(8),
+    reason:
+        '$name: chỉ ${s.levels} mức sáng = một dải màu đặc, không phải chữ đọc được',
+  );
+  expect(
+    s.corner[3],
+    255,
+    reason: '$name: góc trên-trái trong suốt -> publisher ra nền đen',
+  );
+  expect(
+    s.corner[0],
+    greaterThan(200),
+    reason: '$name: nền capture không sáng như đã khai',
+  );
   // Ảnh phải đúng khổ boundary nhân pixelRatio: đây là bằng chứng "đo trên ảnh", không phải on
   // file, và chặn trường hợp chụp nhằm một node rỗng 1x1.
-  expect(s.width, (surface.width * 1.5).round(), reason: '$name: bề rộng ảnh không khớp surface');
-  expect(s.height, (surface.height * 1.5).round(), reason: '$name: chiều cao ảnh không khớp surface');
-  expect(s.boxesMissing, isFalse,
-      reason: '$name: mũi tên phải nối hai hộp thật, nhưng không tìm thấy hộp nào có key khớp '
-          '${s.gapNote} -> ảnh này không có gì để đối chiếu');
+  expect(
+    s.width,
+    (surface.width * 1.5).round(),
+    reason: '$name: bề rộng ảnh không khớp surface',
+  );
+  expect(
+    s.height,
+    (surface.height * 1.5).round(),
+    reason: '$name: chiều cao ảnh không khớp surface',
+  );
+  expect(
+    s.boxesMissing,
+    isFalse,
+    reason:
+        '$name: mũi tên phải nối hai hộp thật, nhưng không tìm thấy hộp nào có key khớp '
+        '${s.gapNote} -> ảnh này không có gì để đối chiếu',
+  );
   if (s.inkRows >= 0) {
-    expect(bandTop, greaterThanOrEqualTo(0),
-        reason: '$name source-to-destination band starts above the captured viewport: ${s.gapNote}');
-    expect(bandBottom, lessThan(s.height),
-        reason: '$name source-to-destination band ends below the captured viewport: ${s.gapNote}');
+    expect(
+      bandTop,
+      greaterThanOrEqualTo(0),
+      reason:
+          '$name source-to-destination band starts above the captured viewport: ${s.gapNote}',
+    );
+    expect(
+      bandBottom,
+      lessThan(s.height),
+      reason:
+          '$name source-to-destination band ends below the captured viewport: ${s.gapNote}',
+    );
     final int span = s.inkSpan;
-    expect(span, greaterThan(1), reason: '$name: dải nối rỗng ($span hàng) — không có chỗ nào để vẽ');
+    expect(
+      span,
+      greaterThan(1),
+      reason: '$name: dải nối rỗng ($span hàng) — không có chỗ nào để vẽ',
+    );
     // Ít nhất nửa dải phải có mực: nét nối thật thì liên tục từ hộp nguồn xuống hộp đích.
-    expect(s.inkRows * 2 >= span, isTrue,
-        reason: '$name: mũi tên chỉ phủ ${s.inkRows}/$span hàng của khoảng nối -> nó không nối '
-            'hai hộp (một nét ngang ở độ cao trung bình sẽ trượt kiểm tra này)');
-    expect(s.inkRows, lessThanOrEqualTo(span), reason: '$name: đếm hàng vô lý ${s.inkRows}>$span');
+    expect(
+      s.inkRows * 2 >= span,
+      isTrue,
+      reason:
+          '$name: mũi tên chỉ phủ ${s.inkRows}/$span hàng của khoảng nối -> nó không nối '
+          'hai hộp (một nét ngang ở độ cao trung bình sẽ trượt kiểm tra này)',
+    );
+    expect(
+      s.inkRows,
+      lessThanOrEqualTo(span),
+      reason: '$name: đếm hàng vô lý ${s.inkRows}>$span',
+    );
   }
 
   return s;
@@ -468,9 +684,12 @@ Future<_Shot> _captureBoard(
 List<int> _pngSize(Uint8List bytes) {
   // `throw`, không `expect`: helper chạy trong `runAsync`, nơi exception của expect bị zone
   // thật nuốt và ca test chỉ đỏ vì timeout — khó đọc hơn nhiều so với một thông báo thẳng.
-  if (bytes.length <= 24) throw StateError('PNG ngắn hơn header: ${bytes.length} byte');
-  return <int>[(bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19],
-      (bytes[20] << 24) | (bytes[21] << 16) | (bytes[22] << 8) | bytes[23]];
+  if (bytes.length <= 24)
+    throw StateError('PNG ngắn hơn header: ${bytes.length} byte');
+  return <int>[
+    (bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19],
+    (bytes[20] << 24) | (bytes[21] << 16) | (bytes[22] << 8) | bytes[23],
+  ];
 }
 
 /// Số cấp độ sáng khác nhau, lấy mẫu đều trên ảnh. Chữ anti-alias + viền hộp + nền tô sáng luôn
@@ -479,7 +698,9 @@ int _distinctLuminanceLevels(Uint8List rgba) {
   final Set<int> levels = <int>{};
   const int stride = 4 * 53; // ~1/53 số pixel: trải đều mà không duyệt hết ảnh
   for (int i = 0; i + 3 < rgba.length; i += stride) {
-    levels.add(((rgba[i] * 299 + rgba[i + 1] * 587 + rgba[i + 2] * 114) ~/ 1000) ~/ 4);
+    levels.add(
+      ((rgba[i] * 299 + rgba[i + 1] * 587 + rgba[i + 2] * 114) ~/ 1000) ~/ 4,
+    );
     if (levels.length >= 64) break;
   }
   return levels.length;
@@ -490,8 +711,11 @@ int _distinctLuminanceLevels(Uint8List rgba) {
 /// Trả null khi không có hộp nào như vậy — đó là phát hiện thật về bảng (mũi tên trỏ vào một hộp
 /// không được vẽ), không phải lỗi của phép đo, nên người gọi kiểm bằng `expect(isNotNull)`.
 Rect? boxRectForPrefix(WidgetTester tester, String prefix) {
-  final Finder boxes = find.byWidgetPredicate((Widget w) =>
-      w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith(prefix));
+  final Finder boxes = find.byWidgetPredicate(
+    (Widget w) =>
+        w.key is ValueKey<String> &&
+        (w.key! as ValueKey<String>).value.startsWith(prefix),
+  );
   if (boxes.evaluate().isEmpty) return null;
   return tester.getRect(boxes.first);
 }
@@ -499,10 +723,15 @@ Rect? boxRectForPrefix(WidgetTester tester, String prefix) {
 /// Vài dòng stack đủ để biết lỗi nở ra từ đâu. `ci/report.py` cắt giữa log và raw log không tải
 /// được, nên manifest + các dòng in của chính test này là kênh chẩn đoán duy nhất còn sống.
 String _stackHint(StackTrace st) {
-  final List<String> rows =
-      st.toString().split('\n').where((String l) => l.trim().isNotEmpty).toList();
-  final List<String> mine =
-      rows.where((String l) => l.contains('board_previews_test.dart')).take(2).toList();
+  final List<String> rows = st
+      .toString()
+      .split('\n')
+      .where((String l) => l.trim().isNotEmpty)
+      .toList();
+  final List<String> mine = rows
+      .where((String l) => l.contains('board_previews_test.dart'))
+      .take(2)
+      .toList();
   final List<String> chosen = mine.isEmpty ? rows.take(2).toList() : mine;
   return chosen.join(' | ');
 }

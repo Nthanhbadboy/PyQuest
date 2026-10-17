@@ -55,7 +55,8 @@ class BoardLabels {
   /// Ba câu fallback, theo locale. Rev 7 §R7-C: controller giữ **mã** lỗi, còn câu chữ nằm ở
   /// bảng nhãn này, nên một lỗi sinh ra trước khi đổi ngôn ngữ vẫn được đọc bằng ngôn ngữ
   /// hiện hành thay vì treo câu tiếng cũ.
-  static const Map<BoardFallbackReason, String> _viFallback = <BoardFallbackReason, String>{
+  static const Map<BoardFallbackReason, String>
+  _viFallback = <BoardFallbackReason, String>{
     BoardFallbackReason.staleReply:
         'Trợ giảng đang soạn cho bước khác, nên bảng giữ nguyên bước này.',
     BoardFallbackReason.rejectedPlan:
@@ -64,7 +65,8 @@ class BoardLabels {
         'Bảng nhận được thuộc về bài khác nên bị chặn; bảng đang hiển thị không bị ghi đè.',
   };
 
-  static const Map<BoardFallbackReason, String> _enFallback = <BoardFallbackReason, String>{
+  static const Map<BoardFallbackReason, String>
+  _enFallback = <BoardFallbackReason, String>{
     BoardFallbackReason.staleReply:
         'The tutor was answering an older step, so the board stayed on this step.',
     BoardFallbackReason.rejectedPlan:
@@ -149,8 +151,11 @@ class BoardView extends StatelessWidget {
         // Rev 7 §R7-C: **mọi** thứ phụ thuộc locale phải resolve bên trong builder đang nghe
         // controller. Tính `labels` ở ngoài thì `setLocale` chỉ rebuild subtree trong, còn nhãn
         // điều khiển / ô kết quả vẫn là tiếng cũ khi host không dựng lại parent.
-        final BoardLabels labels = this.labels ?? BoardLabels.of(controller.locale);
-        final String? fallbackText = labels.fallbackFor(controller.fallbackReason);
+        final BoardLabels labels =
+            this.labels ?? BoardLabels.of(controller.locale);
+        final String? fallbackText = labels.fallbackFor(
+          controller.fallbackReason,
+        );
         final BoardBeat? beat = controller.currentBeat;
         final BoardBeatCopy? copy = beat?.copyFor(controller.locale);
         final Widget content = Padding(
@@ -187,7 +192,10 @@ class BoardView extends StatelessWidget {
               _LearnerLayerView(layer: controller.learner, labels: labels),
               const SizedBox(height: 12),
               if (controller.isWaitingForLearner)
-                _Notice(key: const ValueKey<String>('board_waiting'), text: labels.waiting),
+                _Notice(
+                  key: const ValueKey<String>('board_waiting'),
+                  text: labels.waiting,
+                ),
               BoardControls(controller: controller, labels: labels),
             ],
           ),
@@ -200,7 +208,11 @@ class BoardView extends StatelessWidget {
 
 /// Hàng nút điều khiển. Tách ra widget riêng để test bắn focus/bấm mà không cần tìm trong cây.
 class BoardControls extends StatelessWidget {
-  const BoardControls({required this.controller, required this.labels, super.key});
+  const BoardControls({
+    required this.controller,
+    required this.labels,
+    super.key,
+  });
 
   final BoardController controller;
   final BoardLabels labels;
@@ -213,11 +225,19 @@ class BoardControls extends StatelessWidget {
       spacing: 4,
       runSpacing: 4,
       children: <Widget>[
-        _control(labels.previous, 'board_previous', controller.canGoPrevious ? controller.previous : null),
+        _control(
+          labels.previous,
+          'board_previous',
+          controller.canGoPrevious ? controller.previous : null,
+        ),
         _control(labels.replay, 'board_replay', controller.replay),
         // Nút Tiếp là **ý định của trẻ**: nó nhả `waitForLearner` rồi mới tiến (rev 7 §R7-D),
         // và bị tắt khi vừa hết beat vừa không chờ gì — không có nút.enabled mà bấm vô ích.
-        _control(labels.next, 'board_next', controller.canGoNext ? controller.learnerAdvance : null),
+        _control(
+          labels.next,
+          'board_next',
+          controller.canGoNext ? controller.learnerAdvance : null,
+        ),
       ],
     );
   }
@@ -334,7 +354,14 @@ class _TutorLayer extends StatelessWidget {
     final List<BoardVisibleOp> visible = visibleOpsThrough(plan, beatIndex);
 
     return MediaQuery.withNoTextScaling(
-      child: _buildLayer(visible, copySize, codeSize, lineHeight, codeStyle, proseStyle),
+      child: _buildLayer(
+        visible,
+        copySize,
+        codeSize,
+        lineHeight,
+        codeStyle,
+        proseStyle,
+      ),
     );
   }
 
@@ -354,15 +381,29 @@ class _TutorLayer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           if (copy != null) ...<Widget>[
-            Text(copy!.title,
-                key: const ValueKey<String>('board_title'),
-                style: TextStyle(fontSize: copySize * 1.25, fontWeight: FontWeight.w800, height: 1.3)),
-            Text(copy!.say,
-                key: const ValueKey<String>('board_say'),
-                style: TextStyle(fontSize: copySize, height: 1.35)),
-            Text(copy!.caption,
-                key: const ValueKey<String>('board_caption'),
-                style: TextStyle(fontSize: copySize, fontWeight: FontWeight.w600, height: 1.35)),
+            Text(
+              copy!.title,
+              key: const ValueKey<String>('board_title'),
+              style: TextStyle(
+                fontSize: copySize * 1.25,
+                fontWeight: FontWeight.w800,
+                height: 1.3,
+              ),
+            ),
+            Text(
+              copy!.say,
+              key: const ValueKey<String>('board_say'),
+              style: TextStyle(fontSize: copySize, height: 1.35),
+            ),
+            Text(
+              copy!.caption,
+              key: const ValueKey<String>('board_caption'),
+              style: TextStyle(
+                fontSize: copySize,
+                fontWeight: FontWeight.w600,
+                height: 1.35,
+              ),
+            ),
           ],
           LayoutBuilder(
             builder: (BuildContext context, BoxConstraints box) {
@@ -418,7 +459,10 @@ class _TutorLayer extends StatelessWidget {
                 },
                 outputHeaderHeightOf: (String text, double maxWidth) {
                   final TextPainter painter = TextPainter(
-                    text: TextSpan(text: text, style: _outputHeaderStyle(codeStyle, codeSize)),
+                    text: TextSpan(
+                      text: text,
+                      style: _outputHeaderStyle(codeStyle, codeSize),
+                    ),
                     textDirection: TextDirection.ltr,
                   )..layout(maxWidth: maxWidth);
                   final double h = painter.height;
@@ -434,25 +478,32 @@ class _TutorLayer extends StatelessWidget {
                   clipBehavior: Clip.none,
                   children: <Widget>[
                     Positioned.fill(
-                      child: CustomPaint(painter: _BoardCanvasPainter(layout: layout, codeSize: codeSize)),
-                    ),
-                    for (final BoardNode node in layout.nodes)
-                      _nodeWidget(node, codeSize, codeStyle, proseStyle),
-                  // rev 9 §R9-D: plan nói tô dòng này mà host không có dòng đó -> nói thẳng ra,
-                  // thay vì `continue` im lặng trong layout (mất nền tô, mất anchor, không ai giải
-                  // thích được). Board vẫn hiển thị chữ nguyên văn; chỉ phần tô bị tắt.
-                  if (layout.unresolvedStatements.isNotEmpty)
-                    Positioned.fill(
-                      child: IgnorePointer(
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: _Notice(
-                            key: const ValueKey<String>('board_code_mismatch'),
-                            text: labels.codeMismatch,
-                          ),
+                      child: CustomPaint(
+                        painter: _BoardCanvasPainter(
+                          layout: layout,
+                          codeSize: codeSize,
                         ),
                       ),
                     ),
+                    for (final BoardNode node in layout.nodes)
+                      _nodeWidget(node, codeSize, codeStyle, proseStyle),
+                    // rev 9 §R9-D: plan nói tô dòng này mà host không có dòng đó -> nói thẳng ra,
+                    // thay vì `continue` im lặng trong layout (mất nền tô, mất anchor, không ai giải
+                    // thích được). Board vẫn hiển thị chữ nguyên văn; chỉ phần tô bị tắt.
+                    if (layout.unresolvedStatements.isNotEmpty)
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: _Notice(
+                              key: const ValueKey<String>(
+                                'board_code_mismatch',
+                              ),
+                              text: labels.codeMismatch,
+                            ),
+                          ),
+                        ),
+                      ),
                     for (final BoardConnector link in layout.connectors)
                       Positioned.fromRect(
                         key: ValueKey<String>(link.key),
@@ -481,7 +532,12 @@ class _TutorLayer extends StatelessWidget {
   /// Một node của layout -> một hộp widget ở **đúng** chỗ layout đã tính, và dùng **đúng cặp style
   /// đã resolve** mà bên đo đã dùng. Không nhận `DefaultTextStyle` ở đây: hai bên lệch nhau một
   /// `fontFamily` là hộp và chữ lệch nhau cả dòng.
-  Widget _nodeWidget(BoardNode node, double codeSize, TextStyle codeStyle, TextStyle proseStyle) {
+  Widget _nodeWidget(
+    BoardNode node,
+    double codeSize,
+    TextStyle codeStyle,
+    TextStyle proseStyle,
+  ) {
     final Widget body;
     switch (node.kind) {
       case BoardNodeKind.codeLine:
@@ -491,15 +547,15 @@ class _TutorLayer extends StatelessWidget {
         body = RichText(
           text: TextSpan(
             style: codeStyle,
-              children: <InlineSpan>[
-                for (final BoardRun run in node.runs)
-                  TextSpan(
-                    text: run.text,
-                    style: run.highlighted ? _highlightStyle(codeSize) : null,
-                  ),
-              ],
-            ),
-            // Code luôn LTR; board không suy ra hướng đọc từ dữ liệu của trẻ.
+            children: <InlineSpan>[
+              for (final BoardRun run in node.runs)
+                TextSpan(
+                  text: run.text,
+                  style: run.highlighted ? _highlightStyle(codeSize) : null,
+                ),
+            ],
+          ),
+          // Code luôn LTR; board không suy ra hướng đọc từ dữ liệu của trẻ.
           textDirection: TextDirection.ltr,
           softWrap: true,
           overflow: TextOverflow.visible,
@@ -515,8 +571,12 @@ class _TutorLayer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               for (final BoardRun run in node.runs)
-                Text(run.text,
-                    style: codeStyle, textDirection: TextDirection.ltr, softWrap: false),
+                Text(
+                  run.text,
+                  style: codeStyle,
+                  textDirection: TextDirection.ltr,
+                  softWrap: false,
+                ),
             ],
           ),
         );
@@ -534,7 +594,10 @@ class _TutorLayer extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: const Color(0x1A000000),
                     shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0x99000000), width: 1.5),
+                    border: Border.all(
+                      color: const Color(0x99000000),
+                      width: 1.5,
+                    ),
                   ),
                 ),
               ),
@@ -544,8 +607,12 @@ class _TutorLayer extends StatelessWidget {
         body = Container(
           decoration: BoxDecoration(
             border: Border.all(color: const Color(0xCC1B2A4A), width: 2),
-            shape: node.shape == 'circle' ? BoxShape.circle : BoxShape.rectangle,
-            borderRadius: node.shape == 'roundedRect' ? BorderRadius.circular(codeSize * 0.5) : null,
+            shape: node.shape == 'circle'
+                ? BoxShape.circle
+                : BoxShape.rectangle,
+            borderRadius: node.shape == 'roundedRect'
+                ? BorderRadius.circular(codeSize * 0.5)
+                : null,
           ),
         );
       case BoardNodeKind.prose:
@@ -574,11 +641,13 @@ class _TutorLayer extends StatelessWidget {
                 style: _outputHeaderStyle(codeStyle, codeSize),
               ),
               for (final String line in node.lines)
-                Text(line,
-                    style: codeStyle,
-                    softWrap: false,
-                    overflow: TextOverflow.visible,
-                    textDirection: TextDirection.ltr),
+                Text(
+                  line,
+                  style: codeStyle,
+                  softWrap: false,
+                  overflow: TextOverflow.visible,
+                  textDirection: TextDirection.ltr,
+                ),
             ],
           ),
         );
@@ -607,37 +676,35 @@ class _TutorLayer extends StatelessWidget {
   /// để **vẽ** — hai chỗ khác nhau là nguồn của overflow mà test không giải thích được.
   /// Nhãn "Kết quả chạy"/"Run output": cỡ 0.85 dòng code, cùng `height` 1.35 để
   /// `outputHeaderHeightOf` đo ra đúng cái mà Column sẽ chiếm.
-  static TextStyle _outputHeaderStyle(TextStyle codeStyle, double codeSize) => codeStyle.copyWith(
+  static TextStyle _outputHeaderStyle(TextStyle codeStyle, double codeSize) =>
+      codeStyle.copyWith(
         fontSize: codeSize * 0.85,
         fontWeight: FontWeight.w700,
         color: const Color(0x99000000),
       );
 
-  static TextStyle _proseStyle(double size) => TextStyle(
-        fontSize: size,
-        height: 1.35,
-        color: const Color(0xE6000000),
-      );
+  static TextStyle _proseStyle(double size) =>
+      TextStyle(fontSize: size, height: 1.35, color: const Color(0xE6000000));
 
   static TextStyle _codeStyle(double size) => TextStyle(
-        // `PQFonts.code` — board giữ biên giới import của mình nên nhắc tên font trực tiếp;
-        // font này đã có trong assets của app (pubspec), không phải dependency mới.
-        fontFamily: 'JetBrainsMono',
-        fontSize: size,
-        // `1.35` là cùng một số với `lineHeight = codeSize * 1.35` mà layout dùng để đặt hộp:
-        // khác nhau ở đây thì nền tô và ô neo lệch nhau, dù cả hai đều "không tràn".
-        height: 1.35,
-        color: const Color(0xE6000000),
-        fontWeight: FontWeight.w500,
-      );
+    // `PQFonts.code` — board giữ biên giới import của mình nên nhắc tên font trực tiếp;
+    // font này đã có trong assets của app (pubspec), không phải dependency mới.
+    fontFamily: 'JetBrainsMono',
+    fontSize: size,
+    // `1.35` là cùng một số với `lineHeight = codeSize * 1.35` mà layout dùng để đặt hộp:
+    // khác nhau ở đây thì nền tô và ô neo lệch nhau, dù cả hai đều "không tràn".
+    height: 1.35,
+    color: const Color(0xE6000000),
+    fontWeight: FontWeight.w500,
+  );
 
   static TextStyle _highlightStyle(double size) => TextStyle(
-        backgroundColor: const Color(0x66FFC94D),
-        fontWeight: FontWeight.w800,
-        color: const Color(0xFF1B2A4A),
-        height: 1,
-        fontSize: size,
-      );
+    backgroundColor: const Color(0x66FFC94D),
+    fontWeight: FontWeight.w800,
+    color: const Color(0xFF1B2A4A),
+    height: 1,
+    fontSize: size,
+  );
 }
 
 /// Vẽ những thứ không phải hộp widget: viền bảng code và các mũi tên connector.
@@ -689,10 +756,14 @@ class _BoardCanvasPainter extends CustomPainter {
       canvas.drawPath(
         Path()
           ..moveTo(to.dx, to.dy)
-          ..lineTo(to.dx - unit.dx * head + perp.dx * head * 0.6,
-              to.dy - unit.dy * head + perp.dy * head * 0.6)
-          ..lineTo(to.dx - unit.dx * head - perp.dx * head * 0.6,
-              to.dy - unit.dy * head - perp.dy * head * 0.6)
+          ..lineTo(
+            to.dx - unit.dx * head + perp.dx * head * 0.6,
+            to.dy - unit.dy * head + perp.dy * head * 0.6,
+          )
+          ..lineTo(
+            to.dx - unit.dx * head - perp.dx * head * 0.6,
+            to.dy - unit.dy * head - perp.dy * head * 0.6,
+          )
           ..close(),
         Paint()
           ..color = ink
@@ -737,7 +808,8 @@ class _LearnerLayerView extends StatelessWidget {
                 ),
             ],
           ),
-          if (layer.note.isNotEmpty) Text(layer.note, key: const ValueKey<String>('board_note_text')),
+          if (layer.note.isNotEmpty)
+            Text(layer.note, key: const ValueKey<String>('board_note_text')),
           Wrap(
             spacing: 4,
             runSpacing: 4,
