@@ -23,6 +23,7 @@ void main() {
   testWidgets('Vietnamese modal BackButton exposes its localized semantic label',
       (WidgetTester tester) async {
     await _openModalHarness(tester);
+    await tester.pump();
     expect(find.byTooltip('Quay lại'), findsOneWidget);
     final Finder backIcon = find.byType(Icon);
     expect(backIcon, findsOneWidget);
