@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-18",
+  "checks": 17,
+  "passed": [
+    "Eight catalog definitions; three categories; Bug Hunter gated",
+    "16 fixtures; isolated progress",
+    "No claim before completion",
+    "Claim only requests a sample response",
+    "Double-click cannot submit twice",
+    "Valid sample reply increments exactly once; duplicate ignored",
+    "Stale token or wrong day does not update sample",
+    "Failure keeps progress/stamps; retry uses fresh token",
+    "Fixture resets cannot collide with old request token",
+    "Next-day sample drops pending response but retains total stamps",
+    "Browsing/detail never changes progress or claims",
+    "Loading and error distinct from empty; retry needs explicit reply",
+    "Config energy costs preserved; no purchase override",
+    "20 eye-break ticks do not change energy/stamps/progress",
+    "Rest exit stops tick changes; does not lock user in timer",
+    "Invalid actions and quests are rejected without mutation",
+    "No network, app storage, interpreter or persistent writes in simulator"
+  ],
+  "limits": "DESIGN fixtures only. Does not certify service/repository/claim safety in Flutter."
+}
