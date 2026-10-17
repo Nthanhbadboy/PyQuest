@@ -393,7 +393,7 @@ void main() {
           actions: <Widget>[CloseButton()],
         ),
       ));
-      await tester.pumpAndSettle();
+      await pumpFor(tester, const Duration(milliseconds: 200));
       final Finder closeVi = find.byTooltip('Đóng');
       expect(closeVi, findsOneWidget);
       expect(tester.getSemantics(closeVi).label, 'Đóng');
@@ -402,13 +402,13 @@ void main() {
         ..clear()
         ..add(const Locale('en', 'US'));
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
-      await tester.pumpAndSettle();
+      await pumpFor(tester, const Duration(milliseconds: 200));
       final Finder closeEn = find.byTooltip('Close');
       expect(closeEn, findsOneWidget);
       expect(tester.getSemantics(closeEn).label, 'Close');
 
       await tester.tap(closeEn);
-      await tester.pumpAndSettle();
+      await pumpFor(tester, const Duration(milliseconds: 200));
       await tester.pumpWidget(const SizedBox.shrink());
       services.dispose();
       services.settings.dispose();
