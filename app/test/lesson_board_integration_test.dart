@@ -225,7 +225,10 @@ void main() {
       final Lesson lesson = services.mainQuest.byId('mq1_03')!;
       await _mountLesson(tester, services, lesson);
       await _advanceStoryToExample(tester, lesson);
-      await _waitForBoard(tester);
+      await _waitForBoard(
+        tester,
+        description: '${lesson.id} / ${services.settings.lang}',
+      );
 
       final BoardView view = tester.widget<BoardView>(find.byType(BoardView));
       final BoardController board = view.controller;
@@ -788,7 +791,21 @@ Future<void> _waitForBoard(
   ) {
     await tester.pump(const Duration(milliseconds: 100));
   }
-  expect(find.byType(BoardView), findsOneWidget, reason: description);
+  final Object? buildException = tester.takeException();
+  expect(
+    buildException,
+    isNull,
+    reason: '$description: an exception occurred while mounting the board',
+  );
+  final bool stillLoading = find
+      .byKey(const ValueKey<String>('lesson_board_loading'))
+      .evaluate()
+      .isNotEmpty;
+  expect(
+    find.byType(BoardView),
+    findsOneWidget,
+    reason: '$description (loading=$stillLoading)',
+  );
   expect(
     find.byKey(const ValueKey<String>('board_tutor_layer')),
     findsOneWidget,
