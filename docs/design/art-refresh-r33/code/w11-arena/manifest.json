@@ -1,0 +1,105 @@
+{
+  "screen_id": "W11",
+  "screen_name": "Practice Arena",
+  "status": "concept_scene_and_screen_study_for_design_review",
+  "design_revision_sha": "ae7289f376d70ab9f73b37346d25edaf727abc12",
+  "source_context_sha": "a331ac110f19de63e9be6884d08db8c436054f50",
+  "source_context_status": "SUBMITTED_UNVERIFIED; not accepted by PQC-017",
+  "design_only": true,
+  "runtime_ready": false,
+  "production_approved": false,
+  "scene": {
+    "path": "concept.png",
+    "dimensions_px": [
+      1440,
+      2912
+    ],
+    "format": "PNG",
+    "bytes": 5867435,
+    "sha256": "2b9932f9d6f69c9bb8bd9f3591099fc77d06e1338f41f0a75be0fc4a8bd15d72",
+    "alpha": false,
+    "origin": "Arena built-in image generation; user selected candidate 1/2; no corrections"
+  },
+  "screen_composition": {
+    "path": "layout.html",
+    "viewports_css_px": [
+      [
+        390,
+        844
+      ],
+      [
+        360,
+        640
+      ]
+    ],
+    "locales": [
+      "vi",
+      "en"
+    ],
+    "states": [
+      "practice entry points",
+      "rules study",
+      "unavailable content"
+    ],
+    "text_scale": [
+      1,
+      2
+    ],
+    "control_min_css_px": 48,
+    "safe_area_and_crop": "proportional cover; at 390x844 trims ~48 source px each side; at 360x640 trims ~44 display px / ~176 source px from each vertical edge; overlay sheet covers near floor; 2x may scroll",
+    "contrast_and_device_measurements": "not performed",
+    "browser_visual_test": "not performed"
+  },
+  "source_map": [
+    {
+      "source_commit": "a331ac110f19de63e9be6884d08db8c436054f50",
+      "path": "app/lib/shared/characters/characters.dart",
+      "git_blob": "d1659c3406b11c641b70fed158c6d03c97704831",
+      "sha256": "09ce8c0e00a61133dac64c72704c7896f07c0002b65b96cf5bb343cd35bcfc6b",
+      "mapping": "Robo source character identity; depicted as practice-scene host, not a fake online rival"
+    },
+    {
+      "source_commit": "ae7289f376d70ab9f73b37346d25edaf727abc12",
+      "path": "docs/GAME_DESIGN.md",
+      "mapping": "§7 sets Arena principles; design-only context, not evidence of implementation",
+      "git_blob": "2df52e69d31fe94b9bf5ccea32b84a62a2644d44",
+      "sha256": "c44e8d361637e23bb3c82ca8d16c547628a54fe4b8288691afd125c8e797da61"
+    },
+    {
+      "source_commit": "a331ac110f19de63e9be6884d08db8c436054f50",
+      "tree_check": "app/lib/modules/arena/ absent at pinned source",
+      "mapping": "No live Arena module/rule registry; Xem luật/Luyện tập are disabled design targets only"
+    },
+    {
+      "source_commit": "ae7289f376d70ab9f73b37346d25edaf727abc12",
+      "path": "docs/PRODUCT_VISION.md",
+      "git_blob": "175fe891a64799d9c4629f44594cdeb2ea89ceda",
+      "sha256": "553d0234810e57653abd016224f51171dac337ef93cf6f792b13541d306653c7",
+      "mapping": "§13 defines training/tournament distinction; no actual Arena route inferred"
+    }
+  ],
+  "tool_and_rights": {
+    "tool": "Arena built-in image generation tool; model/version not exposed",
+    "prompt_path": "prompt.txt",
+    "prompt_sha256": "c0d57a723aeb1f0c5293f4e0f05fc5cb874e5c48c301177f63b572c6d71fd992",
+    "reference_path": "../references/w01-village.jpg",
+    "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+    "rights": "Project-owned W01 reference; no third-party reference input. No CC0/exclusivity/stock-license claim; review generator terms and project release policy before production."
+  },
+  "truth_constraints": {
+    "training_only": true,
+    "fictional_host": "Robo",
+    "no_opponent_or_online_user": true,
+    "no_rank_score_reward_team_tournament_claim": true,
+    "rules_text": "Maze-specific rule/scoring data absent from source pin; no values invented"
+  },
+  "camera_material_review": "Raised coherent training courtyard, tiled board, separate standing zone and exit. 3/4 camera/scale approximate; no verified connection to Robot Maze collision/path geometry. DESIGN review pending.",
+  "not_delivered": [
+    "Arena runtime or route",
+    "rule/scoring registry",
+    "runtime layers/alpha/pivots/footprints/occlusion/animation",
+    "navigation/collision evidence",
+    "device/contrast/usability evidence",
+    "production approval"
+  ]
+}

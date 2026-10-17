@@ -1,0 +1,235 @@
+{
+  "package": "PQC-017-code-2.5d-concepts",
+  "status": "concept-scenes-and-design-only-layouts-delivered-for-design-review",
+  "design_revision_sha": "ae7289f376d70ab9f73b37346d25edaf727abc12",
+  "design_source_branch": "arena/00838eb9-pyquest",
+  "design_source_manifest_declared_base_sha": "04b90bca6f28d35b6fd18135bbd2dc670dd6f758",
+  "source_context_sha": "a331ac110f19de63e9be6884d08db8c436054f50",
+  "source_context_status": "user-designated SUBMITTED_UNVERIFIED; this package does not accept PQC-011",
+  "working_branch": "arena/0d4fcb38-pyquest",
+  "design_only": true,
+  "runtime_changed": false,
+  "runtime_ready": false,
+  "production_approved": false,
+  "screen_artifacts": [
+    {
+      "id": "W13",
+      "path": "w13-tutor/concept.png",
+      "dimensions_px": [
+        704,
+        1472
+      ],
+      "format": "PNG",
+      "bytes": 1935532,
+      "sha256": "611acdf2acd18110c30984f797da6a091bcac57adc99a119c28a06adcdd75d84",
+      "alpha": false,
+      "layout": "w13-tutor/layout.html",
+      "prompt_paths": [
+        "w13-tutor/prompt.txt"
+      ],
+      "prompt_sha256": [
+        "54ac2110d45dd8998f9dfd875a419a54fc29807fa0b1a07414d9bfd636f419f8"
+      ],
+      "selection": "user selected candidate 2 of 2; no correction pass"
+    },
+    {
+      "id": "W14",
+      "path": "w14-achievements/concept.png",
+      "dimensions_px": [
+        843,
+        1264
+      ],
+      "format": "PNG",
+      "bytes": 2727255,
+      "sha256": "fac243137dc25acd74f9688c876b8286e53d1c7b12acf6c1085e91c1236265f8",
+      "alpha": false,
+      "layout": "w14-achievements/layout.html",
+      "prompt_paths": [
+        "w14-achievements/prompt-original.txt",
+        "w14-achievements/prompt-restyle.txt"
+      ],
+      "prompt_sha256": [
+        "ca328ae40a1b71d5c8630c3887608ec819337cd407ec5c6564463c45852a155f",
+        "3fa12a034ad5ab525b42224d09f64625cbe55dba52252c7a02bc4fb5c73b9b46"
+      ],
+      "selection": "user selected candidate 2 of 2; one restyle correction pass applied",
+      "provenance_gap": "The selected original was overwritten during correction; its original byte hash was not captured and is not claimed."
+    },
+    {
+      "id": "W11",
+      "path": "w11-arena/concept.png",
+      "dimensions_px": [
+        1440,
+        2912
+      ],
+      "format": "PNG",
+      "bytes": 5867435,
+      "sha256": "2b9932f9d6f69c9bb8bd9f3591099fc77d06e1338f41f0a75be0fc4a8bd15d72",
+      "alpha": false,
+      "layout": "w11-arena/layout.html",
+      "prompt_paths": [
+        "w11-arena/prompt.txt"
+      ],
+      "prompt_sha256": [
+        "c0d57a723aeb1f0c5293f4e0f05fc5cb874e5c48c301177f63b572c6d71fd992"
+      ],
+      "selection": "user selected candidate 1 of 2; no correction pass"
+    }
+  ],
+  "layout_matrix": {
+    "viewports_css_px": [
+      [
+        390,
+        844
+      ],
+      [
+        360,
+        640
+      ]
+    ],
+    "locales": [
+      "vi",
+      "en"
+    ],
+    "text_scale_studies": [
+      1,
+      2
+    ],
+    "overlay": "HTML/CSS real text; proportionally cropped scene image behind it; no text baked into scene",
+    "target_control_min_css_px": 48,
+    "device_contrast_touch_focus_measurements": "not performed",
+    "html_browser_render_validation": "not performed; source/structure checks only"
+  },
+  "references": [
+    {
+      "path": "references/w01-village.jpg",
+      "source_path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "source_commit": "ae7289f376d70ab9f73b37346d25edaf727abc12",
+      "dimensions_px": [
+        853,
+        1844
+      ],
+      "format": "JPEG",
+      "bytes": 384112,
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "git_blob": "663f6757718aaa0b6921a5691c5129183b919495",
+      "usage": "W01 material/landmark/camera family anchor only; W02/W08 not used as style authorization"
+    }
+  ],
+  "design_input_pins": [
+    {
+      "path": "docs/design/ART_DIRECTION_2_5D.md",
+      "git_blob": "0d6c14a198321ba57723a043f9544cc5a20ab2aa",
+      "sha256": "79601495ff35ce19dc51753cfae93777815f1ca2efe1333f87d61fe807319ba4"
+    },
+    {
+      "path": "docs/design/WORLD_EXPANSION_REDESIGN.md",
+      "git_blob": "653fbeb4909e67541652f870c686993e6345eb68",
+      "sha256": "8f994ca2fef07f1108a68afc813f2a59df0fb2007bb40878d560a6c68112c871"
+    },
+    {
+      "path": "docs/design/art-refresh-r33/README.md",
+      "git_blob": "cb9fcc5f1ab630a266fefe80845152cc94369730",
+      "sha256": "f33d3570975adcdf1eb3527be6a077aa7173f853c40c5c4d6d91adb7dc50d3b1"
+    },
+    {
+      "path": "docs/design/art-refresh-r33/manifest.json",
+      "git_blob": "aafacaa66e7356aa6ef67956835df7eba2ee0b58",
+      "sha256": "77106bda0d20a39b4bb0126e061559ff47483761deec02bc2c4f08c9c39b70bf"
+    },
+    {
+      "path": "docs/GAME_DESIGN.md",
+      "git_blob": "2df52e69d31fe94b9bf5ccea32b84a62a2644d44",
+      "sha256": "c44e8d361637e23bb3c82ca8d16c547628a54fe4b8288691afd125c8e797da61"
+    },
+    {
+      "path": "docs/PRODUCT_VISION.md",
+      "git_blob": "175fe891a64799d9c4629f44594cdeb2ea89ceda",
+      "sha256": "553d0234810e57653abd016224f51171dac337ef93cf6f792b13541d306653c7"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "git_blob": "e88dd762c2d74dfff36f25028a43e6d2f2f10033",
+      "sha256": "8755b2d45f60644d082ad87c530c465c13ba4633bf1ef8aca8e9703b248d573e"
+    },
+    {
+      "path": "docs/TECHNICAL_ARCHITECTURE.md",
+      "git_blob": "847d1a8fdcc243f60179668847dec64ba5bdb69e",
+      "sha256": "1977f00d6ae532b96f4275a565474e4478facc3c4b92a51bc22d24f1c06c714c"
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-017.md",
+      "git_blob": "40e59a6accb6b819402d3c4876fcf3502065cb3f",
+      "sha256": "b569513e201cd02514ef98b549b89c8bd41bc64b2eaebc40bab9875b44d86fa4"
+    }
+  ],
+  "source_identity_pins": [
+    {
+      "commit": "a331ac110f19de63e9be6884d08db8c436054f50",
+      "path": "app/assets/data/main_quest_ch1.json",
+      "git_blob": "70e155fbb7228d2b27ea4eb08ff13ddd2d2d931a",
+      "sha256": "bead251d9f290db0b8fa4475f7413976324b00e7b0f498c633a25a5e6392f8b8"
+    },
+    {
+      "commit": "a331ac110f19de63e9be6884d08db8c436054f50",
+      "path": "app/lib/shared/characters/cast.dart",
+      "git_blob": "a9258bbea435464ea987a38a7584659c1d5d4b8b",
+      "sha256": "b8115b14be89858802199ff8b824e4ce72c92c7ffd2948a7abbd7bdd87e53c0c"
+    },
+    {
+      "commit": "a331ac110f19de63e9be6884d08db8c436054f50",
+      "path": "app/lib/shared/characters/characters.dart",
+      "git_blob": "d1659c3406b11c641b70fed158c6d03c97704831",
+      "sha256": "09ce8c0e00a61133dac64c72704c7896f07c0002b65b96cf5bb343cd35bcfc6b"
+    },
+    {
+      "commit": "a331ac110f19de63e9be6884d08db8c436054f50",
+      "path": "app/lib/shared/characters/cast_painters.dart",
+      "git_blob": "8d262521c39f14666f53aca35db01655d49ce790",
+      "sha256": "9764e6433498d45080a98eefc7ebeb635f0b37971fbad2b752c0a90785448898"
+    },
+    {
+      "commit": "a331ac110f19de63e9be6884d08db8c436054f50",
+      "path": "app/lib/modules/achievements/achievement_catalog.dart",
+      "git_blob": "e6cf2f772f70aae7862b17c293a44a38569b8f0e",
+      "sha256": "07d52e12d2552ddff0fb7786146184df421c8ad2267e57fbb1cb7c9ef6c67200"
+    },
+    {
+      "commit": "a331ac110f19de63e9be6884d08db8c436054f50",
+      "path": "app/lib/modules/achievements/achievement_house_module.dart",
+      "git_blob": "145c9c4d2435e586c96a03277e01991d14ad4523",
+      "sha256": "49060c2d988d40047dbf7768fe5846071d8702053d4337c2589ef431cc0301b0"
+    }
+  ],
+  "rights_and_tool": {
+    "origin": "Arena built-in image generation tool; project-owned W01 reference supplied; no third-party reference image supplied",
+    "model_version": "not exposed by tool; not inferred",
+    "prompt_archive": "prompt files beside each screen asset; W14 has initial and restyle prompt",
+    "license_claim": "No CC0, exclusivity or stock-license claim. Review service terms and project rights policy before release.",
+    "third_party_art": "none supplied as input; generated outputs remain AI-generated concepts"
+  },
+  "review_summary": {
+    "camera_material": "W13/W11 illustrative and approximate; W14 remains more frontal/perspective than W01 3/4 orthographic and needs DESIGN review",
+    "states": "W13 primary+error; W14 empty+detail with explicitly sample earned/locked/secret taxonomy; W11 entry+rules+unavailable",
+    "crop_safe_zone": "per-screen README; proportional CSS cover only; no stretch",
+    "not_delivered": [
+      "runtime art layers/alpha/pivots/footprints/occlusion/animation",
+      "navigation or collision calibration",
+      "implemented app routes",
+      "Arena scoring/rules",
+      "verified W13 runtime output",
+      "device screenshots/usability/contrast evidence",
+      "production approval"
+    ]
+  },
+  "checks": {
+    "image_dimensions_and_sha256": "PASS: Python standard-library header parser + SHA-256 verified image dimensions/bytes and prompt/reference hashes",
+    "source_blob_and_sha_pins": "PASS: git show and git rev-parse verified every declared DESIGN/source pin",
+    "json_validation": "PASS: Python json parser validated package and all per-screen manifests",
+    "html_structure_and_copy_validation": "PASS: static assertions for both viewport/locale selectors, unique IDs, required content, disabled in-phone controls and local links",
+    "browser_render": "not run",
+    "flutter_ci_apk": "not run; explicitly outside scope",
+    "javascript_syntax": "PASS: Node --check on inline scripts in all three layout previews",
+    "html_browser_render_validation": "not run; no browser engine available in the sandbox"
+  }
+}

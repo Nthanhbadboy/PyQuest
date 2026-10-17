@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>W13 Tutor Room — design-only screen composition</title>
+<style>
+:root{color-scheme:light;--ink:#183c46;--teal:#286d73;--paper:#fffaf0;--amber:#e7ad45;--coral:#ce7763;--scale:1;--w:390px;--h:844px}
+*{box-sizing:border-box}body{margin:0;background:#eaf1ef;color:var(--ink);font:15px/1.35 system-ui,sans-serif}.viewer{max-width:760px;margin:20px auto;padding:0 16px}.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:end;padding:12px;background:white;border:1px solid #b6c9c7;border-radius:14px;margin-bottom:14px}.controls label{display:grid;gap:4px;font-size:13px}.controls select{min-height:40px;padding:6px 10px;border:1px solid #56777a;border-radius:8px;background:white;color:var(--ink)}.disclaimer{font-size:13px;margin:0 0 10px}.phone{width:var(--w);height:var(--h);max-height:none;margin:auto;position:relative;overflow:auto;border:5px solid #183c46;border-radius:30px;background:#2d7c83 url('concept.png') center/cover no-repeat;box-shadow:0 16px 42px #173c4633;scrollbar-width:thin}.ui{min-height:100%;display:flex;flex-direction:column;padding:calc(18px * var(--scale)) calc(16px * var(--scale)) calc(14px * var(--scale));gap:calc(12px * var(--scale));}.top{display:flex;align-items:center;gap:10px;background:#fffaf0f2;border:2px solid var(--ink);border-radius:16px;padding:calc(8px * var(--scale)) calc(12px * var(--scale));min-height:56px}.back{min-width:48px;min-height:48px;display:grid;place-items:center;font-size:calc(20px * var(--scale));font-weight:800}.top-title{font-size:calc(17px * var(--scale));font-weight:800;line-height:1.2}.flag{margin-left:auto;font-size:calc(11px * var(--scale));font-weight:800;border:1px solid var(--teal);border-radius:20px;padding:5px 8px;white-space:nowrap;background:white}.scene-gap{flex:1;min-height:110px}.panel{background:#fffaf0f5;border:2px solid var(--ink);border-radius:20px;padding:calc(14px * var(--scale));box-shadow:0 5px 0 #183c4633}.eyebrow{font-size:calc(11px * var(--scale));letter-spacing:.04em;text-transform:uppercase;font-weight:900;color:#245e64}.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.tag{font-size:calc(11px * var(--scale));font-weight:800;color:#183c46;background:#d7eeee;border:1px solid #286d73;border-radius:999px;padding:4px 8px}.title{font-size:calc(18px * var(--scale));line-height:1.2;font-weight:900;margin:6px 0 10px}.code{font:calc(15px * var(--scale))/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;background:#173f49;color:#fff;border-radius:12px;padding:12px;margin:8px 0}.output{font-size:calc(14px * var(--scale));background:#e9f4ee;border:1.5px solid #56766e;border-radius:12px;padding:10px;margin-top:8px}.output strong{display:block;font-size:calc(11px * var(--scale));margin-bottom:3px}.notice{font-size:calc(12px * var(--scale));line-height:1.35;margin:8px 0 0}.actions{display:flex;gap:8px;margin-top:12px}.mock{min-height:48px;flex:1;padding:10px 12px;border:2px solid #183c46;border-radius:12px;background:#e7ad45;color:#183c46;font-size:calc(13px * var(--scale));line-height:1.2;font-weight:900;opacity:.82}.mock.secondary{background:#fff;color:#183c46}.error{background:#fff0eb;border-color:#9a4c3e;color:#642f28}.hidden{display:none!important}@media(max-width:420px){.viewer{margin:10px auto;padding:0}.phone{width:var(--w)}.controls{gap:7px;padding:9px}}
+</style></head>
+<body><main class="viewer">
+<p class="disclaimer"><strong>DESIGN ONLY · NOT THE APP.</strong> Controls above switch the study view; controls inside the phone are deliberately disabled. Device contrast and actual hardware were not measured.</p>
+<div class="controls" aria-label="Preview controls">
+<label>Viewport<select id="size"><option value="390x844">390 × 844</option><option value="360x640">360 × 640</option></select></label>
+<label>Locale<select id="locale"><option value="vi">VI</option><option value="en">EN</option></select></label>
+<label>Study state<select id="state"><option value="main">Primary · code/output</option><option value="error">Code-error overlay</option></select></label>
+<label>Text scale<select id="scale"><option value="1">1×</option><option value="2">2×</option></select></label>
+</div>
+<section class="phone" id="phone" aria-label="Phone composition preview">
+<div class="ui">
+<header class="top"><span class="back" aria-hidden="true">‹</span><span class="top-title" data-vi="Phòng học cùng Tutor" data-en="Tutor classroom">Phòng học cùng Tutor</span><span class="flag" data-vi="MẪU THIẾT KẾ" data-en="DESIGN SAMPLE">MẪU THIẾT KẾ</span></header>
+<div class="scene-gap" aria-hidden="true"></div>
+<section class="panel">
+<div class="row"><span class="eyebrow" data-vi="Bài 1 · mq1_01_s2" data-en="Lesson 1 · mq1_01_s2">Bài 1 · mq1_01_s2</span><span class="tag" data-vi="Nội dung soạn sẵn" data-en="Authored example">Nội dung soạn sẵn</span></div>
+<h1 class="title" data-vi="Xin chào, Python!" data-en="Hello, Python!">Xin chào, Python!</h1>
+<div id="mainState">
+<div class="eyebrow" data-vi="Code mẫu · chỉ đọc trong concept" data-en="Authored code · read-only concept">Code mẫu · chỉ đọc trong concept</div>
+<pre class="code">print("Xin chào!")</pre>
+<div class="output"><strong data-vi="Kết quả mẫu · chưa xác minh runtime" data-en="Sample output · runtime not verified">Kết quả mẫu · chưa xác minh runtime</strong><span>Xin chào!</span></div>
+<p class="notice" data-vi="Nova · Bạn đồng hành tò mò, thích sáng chế. Không có trạng thái voice đang nghe/nói; ví dụ này không khẳng định learner input/freehand đã hoạt động." data-en="Nova · curious inventor companion. No live voice state; this sample does not claim learner input/freehand is implemented.">Nova · Bạn đồng hành tò mò, thích sáng chế. Không có trạng thái voice đang nghe/nói; ví dụ này không khẳng định learner input/freehand đã hoạt động.</p>
+</div>
+<div id="errorState" class="hidden">
+<div class="eyebrow" data-vi="Trạng thái lỗi · minh họa thiết kế" data-en="Error state · design study">Trạng thái lỗi · minh họa thiết kế</div>
+<pre class="code error">print("Xin chào!</pre>
+<div class="output error"><strong data-vi="Chưa có kết quả" data-en="No output yet">Chưa có kết quả</strong><span data-vi="Kiểm tra dấu ngoặc kép và dấu ngoặc đóng." data-en="Check the quotation mark and closing parenthesis.">Kiểm tra dấu ngoặc kép và dấu ngoặc đóng.</span></div>
+<p class="notice" data-vi="Thông báo mẫu, không phải lỗi runtime được xác nhận." data-en="Sample copy only; not a verified runtime error message.">Thông báo mẫu, không phải lỗi runtime được xác nhận.</p>
+</div>
+<div class="actions"><button class="mock" disabled aria-disabled="true" data-vi="Chạy ví dụ · mock" data-en="Run sample · mock">Chạy ví dụ · mock</button><button class="mock secondary" disabled aria-disabled="true" data-vi="Bài tiếp" data-en="Next lesson">Bài tiếp</button></div>
+</section>
+</div></section>
+</main><script>
+const phone=document.getElementById('phone');
+function apply(){const [w,h]=document.getElementById('size').value.split('x').map(Number);phone.style.setProperty('--w',w+'px');phone.style.setProperty('--h',h+'px');phone.style.setProperty('--scale',document.getElementById('scale').value);const en=document.getElementById('locale').value==='en';document.documentElement.lang=en?'en':'vi';document.querySelectorAll('[data-vi]').forEach(e=>e.textContent=e.dataset[en?'en':'vi']);const err=document.getElementById('state').value==='error';document.getElementById('mainState').classList.toggle('hidden',err);document.getElementById('errorState').classList.toggle('hidden',!err)}
+document.querySelectorAll('.controls select').forEach(x=>x.addEventListener('change',apply));apply();
+</script></body></html>

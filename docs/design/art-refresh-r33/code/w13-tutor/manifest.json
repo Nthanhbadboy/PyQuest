@@ -1,0 +1,55 @@
+{
+  "screen_id": "W13",
+  "screen_name": "Tutor Room",
+  "status": "concept_scene_and_screen_study_for_design_review",
+  "design_revision_sha": "ae7289f376d70ab9f73b37346d25edaf727abc12",
+  "source_context_sha": "a331ac110f19de63e9be6884d08db8c436054f50",
+  "source_context_status": "SUBMITTED_UNVERIFIED; not accepted by PQC-017",
+  "design_only": true,
+  "runtime_ready": false,
+  "production_approved": false,
+  "scene": {
+    "path": "concept.png",
+    "dimensions_px": [704, 1472],
+    "format": "PNG",
+    "bytes": 1935532,
+    "sha256": "611acdf2acd18110c30984f797da6a091bcac57adc99a119c28a06adcdd75d84",
+    "alpha": false,
+    "origin": "Arena built-in image generation; user selected candidate 2/2; no corrections"
+  },
+  "screen_composition": {
+    "path": "layout.html",
+    "viewports_css_px": [[390, 844], [360, 640]],
+    "locales": ["vi", "en"],
+    "states": ["primary authored code/sample-output composition", "illustrative code-error overlay"],
+    "text_scale": [1, 2],
+    "control_min_css_px": 48,
+    "overlay_text": "real HTML; code literal remains print(\"Xin chào!\") and requested sample output Xin chào! in both locales",
+    "safe_area_and_crop": "proportional cover; at 390x844 crop ~13 display px per side; at 360x640 crop ~56 display px at each top/bottom edge; top/bottom padding and 48px back target; bottom panel may occlude floor; 2x can scroll",
+    "contrast_and_device_measurements": "not performed",
+    "browser_visual_test": "not performed"
+  },
+  "source_map": [
+    {"source_commit": "a331ac110f19de63e9be6884d08db8c436054f50", "path": "app/assets/data/main_quest_ch1.json", "git_blob": "70e155fbb7228d2b27ea4eb08ff13ddd2d2d931a", "sha256": "bead251d9f290db0b8fa4475f7413976324b00e7b0f498c633a25a5e6392f8b8", "mapping": "mq1_01 title= Xin chào, Python!; Lesson.skill=print(); mq1_01_s2 example code literal print(\"Xin chào!\"); source expected_output is null"},
+    {"source_commit": "a331ac110f19de63e9be6884d08db8c436054f50", "path": "app/lib/shared/characters/cast.dart", "git_blob": "a9258bbea435464ea987a38a7584659c1d5d4b8b", "sha256": "b8115b14be89858802199ff8b824e4ce72c92c7ffd2948a7abbd7bdd87e53c0c", "mapping": "CastRegistry.tutorForSkill('print()') maps to Nova"},
+    {"source_commit": "a331ac110f19de63e9be6884d08db8c436054f50", "path": "app/lib/shared/characters/characters.dart", "git_blob": "d1659c3406b11c641b70fed158c6d03c97704831", "sha256": "09ce8c0e00a61133dac64c72704c7896f07c0002b65b96cf5bb343cd35bcfc6b", "mapping": "Nova is human; source display name/role and teal palette"},
+    {"source_commit": "a331ac110f19de63e9be6884d08db8c436054f50", "path": "app/lib/shared/characters/cast_painters.dart", "git_blob": "8d262521c39f14666f53aca35db01655d49ce790", "sha256": "9764e6433498d45080a98eefc7ebeb635f0b37971fbad2b752c0a90785448898", "mapping": "NovaPainter: ponytail, raised goggles, teal suit and tool belt; generated silhouette is an interpretation, not a source sprite"}
+  ],
+  "copy_and_truth": {
+    "vi_en": ["Nội dung soạn sẵn / Authored example", "Kết quả mẫu · chưa xác minh runtime / Sample output · runtime not verified"],
+    "no_voice_state": true,
+    "no_learner_input_or_freehand_claim": true,
+    "output_status": "User-requested display sample; not an assertion of source execution because the pinned example has expected_output=null"
+  },
+  "tool_and_rights": {
+    "tool": "Arena built-in image generation tool; model/version not exposed",
+    "prompt_path": "prompt.txt",
+    "prompt_sha256": "54ac2110d45dd8998f9dfd875a419a54fc29807fa0b1a07414d9bfd636f419f8",
+    "reference_path": "../references/w01-village.jpg",
+    "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+    "reference_source": "docs/design/art-refresh-r33/concepts/w01-village.jpg at DESIGN revision SHA above",
+    "rights": "Project-owned W01 reference; no third-party reference input. No CC0/exclusivity/stock-license claim; review generator terms and project release policy before production."
+  },
+  "camera_material_review": "3/4 cutaway room with dimensional stone, timber, board and floor; illustrative camera/light approximation, not measured or calibrated to W01. DESIGN review pending.",
+  "not_delivered": ["runtime layers/alpha/pivots/footprints/occlusion/animation", "verified run behavior", "device/contrast/usability evidence", "production approval"]
+}
