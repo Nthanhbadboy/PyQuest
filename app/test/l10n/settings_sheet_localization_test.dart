@@ -182,7 +182,7 @@ void main() {
     );
 
     await tester.binding.handlePopRoute();
-    await tester.pumpAndSettle();
+    await pumpFor(tester, const Duration(milliseconds: 250));
     await _openSettings(tester);
     _expectOneSelectedRadio(tester, LocalePreference.vi);
     expect(find.byKey(const ValueKey<String>('language_save_error')), findsNothing);
@@ -430,7 +430,7 @@ void main() {
     expect(tester.takeException(), isNull);
 
     await tester.binding.handlePopRoute();
-    await tester.pumpAndSettle();
+    await pumpFor(tester, const Duration(milliseconds: 250));
     await _tapVisible(tester, find.byKey(const ValueKey<String>('settings_reset_progress')));
     await pumpFor(tester, const Duration(milliseconds: 250));
     _expectParentCopy(tester, 'en');
