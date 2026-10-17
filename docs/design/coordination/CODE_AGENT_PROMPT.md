@@ -72,6 +72,13 @@ Test/coordination có flag và allowlist riêng; không suy từ đó ra quyền
 
 ## 3. Commit, trả kết quả và chủ động theo dõi
 
+Người dùng có OpenCode relay bên ngoài; đọc `docs/design/coordination/OPENCODE_RELAY.md`.
+Hai agent không tự gọi nhau. Khi nhận RELAY_EVENT, xác minh SHA rồi làm đúng action;
+cuối lượt trả RELAY_RESULT (event_id/task/status/processed_source_sha/published_commit/
+next_actor/next_action/wait_target). Nếu chờ CI, ghi exact SHA/run và WAITING_FOR_CI
+để relay gọi lại khi run/report hoàn tất dù không có commit mới. Không tạo commit
+ACK-only hoặc tự cài runner/đổi CI; chat receipt không thay evidence trong Git.
+
 Commit/push công việc và phản hồi trên đúng nhánh của bạn trong phạm vi phiên cho phép.
 Stage file có chọn lọc; không `git add .`, không force-push, không sửa nhánh design
 hoặc main. Nếu push lỗi, không ghi đã published.

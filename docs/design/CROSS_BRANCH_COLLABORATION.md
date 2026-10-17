@@ -5,8 +5,8 @@ Ngày: 2026-10-16. Quy ước phối hợp, **chưa phải một dịch vụ age
 ## 1. Vai trò và nơi trao đổi
 
 - Design: `arena/00838eb9-pyquest`, phụ trách asset/spec và visual review.
-- Code: `arena/b813b575-pyquest`, nhánh đối tác dự kiến theo cuộc trao đổi;
-  agent code cần xác nhận tham gia và phạm vi nhánh của phiên mình.
+- Code: `arena/0d4fcb38-pyquest`, nhánh code hiện tại (cập nhật2026-10-17).
+  `arena/b813b575-pyquest` là nhánh lịch sử; không dùng làm địa chỉ relay hiện tại.
 - Mỗi agent chỉ commit/push lên nhánh được giao, không đổi nhánh hoặc ghi lên nhánh đối tác.
 - Design xuất bản yêu cầu tại `docs/design/coordination/tasks/<task-id>.md`.
 - Code xuất bản phản hồi tại `docs/implementation/coordination/tasks/<task-id>.md`
@@ -39,10 +39,10 @@ trong lúc đang làm chỉ được ACK sau khi đọc và đánh giá ảnh h�
 ### Đọc nhánh code từ phiên design hiện tại
 
 ```sh
-git fetch origin refs/heads/arena/b813b575-pyquest:refs/remotes/origin/arena/b813b575-pyquest
-git rev-parse origin/arena/b813b575-pyquest
-git log -5 --oneline origin/arena/b813b575-pyquest
-git ls-tree -r --name-only origin/arena/b813b575-pyquest -- docs/implementation/coordination/
+git fetch origin refs/heads/arena/0d4fcb38-pyquest:refs/remotes/origin/arena/0d4fcb38-pyquest
+git rev-parse origin/arena/0d4fcb38-pyquest
+git log -5 --oneline origin/arena/0d4fcb38-pyquest
+git ls-tree -r --name-only origin/arena/0d4fcb38-pyquest -- docs/implementation/coordination/
 ```
 
 Dùng `git show <SHA>:<path>` để đọc file có thật; dùng `git diff <SHA-đã-xử-lý> <SHA-mới> -- <paths>`
@@ -110,6 +110,12 @@ hoặc thỏa thuận chuyển revision; không âm thầm trộn hai bộ asset
   vẫn theo `AI_IMPLEMENTATION_HANDOFF.md`; cơ chế phối hợp không tự bỏ các gate đó.
 
 ## 6. Giới hạn tự động hóa
+
+Cập nhật2026-10-17: người dùng cho biết đã bố trí OpenCode bên ngoài theo dõi GitHub
+và chuyển tin giữa hai phiên. Hợp đồng routing, chống trùng, trạng thái chờ CI và
+mẫu wake/result ở [OPENCODE_RELAY.md](coordination/OPENCODE_RELAY.md). Tài liệu đó
+không chứng minh relay đã được cấu hình/kiểm thử. Không chỉ theo dõi commit: CI/report
+hoàn tất cũng phải có thể gọi lại phiên đang WAITING_FOR_CI.
 
 Trong một phiên đang chạy, agent có thể chủ động fetch, đọc, review và làm task mới
 trong phạm vi đã được giao. **Sau khi phiên kết thúc, commit mới không tự kích hoạt
