@@ -30,7 +30,7 @@ void main() {
       expect(referenceForPlan(0).outputOf('print("Xin chào!")'), 'Xin chào!');
       expect(referenceForPlan(1).outputOf('print(3 + 4)'), '7');
       expect(referenceForPlan(1).outputOf('print("3 + 4")'), '3 + 4');
-      expect(referenceForPlan(1).runOutputOf(kExampleSteps['mq1_03_s2']!), '7\n3 + 4');
+      expect(referenceForPlan(1).runOutputOf(exampleCodeForStep('mq1_03_s2')), '7\n3 + 4');
     });
 
     test('copy lấy từ gói design: cùng beatId, đủ vi + en', () {
@@ -56,7 +56,7 @@ void main() {
       }
     });
 
-    test('provenance của fixture trỏ đúng gói design và pin dataset', () {
+    test('provenance của runtime asset trỏ đúng gói design và pin dataset', () {
       final Map<String, dynamic> prov = boardProvenance();
       expect(prov['copySourceDesignCommit'], '59f702375551865efb3590fdc0e60d4dc1dc7408');
       expect(prov['copySourceSha256'], startsWith('003a573b76e1363c'));
@@ -141,7 +141,7 @@ void main() {
     // tra được anchor thì `continue` — plan vẫn được nhận, chỉ là mất tính năng, và không ai
     // giải thích được vì sao bảng không có mũi tên. Vi phạm hợp đồng thì reject.
     test('connector nối object đã đăng ký nhưng không còn trên bảng -> unanchoredConnector', () {
-      // `expr-add` vẫn nằm trong `registeredObjects` của plan (nên không phải `unknownObject`),
+      // `expr-add` vẫn nằm trong host `registeredObjects` catalog (nên không phải `unknownObject`),
       // nhưng ops[0] của beat là `clearTutorLayer`: tại beat này không còn hộp nào của `expr-add`.
       // `objectIds` được sửa kèm để `out-box` không kéo theo `unanchoredObject` — ca này phải
       // gọi đúng một lỗi.

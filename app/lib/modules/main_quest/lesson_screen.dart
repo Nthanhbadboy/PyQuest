@@ -2,13 +2,17 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show AssetBundle;
 
 import '../../app/app_scope.dart';
 import '../../core/audio_service.dart';
 import '../../core/events.dart';
+import '../../core/settings_service.dart';
 import '../../python_runtime/python_runtime.dart';
+import '../../python_runtime/simulated_runtime.dart';
 import '../../shared/characters/cast.dart';
 import '../../shared/characters/characters.dart';
+import '../../shared/l10n/pq_l10n.dart';
 import '../../shared/theme/app_theme.dart';
 import '../../shared/theme/palette.dart';
 import '../../shared/widgets/chunky_button.dart';
@@ -16,6 +20,10 @@ import '../../shared/widgets/code_widgets.dart';
 import '../../shared/widgets/common.dart';
 import '../robot_maze/maze_board.dart';
 import '../robot_maze/maze_models.dart';
+import '../tutor/board/authored_board_repository.dart';
+import '../tutor/board/board_controller.dart';
+import '../tutor/board/board_models.dart';
+import '../tutor/board/board_view.dart';
 import '../tutor/tutor_models.dart';
 import '../tutor/tutor_panel.dart';
 import 'answer_check.dart';
@@ -34,6 +42,17 @@ class LessonScreen extends StatefulWidget {
 enum _Feedback { none, correct, wrong }
 
 class _LessonScreenState extends State<LessonScreen> {
+  static int _nextBoardSession = 0;
+
+  late final String _boardSessionId = '${widget.lesson.id}:${++_nextBoardSession}';
+  int _boardGeneration = 0;
+  bool _boardSyncScheduled = false;
+  bool _boardLoading = false;
+  String? _boardStepId;
+  BoardController? _boardController;
+  SettingsService? _observedSettings;
+  FocusNode? _exampleFocusNode;
+
   int _index = 0;
   _Feedback _feedback = _Feedback.none;
   String _feedbackText = '';
@@ -102,13 +121,18 @@ class _LessonScreenState extends State<LessonScreen> {
   /// Opens the tutor for the current step. The character is chosen from the
   /// lesson's own skill, so the child gets the tutor who teaches that topic.
   Future<void> _openTutor({bool withHint = false}) async {
-    final ctx = _tutorContext();
+    final TutorContext ctx = _tutorContext();
+    final FocusNode? editorFocus = _exampleFocusNode;
+    final bool restoreEditorFocus = editorFocus?.hasFocus ?? false;
     await showTutorPanel(
       context,
       tutorContext: ctx,
       character: CastRegistry.tutorForSkill(ctx.skill).id,
       startWithHint: withHint,
     );
+    if (mounted && restoreEditorFocus && editorFocus?.canRequestFocus == true) {
+      editorFocus!.requestFocus();
+    }
   }
   bool _running = false;
   final GlobalKey<_RobotRunnerState> _robotKey = GlobalKey();
@@ -122,18 +146,149 @@ class _LessonScreenState extends State<LessonScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final SettingsService settings = AppScope.of(context).settings;
+    if (!identical(settings, _observedSettings)) {
+      _observedSettings?.removeListener(_onSettingsChanged);
+      _observedSettings = settings;
+      _observedSettings!.addListener(_onSettingsChanged);
+    }
+    _queueBoardSync();
+  }
+
+  void _onSettingsChanged() {
+    final BoardController? controller = _boardController;
+    final SettingsService? settings = _observedSettings;
+    if (controller == null || settings == null) return;
+    final String nextLocale = _boardLocale(settings.lang);
+    if (controller.locale != nextLocale) controller.setLocale(nextLocale);
+  }
+
+  static String _boardLocale(PqLang lang) => lang == PqLang.vi ? 'vi' : 'en';
+
+  void _queueBoardSync() {
+    if (_boardSyncScheduled) return;
+    _boardSyncScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _boardSyncScheduled = false;
+      if (mounted) _syncBoardForCurrentStep();
+    });
+  }
+
+  void _syncBoardForCurrentStep() {
+    final LessonStep step = _step;
+    if (step is! ExampleStep || !AuthoredBoardRepository.supportsStep(step.id)) {
+      if (_boardController != null) {
+        setState(_disposeBoard);
+      }
+      return;
+    }
+    if (_boardController != null && _boardStepId == step.id) return;
+
+    _disposeBoard();
+    final services = AppScope.of(context);
+    final String locale = _boardLocale(services.settings.lang);
+    final BoardController controller = BoardController(
+      sessionId: _boardSessionId,
+      lessonId: widget.lesson.id,
+      stepId: step.id,
+      locale: locale,
+    );
+    final int generation = ++_boardGeneration;
+    final CastMember tutor = CastRegistry.tutorForSkill(widget.lesson.skill);
+    final AssetBundle bundle = DefaultAssetBundle.of(context);
+    final SimulatedPythonRuntime referenceRuntime =
+        SimulatedPythonRuntime(limits: services.config.pythonLimits);
+    _boardController = controller;
+    _boardStepId = step.id;
+    _boardLoading = true;
+    setState(() {});
+    unawaited(_loadBoard(
+      generation: generation,
+      controller: controller,
+      step: step,
+      lessonId: widget.lesson.id,
+      characterId: tutor.id.name,
+      bundle: bundle,
+      referenceRuntime: referenceRuntime,
+    ));
+  }
+
+  Future<void> _loadBoard({
+    required int generation,
+    required BoardController controller,
+    required ExampleStep step,
+    required String lessonId,
+    required String characterId,
+    required AssetBundle bundle,
+    required SimulatedPythonRuntime referenceRuntime,
+  }) async {
+    BoardValidation validation;
+    try {
+      final AuthoredBoardRepository repository = await AuthoredBoardRepository.load(bundle);
+      if (!_ownsBoard(controller, generation, step.id)) return;
+      validation = repository.validateFor(
+        lessonId: lessonId,
+        stepId: step.id,
+        trustedCode: step.code,
+        characterId: characterId,
+        locale: controller.locale,
+        referenceRuntime: referenceRuntime,
+      );
+    } on Object {
+      validation = BoardValidation.rejected(<BoardIssue>[
+        const BoardIssue(BoardIssueCode.invalidJson, 'Authored board asset could not be loaded'),
+      ]);
+    }
+    if (!_ownsBoard(controller, generation, step.id)) return;
+    controller.applyPlan(controller.currentToken, validation);
+    setState(() => _boardLoading = false);
+  }
+
+  bool _ownsBoard(BoardController controller, int generation, String stepId) =>
+      mounted &&
+      identical(_boardController, controller) &&
+      _boardGeneration == generation &&
+      _boardStepId == stepId &&
+      _step.id == stepId;
+
+  void _disposeBoard() {
+    _boardGeneration++;
+    _boardController?.dispose();
+    _boardController = null;
+    _boardStepId = null;
+    _boardLoading = false;
+  }
+
+  void _onExampleCodeChanged() {
+    if (_step is! ExampleStep) return;
+    _boardController
+      ?..bumpContext()
+      ..learnerActed();
+  }
+
+  @override
   void dispose() {
+    _observedSettings?.removeListener(_onSettingsChanged);
+    _disposeBoard();
+    _exampleFocusNode?.dispose();
+    _code?.removeListener(_onExampleCodeChanged);
     _code?.dispose();
     super.dispose();
   }
 
   void _prepareStep() {
+    _disposeBoard();
+    _exampleFocusNode?.dispose();
+    _exampleFocusNode = null;
     final s = _step;
     _feedback = _Feedback.none;
     _feedbackText = '';
     _stepFails = 0;
     _choice = null;
     _run = null;
+    _code?.removeListener(_onExampleCodeChanged);
     _code?.dispose();
     _code = null;
     _canContinue = s is StoryStep;
@@ -148,6 +303,11 @@ class _LessonScreenState extends State<LessonScreen> {
         do {
           _orderPool.shuffle(rnd);
         } while (_orderPool.length > 1 && _listEquals(_orderPool, o.lines));
+      case ExampleStep e:
+        if (AuthoredBoardRepository.supportsStep(e.id)) {
+          _code = PythonCodeController(text: e.code)..addListener(_onExampleCodeChanged);
+          _exampleFocusNode = FocusNode(debugLabel: 'lesson-example-${e.id}');
+        }
       case WriteStep w:
         _code = PythonCodeController(text: w.starter);
       case RobotStep r:
@@ -171,6 +331,7 @@ class _LessonScreenState extends State<LessonScreen> {
         _index++;
         _prepareStep();
       });
+      _queueBoardSync();
     } else {
       await _complete();
     }
@@ -473,12 +634,23 @@ class _LessonScreenState extends State<LessonScreen> {
           ),
         );
       case ExampleStep e:
+        final bool editable = AuthoredBoardRepository.supportsStep(e.id);
+        final BoardController? board = _boardStepId == e.id ? _boardController : null;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SpeechBubble(character: CharacterId.py, text: e.text, portraitSize: 70),
             const SizedBox(height: 12),
-            CodeView(code: e.code, errorLine: _run?.errorLine),
+            if (editable)
+              CodeEditor(
+                key: ValueKey<String>('example_code_editor_${e.id}'),
+                controller: _code!,
+                focusNode: _exampleFocusNode,
+                errorLine: _run?.errorLine,
+                minLines: 2,
+              )
+            else
+              CodeView(code: e.code, errorLine: _run?.errorLine),
             const SizedBox(height: 10),
             ChunkyButton(
               key: const ValueKey('example_run'),
@@ -489,9 +661,13 @@ class _LessonScreenState extends State<LessonScreen> {
               onPressed: _running
                   ? null
                   : () async {
-                      final r = await _execute(e.code);
+                      final String code = _code?.text ?? e.code;
+                      final ExecutionResult r = await _execute(code);
                       if (!mounted) return;
                       AppScope.of(context).audio.play(r.success ? Sfx.sparkle : Sfx.bonk);
+                      board
+                        ?..bumpContext()
+                        ..learnerActed();
                       setState(() {
                         _run = r;
                         _canContinue = true;
@@ -500,6 +676,10 @@ class _LessonScreenState extends State<LessonScreen> {
             ),
             const SizedBox(height: 10),
             if (_run != null) OutputConsole(result: _run),
+            if (board != null) ...<Widget>[
+              const SizedBox(height: 12),
+              _authoredBoardSection(e, board),
+            ],
           ],
         );
       case ChoiceStep c:
@@ -693,6 +873,63 @@ class _LessonScreenState extends State<LessonScreen> {
           ],
         );
     }
+  }
+
+  Widget _authoredBoardSection(ExampleStep step, BoardController controller) {
+    final CastMember tutor = CastRegistry.tutorForSkill(widget.lesson.skill);
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (BuildContext context, Widget? child) {
+        final BoardLabels labels = BoardLabels.of(controller.locale);
+        return Container(
+          key: ValueKey<String>('lesson_authored_board_${step.id}'),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: PQColors.cream,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: PQColors.ink, width: 2.2),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  CharacterView(id: tutor.id, size: 48),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(tutor.name, style: PQText.h3),
+                  ),
+                  Semantics(
+                    label: labels.authoredBadge,
+                    child: Container(
+                      key: const ValueKey<String>('lesson_board_authored_badge'),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: PQColors.sun.withValues(alpha: 0.35),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: PQColors.ink, width: 1.5),
+                      ),
+                      child: Text(labels.authoredBadge, style: PQText.small),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              if (_boardLoading)
+                const LinearProgressIndicator(key: ValueKey<String>('lesson_board_loading'))
+              else
+                BoardView(
+                  key: ValueKey<String>('lesson_board_view_${step.id}'),
+                  controller: controller,
+                  codeText: _code?.text ?? step.code,
+                  embedded: true,
+                  showScaffold: false,
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _pickToken(String token) {

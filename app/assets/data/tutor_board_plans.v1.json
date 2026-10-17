@@ -1,13 +1,13 @@
 {
   "provenance": {
     "authoredBy": "ops do code agent soạn cho PQC-010; copy VI/EN của beat lấy nguyên văn từ gói design, còn text/altText của op là per-locale do code agent soạn (r7 §R7-C)",
-    "copyFixture": "app/test/fixtures/tutor_board/authored-copy.v1.json",
+    "copyFixture": "app/assets/data/tutor_board_authored-copy.v1.json",
     "copySourceDesignCommit": "59f702375551865efb3590fdc0e60d4dc1dc7408",
     "copySourceSha256": "003a573b76e1363c4ed89280149a245b4ca4726662bee12e0b1545b8c960459c",
     "opsAuthoredUnderCommit": "a9ffa1ccdb6e7d3402e1325829af256c8d902b9d",
     "datasetPinSha256": "bead251d9f290db0b8fa4475f7413976324b00e7b0f498c633a25a5e6392f8b8",
-    "rule": "plan KHONG tu khai output: reference dung tu engine-that (SimulatedPythonRuntime) o board_test_support.dart",
-    "registeredObjectsNote": "registeredObjects gia lap dieu lesson se dang ky khi PQC-011 wire; board khong tu them object",
+    "rule": "plan KHONG tu khai output: runtime reference duoc tinh tu ExampleStep.code trusted bang SimulatedPythonRuntime trong authored_board_repository.dart",
+    "registeredObjectsNote": "registeredObjects trong payload chi la provenance; authored_board_repository.dart cap host-owned allowlist theo step",
     "opCopyRule": "moi op co text/altText cho ca vi lan en; khong de lai chu Viet khong dau trong plan English; code/output/ID khong dich"
   },
   "plans": [

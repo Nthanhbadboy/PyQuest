@@ -31,6 +31,7 @@ class BoardLabels {
     required this.outputLabel,
     required this.fallbackPrefix,
     required this.codeMismatch,
+    required this.authoredBadge,
   });
 
   static const BoardLabels vi = BoardLabels(
@@ -48,6 +49,7 @@ class BoardLabels {
     codeMismatch:
         'Code trên bảng khác với phần thầy đã soạn cho bước này, nên bảng không tô sáng theo dòng. '
         'Nội dung chữ vẫn nguyên văn, chỉ có phần tô bị tắt để không chỉ sai.',
+    authoredBadge: 'Bảng soạn sẵn',
   );
 
   /// Ba câu fallback, theo locale. Rev 7 §R7-C: controller giữ **mã** lỗi, còn câu chữ nằm ở
@@ -87,6 +89,7 @@ class BoardLabels {
         'The code on the board differs from what the authored plan describes, so line highlighting '
         'is off. The text is still verbatim; only the paint is skipped, so nothing points at the '
         'wrong line.',
+    authoredBadge: 'Authored example',
   );
 
   static BoardLabels of(String locale) => locale.startsWith('vi') ? vi : en;
@@ -110,6 +113,7 @@ class BoardLabels {
   final String outputLabel;
   final String fallbackPrefix;
   final String codeMismatch;
+  final String authoredBadge;
 }
 
 class BoardView extends StatelessWidget {
@@ -117,6 +121,8 @@ class BoardView extends StatelessWidget {
     required this.controller,
     this.labels,
     this.codeText = '',
+    this.embedded = false,
+    this.showScaffold = true,
     super.key,
   });
 
@@ -126,6 +132,14 @@ class BoardView extends StatelessWidget {
   /// Code của bước đang học — host đưa vào để bảng **tô lên code thật** thay vì mô tả nó
   /// (rev 7 §R7-B). Board không chạy code, không đọc file, không nhận URL/markup.
   final String codeText;
+
+  /// Embedded lesson boards share the lesson's outer scroll view. Standalone previews
+  /// keep their own scroll view by default.
+  final bool embedded;
+
+  /// The standalone scaffold prints IDs for test/debug previews. Real lesson hosts
+  /// provide the learner-facing lesson/tutor header and hide those internal IDs.
+  final bool showScaffold;
 
   @override
   Widget build(BuildContext context) {
@@ -139,18 +153,19 @@ class BoardView extends StatelessWidget {
         final String? fallbackText = labels.fallbackFor(controller.fallbackReason);
         final BoardBeat? beat = controller.currentBeat;
         final BoardBeatCopy? copy = beat?.copyFor(controller.locale);
-        return SingleChildScrollView(
+        final Widget content = Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _ScaffoldLayer(
-                lessonId: controller.lessonId,
-                stepId: controller.stepId,
-                characterId: controller.plan?.characterId ?? '',
-                beatIndex: controller.beatIndex,
-                beatCount: controller.beatCount,
-              ),
+              if (showScaffold)
+                _ScaffoldLayer(
+                  lessonId: controller.lessonId,
+                  stepId: controller.stepId,
+                  characterId: controller.plan?.characterId ?? '',
+                  beatIndex: controller.beatIndex,
+                  beatCount: controller.beatCount,
+                ),
               const SizedBox(height: 8),
               if (fallbackText != null)
                 _Notice(
@@ -177,6 +192,7 @@ class BoardView extends StatelessWidget {
             ],
           ),
         );
+        return embedded ? content : SingleChildScrollView(child: content);
       },
     );
   }

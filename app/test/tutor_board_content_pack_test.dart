@@ -1,7 +1,7 @@
 // Test-only, kiểm **nội dung do design giao** cho bảng giảng (PQD-003 rev 4: D4, D5, D8).
 //
 // Nguồn gốc file: `docs/design/tutor-board-prototype/authored-copy.v1.json` tại SHA design
-// `59f702375551865efb3590fdc0e60d4dc1dc7408`. Bản nhập về `app/test/fixtures/tutor_board/`
+// `59f702375551865efb3590fdc0e60d4dc1dc7408`. Asset runtime tại `app/assets/data/`
 // là **byte-identical** (9359 bytes, sha256 `003a573b76e1363c…`), kiểm lại bằng:
 //   git show 59f7023:docs/design/tutor-board-prototype/authored-copy.v1.json | sha256sum
 //
@@ -24,7 +24,7 @@ import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_test/flutter_test.dart';
 
-const String kPackPath = 'test/fixtures/tutor_board/authored-copy.v1.json';
+const String kPackPath = 'assets/data/tutor_board_authored-copy.v1.json';
 const List<String> kTopKeys = <String>[
   'contentVersion',
   'status',

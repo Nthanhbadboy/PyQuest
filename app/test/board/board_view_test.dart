@@ -1143,7 +1143,7 @@ Future<List<String>> forEachMatrixCombo(
     for (final double scale in kTextScales) {
       for (final String locale in kBoardLocales) {
         for (int planIndex = 0; planIndex < 2; planIndex++) {
-          final String code = kExampleSteps[stepOf(planIndex)]!;
+          final String code = exampleCodeForStep(stepOf(planIndex));
           for (int beat = 0; beat < 4; beat++) {
             seen++;
             final String tag =
