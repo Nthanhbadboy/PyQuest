@@ -1,5 +1,10 @@
 # Ủy quyền ba gói nền — 2026-10-16
 
+> Lịch sử quyền ngày2026-10-16. Chỉ đạo điều phối mới tại
+> [LEAD_MANDATE_2026-10-17.md](LEAD_MANDATE_2026-10-17.md) cho Lead chủ động mở từng
+> work order theo mục tiêu toàn app, không xin user từng bước. Scope CODE vẫn theo
+> order/revision mới nhất; r27 mở riêng evidence CI015, không tự mở mọi task cũ.
+
 ## Quyết định của người dùng
 
 Sau khi design đã nghiệm thu delta4315d39 và publish verdict907617a, người dùng trả

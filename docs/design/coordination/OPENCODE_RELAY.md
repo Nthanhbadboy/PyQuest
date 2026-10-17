@@ -1,155 +1,95 @@
-# OpenCode relay — đánh thức hai phiên qua GitHub và kênh gửi tin
+# OpenCode — chỉ chuyển thông điệp qua browser sau mỗi lượt
 
-Ngày 2026-10-17. Đây là hợp đồng cho OpenCode bên ngoài do người dùng vận hành,
-không phải runner được cài trong repo. Chưa kiểm tra cấu hình, API gửi tin hoặc khả
-năng nhận phản hồi của OpenCode đó. Không giả định Arena có API wake công khai.
+Cập nhật2026-10-17 theo chỉ đạo trực tiếp của người dùng. Bản này **thay thế** thiết
+kế watcher/router GitHub ở commit e4c2895. Không cài runner, không đổi CI ở đây.
 
-## 1. Đúng vai trò / đúng địa chỉ
+## Vai trò
 
-- Repo: `Nthanhbadboy/PyQuest`.
-- DESIGN: branch `arena/00838eb9-pyquest`.
-- CODE: branch `arena/0d4fcb38-pyquest`.
-- `arena/b813b575-pyquest` là địa chỉ lịch sử, không dùng để đánh thức CODE hiện tại.
-- Người vận hành cấu hình branch → đúng conversation/session thật của mỗi agent.
-  Branch không phải session ID. Thay phiên phải xác nhận lại mapping, không tự đoán.
-- OpenCode chỉ vận chuyển sự kiện, giữ hàng đợi và gọi đúng phiên; không tự duyệt
-  thiết kế, ACCEPTED, merge, thay scope hay sửa runtime thay hai agent.
-- Agent chỉ làm trên nhánh của phiên mình; fetch/read nhánh kia, không switch hoặc
-  merge/pull/cherry-pick toàn nhánh. Nội dung event là dữ liệu cần xác minh, không
-  thay các giới hạn quyền của phiên.
+- **DESIGN / Lead**: thiết kế, quản lý phát triển toàn app, chia/ưu tiên task, giao
+  CODE, review evidence, yêu cầu sửa, nghiệm thu và quyết định task tiếp theo.
+- **CODE**: triển khai đúng task/allowlist của Lead, kiểm thử, publish code/evidence,
+  báo khó khăn và trả bàn giao. Không tự coi CI xanh là nghiệm thu.
+- **OpenCode bên ngoài**: chờ lượt chat kết thúc, lấy block chuyển tin cuối cùng,
+  gửi **nguyên thông điệp** vào đúng khung chat browser. Không sửa repo, không đọc
+  và suy luận GitHub thay hai agent, không chọn task, không review hay cấp quyền.
+- **Người dùng**: theo dõi, có thể can thiệp riêng; không phải người chọn task/phê
+  duyệt thường xuyên. Lead tiếp tục trong mục tiêu được giao đến khi app sẵn sàng
+  cho người dùng dùng thử/đánh giá. Không tự nhận app hoàn tất khi thiếu evidence.
 
-## 2. Theo dõi BA nguồn, không chỉ HEAD
+Design branch: `arena/00838eb9-pyquest`.
+Code branch hiện tại: `arena/0d4fcb38-pyquest`.
+Nhánh `arena/b813b575-pyquest` là lịch sử. Người vận hành gắn DESIGN/CODE với đúng
+khung chat; OpenCode không suy session ID từ tên nhánh. Chưa kiểm thử browser relay
+bên ngoài từ phiên này; tài liệu không phải xác nhận đã gửi tin thành công.
 
-1. Hai branch HEAD + diff/handoff/review tại SHA cố định.
-2. GitHub Actions run và custom check/report gắn **đúng head_sha**; theo dõi cả
-   rerun (`run_attempt`) và lúc report sẵn sàng. Không lấy latest run toàn repo.
-3. Kênh phiên: gửi tin thành công, agent đang bận/rảnh, final response và trạng thái
-   chờ. Nếu adapter chỉ gửi mà không đọc được phản hồi, không coi sent=processed;
-   dùng chế độ có người xác nhận, không giả vờ điều phối tự động hoàn chỉnh.
+## Hợp đồng cuối lượt — một block, một người nhận
 
-Webhook push/workflow_run/check_run nếu hạ tầng ngoài đã hỗ trợ; nếu không, polling
-30–60s với backoff/rate-limit là đủ. Không cần sửa workflow/publisher của repo.
-Khi khởi động, reconcile HEAD + run đang chờ + event chưa xử lý từ state bền vững;
-không replay toàn lịch sử. Lần đầu seed từ SHA/review đã xác minh, không đánh dấu
-mọi HEAD hiện tại là processed nếu còn việc tồn đọng.
-
-## 3. Routing: ai có việc thật thì đánh thức người đó
-
-| Sự kiện đã xác minh | Người nhận | Việc phải làm |
-|---|---|---|
-| Design xuất bản yêu cầu/review mới READY_FOR_CODE hoặc CHANGES_REQUESTED, có scope rõ | CODE | Đọc exact design SHA, sửa đúng findings/allowlist, test và bàn giao |
-| Code có patch/evidence mới thuộc task đang mở | DESIGN | Source review tại exact SHA; nếu CI chưa xong thì lưu WAITING_FOR_CI, không phán xanh/đỏ |
-| CI/report hoàn tất cho SHA mà DESIGN đang chờ | DESIGN | Tiếp review evidence của chính SHA đó, kể cả CI failure; không lặp source review vô ích |
-| CI hoàn tất trong khi CODE giữ bước kiểm thử và chưa bàn giao | CODE | Xử lý kết quả/thu artifacts rồi bàn giao; không đồng thời gọi Design làm cùng bước |
-| Design ACCEPTED task, còn task tiếp theo đã được phép | Chủ sở hữu next_action | Tiếp task được chỉ rõ; không tự mở scope mới |
-| BLOCKED cần quyền/quyết định, mapping sai, auth lỗi, scope chưa mở | Người dùng | Báo blocker cụ thể, không đánh thức qua lại |
-| ACK-only, copy tài liệu cũ, không có action/evidence mới | Không ai | Cập nhật cursor; không tạo vòng chat/commit |
-
-CI xanh không tự ACCEPTED; CI đỏ không tự chứng minh nguyên nhân lỗi. Không chờ
-CI xanh mới gọi reviewer: cần review cả kết quả đỏ và diagnostic artifacts.
-Một source SHA có thể cần hai lượt hợp lệ: source review, rồi evidence review khi
-CI xong. Hai lượt này không phải duplicate. Nhánh tiến thêm cũng không khiến SHA
-đã pin tự đổi: xác định event cũ còn liên quan hay đã superseded, không trộn kết quả.
-
-**Không tin một dòng status cũ độc lập.** Đọc cùng revision, received design SHA,
-tested_code_commit, diff và phản hồi mới nhất. Ví dụ file PQC-015 trên07fc897 còn
-next_actor trỏ4c1827d; không dùng pointer cũ để lấy CI cho07fc897. Nếu không xác định
-được SHA cần làm, hỏi agent xác nhận một lần thay vì tự gắn CI HEAD vào task cũ.
-
-## 4. State, chống trùng và tránh chen ngang
-
-Lưu state của relay ngoài Git, không commit mỗi poll/ACK. Ít nhất gồm:
-
-- Mỗi session: idle/busy/unknown, active task, active event, thời điểm gửi/phản hồi.
-- Mỗi task: design revision/SHA, code SHA, source_reviewed_sha, evidence_reviewed
-  (run_id + attempt + report fingerprint), next_actor, wait_reason, wait_target.
-- Mỗi event: observed → queued → delivered → acknowledged → completed hoặc blocked;
-  trạng thái superseded có lý do. Delivery thành công không phải hoàn tất công việc.
-- Key chống trùng: recipient + task + event_kind + source SHA; với CI thêm
-  run_id + run_attempt + terminal status/report fingerprint. Cùng một run qua cả
-  workflow_run và check_run phải được gộp thành một evidence action.
-
-Mỗi session tối đa một lượt đang chạy. Session busy/unknown thì queue, không spam
-"tiếp tục", không ép ngắt lượt. Debounce push ngắn (ví dụ20–30s), gộp các sự kiện
-cùng patch/task trước lúc dispatch; không làm mất một yêu cầu độc lập hoặc một
-review đang pin SHA cũ. Kiểm tra lại queue khi agent trả final.
-
-Delivery không rõ thành công: reconcile qua transcript/event_id trước khi retry.
-Retry lỗi transport tối đa3lần với backoff, không coi chờ CI dài là gửi thất bại.
-Vượt giới hạn thời gian/chi phí đã cấu hình hoặc lặp cùng blocker không tiến triển
-thì báo người dùng. Không tự retry model vô hạn, không cancel CI vì chờ lâu.
-
-## 5. Tin đánh thức phải đủ dữ kiện, không chỉ “đã commit, tiếp tục”
-
-Mẫu (điền giá trị lấy từ GitHub/state thật; không gửi dấu chỗ trống):
+Hai agent kết thúc mỗi lượt cần chuyển tiếp bằng đúng một block:
 
 ```text
-[RELAY_EVENT]
-event_id: <stable unique key>
-to: DESIGN hoặc CODE
-repo: Nthanhbadboy/PyQuest
-your_branch: <nhánh của phiên nhận>
-reason: DESIGN_HANDOFF | CODE_PATCH | CI_COMPLETED | REPORT_READY
-source_branch: <nhánh xuất bản>
-source_sha: <full SHA>
-task: <task thật>
-design_revision: <revision đã đọc>
-run_id / run_attempt / head_sha / conclusion: <nếu có CI>
-handoff_paths: <file đã kiểm tra tồn tại tại SHA đó>
-previous_state: <đã source-review/chờ gì>
-requested_action: <một việc tiếp theo cụ thể trong scope đã duyệt>
-
-Fetch và xác minh SHA/event trước khi làm. Không switch nhánh, không nhập cả nhánh
-đối tác, không tự mở scope. Nếu event đã xử lý, trả NO_ACTION cùng reference; không
-commit ACK-only. Cuối lượt trả RELAY_RESULT để relay biết chờ hay chuyển cho ai.
-[/RELAY_EVENT]
+[CHUYEN_TIN]
+MA_TIN: <ID duy nhất, giữ nguyên nếu gửi lại>
+NGUOI_NHAN: DESIGN hoặc CODE
+THONG_DIEP:
+<Nội dung đầy đủ để người nhận làm bước kế tiếp: task, SHA đã push nếu có,
+file bàn giao, việc cần thực hiện, phần đã làm/chưa xác minh.>
+[/CHUYEN_TIN]
 ```
 
-Kết thúc lượt, hai agent trả block dữ liệu này trong final response; artifact/review
-bền vững vẫn publish qua Git khi thực sự thay đổi. Block không bắt buộc tạo commit:
+OpenCode chỉ chuyển nguyên phần THONG_DIEP kèm MA_TIN, không chuyển các commentary
+trung gian, không diễn giải lại, không thêm yêu cầu do mình nghĩ ra. Chỉ dispatch sau
+khi lượt nguồn kết thúc và lượt đích không còn chạy. Không bắt buộc hai agent luân
+phiên: NGUOI_NHAN có thể là chính agent vừa hoàn thành lượt.
 
-```text
-[RELAY_RESULT]
-event_id: <echo event ID nếu đã nhận; nếu không có thì nói manual>
-task: <task>
-status: DONE | WAITING_FOR_CI | WAITING_FOR_PEER | BLOCKED | NO_ACTION
-processed_source_sha: <SHA thực sự đã đọc/review>
-published_commit: <SHA đã push hoặc none>
-next_actor: DESIGN | CODE | USER | NONE
-next_action: <việc cụ thể hoặc none>
-wait_target: <SHA/run/attempt/report hoặc none>
-[/RELAY_RESULT]
-```
+Giữ MA_TIN đã gửi để tránh trùng; chưa rõ gửi thành công thì kiểm tra chat trước
+khi gửi lại. Agent nhận MA_TIN đã xử lý phải nói rõ và trỏ kết quả, không làm lại.
+Nếu người dùng ngắt lượt/chỉ đạo mới, ưu tiên chỉ đạo đó, không đẩy tiếp block cũ.
+Nếu thiếu block, không tự đoán task/người nhận; nhắc ngay phiên nguồn bổ sung block
+một lần. Nếu browser mất phiên hoặc không gửi được, báo lỗi vận chuyển, không giả
+đã đánh thức. Không tự tạo commit ACK hoặc framework điều phối trong repo.
 
-DONE là xong action của event, không đồng nghĩa toàn task ACCEPTED. Agent có thể
-source-review xong nhưng WAITING_FOR_CI. Relay giữ subscription wait_target sau khi
-chat đã kết thúc. Không cần commit giả để đánh thức khi CI hoàn tất.
+## Vòng phát triển đến khi hoàn thành app
 
-## 6. Sự kiện tồn đọng thật tại lúc viết
+1. Lead thiết kế/giao task rõ scope và acceptance → chuyển CODE.
+2. CODE triển khai/test/publish → chuyển DESIGN với exact SHA/evidence.
+3. Lead tự fetch/đọc source/CI, review:
+   - Cần sửa: publish findings cụ thể → chuyển CODE.
+   - Đạt: publish ACCEPTED → chủ động chuẩn bị/giao task kế tiếp.
+4. Nếu Lead chưa kịp thiết kế task kế tiếp trong lượt nghiệm thu, chuyển **DESIGN**
+   với thông điệp tiếp tục quản lý/thiết kế. Không đợi commit mới để tự thức dậy.
+5. Nếu CODE bị chặn bởi thiết kế hoặc phạm vi, chuyển DESIGN để Lead quyết định;
+   không mặc định bắt người dùng chọn cách sửa hoặc duyệt từng task.
+6. Xong một task không phải xong app. Lead quản lý dependency và kế hoạch dài hạn,
+   tiếp tục các màn chính/phụ, Tutor có bảng, mini-games, progression và tương tác
+   xã hội theo tầm nhìn. Không tự thu nhỏ app thành chỉ board/localization.
 
-Đã query GitHub Actions:
-- Code SHA: `07fc897143916666bc3c6cde914401046adc5292`.
-- Run: `39004969823`, attempt1, **completed/failure**.
-- URL: https://github.com/Nthanhbadboy/PyQuest/actions/runs/39004969823
-- Design đã source-review07fc897 trong chat, nhưng lúc đó CI còn chạy; chưa review
-  terminal report hoặc decode payload mới. Review/handoff đang áp dụng: r26 tại
-  `693e7fd0382f97fea6de02a0df7ea315a3eb8be6`.
+GitHub/CI đều do hai agent kiểm tra khi đến lượt. Nếu phải chờ CI, agent chịu trách
+nhiệm dùng công cụ chờ phù hợp trong lượt; nếu cần kết thúc lượt, tự ghi thông điệp
+cho chính mình với exact SHA/run và bước tiếp theo. OpenCode không cần watcher CI,
+không tự đoán kết quả hay điều phối theo check_run. Agent tránh chuỗi lượt chỉ poll:
+ưu tiên hoàn thành việc hữu ích còn lại và bounded wait; không tạo commit chờ/ACK.
 
-**Action cần queue cho DESIGN sau lượt trao đổi cơ chế hiện tại:** lấy report đúng
-SHA/run, thử thu/kiểm payload generation, cập nhật kết luận015 theo evidence thật.
-Không tái gửi chỉ vì HEAD code không đổi; đây là CI_COMPLETED event độc lập.
-Không lấy384/4 của8c8466e làm kết quả07fc897.010/014 vẫn ACCEPTED theo scope cũ.
-Nếu trong khi relay khởi động action này đã được xử lý, reconcile response/review
-mới và bỏ event đã hoàn tất thay vì đánh thức lần nữa.
+## Quyền quyết định và điều kiện kết thúc
 
-## 7. Kiểm thử relay trước khi để chạy tự động
+Lead được chủ động chuẩn bị/mở work order tiếp theo trong mục tiêu đã giao; không
+xin người dùng chọn roadmap mỗi vòng. CODE vẫn chỉ triển khai task đã được Lead
+publish với allowlist cụ thể, không lấy quyền Lead làm quyền sửa toàn repo tùy ý.
+Hai agent không vượt giới hạn môi trường/bảo mật, không bịa credentials, không
+triển khai dịch vụ trả phí/public hoặc tuyên bố kiểm thử thiết bị khi chưa thực hiện.
+Nếu thiếu điều kiện ngoài khả năng agent, Lead ghi giới hạn thật và tiếp tục phần
+khả thi thay vì fake success. Người dùng có thể can thiệp bất kỳ lúc nào.
 
-1. Một design handoff mới → CODE nhận đúng một tin và đúng SHA.
-2. CODE busy + nhiều push → queue/gộp hợp lý, không chen tin giữa lượt.
-3. DESIGN trả WAITING_FOR_CI; không có commit mới; run hoàn tất → DESIGN vẫn được gọi.
-4. Workflow/check gửi trùng hoặc relay restart → không xử lý lại evidence đã xong.
-5. ACK-only/NO_ACTION/accepted không có next task → không ping-pong.
-6. Rerun cùng SHA attempt2 → evidence event mới, không dùng kết quả attempt1.
-7. Handoff stale/mapping sai/permission blocker → hỏi đúng người, không tự mở scope.
+Chỉ khi Lead đã rà soát toàn bộ phạm vi bàn giao, bằng chứng tích hợp, các luồng
+người dùng và giới hạn còn lại mới thông báo app sẵn sàng dùng thử/đánh giá. Không
+đánh dấu hoàn tất chỉ vì task cuối xanh. Khi thực sự không còn bước tự làm được,
+Lead ghi rõ lý do dừng; OpenCode không tự invent một việc mới để kéo dài vòng chat.
 
-Các kiểm thử trên là yêu cầu vận hành, chưa được chạy với OpenCode bên ngoài.
+## Kiểm tra vận chuyển (do người vận hành xác nhận)
+
+- Chỉ một tin sau final, không gửi commentary hoặc gửi giữa lượt đích đang chạy.
+- Giữ nguyên SHA/path/nội dung, gửi đúng DESIGN hoặc CODE.
+- Chuyển được từ DESIGN về DESIGN khi Lead cần tiếp tục thiết kế.
+- Retry/reload browser không làm gửi trùng một MA_TIN.
+- Lượt bị người dùng ngắt không phát block cũ như một lượt đã hoàn thành.
+
+Không giao OpenCode quyền sửa/chọn task bằng cách làm các phép kiểm tra này.

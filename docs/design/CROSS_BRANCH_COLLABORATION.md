@@ -109,20 +109,19 @@ hoặc thỏa thuận chuyển revision; không âm thầm trộn hai bộ asset
 - Sáu thumbnail là lát cắt đầu đề xuất. Việc duyệt art, gate Tutor và bảo vệ baseline
   vẫn theo `AI_IMPLEMENTATION_HANDOFF.md`; cơ chế phối hợp không tự bỏ các gate đó.
 
-## 6. Giới hạn tự động hóa
+## 6. Relay browser và vai trò Lead — cập nhật2026-10-17
 
-Cập nhật2026-10-17: người dùng cho biết đã bố trí OpenCode bên ngoài theo dõi GitHub
-và chuyển tin giữa hai phiên. Hợp đồng routing, chống trùng, trạng thái chờ CI và
-mẫu wake/result ở [OPENCODE_RELAY.md](coordination/OPENCODE_RELAY.md). Tài liệu đó
-không chứng minh relay đã được cấu hình/kiểm thử. Không chỉ theo dõi commit: CI/report
-hoàn tất cũng phải có thể gọi lại phiên đang WAITING_FOR_CI.
+Người dùng đã chốt: Design là Lead quyết định thiết kế, giao việc, review và tiếp tục
+quản lý phát triển app; user theo dõi và can thiệp riêng, không phải chọn task mỗi
+vòng. Xem [Lead mandate](coordination/LEAD_MANDATE_2026-10-17.md).
 
-Trong một phiên đang chạy, agent có thể chủ động fetch, đọc, review và làm task mới
-trong phạm vi đã được giao. **Sau khi phiên kết thúc, commit mới không tự kích hoạt
-lại cuộc chat.** Muốn chạy liên tục cần runner/scheduler/webhook có khả năng gọi
-agent và cấp đúng workspace/quyền.
+OpenCode bên ngoài **chỉ chờ turn hoàn tất rồi chuyển nguyên thông điệp cuối lượt
+qua khung chat browser**. Không đọc/điều phối GitHub/CI thay agent, không sửa repo,
+không chọn task hoặc review. Hai agent tự kiểm tra source/CI và chủ động ghi bước
+kế tiếp theo [OPENCODE_RELAY.md](coordination/OPENCODE_RELAY.md).
 
-Runner (nếu xây sau) cần timeout, giới hạn vòng retry, chống xử lý trùng, giới hạn
-chi phí, trạng thái chờ, và điểm dừng khi có xung đột/gate cần người dùng duyệt.
-Không bắt đầu script polling nền rồi tuyên bố nó có thể tự suy luận/code như agent.
-Không có runner nào được cài hoặc kích hoạt bởi việc thêm tài liệu này.
+Commit không tự gọi được chat; cuối lượt phải có block CHUYEN_TIN nếu còn action.
+Lead nghiệm thu xong thì giao task mới hoặc chuyển về DESIGN để tiếp tục thiết kế,
+không dừng vì chưa có commit kế tiếp. Không tự mở scope bên CODE: Lead publish
+work order rõ trước. Không tuyên bố browser relay đã chạy/đã gửi nếu chưa xác minh.
+Bản hướng dẫn watcher GitHub tại e4c2895 đã được thay bằng cơ chế browser relay này.

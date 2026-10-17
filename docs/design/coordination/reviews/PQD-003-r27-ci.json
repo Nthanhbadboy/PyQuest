@@ -1,0 +1,74 @@
+{
+  "review": "PQD-003-r27",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "work_order": "PQC-015",
+  "other_work_orders": {
+    "PQC-010": "ACCEPTED @3f26603",
+    "PQC-014": "ACCEPTED @4751f11"
+  },
+  "tested_code_commit": "07fc897143916666bc3c6cde914401046adc5292",
+  "run_id": 39004969823,
+  "run_attempt": 1,
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39004969823",
+  "custom_report_check_id": 117319893254,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_clean": true,
+  "analyze_seconds": 8.4,
+  "ordinary": {
+    "passed": 384,
+    "failed": 7,
+    "total": 391,
+    "log_final_elapsed": "20:56"
+  },
+  "render_passed": 10,
+  "visible_failure_names": [
+    "app root locale wiring localized framework control semantics update on a live modal route",
+    "app root locale wiring persisted override survives app and service recreation against the real database",
+    "app root locale wiring resetAllProgress reload keeps the synchronized system locale without persisting it",
+    "temporary generated output chunk 0"
+  ],
+  "additional_failures_summary": 3,
+  "generation_probe_failures_inferred": 4,
+  "generation_probe_inference_basis": "3 named app failures plus 1 named chunk and ...and 3 more; source generates chunk tests which always fail",
+  "retrieved_chunk_indices": [
+    0
+  ],
+  "retrieved_chunk_lengths": {
+    "0": 900
+  },
+  "complete_generation_payload": false,
+  "generated_files_decoded": false,
+  "full_failure_traces_retrieved": false,
+  "native_log_fetch": "gh run view --log-failed: EOF downloading results-receiver.actions.githubusercontent.com",
+  "source_sha256": {
+    "app/test/l10n/app_locale_test.dart": "634054133aebae20f475a0e4d7a976add961e15c0e8a69d45beb128bc3490a77",
+    "app/test/l10n/generation_probe_test.dart": "1482fb9107e64cd0ca7ffdaecd928a61450c30dc6cbe3977e3852dc41280b861"
+  },
+  "followup_source_review": {
+    "sha": "6dd62c815c432eefb659aa65de31ea7db0c58547",
+    "delta_from": "07fc897143916666bc3c6cde914401046adc5292",
+    "changed_paths": [
+      "app/test/l10n/app_locale_test.dart"
+    ],
+    "run_id": 39006531482,
+    "run_status_at_observation": "in_progress",
+    "run_conclusion_at_observation": null,
+    "runtime_results_claimed": false,
+    "source_sha256": {
+      "app/test/l10n/app_locale_test.dart": "5e9695f0cd15a70dbb15defddad2762cbb98d4c27d8acba892f171a2297f2b31",
+      "app/test/l10n/generation_probe_test.dart": "1482fb9107e64cd0ca7ffdaecd928a61450c30dc6cbe3977e3852dc41280b861"
+    }
+  },
+  "new_scope": "Narrow CI l10n evidence channel per Lead mandate; see PQC-015-r3/evidence-channel.md",
+  "local_flutter_tests_run": false,
+  "local_gen_l10n_run": false,
+  "new_images_inspected": 0
+}

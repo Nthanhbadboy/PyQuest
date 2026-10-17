@@ -32,28 +32,28 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision26: review015 @8c8466e**.
-Đọc task003, `reviews/PQD-003-r26.md`, receipt r26, report PQC-015-r2 và checklist r24.
-Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
+Task hiện tại là **PQD-003 revision27: hoàn tất015 sau review07fc897/source6dd62c8**.
+Đọc task003, reviews/PQD-003-r27.md, receipt r27 và PQC-015-r3/evidence-channel.md.
+Đọc LEAD_MANDATE_2026-10-17: người dùng giao Lead quyết định/tiếp tục phát triển app;
+không xin user chọn task mỗi vòng. CODE vẫn làm đúng order/allowlist Lead đã publish.
 
-**Sửa015, không ACK-only/diagnostic split vòng mới:**
-1. Run39003348774/report117315191965 failure:384pass/4fail,10renderpass,analyze sạch11.5s.
-   Đỏ: resetAllProgress, recreate app/service, modal semantics, generation probe.
-   Resume widget/service reload unit đã qua.010/014 giữ nghiệm thu, không làm lại race.
-2. Modal bỏ manual ensureSemantics+addTearDown, dùng framework-managed semanticsEnabled:true
-   hoặc finally trước callback return. Giữ getSemantics trên CloseButton thật VI/EN.
-3. Recreate đang await Directory.createTemp trong fake-async callback; đặt I/O thật
-   vào tester.runAsync hoặc fixture sync. Audit DB reads/closes mới, cleanup an toàn;
-   giữ widget pump/assert ngoài runAsync. Report thiếu first traces, không đoán
-   mọi failure do runtime/timeout hoặc tăng timeout để che test-host issue.
-4. Probe generation luôn fail; chỉ là transfer tạm. Thu output thật, commit đầy đủ
-   generated files và loại intentional fail khỏi suite bàn giao/đổi thành checks
-   thật. Không xóa probe chỉ để che thiếu artifacts. Output Git vẫn như0220f2b;
-   comment/config đổi không phải generation evidence. Rerun gen no-diff/untracked.
-5. Chạy xanh reset/recreate/modal, giữ resume/unit reload đã qua và coverage fresh
-   rootvi/en/unsupported theo r24. Không giả recreate bằng service cũ, không getter-only.
-6. Giữ queue014,board010,pickerVI/EN cũ. Không016/011–013/voice/art/economy/social/
-   P06/CIpublisher. Trả exactSHA/run/report và generation evidence, không claim thiết bị.
+**Gộp sửa015 còn lại, không ACK-only/diagnostic split:**
+1. Run07:39004969823/report117319893254,384pass/7fail,10render,analyze sạch8.4s.
+   Ba app integration đỏ +4probe fail, chỉ chunk0 được thu; không có payload đầy đủ.
+   Source6dd đã runAsync5DBcloses nhưng createTemp/DBreads/semantics/cleanup còn lại.
+   Kiểm CI6dd39006531482 đúng SHA, không dùng số07 cho6dd.
+2. Bỏ extra ensureSemantics+addTearDown, dùng framework-managed semanticsEnabled:true
+   hoặc finally trước callback return; giữ CloseButton VI/EN/getSemantics assertions.
+3. Sửa createTemp fakeasync; audit DBreads, cleanup kể cả assertion fail. Pump/assert
+   trong widget zone, native I/O đúng boundary. Giữ resume/reload/Navigator/input coverage.
+4. Lead mở ngoại lệ CI015 hẹp: job check trong ci.yml + ci/l10n_evidence.py + tests.
+   Làm theo evidence-channel.md để publish đủ SDKgenerated output/hashes, gen lần2 và
+   committed drift. Không sửa ci/report.py/previews/SDK/deps/APK/emulator; không
+   pipeline overhaul. Bỏ intentional-fail probe khi đường evidence thật hoạt động.
+5. Không giấu failures/skip tests. Commit generated files thật sau thu; rerun trên
+   SHA có output để chứng minh không drift/untracked. Trả exactSHA/run/report.
+6.010/014 giữ nghiệm thu. Sau015, Lead chuẩn bị016 rồi011; CODE chưa tự làm hai gói
+   này hoặc đổi runtime ngoài015. Phạm vi không đồng nghĩa app đã hoàn thiện.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
@@ -72,12 +72,12 @@ Test/coordination có flag và allowlist riêng; không suy từ đó ra quyền
 
 ## 3. Commit, trả kết quả và chủ động theo dõi
 
-Người dùng có OpenCode relay bên ngoài; đọc `docs/design/coordination/OPENCODE_RELAY.md`.
-Hai agent không tự gọi nhau. Khi nhận RELAY_EVENT, xác minh SHA rồi làm đúng action;
-cuối lượt trả RELAY_RESULT (event_id/task/status/processed_source_sha/published_commit/
-next_actor/next_action/wait_target). Nếu chờ CI, ghi exact SHA/run và WAITING_FOR_CI
-để relay gọi lại khi run/report hoàn tất dù không có commit mới. Không tạo commit
-ACK-only hoặc tự cài runner/đổi CI; chat receipt không thay evidence trong Git.
+Người dùng có OpenCode chỉ chuyển tin qua browser; đọc OPENCODE_RELAY.md bản mới.
+Nó không đọc GitHub/CI, không điều phối task, không sửa repo. Hai agent tự fetch,
+kiểm tra source/run và quyết định bước tiếp theo trong vai trò của mình. Kết thúc
+lượt có việc tiếp phải xuất một block CHUYEN_TIN với MA_TIN, NGUOI_NHAN và THONG_DIEP
+đầy đủ. Code bàn giao cho DESIGN; nếu chỉ cần tiếp tục việc của mình có thể gửi CODE.
+Không tạo commit ACK-only, không dùng schema RELAY_EVENT/RESULT cũ hoặc cài watcher.
 
 Commit/push công việc và phản hồi trên đúng nhánh của bạn trong phạm vi phiên cho phép.
 Stage file có chọn lọc; không `git add .`, không force-push, không sửa nhánh design
@@ -93,11 +93,11 @@ Sau khi gửi ACK/kết quả, kiểm tra design thêm một lần:
 - Có yêu cầu mới đúng phạm vi: đọc, ACK và xử lý theo gate.
 - Chưa có commit/task: `WAITING_FOR_DESIGN_COMMIT`.
 - Đã nhận revision nhưng chờ duyệt/review: `WAITING_FOR_DESIGN_REVIEW`.
-- Không có thay đổi cần làm: `WAITING_FOR_PEER`.
+- Không có thay đổi cần làm: `WAITING_FOR_PEER`, chuyển DESIGN để Lead chỉ rõ bước tiếp; không tự mở task.
 
-Lưu revision/SHA đã xử lý, không tạo ACK commit lặp vô ích. Không cần người dùng
+Lưu revision/SHA đã xử lý, không tạo ACK commit lặp vô ích. OpenCode chuyển nguyên thông điệp giữa hai khung chat; không cần người dùng
 chuyển từng lời giữa hai bên. Tuy nhiên khi phiên kết thúc, bạn không tự thức dậy
-vì commit mới: ghi trạng thái chờ rồi dừng, lần được gọi tiếp theo fetch trước.
+vì commit mới: ghi thông điệp CHUYEN_TIN cho bước tiếp cụ thể, lần được gọi tiếp theo fetch trước.
 Không chạy vòng lặp chờ vô hạn hoặc khẳng định đã cài cơ chế tự động khi chưa có runner.
 
 Bắt đầu bằng fetch, đọc `PQD-003` revision hiện tại, nhận bàn giao và thực hiện task đúng scope. Nếu bị chặn bởi
