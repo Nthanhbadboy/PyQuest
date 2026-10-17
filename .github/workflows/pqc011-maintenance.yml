@@ -327,6 +327,140 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      - name: Publish exact gate counts and failure excerpts to Checks API
+        if: ${{ always() && env.MAINTENANCE_PHASE == 'verify' }}
+        id: gate_evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          REPOSITORY: ${{ github.repository }}
+          PUB_GET: ${{ steps.pub_get.outcome }}
+          FORMAT: ${{ steps.format.outcome }}
+          L10N_TESTS: ${{ steps.l10n_tests.outcome }}
+          L10N_COLLECT: ${{ steps.l10n_collect.outcome }}
+          ANALYZE: ${{ steps.analyze.outcome }}
+          SETTINGS: ${{ steps.settings.outcome }}
+          INTEGRATION: ${{ steps.integration.outcome }}
+          ORDINARY: ${{ steps.ordinary.outcome }}
+          RENDER: ${{ steps.render.outcome }}
+          L10N_PUBLISH: ${{ steps.l10n_publish.outcome }}
+          CLEAN: ${{ steps.clean.outcome }}
+        run: |
+          python3 - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          from pathlib import Path
+          import re
+          from urllib.request import Request, urlopen
+
+          temp = Path(os.environ['RUNNER_TEMP'])
+          gates = {
+              'pub get / lock reproducibility': os.environ['PUB_GET'],
+              'formatter': os.environ['FORMAT'],
+              'localization helper tests': os.environ['L10N_TESTS'],
+              'localization evidence collection': os.environ['L10N_COLLECT'],
+              'analyze': os.environ['ANALYZE'],
+              'Settings': os.environ['SETTINGS'],
+              'lesson-board integration': os.environ['INTEGRATION'],
+              'ordinary suite': os.environ['ORDINARY'],
+              'render suite': os.environ['RENDER'],
+              'localization evidence publication': os.environ['L10N_PUBLISH'],
+              'source cleanliness': os.environ['CLEAN'],
+          }
+
+          def test_count(filename):
+              path = temp / filename
+              if not path.exists():
+                  return 'count unavailable (log missing)'
+              text = path.read_text(encoding='utf-8', errors='replace')
+              matches = re.findall(
+                  r'\+(\d+)(?:\s+-(\d+))?:\s*(All tests passed!|Some tests failed\.)',
+                  text,
+              )
+              if not matches:
+                  return 'count unavailable'
+              passed, failed, marker = matches[-1]
+              failed_count = int(failed or 0)
+              total = int(passed) + failed_count
+              result = 'PASS' if marker == 'All tests passed!' else 'FAIL'
+              return f'{result}: {passed} passed, {failed_count} failed ({total} total)'
+
+          def excerpt(filename, limit=16000):
+              path = temp / filename
+              if not path.exists():
+                  return '(log unavailable)'
+              text = path.read_text(encoding='utf-8', errors='replace')
+              return text[-limit:]
+
+          summary_rows = [
+              ('Pinned SDK', 'Flutter 3.47.7 / Dart 3.13.5 / framework abaf9c523780a608bd46686fd5e53740a07077f8'),
+              ('Settings', f"{gates['Settings']}; {test_count('pqc011-settings.log')}"),
+              ('Lesson-board integration', f"{gates['lesson-board integration']}; {test_count('pqc011-integration.log')}"),
+              ('Ordinary suite', f"{gates['ordinary suite']}; {test_count('pqc011-ordinary.log')}"),
+              ('Render suite', f"{gates['render suite']}; {test_count('pqc011-render.log')}"),
+              ('Localization helper tests', gates['localization helper tests']),
+              ('Localization evidence collection', gates['localization evidence collection']),
+              ('Analyze', gates['analyze']),
+              ('Formatter', gates['formatter']),
+              ('pub get / lock reproducibility', gates['pub get / lock reproducibility']),
+              ('Source cleanliness', gates['source cleanliness']),
+          ]
+          markdown = ['| Gate | Result |', '|---|---|']
+          markdown.extend(f'| {name} | {value} |' for name, value in summary_rows)
+          failures = [name for name, value in gates.items() if value != 'success']
+          conclusion = 'failure' if failures else 'success'
+          text = '\n'.join([
+              '### Failing gate outcomes',
+              ', '.join(failures) if failures else 'None',
+              '',
+              '### Integration log tail',
+              '```text',
+              excerpt('pqc011-integration.log'),
+              '```',
+              '',
+              '### Ordinary suite log tail',
+              '```text',
+              excerpt('pqc011-ordinary.log'),
+              '```',
+          ])
+          now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+          payload = {
+              'name': 'PQC-011 r49 exact gate counts',
+              'head_sha': os.environ['SOURCE_SHA'],
+              'external_id': f"{os.environ['RUN_ID']}-{os.environ['RUN_ATTEMPT']}",
+              'details_url': f"https://github.com/{os.environ['REPOSITORY']}/actions/runs/{os.environ['RUN_ID']}",
+              'status': 'completed',
+              'conclusion': conclusion,
+              'started_at': now,
+              'completed_at': now,
+              'output': {
+                  'title': f"PQC-011 r49 pinned SDK gates: {conclusion.upper()}",
+                  'summary': '\n'.join(markdown),
+                  'text': text,
+              },
+          }
+          request = Request(
+              f"https://api.github.com/repos/{os.environ['REPOSITORY']}/check-runs",
+              data=json.dumps(payload).encode('utf-8'),
+              headers={
+                  'Accept': 'application/vnd.github+json',
+                  'Authorization': f"Bearer {os.environ['GH_TOKEN']}",
+                  'X-GitHub-Api-Version': '2022-11-28',
+                  'Content-Type': 'application/json',
+              },
+              method='POST',
+          )
+          with urlopen(request, timeout=30) as response:
+              result = json.load(response)
+          url = result.get('html_url', '')
+          print(f"Published exact gate counts for {os.environ['SOURCE_SHA']}: {url}")
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write(f'evidence_url={url}\n')
+          PY
+
       - name: Summarize verification result
         if: ${{ always() && env.MAINTENANCE_PHASE == 'verify' }}
         env:
@@ -342,10 +476,12 @@ jobs:
           RENDER: ${{ steps.render.outcome }}
           L10N_PUBLISH: ${{ steps.l10n_publish.outcome }}
           CLEAN: ${{ steps.clean.outcome }}
+          GATE_EVIDENCE: ${{ steps.gate_evidence.outputs.evidence_url }}
         run: |
           set -u
           {
             echo '### PQC-011 r49 pinned SDK verification'
+            echo "Exact test-count check: $GATE_EVIDENCE"
             echo "Source SHA: \\`$SOURCE_SHA\\`"
             echo '| Gate | Outcome |'
             echo '|---|---|'
