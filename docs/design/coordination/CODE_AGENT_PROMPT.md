@@ -32,29 +32,26 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision24: review014/015 @0220f2b**.
-Đọc task003, `reviews/PQD-003-r24.md`, receipt r24 và report/generator evidence PQC-015-r1.
+Task hiện tại là **PQD-003 revision25: PQC-014 ACCEPTED @4751f11**.
+Đọc task003, `reviews/PQD-003-r25.md`, receipt r25; tiếp checklist015 trong r24.
 Code ở `arena/0d4fcb38-pyquest`; không switch/push sang nhánh phiên khác.
 
-**Sửa theo review, không ACK-only:**
-1.010 giữ ACCEPTED. Latest CI0220f2b run38987355441/report117262973964 SUCCESS:
-   380pass/0fail,10renderpass,analyze sạch12.1s.014/015 chưa ACCEPTED chỉ vì CI xanh.
-2.014: R23 overlapping-save-state vẫn nguyên; setLang throw lại error không sửa race.
-   Sửa request ownership/ordering và real SQLite overlap regressions theo r23/r24.
-3.014/015: load() không đối số đang xóa OS input đã sync; resetAllProgress có callsite
-   thật làm root system fallbackEN khi máyVI. Giữ input qua reload hoặc binding re-sync
-   an toàn, không recursive listener. Thêm resume hook + regression không dựa locale
-   event, kiểm manual override/no persisted resolution. Không sửa app_services/UI.
-4.015: chạy gen-l10n đúng SDK, commit toàn bộ output thật + evidence chạy lại không
-   diff/untracked output. SDK xuất base+_en+_vi; file91dòng inline hiện chưa khớp claim.
-   Bỏ synthetic-package obsolete, sửa comment pubspec. Không CI/publisher/SDK upgrades.
-5. Bổ sung root freshVI/EN/unsupported, explicit persisted qua recreate app+service/DB,
-   reload/resume/unmount cleanup và framework control semantics route/modal thực.
-   Giữ tests Navigator/input đã qua; không dùng getter đơn lẻ thay semantic evidence.
-6. Settings VI/EN picker đã có và không đổi. Chưa system picker/UI016; không port UI
-   trong015. Getter settings.lang không chứng minh live voice đang nói đã chuyển.
-   Sửa claims cho đúng, không voice/provider hoặc scope011–013/016/art/social/economy.
-7. Publish014/015 riêng trong allowlists đã duyệt, exactSHA/run/report/generation evidence.
+**Tiếp corrections015, không ACK-only hoặc làm lại race đã đóng:**
+1. Run39002047899/report117307744269 SUCCESS:382pass/0fail,10renderpass,
+   analyze sạch12.5s.014 đã đạt resolver/migration/persistence + hai overlap SQLite
+   regressions;010 giữ ACCEPTED. Giữ queue/request guards và tests mới.
+2.015 chưa ACCEPTED: R24-2 reload làm mất OS input, thiếu resume hook vẫn nguyên.
+   Sửa binding/root hoặc correction service014 trong allowlist đã duyệt, không đổi
+   migration rules. Kiểm system/manual/empty list, reload/resume, không recursive
+   listener hoặc persist resolved locale. Không sửa UI/app_services ngoài scope.
+3. R24-3: gen-l10n đúng SDK, commit toàn bộ output thật + chứng minh rerun không
+   diff/untracked output; dọn synthetic-package/comment cũ. Không CI/publisher/
+   SDK upgrade hoặc dependency ngoài closure015.
+4. R24-4: fresh rootvi/en/unsupported, persisted override qua recreate app+service/DB,
+   lifecycle/unmount cleanup và framework control semantics route/modal. Giữ
+   Navigator/input tests; không claim thiết bị/full relaunch từ getter hay service-only.
+5. PickerVI/EN cũ đã có, system picker/UI016 chưa mở. Không011–013/AI/voice/art/
+   social/economy/P06. Trả exactSHA/run/report + generation evidence cho015.
 
 PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
 của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
