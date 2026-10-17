@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/app/locale_binding.dart';
@@ -14,6 +14,8 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
+  setUp(() => debugDefaultTargetPlatformOverride = TargetPlatform.android);
+  tearDown(() => debugDefaultTargetPlatformOverride = null);
 
   testWidgets('Vietnamese modal BackButton has its localized tooltip',
       (WidgetTester tester) async {
@@ -30,11 +32,7 @@ void main() {
     final SemanticsHandle semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
     await tester.pump();
-    expect(
-      find.semantics.byPredicate((SemanticsNode node) => node.tooltip == 'Quay lại'),
-      findsOneWidget,
-      reason: 'the VI BackButton tooltip must appear in the accessibility semantics tree',
-    );
+    expect(tester.getSemantics(find.byType(IconButton)).label, 'Quay lại');
     await _disposeHarness(tester, harness);
   });
 
@@ -68,11 +66,7 @@ void main() {
 
     final Finder backEn = find.byTooltip('Back');
     expect(backEn, findsOneWidget);
-    expect(
-      find.semantics.byPredicate((SemanticsNode node) => node.tooltip == 'Back'),
-      findsOneWidget,
-      reason: 'the EN BackButton tooltip must appear in the accessibility semantics tree',
-    );
+    expect(tester.getSemantics(find.byType(IconButton)).label, 'Back');
     await tester.tap(backEn);
     await tester.pump(const Duration(milliseconds: 150));
     await _disposeHarness(tester, harness);
