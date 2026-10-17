@@ -700,11 +700,12 @@ Future<void> _mountPyQuest(WidgetTester tester, AppServices services) async {
 }
 
 Future<void> _openSettings(WidgetTester tester) async {
-  await tapAndSettle(
-    tester,
-    find.byKey(const ValueKey<String>('settings_button')),
-    wait: const Duration(milliseconds: 900),
-  );
+  final Finder button = find.byKey(const ValueKey<String>('settings_button')).first;
+  await tester.ensureVisible(button);
+  await tester.pump();
+  // Match the working root-navigation tap used by the existing render suite.
+  await tester.tap(button, warnIfMissed: false);
+  await pumpFor(tester, const Duration(milliseconds: 900));
   expect(find.byKey(const ValueKey<String>('settings_language_panel')), findsOneWidget);
 }
 
