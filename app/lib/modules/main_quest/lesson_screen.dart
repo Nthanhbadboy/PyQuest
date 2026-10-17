@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show AssetBundle;
 
 import '../../app/app_scope.dart';
 import '../../core/audio_service.dart';
@@ -52,6 +51,7 @@ class _LessonScreenState extends State<LessonScreen> {
   BoardController? _boardController;
   SettingsService? _observedSettings;
   FocusNode? _exampleFocusNode;
+  String? _exampleCodeSnapshot;
 
   int _index = 0;
   _Feedback _feedback = _Feedback.none;
@@ -263,6 +263,9 @@ class _LessonScreenState extends State<LessonScreen> {
 
   void _onExampleCodeChanged() {
     if (_step is! ExampleStep) return;
+    final String? currentText = _code?.text;
+    if (currentText == null || currentText == _exampleCodeSnapshot) return;
+    _exampleCodeSnapshot = currentText;
     _boardController
       ?..bumpContext()
       ..learnerActed();
@@ -291,6 +294,7 @@ class _LessonScreenState extends State<LessonScreen> {
     _code?.removeListener(_onExampleCodeChanged);
     _code?.dispose();
     _code = null;
+    _exampleCodeSnapshot = null;
     _canContinue = s is StoryStep;
     final rnd = math.Random(_index * 31 + widget.lesson.number);
     switch (s) {
@@ -305,7 +309,9 @@ class _LessonScreenState extends State<LessonScreen> {
         } while (_orderPool.length > 1 && _listEquals(_orderPool, o.lines));
       case ExampleStep e:
         if (AuthoredBoardRepository.supportsStep(e.id)) {
-          _code = PythonCodeController(text: e.code)..addListener(_onExampleCodeChanged);
+          _code = PythonCodeController(text: e.code);
+          _exampleCodeSnapshot = e.code;
+          _code!.addListener(_onExampleCodeChanged);
           _exampleFocusNode = FocusNode(debugLabel: 'lesson-example-${e.id}');
         }
       case WriteStep w:

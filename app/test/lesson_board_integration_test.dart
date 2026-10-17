@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -92,11 +91,35 @@ void main() {
     expect(events, isNot(contains(EventTypes.exerciseSolved)));
     expect(events, isNot(contains(EventTypes.lessonCompleted)));
 
+    for (int i = 0; i < 3; i++) {
+      await tester.ensureVisible(next);
+      await tester.pump();
+      if (board.canGoNext) {
+        await tester.tap(next);
+        await tester.pump();
+      }
+    }
+    expect(board.beatIndex, 3);
+    expect(board.isWaitingForLearner, isTrue);
+
+    editor = tester.widget<CodeEditor>(find.byKey(const ValueKey<String>('example_code_editor_mq1_01_s2')));
+    editor.controller.value = TextEditingValue(
+      text: 'print("Xin chào!")',
+      selection: const TextSelection.collapsed(offset: 5),
+    );
+    await tester.pump();
+    expect(board.beatIndex, 3);
+    expect(board.isWaitingForLearner, isTrue,
+        reason: 'selection-only changes do not count as learner editing');
+
     await tester.ensureVisible(find.byKey(const ValueKey<String>('example_run')));
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey<String>('example_run')));
     await tester.pumpAndSettle();
     expect(find.text('Xin chào!'), findsWidgets);
+    expect(board.beatIndex, 3);
+    expect(board.isWaitingForLearner, isFalse,
+        reason: 'running the example acknowledges the wait without changing the beat');
     expect(events, contains(EventTypes.codeRun));
     expect(events, isNot(contains(EventTypes.exerciseSolved)));
     expect(events, isNot(contains(EventTypes.lessonCompleted)));
@@ -104,10 +127,27 @@ void main() {
     expect(continueButton.onPressed, isNotNull,
         reason: 'running the example keeps its pre-existing Continue behavior');
 
-    editor = tester.widget<CodeEditor>(find.byKey(const ValueKey<String>('example_code_editor_mq1_01_s2')));
+    await tester.ensureVisible(find.byKey(const ValueKey<String>('board_replay')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey<String>('board_replay')));
+    await tester.pump();
+    for (int i = 0; i < 3; i++) {
+      await tester.ensureVisible(next);
+      await tester.pump();
+      if (board.canGoNext) {
+        await tester.tap(next);
+        await tester.pump();
+      }
+    }
+    expect(board.beatIndex, 3);
+    expect(board.isWaitingForLearner, isTrue);
+
     editor.controller.text = 'print("Đã sửa")';
     await tester.pump();
     expect(find.byKey(const ValueKey<String>('board_code_mismatch')), findsOneWidget);
+    expect(board.beatIndex, 3);
+    expect(board.isWaitingForLearner, isFalse,
+        reason: 'a text edit acknowledges wait without advancing the board');
     await tester.ensureVisible(find.byKey(const ValueKey<String>('example_run')));
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey<String>('example_run')));
@@ -158,6 +198,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('12'), findsOneWidget);
 
+    final double scrollOffsetBeforeTutor = _lessonScrollOffset(tester);
     await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey<String>('tutor_close')), findsOneWidget);
@@ -173,6 +214,22 @@ void main() {
     expect(editor.controller.selection, const TextSelection.collapsed(offset: 8));
     expect(editor.focusNode!.hasFocus, isTrue);
     expect(find.text('12'), findsOneWidget, reason: 'the last run result survives the tutor route');
+    expect(_lessonScrollOffset(tester), closeTo(scrollOffsetBeforeTutor, 0.5));
+
+    await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey<String>('tutor_close')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey<String>('tutor_close')));
+    await tester.pumpAndSettle();
+    expect(identical(tester.widget<BoardView>(find.byType(BoardView)).controller, board), isTrue);
+    expect(board.beatIndex, 1);
+    expect(board.learner.note, 'test-only marker');
+    expect(board.learner.strokes, <String>['test-only-stroke']);
+    expect(editor.controller.text, 'print(10 + 2)');
+    expect(editor.controller.selection, const TextSelection.collapsed(offset: 8));
+    expect(editor.focusNode!.hasFocus, isTrue);
+    expect(find.text('12'), findsOneWidget);
+    expect(_lessonScrollOffset(tester), closeTo(scrollOffsetBeforeTutor, 0.5));
 
     await tester.runAsync(() => services.settings.setLang(PqLang.en));
     await tester.pumpAndSettle();
@@ -199,9 +256,61 @@ void main() {
     await _finish(tester, services);
   });
 
-  testWidgets('embedded lesson board and controls stay reachable at 360x640 with 2x text',
+  testWidgets('embedded board controls are hit-testable at both sizes in VI/EN, including 2x text',
       (WidgetTester tester) async {
     final AppServices services = await _createServices(tester);
+    final List<MapEntry<Size, PqLang>> cases = <MapEntry<Size, PqLang>>[
+      MapEntry<Size, PqLang>(const Size(390, 844), PqLang.vi),
+      MapEntry<Size, PqLang>(const Size(390, 844), PqLang.en),
+      MapEntry<Size, PqLang>(const Size(360, 640), PqLang.vi),
+      MapEntry<Size, PqLang>(const Size(360, 640), PqLang.en),
+    ];
+
+    for (int index = 0; index < cases.length; index++) {
+      if (index > 0) {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+      }
+      final MapEntry<Size, PqLang> testCase = cases[index];
+      await tester.runAsync(() => services.settings.setLang(testCase.value));
+      await _mountLesson(
+        tester,
+        services,
+        services.mainQuest.byId('mq1_01')!,
+        viewport: testCase.key,
+      );
+      await _advanceStoryToExample(tester);
+      await _waitForBoard(tester);
+      expect(find.byKey(const ValueKey<String>('lesson_board_authored_badge')), findsOneWidget);
+      expect(find.text(testCase.value == PqLang.vi ? 'Bảng soạn sẵn' : 'Authored example'), findsOneWidget);
+      expect(find.text('mq1_01_s2'), findsNothing);
+
+      final BoardController board = tester.widget<BoardView>(find.byType(BoardView)).controller;
+      final Finder next = find.byKey(const ValueKey<String>('board_next'));
+      await tester.ensureVisible(next);
+      await tester.pump();
+      await tester.tap(next);
+      await tester.pump();
+      expect(board.beatIndex, 1, reason: '${testCase.key}/${testCase.value}: board control accepted a real hit');
+
+      final Finder run = find.byKey(const ValueKey<String>('example_run'));
+      await tester.ensureVisible(run);
+      await tester.pump();
+      await tester.tap(run);
+      await tester.pumpAndSettle();
+      final Finder continueButton = find.byKey(const ValueKey<String>('lesson_continue'));
+      await tester.ensureVisible(continueButton);
+      await tester.pump();
+      await tester.tap(continueButton);
+      await tester.pumpAndSettle();
+      expect(find.text('3/5'), findsOneWidget,
+          reason: '${testCase.key}/${testCase.value}: existing lesson Continue remains reachable');
+      expect(tester.takeException(), isNull);
+    }
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    await tester.runAsync(() => services.settings.setLang(PqLang.vi));
     await _mountLesson(
       tester,
       services,
@@ -211,13 +320,11 @@ void main() {
     );
     await _advanceStoryToExample(tester);
     await _waitForBoard(tester);
-    expect(tester.takeException(), isNull);
-    await tester.ensureVisible(find.byKey(const ValueKey<String>('board_next')));
+    final Finder nextAtTwoX = find.byKey(const ValueKey<String>('board_next'));
+    await tester.ensureVisible(nextAtTwoX);
+    await tester.tap(nextAtTwoX);
     await tester.pump();
-    await tester.ensureVisible(find.byKey(const ValueKey<String>('lesson_continue')));
-    await tester.pump();
-    expect(find.byKey(const ValueKey<String>('board_next')), findsOneWidget);
-    expect(find.byKey(const ValueKey<String>('lesson_continue')), findsOneWidget);
+    expect(tester.widget<BoardView>(find.byType(BoardView)).controller.beatIndex, 1);
     expect(tester.takeException(), isNull);
     await _finish(tester, services);
   });
@@ -275,6 +382,30 @@ void main() {
     expect(find.byType(BoardView), findsNothing);
     await _finish(tester, services);
   });
+
+  testWidgets('late asset completion after leaving LessonScreen is ignored safely',
+      (WidgetTester tester) async {
+    final AppServices services = await _createServices(tester);
+    final _GatedAssetBundle bundle = _GatedAssetBundle(rootBundle);
+    addTearDown(bundle.release);
+    await _mountLesson(
+      tester,
+      services,
+      services.mainQuest.byId('mq1_01')!,
+      bundle: bundle,
+    );
+    await _advanceStoryToExample(tester);
+    await tester.pump();
+    expect(find.byKey(const ValueKey<String>('lesson_board_loading')), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    bundle.release();
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull,
+        reason: 'late repository completion must not call setState/apply on a disposed lesson');
+    await _finish(tester, services);
+  });
 }
 
 Future<AppServices> _createServices(WidgetTester tester) async {
@@ -309,7 +440,21 @@ Future<void> _mountLesson(
     ),
     home: AppScope(services: services, child: screen),
   ));
-  await tester.pumpAndSettle(const Duration(milliseconds: 50), const Duration(seconds: 10));
+  await tester.pumpAndSettle(
+    const Duration(milliseconds: 50),
+    EnginePhase.sendSemanticsUpdate,
+    const Duration(seconds: 10),
+  );
+}
+
+double _lessonScrollOffset(WidgetTester tester) {
+  final Finder scrollable = find
+      .descendant(
+        of: find.byKey(const ValueKey<String>('step_scroll_1')),
+        matching: find.byType(Scrollable),
+      )
+      .first;
+  return tester.state<ScrollableState>(scrollable).position.pixels;
 }
 
 Future<void> _advanceStoryToExample(WidgetTester tester) async {

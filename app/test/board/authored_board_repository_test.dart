@@ -1,12 +1,11 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show FlutterError;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/modules/main_quest/quest_models.dart';
 import 'package:pyquest/modules/tutor/board/authored_board_repository.dart';
 import 'package:pyquest/modules/tutor/board/board_models.dart';
-import 'package:pyquest/modules/tutor/board/board_plan_codec.dart';
 import 'package:pyquest/python_runtime/simulated_runtime.dart';
 import 'package:pyquest/shared/characters/cast.dart';
 
@@ -25,6 +24,53 @@ void main() {
     expect(await rootBundle.loadString(AuthoredBoardRepository.plansAssetKey), isNotEmpty);
     expect(await rootBundle.loadString(AuthoredBoardRepository.copyAssetKey), isNotEmpty);
     await expectLater(AuthoredBoardRepository.load(rootBundle), completes);
+  });
+
+  test('plan and copy catalogs use set membership, independent of asset ordering', () async {
+    final Map<String, String> assets = await _readAuthoredAssets();
+    final Map<String, dynamic> plans =
+        jsonDecode(assets[AuthoredBoardRepository.plansAssetKey]!) as Map<String, dynamic>;
+    final Map<String, dynamic> copy =
+        jsonDecode(assets[AuthoredBoardRepository.copyAssetKey]!) as Map<String, dynamic>;
+    final List<dynamic> planMembers = plans['plans']! as List<dynamic>;
+    planMembers.setAll(0, planMembers.reversed.toList());
+    final List<dynamic> copyMembers = copy['plans']! as List<dynamic>;
+    copyMembers.setAll(0, copyMembers.reversed.toList());
+    assets[AuthoredBoardRepository.plansAssetKey] = jsonEncode(plans);
+    assets[AuthoredBoardRepository.copyAssetKey] = jsonEncode(copy);
+
+    await expectLater(AuthoredBoardRepository.load(_MemoryAssetBundle(assets)), completes);
+  });
+
+  test('plan and copy catalogs reject missing, extra and duplicate members', () async {
+    final Map<String, String> baseline = await _readAuthoredAssets();
+
+    Future<void> expectCatalogFailure(String assetKey, String memberKey, void Function(List<dynamic>) mutate) async {
+      final Map<String, String> assets = Map<String, String>.of(baseline);
+      final Map<String, dynamic> document = jsonDecode(assets[assetKey]!) as Map<String, dynamic>;
+      final List<dynamic> members = document['plans']! as List<dynamic>;
+      mutate(members);
+      assets[assetKey] = jsonEncode(document);
+      await expectLater(AuthoredBoardRepository.load(_MemoryAssetBundle(assets)), throwsFormatException,
+          reason: '$assetKey must reject $memberKey catalog members');
+    }
+
+    for (final MapEntry<String, String> source in <MapEntry<String, String>>[
+      MapEntry<String, String>(AuthoredBoardRepository.plansAssetKey, 'stepId'),
+      MapEntry<String, String>(AuthoredBoardRepository.copyAssetKey, 'sourceStep'),
+    ]) {
+      await expectCatalogFailure(source.key, 'missing', (List<dynamic> members) {
+        members.removeLast();
+      });
+      await expectCatalogFailure(source.key, 'extra', (List<dynamic> members) {
+        final Map<String, dynamic> extra = _cloneMap(members.first as Map<String, dynamic>);
+        extra[source.value] = 'mq1_99_s99';
+        members.add(extra);
+      });
+      await expectCatalogFailure(source.key, 'duplicate', (List<dynamic> members) {
+        members.add(_cloneMap(members.first as Map<String, dynamic>));
+      });
+    }
   });
 
   test('real lesson examples validate and derive Nova/Pixel from lesson skill', () async {
@@ -57,6 +103,65 @@ void main() {
       expect(validation.plan!.beats.map((BoardBeat beat) => beat.copy.keys.toSet()),
           everyElement(equals(<String>{'vi', 'en'})));
     }
+  });
+
+  test('repository exposes exact failure causes for copy, owner, source and host IDs', () async {
+    final Map<String, String> baseline = await _readAuthoredAssets();
+
+    final Map<String, String> missingLocale = Map<String, String>.of(baseline);
+    final Map<String, dynamic> localeDoc =
+        _documentFor(missingLocale, AuthoredBoardRepository.copyAssetKey);
+    final Map<String, dynamic> localePlan = _firstMap(localeDoc['plans']! as List<dynamic>);
+    final Map<String, dynamic> localeBeat = _firstMap(localePlan['beats']! as List<dynamic>);
+    (localeBeat['copy']! as Map<String, dynamic>).remove('en');
+    missingLocale[AuthoredBoardRepository.copyAssetKey] = jsonEncode(localeDoc);
+    expect((await _validateWithAssets(missingLocale)).codes, contains(BoardIssueCode.missingCopy));
+
+    final Map<String, String> missingBeat = Map<String, String>.of(baseline);
+    final Map<String, dynamic> missingBeatDoc =
+        _documentFor(missingBeat, AuthoredBoardRepository.copyAssetKey);
+    final Map<String, dynamic> missingBeatPlan = _firstMap(missingBeatDoc['plans']! as List<dynamic>);
+    (missingBeatPlan['beats']! as List<dynamic>).removeLast();
+    missingBeat[AuthoredBoardRepository.copyAssetKey] = jsonEncode(missingBeatDoc);
+    expect((await _validateWithAssets(missingBeat)).codes, contains(BoardIssueCode.missingCopy));
+
+    final Map<String, String> wrongWait = Map<String, String>.of(baseline);
+    final Map<String, dynamic> wrongWaitDoc =
+        _documentFor(wrongWait, AuthoredBoardRepository.copyAssetKey);
+    final Map<String, dynamic> wrongWaitPlan = _firstMap(wrongWaitDoc['plans']! as List<dynamic>);
+    final Map<String, dynamic> wrongWaitBeat = _firstMap(wrongWaitPlan['beats']! as List<dynamic>);
+    wrongWaitBeat['waitForLearner'] = !(wrongWaitBeat['waitForLearner']! as bool);
+    wrongWait[AuthoredBoardRepository.copyAssetKey] = jsonEncode(wrongWaitDoc);
+    expect((await _validateWithAssets(wrongWait)).codes, contains(BoardIssueCode.missingCopy));
+
+    expect(
+      (await _validateWithAssets(baseline, lessonId: 'mq1_03')).codes,
+      contains(BoardIssueCode.foreignKey),
+    );
+
+    final Map<String, String> untrustedStatement = Map<String, String>.of(baseline);
+    final Map<String, dynamic> statementDoc =
+        _documentFor(untrustedStatement, AuthoredBoardRepository.plansAssetKey);
+    final Map<String, dynamic> statementPlan = _firstMap(statementDoc['plans']! as List<dynamic>);
+    final Map<String, dynamic> statementBeat = _firstMap(statementPlan['beats']! as List<dynamic>);
+    statementBeat['sourceStatement'] = 'print("not from lesson")';
+    untrustedStatement[AuthoredBoardRepository.plansAssetKey] = jsonEncode(statementDoc);
+    expect(
+      (await _validateWithAssets(untrustedStatement)).codes,
+      contains(BoardIssueCode.outputMismatch),
+    );
+
+    final Map<String, String> unregisteredId = Map<String, String>.of(baseline);
+    final Map<String, dynamic> idDoc =
+        _documentFor(unregisteredId, AuthoredBoardRepository.plansAssetKey);
+    final Map<String, dynamic> idPlan = _firstMap(idDoc['plans']! as List<dynamic>);
+    final Map<String, dynamic> idBeat = _firstMap(idPlan['beats']! as List<dynamic>);
+    (idBeat['objectIds']! as List<dynamic>)[0] = 'attacker-object';
+    unregisteredId[AuthoredBoardRepository.plansAssetKey] = jsonEncode(idDoc);
+    expect(
+      (await _validateWithAssets(unregisteredId)).codes,
+      contains(BoardIssueCode.unknownObject),
+    );
   });
 
   test('payload registered IDs and character cannot replace host-owned values', () async {
@@ -145,6 +250,31 @@ void main() {
   });
 }
 
+
+Future<BoardValidation> _validateWithAssets(
+  Map<String, String> assets, {
+  String lessonId = 'mq1_01',
+}) async {
+  final AuthoredBoardRepository repository = await AuthoredBoardRepository.load(_MemoryAssetBundle(assets));
+  final ExampleStep example = _exampleFor(await MainQuestContent.load(rootBundle), 'mq1_01_s2');
+  return repository.validateFor(
+    lessonId: lessonId,
+    stepId: example.id,
+    trustedCode: example.code,
+    characterId: 'nova',
+    locale: 'vi',
+    referenceRuntime: SimulatedPythonRuntime(),
+  );
+}
+
+Map<String, dynamic> _documentFor(Map<String, String> assets, String key) =>
+    jsonDecode(assets[key]!) as Map<String, dynamic>;
+
+Map<String, dynamic> _firstMap(List<dynamic> values) =>
+    values.first as Map<String, dynamic>;
+
+Map<String, dynamic> _cloneMap(Map<String, dynamic> source) =>
+    jsonDecode(jsonEncode(source)) as Map<String, dynamic>;
 
 ExampleStep _exampleFor(MainQuestContent content, String stepId) {
   for (final Lesson lesson in content.lessons) {

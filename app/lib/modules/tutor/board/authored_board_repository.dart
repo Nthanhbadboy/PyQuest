@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import '../../../python_runtime/python_runtime.dart' show ExecutionResult;
 import '../../../python_runtime/simulated_runtime.dart';
 import 'board_models.dart';
 import 'board_plan_codec.dart';
@@ -79,7 +80,7 @@ class AuthoredBoardRepository {
       }
       plansByStep[step] = _deepCopyMap(raw);
     }
-    if (plansByStep.keys.toSet() != _registeredObjectsByStep.keys.toSet()) {
+    if (!_sameStringMembers(plansByStep.keys.toSet(), _registeredObjectsByStep.keys.toSet())) {
       throw const FormatException('Authored board plan catalog does not match the host catalog');
     }
 
@@ -120,7 +121,7 @@ class AuthoredBoardRepository {
       }
       copyByStepAndBeat[step] = beats;
     }
-    if (copyByStepAndBeat.keys.toSet() != _registeredObjectsByStep.keys.toSet()) {
+    if (!_sameStringMembers(copyByStepAndBeat.keys.toSet(), _registeredObjectsByStep.keys.toSet())) {
       throw const FormatException('Authored board copy catalog does not match the host catalog');
     }
 
@@ -256,6 +257,9 @@ class AuthoredBoardRepository {
     }
     return DeterministicReference(outputs);
   }
+
+  static bool _sameStringMembers(Set<String> left, Set<String> right) =>
+      left.length == right.length && left.containsAll(right);
 
   static Map<String, dynamic> _deepCopyMap(Map<String, dynamic> source) =>
       jsonDecode(jsonEncode(source)) as Map<String, dynamic>;
