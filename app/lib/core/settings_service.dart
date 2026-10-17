@@ -20,6 +20,8 @@ class SettingsService extends ChangeNotifier {
   Object? _localeLoadError;
   Object? _localePreferenceSaveError;
   bool _loaded = false;
+  int _localePreferenceRequest = 0;
+  Future<void> _localePreferenceWriteTail = Future<void>.value();
 
   /// Loads raw settings and migrates a valid legacy language without deleting it.
   ///
@@ -122,22 +124,34 @@ class SettingsService extends ChangeNotifier {
   /// Select a locale for this session immediately and persist the preference key. A failed write
   /// leaves the session selection active while exposing the failure and leaving stored values
   /// unchanged, so a newly loaded service observes the actual persisted preference.
-  Future<bool> setLocalePreference(LocalePreference preference) async {
+  Future<bool> setLocalePreference(LocalePreference preference) {
+    final int request = ++_localePreferenceRequest;
     _localePreference = preference;
     _localePreferenceSaveError = null;
     _refreshResolution();
     notifyListeners();
 
-    try {
-      await _repo.put(localePreferenceKey, preference.storageValue);
-      _values[localePreferenceKey] = preference.storageValue;
-      notifyListeners();
-      return true;
-    } catch (error) {
-      _localePreferenceSaveError = error;
-      notifyListeners();
-      return false;
-    }
+    // Persist selections in call order so the in-memory raw value follows the database even
+    // when callers make another choice before an earlier write has finished.
+    final Future<bool> result = _localePreferenceWriteTail.then((_) async {
+      try {
+        await _repo.put(localePreferenceKey, preference.storageValue);
+        _values[localePreferenceKey] = preference.storageValue;
+        if (request == _localePreferenceRequest) {
+          _localePreferenceSaveError = null;
+        }
+        notifyListeners();
+        return true;
+      } catch (error) {
+        if (request == _localePreferenceRequest) {
+          _localePreferenceSaveError = error;
+        }
+        notifyListeners();
+        return false;
+      }
+    });
+    _localePreferenceWriteTail = result.then<void>((_) {});
+    return result;
   }
 
   /// Compatibility adapter for existing cast/tutor callers. Choosing a language is explicit.

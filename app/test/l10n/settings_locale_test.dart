@@ -211,6 +211,57 @@ void main() {
       expect(restarted.localePreferenceSaveError, isNull);
     });
 
+    test('overlapping writes keep an older failure from marking the latest save failed', () async {
+      final _Fixture fixture = await _openFixture(<String, String>{});
+      addTearDown(fixture.close);
+      await fixture.rejectViLocalePreferenceWrites();
+      final SettingsService settings = fixture.service();
+      addTearDown(settings.dispose);
+      await settings.load(systemLocales: <String>['fr-FR']);
+
+      final Future<bool> first = settings.setLocalePreference(LocalePreference.vi);
+      final Future<bool> latest = settings.setLocalePreference(LocalePreference.en);
+      expect(await first, isFalse);
+      expect(await latest, isTrue);
+      expect(settings.localePreference, LocalePreference.en);
+      expect(settings.localePreferenceSaveError, isNull);
+      expect(settings.localePreferenceSaved, isTrue);
+      expect(settings.raw(SettingsService.localePreferenceKey), 'en');
+      expect((await fixture.repository.all())[SettingsService.localePreferenceKey], 'en');
+
+      final SettingsService reloaded = fixture.service();
+      addTearDown(reloaded.dispose);
+      await reloaded.load(systemLocales: <String>['vi-VN']);
+      expect(reloaded.localePreference, LocalePreference.en);
+      expect(reloaded.raw(SettingsService.localePreferenceKey), 'en');
+    });
+
+    test('latest failed write owns the error while persisted state stays at prior success', () async {
+      final _Fixture fixture = await _openFixture(<String, String>{});
+      addTearDown(fixture.close);
+      await fixture.rejectViLocalePreferenceWrites();
+      final SettingsService settings = fixture.service();
+      addTearDown(settings.dispose);
+      await settings.load(systemLocales: <String>['fr-FR']);
+
+      final Future<bool> first = settings.setLocalePreference(LocalePreference.en);
+      final Future<bool> latest = settings.setLocalePreference(LocalePreference.vi);
+      expect(await first, isTrue);
+      expect(await latest, isFalse);
+      expect(settings.localePreference, LocalePreference.vi);
+      expect(settings.localePreferenceSaveError, isNotNull);
+      expect(settings.localePreferenceSaved, isFalse);
+      expect(settings.raw(SettingsService.localePreferenceKey), 'en');
+      expect((await fixture.repository.all())[SettingsService.localePreferenceKey], 'en');
+
+      final SettingsService reloaded = fixture.service();
+      addTearDown(reloaded.dispose);
+      await reloaded.load(systemLocales: <String>['fr-FR']);
+      expect(reloaded.localePreference, LocalePreference.en);
+      expect(reloaded.localePreferenceSaveError, isNull);
+      expect(reloaded.raw(SettingsService.localePreferenceKey), 'en');
+    });
+
     test('read failures are surfaced and do not report a successful load', () async {
       final _Fixture fixture = await _openFixture(<String, String>{});
       addTearDown(fixture.close);
@@ -266,6 +317,15 @@ class _Fixture {
     WHEN NEW.key = '${SettingsService.localePreferenceKey}'
     BEGIN
       SELECT RAISE(ABORT, 'locale preference write rejected');
+    END
+  ''');
+
+  Future<void> rejectViLocalePreferenceWrites() => database.db.execute('''
+    CREATE TRIGGER reject_vi_locale_preference
+    BEFORE INSERT ON settings
+    WHEN NEW.key = '${SettingsService.localePreferenceKey}' AND NEW.value = 'vi'
+    BEGIN
+      SELECT RAISE(ABORT, 'VI locale preference write rejected');
     END
   ''');
 
