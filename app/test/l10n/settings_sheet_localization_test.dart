@@ -374,7 +374,7 @@ void main() {
           'error=${services.settings.localePreferenceSaveError}',
     );
     Navigator.of(tester.element(find.byKey(const ValueKey<String>('settings_language_panel')))).pop();
-    await pumpFor(tester, const Duration(milliseconds: 100));
+    await pumpFor(tester, const Duration(milliseconds: 250));
     expect(find.byKey(const ValueKey<String>('settings_language_panel')), findsNothing);
     await _releaseWriteLock(tester, lock!);
     lock = null;
