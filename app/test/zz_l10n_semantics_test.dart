@@ -17,9 +17,6 @@ void main() {
   testWidgets('Vietnamese modal BackButton has its localized tooltip',
       (WidgetTester tester) async {
     final _LocaleHarness harness = await _openModalHarness(tester);
-    final SemanticsHandle semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
-
     expect(find.byTooltip('Quay lại'), findsOneWidget);
     await _disposeHarness(tester, harness);
   });
@@ -27,12 +24,11 @@ void main() {
   testWidgets('Vietnamese modal BackButton exposes its localized semantic label',
       (WidgetTester tester) async {
     final _LocaleHarness harness = await _openModalHarness(tester);
-    final SemanticsHandle semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
-
     final Finder backVi = find.byTooltip('Quay lại');
     expect(backVi, findsOneWidget);
-    expect(tester.getSemantics(backVi).label, 'Quay lại');
+    final SemanticsHandle semantics = tester.ensureSemantics();
+    addTearDown(semantics.dispose);
+    expect(tester.getSemantics(backVi).tooltip, 'Quay lại');
     await _disposeHarness(tester, harness);
   });
 
@@ -53,9 +49,9 @@ void main() {
   testWidgets('modal BackButton semantic label tracks a system locale change',
       (WidgetTester tester) async {
     final _LocaleHarness harness = await _openModalHarness(tester);
+    expect(find.byTooltip('Quay lại'), findsOneWidget);
     final SemanticsHandle semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
-    expect(find.byTooltip('Quay lại'), findsOneWidget);
 
     harness.osLocales
       ..clear()
@@ -65,7 +61,7 @@ void main() {
 
     final Finder backEn = find.byTooltip('Back');
     expect(backEn, findsOneWidget);
-    expect(tester.getSemantics(backEn).label, 'Back');
+    expect(tester.getSemantics(backEn).tooltip, 'Back');
     await tester.tap(backEn);
     await tester.pump(const Duration(milliseconds: 150));
     await _disposeHarness(tester, harness);
