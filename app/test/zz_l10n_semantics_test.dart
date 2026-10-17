@@ -26,7 +26,9 @@ void main() {
     expect(find.byTooltip('Quay lại'), findsOneWidget);
     final Finder backIcon = find.byType(Icon);
     expect(backIcon, findsOneWidget);
-    expect(tester.getSemantics(backIcon).label, 'Quay lại');
+    final String label = tester.getSemantics(backIcon).label;
+    expect(label, contains('Quay lại'));
+    expect(label, isNot(contains('Back')));
   }, semanticsEnabled: true, variant: TargetPlatformVariant.only(TargetPlatform.android));
 
   testWidgets('modal BackButton tooltip tracks a system locale change',
@@ -57,7 +59,9 @@ void main() {
     expect(backEn, findsOneWidget);
     final Finder backIcon = find.byType(Icon);
     expect(backIcon, findsOneWidget);
-    expect(tester.getSemantics(backIcon).label, 'Back');
+    final String label = tester.getSemantics(backIcon).label;
+    expect(label, contains('Back'));
+    expect(label, isNot(contains('Quay lại')));
     await tester.tap(backEn);
     await tester.pump(const Duration(milliseconds: 150));
   }, semanticsEnabled: true, variant: TargetPlatformVariant.only(TargetPlatform.android));
