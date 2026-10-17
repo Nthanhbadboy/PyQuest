@@ -1,6 +1,9 @@
 name: PQC-011 pinned SDK maintenance
 
 on:
+  push:
+    branches:
+      - arena/0d4fcb38-pyquest
   workflow_dispatch:
     inputs:
       phase:
@@ -22,7 +25,13 @@ concurrency:
 
 jobs:
   maintenance:
-    if: github.ref == 'refs/heads/arena/0d4fcb38-pyquest'
+    if: >-
+      github.ref == 'refs/heads/arena/0d4fcb38-pyquest' &&
+      (github.event_name == 'workflow_dispatch' ||
+       contains(github.event.head_commit.message, '[pqc011-normalize]') ||
+       contains(github.event.head_commit.message, '[pqc011-verify]'))
+    env:
+      MAINTENANCE_PHASE: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[pqc011-normalize]') && 'normalize') || (github.event_name == 'push' && contains(github.event.head_commit.message, '[pqc011-verify]') && 'verify') || inputs.phase }}
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
@@ -61,7 +70,7 @@ jobs:
           PY
 
       - name: Normalize the authorized 13 Dart files and pub lock
-        if: inputs.phase == 'normalize'
+        if: env.MAINTENANCE_PHASE == 'normalize'
         env:
           BASE_SHA: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
@@ -176,7 +185,7 @@ jobs:
           if ! git diff --cached --quiet; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m '[skip ci] maintenance: normalize PQC-011 r49 allowlist'
+            git commit -m 'maintenance: normalize PQC-011 r49 allowlist [pqc011-verify]'
             git push origin "HEAD:refs/heads/$BRANCH"
           fi
           final_sha="$(git rev-parse HEAD)"
@@ -185,11 +194,11 @@ jobs:
             echo '### PQC-011 normalization'
             echo "Source started at: \\`$BASE_SHA\\`"
             echo "Normalized CODE SHA: \\`$final_sha\\`"
-            echo 'This phase only formats the 13 ordered Dart files and resolves the existing pub lock; verification must be dispatched on the normalized SHA.'
+            echo 'This phase only formats the 13 ordered Dart files and resolves the existing pub lock; the [pqc011-verify] push starts verification on the normalized SHA.'
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Confirm verification is attached to current branch tip
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         env:
           EXPECTED_SHA: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
@@ -202,17 +211,17 @@ jobs:
           echo "Verified source SHA: $EXPECTED_SHA"
 
       - name: Check pub get reproducibility
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         id: pub_get
         continue-on-error: true
         working-directory: app
         run: |
           set -euo pipefail
-          flutter pub get 2>&1 | tee ../pqc011-pub-get.log
+          flutter pub get 2>&1 | tee "$RUNNER_TEMP/pqc011-pub-get.log"
           git diff --exit-code -- pubspec.lock
 
       - name: Check formatting on the 13-file allowlist
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         id: format
         continue-on-error: true
         working-directory: app
@@ -230,65 +239,65 @@ jobs:
             test/board/board_previews_test.dart \
             test/board/board_test_support.dart \
             test/board/board_view_test.dart \
-            test/tutor_board_content_pack_test.dart 2>&1 | tee ../pqc011-format.log
+            test/tutor_board_content_pack_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-format.log"
 
       - name: Localization evidence helper tests
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         id: l10n_tests
         continue-on-error: true
         run: python3 ci/test_l10n_evidence.py 2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-tests.log"
 
       - name: Collect generated localization evidence
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         id: l10n_collect
         continue-on-error: true
         working-directory: app
         run: >-
           python3 ../ci/l10n_evidence.py collect --repo-root .. --app-dir .
           --output "$RUNNER_TEMP/pqc011-l10n-evidence.json"
-          2>&1 | tee ../pqc011-l10n-collect.log
+          2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-collect.log"
 
       - name: Analyze
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         id: analyze
         continue-on-error: true
         working-directory: app
-        run: flutter analyze --no-fatal-infos 2>&1 | tee ../pqc011-analyze.log
+        run: flutter analyze --no-fatal-infos 2>&1 | tee "$RUNNER_TEMP/pqc011-analyze.log"
 
       - name: Focused Settings tests
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         id: settings
         continue-on-error: true
         timeout-minutes: 5
         working-directory: app
-        run: flutter test --reporter expanded --timeout 45s test/l10n/settings_sheet_localization_test.dart 2>&1 | tee ../pqc011-settings.log
+        run: flutter test --reporter expanded --timeout 45s test/l10n/settings_sheet_localization_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-settings.log"
 
       - name: Lesson board integration tests
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         id: integration
         continue-on-error: true
         timeout-minutes: 10
         working-directory: app
-        run: flutter test --reporter expanded --timeout 45s test/lesson_board_integration_test.dart 2>&1 | tee ../pqc011-integration.log
+        run: flutter test --reporter expanded --timeout 45s test/lesson_board_integration_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-integration.log"
 
       - name: Ordinary Flutter suite
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         id: ordinary
         continue-on-error: true
         timeout-minutes: 20
         working-directory: app
-        run: flutter test --reporter expanded --exclude-tags render 2>&1 | tee ../pqc011-ordinary.log
+        run: flutter test --reporter expanded --exclude-tags render 2>&1 | tee "$RUNNER_TEMP/pqc011-ordinary.log"
 
       - name: Render suite
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         id: render
         continue-on-error: true
         timeout-minutes: 10
         working-directory: app
-        run: flutter test --reporter expanded --tags render test/render 2>&1 | tee ../pqc011-render.log
+        run: flutter test --reporter expanded --tags render test/render 2>&1 | tee "$RUNNER_TEMP/pqc011-render.log"
 
       - name: Publish localization evidence
-        if: ${{ always() && inputs.phase == 'verify' && steps.l10n_collect.outcome == 'success' }}
+        if: ${{ always() && env.MAINTENANCE_PHASE == 'verify' && steps.l10n_collect.outcome == 'success' }}
         id: l10n_publish
         continue-on-error: true
         env:
@@ -296,7 +305,7 @@ jobs:
         run: python3 ci/l10n_evidence.py publish --evidence "$RUNNER_TEMP/pqc011-l10n-evidence.json" 2>&1 | tee "$RUNNER_TEMP/pqc011-l10n-publish.log"
 
       - name: Verify final source cleanliness
-        if: inputs.phase == 'verify'
+        if: env.MAINTENANCE_PHASE == 'verify'
         id: clean
         continue-on-error: true
         env:
@@ -308,20 +317,18 @@ jobs:
           test -z "$(git status --porcelain)"
 
       - name: Upload pinned SDK logs
-        if: ${{ always() && inputs.phase == 'verify' }}
+        if: ${{ always() && env.MAINTENANCE_PHASE == 'verify' }}
         uses: actions/upload-artifact@v4
         with:
           name: pqc011-r49-${{ github.sha }}-diagnostics
           path: |
-            pqc011-*.log
-            ${{ runner.temp }}/pqc011-l10n-tests.log
+            ${{ runner.temp }}/pqc011-*.log
             ${{ runner.temp }}/pqc011-l10n-evidence.json
-            ${{ runner.temp }}/pqc011-l10n-publish.log
           if-no-files-found: ignore
           retention-days: 14
 
       - name: Summarize verification result
-        if: ${{ always() && inputs.phase == 'verify' }}
+        if: ${{ always() && env.MAINTENANCE_PHASE == 'verify' }}
         env:
           SOURCE_SHA: ${{ github.sha }}
           PUB_GET: ${{ steps.pub_get.outcome }}
