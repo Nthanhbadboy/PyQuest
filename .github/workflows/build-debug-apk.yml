@@ -1,10 +1,23 @@
-name: Build PyQuest debug APK
+name: Build PyQuest APK
 
 on:
   push:
     branches:
       - debug/remove-ai-transcript-add-voice-logs
   workflow_dispatch:
+    inputs:
+      source_sha:
+        description: 'Exact source commit to package (empty uses the workflow ref)'
+        required: false
+        type: string
+      build_mode:
+        description: 'Release-mode preview or debug APK'
+        required: true
+        default: release
+        type: choice
+        options:
+          - release
+          - debug
 
 permissions:
   contents: read
@@ -12,41 +25,69 @@ permissions:
 jobs:
   build-android:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
+    env:
+      BUILD_MODE: ${{ inputs.build_mode || 'debug' }}
+      SOURCE_SHA: ${{ inputs.source_sha || github.sha }}
     defaults:
       run:
         working-directory: app
+        shell: bash
     steps:
-      - name: Checkout
+      - name: Validate build request
+        working-directory: .
+        run: |
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$BUILD_MODE" == release || "$BUILD_MODE" == debug ]]
+      - name: Checkout exact app source
         uses: actions/checkout@v4
-
+        with:
+          ref: ${{ env.SOURCE_SHA }}
+          persist-credentials: false
+      - name: Verify source
+        run: test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.47.7'
           cache: true
-
       - name: Flutter version
         run: flutter --version
-
       - name: Resolve dependencies
         run: flutter pub get
-
-      - name: Build debug APK
+      - name: Build APK
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: flutter build apk --debug --dart-define=GEMINI_API_KEY="$GEMINI_API_KEY"
-
-      - name: Upload debug APK
+        run: flutter build apk --"$BUILD_MODE" --dart-define="GEMINI_API_KEY=$GEMINI_API_KEY"
+      - name: Package APK and provenance
+        run: |
+          mkdir -p ../apk-delivery
+          cp "build/app/outputs/flutter-apk/app-$BUILD_MODE.apk" "../apk-delivery/pyquest-$BUILD_MODE.apk"
+          {
+            printf 'source_sha=%s\nmode=%s\n' "$SOURCE_SHA" "$BUILD_MODE"
+            printf 'workflow_sha=%s\nrun_id=%s\n' "$GITHUB_SHA" "$GITHUB_RUN_ID"
+            printf 'signing=existing app configuration (debug key for preview; not store release)\n'
+            flutter --version
+          } > ../apk-delivery/build-info.txt
+          cd ../apk-delivery
+          sha256sum "pyquest-$BUILD_MODE.apk" > SHA256SUMS
+          {
+            echo '## Installable PyQuest preview'
+            echo
+            cat build-info.txt
+            echo
+            cat SHA256SUMS
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: pyquest-debug-voice-diagnostics
-          path: app/build/app/outputs/flutter-apk/app-debug.apk
+          name: pyquest-${{ env.BUILD_MODE }}-apk
+          path: apk-delivery/
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 14
