@@ -19,7 +19,7 @@ void main() {
     );
     final List<String> lines = '${result.stdout}\n${result.stderr}'.split('\n');
     final RegExp interesting = RegExp(
-      r'\[E\]|Expected:|Actual:|Which:|══╡|EXCEPTION|Exception:|Error:|overflowed by|Failing tests:|settings_sheet_localization_test.dart:',
+      r'\[E\]|Expected:|Actual:|Which:|══╡|EXCEPTION|Exception:|Error:|overflowed|RenderFlex|RenderBox was not laid out|Bad state:|DatabaseException|Null check|Failed assertion|Failing tests:|Python information|Settings fits|UI choices|overlapping UI|failed locale|restart|uncapped scale',
       caseSensitive: false,
     );
     stdout.writeln('PQC-016 focused diagnostics child exit=${result.exitCode}');
