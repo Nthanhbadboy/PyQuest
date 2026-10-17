@@ -11,34 +11,31 @@
 <body>
   <div class="page-shell">
     <main class="study" data-scene="a02-shared-settings" data-initial-state="system_active">
-      <div class="fixture-strip" data-common="fixture"></div>
-      <header class="topbar">
-        <a class="back-link" href="../index.html" aria-label="" data-common-aria="back">←</a>
-        <div class="headings"><h1 data-title></h1><p data-subtitle></p></div>
-        <span class="kind-chip">SYSTEM · VI/EN</span>
-      </header>
-      <section class="toolbar">
-        <div class="tool-group"><span class="tool-label" data-common="language"></span><div class="segmented"><button type="button" data-lang="vi" aria-pressed="true">VI</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div></div>
-        <div class="tool-group"><span class="tool-label" data-common="textSize"></span><div class="segmented scale-buttons"><button type="button" data-scale="1" aria-pressed="true">1×</button><button type="button" data-scale="1.3" aria-pressed="false">1.3×</button><button type="button" data-scale="2" aria-pressed="false">2×</button></div></div>
-      </section>
-      <figure class="scene-art"><img data-scene-image src="concept.png" alt=""></figure>
-      <section class="content">
+      <div class="review-banner" data-common="reviewer"></div>
+      <header class="review-header"><div class="review-head-row"><a class="back-link" href="../index.html" aria-label="" data-common-aria="back">←</a><div class="review-heading"><h1 data-title></h1><p data-subtitle></p></div></div></header>
+      <section class="reviewer-controls">
+        <h2 data-common="controls"></h2>
+        <div class="controls-grid">
+          <div class="tool-group"><span class="tool-label" data-common="language"></span><div class="segmented"><button type="button" data-lang="vi" aria-pressed="true">VI</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div></div>
+          <div class="tool-group"><span class="tool-label" data-common="textSize"></span><div class="segmented"><button type="button" data-scale="1" aria-pressed="true">1×</button><button type="button" data-scale="1.3" aria-pressed="false">1.3×</button><button type="button" data-scale="2" aria-pressed="false">2×</button></div></div>
+        </div>
         <div class="state-picker"><label for="fixture-state" data-common="state"></label><select id="fixture-state" data-state-select></select></div>
-        <article class="state-card" aria-live="polite">
-          <span class="state-tag" data-tag></span><h2 data-state-title></h2><p data-body></p>
-          <ul class="facts" data-facts></ul>
-          <button class="mock-cta" type="button" disabled data-cta></button>
-          <p class="note" data-note></p>
-        </article>
-        <section class="state-card setting-samples" aria-label="" data-common-aria="preferences">
-          <h2 data-common="preferences"></h2>
-          <div class="setting-row"><span data-common="sound"></span><span class="sample-value" data-common="sampleOn"></span></div>
-          <div class="setting-row"><span data-common="music"></span><span class="sample-value" data-common="sampleOn"></span></div>
-          <div class="setting-row"><span data-common="calm"></span><span class="sample-value" data-common="sampleOff"></span></div>
-          <p class="note" data-common="noRuntime"></p>
-        </section>
       </section>
-      <footer class="page-foot"><span data-common="noRuntime"></span><br><a href="../README.md" data-common="sources"></a> · <span>Source: settings_sheet.dart; locale preferences 014–016</span></footer>
+      <section class="product-screen settings-product" aria-label="Settings product viewport">
+        <div class="product-bar"><span data-common="settingsBar"></span><span class="product-pill" data-tag></span></div>
+        <div class="settings-alcove"><img data-scene-image src="concept.png" alt=""></div>
+        <div class="settings-board"><div class="settings-board-inner">
+          <div class="product-copy"><h2 data-state-title></h2><p data-body></p><ul class="facts" data-facts></ul><button class="mock-cta" type="button" disabled data-cta></button></div>
+          <section class="setting-samples" aria-label="" data-common-aria="preferences">
+            <h3 data-common="settingsBoard"></h3>
+            <div class="setting-row"><span data-common="sound"></span><span class="sample-value" data-common="sampleOn"></span></div>
+            <div class="setting-row"><span data-common="music"></span><span class="sample-value" data-common="sampleOn"></span></div>
+            <div class="setting-row"><span data-common="calm"></span><span class="sample-value" data-common="sampleOff"></span></div>
+          </section>
+        </div></div>
+      </section>
+      <aside class="reviewer-notes"><details open><summary data-common="notes"></summary><p class="reviewer-note-label" data-common="noteLabel"></p><p data-note></p><p data-common="noRuntime"></p><p>Source: settings_sheet.dart, locale_preference.dart, settings service and locale 014–016. These sample values are illustrative; no device permission or preference is changed.</p></details></aside>
+      <footer class="page-foot"><a href="../README.md" data-common="sources"></a></footer>
     </main>
   </div>
 </body>

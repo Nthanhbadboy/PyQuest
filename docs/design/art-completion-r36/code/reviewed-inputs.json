@@ -154,76 +154,164 @@
     {
       "scene": "A01-w04-journal",
       "references": [
-        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
-        {"id": "w07-interior", "path": "../art-refresh-r34/concepts/w07-interior.jpg", "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad"},
-        {"id": "w06-result", "path": "../art-refresh-r34/concepts/w06-result.jpg", "sha256": "36ef11d66cc5270ab52b8e8421c7796374a7d382b0132301775248147a220cd2"}
+        {
+          "id": "w01-village",
+          "path": "../art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        },
+        {
+          "id": "w07-interior",
+          "path": "../art-refresh-r34/concepts/w07-interior.jpg",
+          "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad"
+        },
+        {
+          "id": "w06-result",
+          "path": "../art-refresh-r34/concepts/w06-result.jpg",
+          "sha256": "36ef11d66cc5270ab52b8e8421c7796374a7d382b0132301775248147a220cd2"
+        }
       ],
       "why": "W01 fixes the shared stone/wood/light language; W07 lends worktable-scale prop staging but its faulty threshold is excluded; W06 informs a calm, neutral pending-result vignette without implying a grant. W04 journal contents remain separate UI overlays and are sourced from the world-expansion design, not invented economy."
     },
     {
       "scene": "A02-shared-settings",
       "references": [
-        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
-        {"id": "w14-achievements", "path": "corrections/w14-achievements.jpg", "sha256": "5663f576cd4cf273e516ea1eee500face165879ed9710b6455959b90c34db66d"}
+        {
+          "id": "w01-village",
+          "path": "../art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        },
+        {
+          "id": "w14-achievements",
+          "path": "corrections/w14-achievements.jpg",
+          "sha256": "5663f576cd4cf273e516ea1eee500face165879ed9710b6455959b90c34db66d"
+        }
       ],
       "why": "W01 supplies primary palette/materials; only the corrected W14 cutaway/daylight framing is borrowed for a compact timber-and-stone alcove. No achievement cabinet, rewards, or trophy content is reused; controls and language states remain front-facing UI."
     },
     {
       "scene": "A03-shared-welcome",
       "references": [
-        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
-        {"id": "w08-archipelago", "path": "published-r33/w08-archipelago.jpg", "sha256": "83652b3f6479c1e4595a8dab7ad2987a720d409d8ec1d0c3218bfbe8760de52d"}
+        {
+          "id": "w01-village",
+          "path": "../art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        },
+        {
+          "id": "w08-archipelago",
+          "path": "published-r33/w08-archipelago.jpg",
+          "sha256": "83652b3f6479c1e4595a8dab7ad2987a720d409d8ec1d0c3218bfbe8760de52d"
+        }
       ],
       "why": "W01 anchors the public village arrival and established landmarks; corrected W08 helps keep the tower/island silhouette in the same family. The welcome is a design fixture, not proof of an account/cloud or forced Tutor/purchase gate."
     },
     {
       "scene": "A04-w05-catch-stars",
       "references": [
-        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
-        {"id": "w11-arena", "path": "../art-refresh-r33/code/w11-arena/concept.png", "sha256": "2b9932f9d6f69c9bb8bd9f3591099fc77d06e1338f41f0a75be0fc4a8bd15d72"}
+        {
+          "id": "w01-village",
+          "path": "../art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        },
+        {
+          "id": "w11-arena",
+          "path": "../art-refresh-r33/code/w11-arena/concept.png",
+          "sha256": "2b9932f9d6f69c9bb8bd9f3591099fc77d06e1338f41f0a75be0fc4a8bd15d72"
+        }
       ],
       "why": "W01 sets shared material/light; W11 is the visual reference for the actual Robo teal/brass identity, not the ivory generic robots in W05 Maze/W06. Scene props and falling-item silhouettes are mapped to catch_stars_module.dart and stars_game.dart; no score, collision, or reward rules are changed."
     },
     {
       "scene": "A05-w05-bug-hunter",
       "references": [
-        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
-        {"id": "w12-creator", "path": "../art-refresh-r34/concepts/w12-creator.jpg", "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f"}
+        {
+          "id": "w01-village",
+          "path": "../art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        },
+        {
+          "id": "w12-creator",
+          "path": "../art-refresh-r34/concepts/w12-creator.jpg",
+          "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f"
+        }
       ],
       "why": "W01 provides the shared craft/material anchor and W12 the workshop scale; the gear mechanism is not copied as a physics or answer prop. Bitsy identity is controlled by the runtime source (lavender cat, green eyes, grass bow tie and magnifier), not inferred from the older flat village-kit icon."
     },
     {
       "scene": "B01-w09-friends-invites",
       "references": [
-        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
-        {"id": "w09-visit", "path": "../art-refresh-r34/concepts/w09-visit.jpg", "sha256": "a32b1fe065bb020df46f8fe6b3445300abd55c7bad69991473a80f3601713638"},
-        {"id": "w12b-friends-gifts", "path": "../art-refresh-r34/concepts/w12b-friends-gifts.jpg", "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0"}
+        {
+          "id": "w01-village",
+          "path": "../art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        },
+        {
+          "id": "w09-visit",
+          "path": "../art-refresh-r34/concepts/w09-visit.jpg",
+          "sha256": "a32b1fe065bb020df46f8fe6b3445300abd55c7bad69991473a80f3601713638"
+        },
+        {
+          "id": "w12b-friends-gifts",
+          "path": "../art-refresh-r34/concepts/w12b-friends-gifts.jpg",
+          "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0"
+        }
       ],
       "why": "W01 sets the shared village materials, while W09 and W12b distinguish guest access from the one-parcel gift vignette. The new scene must add a readable fixture friend/recipient list and safety actions instead of pretending the gift stand is the list."
     },
     {
       "scene": "B02-w12-creator-editor",
       "references": [
-        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
-        {"id": "w12-creator", "path": "../art-refresh-r34/concepts/w12-creator.jpg", "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f"}
+        {
+          "id": "w01-village",
+          "path": "../art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        },
+        {
+          "id": "w12-creator",
+          "path": "../art-refresh-r34/concepts/w12-creator.jpg",
+          "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f"
+        }
       ],
       "why": "W01 anchors materials; W12 supplies the existing workshop continuity. The requested editor, test zone and version tray are explicit front-facing study UI, not generated mechanics or claims that a marble run has physics."
     },
     {
       "scene": "B03-w07-built-room",
       "references": [
-        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
-        {"id": "w03-project", "path": "../art-refresh-r34/concepts/w03-project.jpg", "sha256": "c24f72a647a9cab08249e22e385c57af2d3c0b49ba6d1249fa7db6b9936752c7"},
-        {"id": "w07-interior", "path": "../art-refresh-r34/concepts/w07-interior.jpg", "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad"}
+        {
+          "id": "w01-village",
+          "path": "../art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        },
+        {
+          "id": "w03-project",
+          "path": "../art-refresh-r34/concepts/w03-project.jpg",
+          "sha256": "c24f72a647a9cab08249e22e385c57af2d3c0b49ba6d1249fa7db6b9936752c7"
+        },
+        {
+          "id": "w07-interior",
+          "path": "../art-refresh-r34/concepts/w07-interior.jpg",
+          "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad"
+        }
       ],
       "why": "W01 fixes the world materials; W03 is the one-room project example; W07 supplies the useful workshop furniture scale. Both known door/ghost geometry defects are expressly avoided: this new concept uses a solid continuous floor, a real threshold, and no cyan ghost, and is not a W02 blueprint."
     },
     {
       "scene": "B04-w10-pet-rest",
       "references": [
-        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
-        {"id": "w10-pet", "path": "../art-refresh-r34/concepts/w10-pet.jpg", "sha256": "52b623e516cbb1afd64c13c557d39018a9faaef6639a248b236f4e6d95f752d8"},
-        {"id": "w10b-pet-shop", "path": "../art-refresh-r34/concepts/w10b-pet-shop.jpg", "sha256": "0106104a69095e63fe54124abaeb4276c8bc0e5c98330ed16db27122f6176a89"}
+        {
+          "id": "w01-village",
+          "path": "../art-refresh-r33/concepts/w01-village.jpg",
+          "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+        },
+        {
+          "id": "w10-pet",
+          "path": "../art-refresh-r34/concepts/w10-pet.jpg",
+          "sha256": "52b623e516cbb1afd64c13c557d39018a9faaef6639a248b236f4e6d95f752d8"
+        },
+        {
+          "id": "w10b-pet-shop",
+          "path": "../art-refresh-r34/concepts/w10b-pet-shop.jpg",
+          "sha256": "0106104a69095e63fe54124abaeb4276c8bc0e5c98330ed16db27122f6176a89"
+        }
       ],
       "why": "W10 alone defines Miu's orange-tabby garden identity and pergola setting; W10b is used only as a warning against drifting to the gray shop kitten. The rest pose remains a single static scene with baseline behavior, no AI, sadness or purchase pressure."
     }
@@ -234,5 +322,18 @@
     "full_42_state_visual_screenshot_audit": false,
     "browser_test_for_pqc018": "NOT_RUN",
     "notes": "The original active catalog paths and hashes above were verified against the exact r35 catalog at the pinned DESIGN commit before review."
+  },
+  "latest_screen_review": {
+    "pin": "68f2590b5883ca8aa746ffde0814d60a32dacb3c",
+    "review_path": "docs/design/coordination/reviews/PQD-003-r36.md",
+    "disposition": "SCREEN_CHANGES_REQUESTED; R36-A/B/C correction implemented by CODE, awaiting DESIGN re-review",
+    "findings": [
+      "R36-A computed font scale",
+      "R36-A 48px back target/title overlap",
+      "R36-B child-facing source IDs and state copy",
+      "R36-C scene-first composition and reviewer/product separation"
+    ],
+    "five_concept_pngs": "retained byte-for-byte; original SHA-256 values unchanged",
+    "batch_b": "pending four distinct concepts"
   }
 }

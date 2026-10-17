@@ -1,11 +1,11 @@
-# a02-shared-settings · Shared Settings
+# A02 · Shared Settings
 
-**Batch A · concept + screen study only.**
+**Batch A · concept retained; screen correction implemented, awaiting DESIGN re-review.**
 
-- [Open localized layout](layout.html) · [Full-size art](concept.png) · [Exact generation prompt](prompt.txt)
-- States: `system_active, system_fallback, manual_vi, manual_en, save_error, retry`. The page offers VI/EN and 1×/1.3×/2× text fixture controls; its primary CTA is disabled.
-- Reference choice: see [`manifest.json`](manifest.json) for exact active paths and SHA-256; scene-specific rationale is included there and in [`../reviewed-inputs.json`](../reviewed-inputs.json).
-- Sources: app/lib/app/settings_sheet.dart, app/lib/core/localization/locale_preference.dart, app/lib/core/settings_service.dart, app/lib/l10n/app_vi.arb, app/lib/l10n/app_en.arb, docs/design/shared-l10n/README.md.
-- Runtime/production readiness: **false**. No live data, gameplay, persistence, account, network, grant, purchase or inference is implemented.
+- [Open localized layout](layout.html) · [Original full-size concept](concept.png) · [Exact prompt](prompt.txt)
+- States: `system_active`, `system_fallback`, `manual_vi`, `manual_en`, `save_error`, `retry`.
+- R36 correction: the blank-panel alcove is composed as an in-world timber settings board with readable preference rows; controls/source notes remain outside the product viewport. Manual English has a Vietnamese title/copy when VI is selected.
+- Original concept PNG unchanged; hashes and references are in [`manifest.json`](manifest.json), [`../reviewed-inputs.json`](../reviewed-inputs.json), and [`../evidence/r36a-originals/originals.json`](../evidence/r36a-originals/originals.json).
+- Static/browser evidence: [`../evidence/r36a-static-checks.json`](../evidence/r36a-static-checks.json), [`../evidence/r36a-browser-checks.json`](../evidence/r36a-browser-checks.json).
 
-The PNG is one opaque concept scene, not a layered/sprite pack. It must not be treated as calibrated geometry or proof of a shipped feature.
+Preference values are static fixtures. No device permission, system language, or stored preference is read or changed.

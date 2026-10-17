@@ -1,0 +1,238 @@
+{
+  "task": "PQC-018",
+  "review_date": "2026-10-18",
+  "design_pin": "cbb0f8bed808a888ae607bb31ba6343c182bf0b8",
+  "catalog_path_at_pin": "docs/design/art-sync-r35/catalog.json",
+  "catalog_sha256": "02ee503fa5c4ba34676719610f4831a67313e6c42ddbb653df0dca9d9eaa7ad6",
+  "catalog_source_code_commit": "e3ec5f1b6887eea5fa168efd265531425a531719",
+  "runtime_identity_pin": "a331ac110f19de63e9be6884d08db8c436054f50",
+  "fullsize_review": {
+    "status": "COMPLETE",
+    "method": "Opened and visually inspected each active catalog image individually at its native full-size resolution using the image viewer; not a thumbnail/contact-sheet-only review.",
+    "assets_reviewed": 16
+  },
+  "assets": [
+    {
+      "id": "w01-village",
+      "active_path": "../art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "viewed_fullsize": true,
+      "observation": "Primary style anchor: a continuous coastal village with an ivory-and-walnut tower, teal roof, lush paths and water; warm upper-left light and soft grounded shadows establish the intended world camera/material family."
+    },
+    {
+      "id": "w02-home-expansion",
+      "active_path": "published-r33/w02-home-expansion.jpg",
+      "sha256": "a070f05804141ff6031e3a80d805c6ef6bbd0c0507701938f74cb7c7973e8243",
+      "viewed_fullsize": true,
+      "observation": "Two-storey cutaway house with a cyan wireframe expansion volume over the yard; support/floor/door continuity remains illustrative, so I will not derive room geometry, footprint, collision or cost from it."
+    },
+    {
+      "id": "w08-archipelago",
+      "active_path": "published-r33/w08-archipelago.jpg",
+      "sha256": "83652b3f6479c1e4595a8dab7ad2987a720d409d8ec1d0c3218bfbe8760de52d",
+      "viewed_fullsize": true,
+      "observation": "Multiple connected green islands, stone paths, teal-roof landmarks and docks form a coherent sea scene; its detail/realism is higher than the interior studies and its routes are illustrative, not runtime geography."
+    },
+    {
+      "id": "w07-interior",
+      "active_path": "../art-refresh-r34/concepts/w07-interior.jpg",
+      "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad",
+      "viewed_fullsize": true,
+      "observation": "A cutaway creative room centers a worktable and selected chair, but the selection marker is baked into the JPEG and the doorway appears to open toward a lower roof; do not reproduce either as production geometry."
+    },
+    {
+      "id": "w03-project",
+      "active_path": "../art-refresh-r34/concepts/w03-project.jpg",
+      "sha256": "c24f72a647a9cab08249e22e385c57af2d3c0b49ba6d1249fa7db6b9936752c7",
+      "viewed_fullsize": true,
+      "observation": "A cottage and cyan proposed-room volume sit beside a resource table and medal; the projected room/floor connection is unclear and cannot be treated as a build blueprint or recipe."
+    },
+    {
+      "id": "w09-visit",
+      "active_path": "../art-refresh-r34/concepts/w09-visit.jpg",
+      "sha256": "a32b1fe065bb020df46f8fe6b3445300abd55c7bad69991473a80f3601713638",
+      "viewed_fullsize": true,
+      "observation": "One visitor stands at an open garden gate while the house door stays closed and no host appears; this supports a guest-only snapshot composition, not online presence or shared-session proof."
+    },
+    {
+      "id": "w10-pet",
+      "active_path": "../art-refresh-r34/concepts/w10-pet.jpg",
+      "sha256": "52b623e516cbb1afd64c13c557d39018a9faaef6639a248b236f4e6d95f752d8",
+      "viewed_fullsize": true,
+      "observation": "Miu is an orange tabby playing with a coral ball on the garden path near a pergola and climbing ramp; this active pose is baked in, so the requested resting art must be a distinct scene with the same orange-tabby identity."
+    },
+    {
+      "id": "w10b-pet-shop",
+      "active_path": "../art-refresh-r34/concepts/w10b-pet-shop.jpg",
+      "sha256": "0106104a69095e63fe54124abaeb4276c8bc0e5c98330ed16db27122f6176a89",
+      "viewed_fullsize": true,
+      "observation": "A gray kitten sits in an open timber nook beside a woven bed and play arch; its coat/face differs from Miu, so it is a separate companion and not a substitute for the orange W10 pet."
+    },
+    {
+      "id": "w12-creator",
+      "active_path": "../art-refresh-r34/concepts/w12-creator.jpg",
+      "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f",
+      "viewed_fullsize": true,
+      "observation": "The cutaway workshop contains a gear-and-marble-run workbench and a separate tray, but no readable editor, timeline or version controls; mechanical props are concept art, not tested physics."
+    },
+    {
+      "id": "w12b-friends-gifts",
+      "active_path": "../art-refresh-r34/concepts/w12b-friends-gifts.jpg",
+      "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0",
+      "viewed_fullsize": true,
+      "observation": "A single parcel rests on a covered packing stand with a blank tag; this is a gift-corner vignette only and does not supply a friend list, recipient picker, block/report UI or evidence of presence."
+    },
+    {
+      "id": "w05-maze",
+      "active_path": "../art-refresh-r34/concepts/w05-maze.jpg",
+      "sha256": "93762339e4be8c38ddc6516749fdf52d77179bcd0c7104827a412f6831c3bcc0",
+      "viewed_fullsize": true,
+      "observation": "The raised square maze shows a generic ivory robot, teal barriers, a coral flag and a blank panel baked at the bottom; neither board geometry nor robot identity is authoritative for the game engine or Robo."
+    },
+    {
+      "id": "w05-dragon",
+      "active_path": "../art-refresh-r34/concepts/w05-dragon.jpg",
+      "sha256": "6ea6221bb6e662671fa28664048e858a50c4a415c9cad7e84563eefdb63530bf",
+      "viewed_fullsize": true,
+      "observation": "A coral baby dragon faces a lava gap in an intentional side-view with chunky stone platforms; actor/platforms are fused into one illustration and must not become jump physics or collision data."
+    },
+    {
+      "id": "w06-result",
+      "active_path": "../art-refresh-r34/concepts/w06-result.jpg",
+      "sha256": "36ef11d66cc5270ab52b8e8421c7796374a7d382b0132301775248147a220cd2",
+      "viewed_fullsize": true,
+      "observation": "An ivory generic robot sits beside a deliberately empty plinth in a stone courtyard; the plinth supports neutral outcome states and does not imply a trophy, reward receipt or a shared robot identity with W05 Maze."
+    },
+    {
+      "id": "w13-tutor",
+      "active_path": "../art-refresh-r33/code/w13-tutor/concept.png",
+      "sha256": "611acdf2acd18110c30984f797da6a091bcac57adc99a119c28a06adcdd75d84",
+      "viewed_fullsize": true,
+      "observation": "Nova (teal outfit, brown ponytail and goggles) stands in a timber/stone learning room with a front-facing board; preserve Nova identity and keep code/output as readable overlays rather than baked or perspective-skewed text."
+    },
+    {
+      "id": "w14-achievements",
+      "active_path": "corrections/w14-achievements.jpg",
+      "sha256": "5663f576cd4cf273e516ea1eee500face165879ed9710b6455959b90c34db66d",
+      "viewed_fullsize": true,
+      "observation": "Use the r35 correction: daylight cutaway 3/4 room with an empty display cabinet and empty plinths; do not use the frontal candlelit original or bake earned trophies into an empty background."
+    },
+    {
+      "id": "w11-arena",
+      "active_path": "../art-refresh-r33/code/w11-arena/concept.png",
+      "sha256": "2b9932f9d6f69c9bb8bd9f3591099fc77d06e1338f41f0a75be0fc4a8bd15d72",
+      "viewed_fullsize": true,
+      "observation": "Practice arena uses the source Robo teal/brass identity, with a separate actor pad and grid-like practice floor; it is a concept scene, not live matchmaking, an Arena rules registry or a leaderboard."
+    }
+  ],
+  "layouts_and_states_reviewed": {
+    "r34_sources": [
+      "docs/design/art-refresh-r34/README.md",
+      "docs/design/art-refresh-r34/BROWSER_CHECKS.md",
+      "docs/design/art-refresh-r34/manifest.json",
+      "docs/design/art-refresh-r34/scenes.js",
+      "docs/design/art-refresh-r34/screen-copy.js",
+      "docs/design/art-refresh-r34/evidence/"
+    ],
+    "r34_state_definitions": "Read the ten scene definitions and declared states; visually reviewed the phone study captures for W03, W05 Maze, W05 Dragon, W06, W07, W09, W10, W10b, W12 and W12b, plus W03 pending, W09 permission-revoked, W10 unsupported and W12 save-error examples.",
+    "r35_layout_sources": [
+      "docs/design/art-sync-r35/layouts/w11-arena.html",
+      "docs/design/art-sync-r35/layouts/w13-tutor.html",
+      "docs/design/art-sync-r35/layouts/w14-achievements.html",
+      "docs/design/art-sync-r35/evidence/original-layouts.json",
+      "docs/design/art-sync-r35/evidence/synced-layouts.json"
+    ],
+    "r35_visual_captures": "Visually reviewed all six synchronized phone captures (W11/W13/W14 at 390x844 VI and 360x640 EN, including 2x text cases), the W14 true-empty capture, and the three original CODE captures for comparison.",
+    "layout_observation": "The r35 report records zero horizontal-overflow cases after sync, but the inspected 2x captures still show pathological narrow title wrapping in some headers; do not copy that header treatment. W14 true-empty is separate from earned/locked/secret taxonomy. Controls remain disabled mocks.",
+    "review_reports": [
+      "docs/design/coordination/reviews/PQD-003-r35.md",
+      "docs/design/art-sync-r35/STYLE_SYNC.md"
+    ],
+    "review_limits": "Representative screenshots were reviewed; this is not a claim that all 42 r34 states or all 64 r35 browser configurations were individually opened as screenshots, nor that this task ran a browser/device test."
+  },
+  "scene_reference_choices": [
+    {
+      "scene": "A01-w04-journal",
+      "references": [
+        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
+        {"id": "w07-interior", "path": "../art-refresh-r34/concepts/w07-interior.jpg", "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad"},
+        {"id": "w06-result", "path": "../art-refresh-r34/concepts/w06-result.jpg", "sha256": "36ef11d66cc5270ab52b8e8421c7796374a7d382b0132301775248147a220cd2"}
+      ],
+      "why": "W01 fixes the shared stone/wood/light language; W07 lends worktable-scale prop staging but its faulty threshold is excluded; W06 informs a calm, neutral pending-result vignette without implying a grant. W04 journal contents remain separate UI overlays and are sourced from the world-expansion design, not invented economy."
+    },
+    {
+      "scene": "A02-shared-settings",
+      "references": [
+        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
+        {"id": "w14-achievements", "path": "corrections/w14-achievements.jpg", "sha256": "5663f576cd4cf273e516ea1eee500face165879ed9710b6455959b90c34db66d"}
+      ],
+      "why": "W01 supplies primary palette/materials; only the corrected W14 cutaway/daylight framing is borrowed for a compact timber-and-stone alcove. No achievement cabinet, rewards, or trophy content is reused; controls and language states remain front-facing UI."
+    },
+    {
+      "scene": "A03-shared-welcome",
+      "references": [
+        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
+        {"id": "w08-archipelago", "path": "published-r33/w08-archipelago.jpg", "sha256": "83652b3f6479c1e4595a8dab7ad2987a720d409d8ec1d0c3218bfbe8760de52d"}
+      ],
+      "why": "W01 anchors the public village arrival and established landmarks; corrected W08 helps keep the tower/island silhouette in the same family. The welcome is a design fixture, not proof of an account/cloud or forced Tutor/purchase gate."
+    },
+    {
+      "scene": "A04-w05-catch-stars",
+      "references": [
+        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
+        {"id": "w11-arena", "path": "../art-refresh-r33/code/w11-arena/concept.png", "sha256": "2b9932f9d6f69c9bb8bd9f3591099fc77d06e1338f41f0a75be0fc4a8bd15d72"}
+      ],
+      "why": "W01 sets shared material/light; W11 is the visual reference for the actual Robo teal/brass identity, not the ivory generic robots in W05 Maze/W06. Scene props and falling-item silhouettes are mapped to catch_stars_module.dart and stars_game.dart; no score, collision, or reward rules are changed."
+    },
+    {
+      "scene": "A05-w05-bug-hunter",
+      "references": [
+        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
+        {"id": "w12-creator", "path": "../art-refresh-r34/concepts/w12-creator.jpg", "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f"}
+      ],
+      "why": "W01 provides the shared craft/material anchor and W12 the workshop scale; the gear mechanism is not copied as a physics or answer prop. Bitsy identity is controlled by the runtime source (lavender cat, green eyes, grass bow tie and magnifier), not inferred from the older flat village-kit icon."
+    },
+    {
+      "scene": "B01-w09-friends-invites",
+      "references": [
+        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
+        {"id": "w09-visit", "path": "../art-refresh-r34/concepts/w09-visit.jpg", "sha256": "a32b1fe065bb020df46f8fe6b3445300abd55c7bad69991473a80f3601713638"},
+        {"id": "w12b-friends-gifts", "path": "../art-refresh-r34/concepts/w12b-friends-gifts.jpg", "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0"}
+      ],
+      "why": "W01 sets the shared village materials, while W09 and W12b distinguish guest access from the one-parcel gift vignette. The new scene must add a readable fixture friend/recipient list and safety actions instead of pretending the gift stand is the list."
+    },
+    {
+      "scene": "B02-w12-creator-editor",
+      "references": [
+        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
+        {"id": "w12-creator", "path": "../art-refresh-r34/concepts/w12-creator.jpg", "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f"}
+      ],
+      "why": "W01 anchors materials; W12 supplies the existing workshop continuity. The requested editor, test zone and version tray are explicit front-facing study UI, not generated mechanics or claims that a marble run has physics."
+    },
+    {
+      "scene": "B03-w07-built-room",
+      "references": [
+        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
+        {"id": "w03-project", "path": "../art-refresh-r34/concepts/w03-project.jpg", "sha256": "c24f72a647a9cab08249e22e385c57af2d3c0b49ba6d1249fa7db6b9936752c7"},
+        {"id": "w07-interior", "path": "../art-refresh-r34/concepts/w07-interior.jpg", "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad"}
+      ],
+      "why": "W01 fixes the world materials; W03 is the one-room project example; W07 supplies the useful workshop furniture scale. Both known door/ghost geometry defects are expressly avoided: this new concept uses a solid continuous floor, a real threshold, and no cyan ghost, and is not a W02 blueprint."
+    },
+    {
+      "scene": "B04-w10-pet-rest",
+      "references": [
+        {"id": "w01-village", "path": "../art-refresh-r33/concepts/w01-village.jpg", "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"},
+        {"id": "w10-pet", "path": "../art-refresh-r34/concepts/w10-pet.jpg", "sha256": "52b623e516cbb1afd64c13c557d39018a9faaef6639a248b236f4e6d95f752d8"},
+        {"id": "w10b-pet-shop", "path": "../art-refresh-r34/concepts/w10b-pet-shop.jpg", "sha256": "0106104a69095e63fe54124abaeb4276c8bc0e5c98330ed16db27122f6176a89"}
+      ],
+      "why": "W10 alone defines Miu's orange-tabby garden identity and pergola setting; W10b is used only as a warning against drifting to the gray shop kitten. The rest pose remains a single static scene with baseline behavior, no AI, sadness or purchase pressure."
+    }
+  ],
+  "boundaries": {
+    "catalog_hashes_verified_before_visual_review": true,
+    "runtime_or_production_approval": false,
+    "full_42_state_visual_screenshot_audit": false,
+    "browser_test_for_pqc018": "NOT_RUN",
+    "notes": "The original active catalog paths and hashes above were verified against the exact r35 catalog at the pinned DESIGN commit before review."
+  }
+}

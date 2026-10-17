@@ -1,11 +1,12 @@
-# a05-w05-bug-hunter · Bitsy's Workshop
+# A05 · W05 Bug Hunter / Bitsy
 
-**Batch A · concept + screen study only.**
+**Batch A · concept retained; screen correction implemented, awaiting DESIGN re-review.**
 
-- [Open localized layout](layout.html) · [Full-size art](concept.png) · [Exact generation prompt](prompt.txt)
-- States: `locked, ready, wrong_error`. The page offers VI/EN and 1×/1.3×/2× text fixture controls; its primary CTA is disabled.
-- Reference choice: see [`manifest.json`](manifest.json) for exact active paths and SHA-256; scene-specific rationale is included there and in [`../reviewed-inputs.json`](../reviewed-inputs.json).
-- Sources: app/lib/modules/bug_hunter/bug_hunter_module.dart, app/lib/modules/bug_hunter/bug_models.dart, app/assets/data/bug_hunter_puzzles.json, app/lib/shared/characters/characters.dart, app/lib/shared/characters/cast.dart.
-- Runtime/production readiness: **false**. No live data, gameplay, persistence, account, network, grant, purchase or inference is implemented.
+- [Open localized layout](layout.html) · [Original full-size concept](concept.png) · [Exact prompt](prompt.txt)
+- States: `locked`, `ready`, `wrong_error`.
+- R36 correction: Bitsy and the workbench remain visible alongside a front-facing code board; reviewer notes hold source IDs/gate mapping outside the product viewport. Child-facing copy describes the lesson gate without plumbing IDs.
+- The Python literals are unchanged character-for-character. `expected_output` remains explicitly labeled as data, not execution. No answer choice or execution result is invented.
+- Original concept PNG unchanged; source hashes/references are in [`manifest.json`](manifest.json), [`../reviewed-inputs.json`](../reviewed-inputs.json), and [`../evidence/r36a-originals/originals.json`](../evidence/r36a-originals/originals.json).
+- Static/browser evidence: [`../evidence/r36a-static-checks.json`](../evidence/r36a-static-checks.json), [`../evidence/r36a-browser-checks.json`](../evidence/r36a-browser-checks.json).
 
-The PNG is one opaque concept scene, not a layered/sprite pack. It must not be treated as calibrated geometry or proof of a shipped feature.
+No puzzle execution, answer validation, unlock, grader, reward or production/runtime behavior is implemented.
