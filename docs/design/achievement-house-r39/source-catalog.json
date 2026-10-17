@@ -1,0 +1,127 @@
+{
+  "source_commit": "0990fbcbf6045bd64244239e36ccbca8c8dc394b",
+  "source_path": "app/lib/modules/achievements/achievement_catalog.dart",
+  "scope": "Pinned literal definitions for DESIGN review; not evaluated rules or player progress",
+  "entries": [
+    {
+      "id": "first_steps",
+      "title": "Bước Chân Đầu Tiên",
+      "description": "Vượt qua màn chơi đầu tiên trên đảo.",
+      "howTo": "Thắng một màn bất kỳ trong mini-game.",
+      "secret": false,
+      "goal": null
+    },
+    {
+      "id": "first_line",
+      "title": "Dòng Code Đầu Tiên",
+      "description": "Viết dòng Python đầu tiên cùng Py.",
+      "howTo": "Hoàn thành Bài 1 của Main Quest.",
+      "secret": false,
+      "goal": null
+    },
+    {
+      "id": "maze_explorer",
+      "title": "Nhà Thám Hiểm Mê Cung",
+      "description": "Đưa Robo qua cả 10 mê cung.",
+      "howTo": "Hoàn thành 10 màn Robot Maze.",
+      "secret": false,
+      "goal": 10
+    },
+    {
+      "id": "perfectionist",
+      "title": "Hoàn Hảo",
+      "description": "Đạt 3 sao ở mọi màn của một mini-game.",
+      "howTo": "Đạt 3 sao ở cả 10 màn Robot Maze hoặc cả 12 câu đố Bug Hunter.",
+      "secret": false,
+      "goal": 10
+    },
+    {
+      "id": "loopy",
+      "title": "Vòng Lặp Vui Vẻ",
+      "description": "Dùng vòng lặp để giải 5 thử thách.",
+      "howTo": "Giải 5 thử thách bằng khối Lặp lại hoặc vòng lặp for.",
+      "secret": false,
+      "goal": 5
+    },
+    {
+      "id": "condition_master",
+      "title": "Bậc Thầy Điều Kiện",
+      "description": "Giải 10 bài tập về điều kiện if/else.",
+      "howTo": "Giải 10 bài tập dùng if / elif / else.",
+      "secret": false,
+      "goal": 10
+    },
+    {
+      "id": "debugger",
+      "title": "Thợ Săn Lỗi",
+      "description": "Cùng Bitsy sửa 20 lỗi trong code.",
+      "howTo": "Sửa 20 lỗi trong Bug Hunter.",
+      "secret": false,
+      "goal": 20
+    },
+    {
+      "id": "code_apprentice",
+      "title": "Code Apprentice",
+      "description": "Hoàn thành Chặng 1 — trở thành Học Việc Lập Trình!",
+      "howTo": "Hoàn thành cả 12 bài của Chặng 1 Main Quest.",
+      "secret": false,
+      "goal": 12
+    },
+    {
+      "id": "sky_dragon",
+      "title": "Rồng Bay Cao",
+      "description": "Đạt 500 điểm trong Rồng Nhảy.",
+      "howTo": "Đạt 500 điểm trong một lượt Rồng Nhảy.",
+      "secret": false,
+      "goal": null
+    },
+    {
+      "id": "star_catcher",
+      "title": "Người Hái Sao",
+      "description": "Hái 40 ngôi sao trong một lượt chơi.",
+      "howTo": "Hái 40 ngôi sao trong một lượt Hái Sao.",
+      "secret": false,
+      "goal": null
+    },
+    {
+      "id": "maze_architect",
+      "title": "Kiến Trúc Sư Mê Cung",
+      "description": "Tự thiết kế một mê cung và chứng minh nó giải được.",
+      "howTo": "Tạo một mê cung trong Xưởng Mê Cung rồi tự giải thành công.",
+      "secret": false,
+      "goal": null
+    },
+    {
+      "id": "island_explorer",
+      "title": "Nhà Thám Hiểm Đảo",
+      "description": "Ghé thăm mọi địa điểm trên Đảo Khởi Đầu.",
+      "howTo": "Mở cả 6 địa điểm trên bản đồ.",
+      "secret": false,
+      "goal": 6
+    },
+    {
+      "id": "night_owl",
+      "title": "Cú Đêm",
+      "description": "Hoàn thành một bài học sau 8 giờ tối. Nhớ đi ngủ sớm nhé!",
+      "howTo": "Bí mật: có gì đó xảy ra khi trời tối...",
+      "secret": true,
+      "goal": null
+    },
+    {
+      "id": "different_path",
+      "title": "Lối Đi Khác",
+      "description": "Giải lại một mê cung bằng một con đường hoàn toàn mới.",
+      "howTo": "Bí mật: luôn có nhiều hơn một con đường...",
+      "secret": true,
+      "goal": null
+    },
+    {
+      "id": "loop_tamer",
+      "title": "Thuần Hoá Vòng Lặp",
+      "description": "Gặp một vòng lặp vô tận rồi tự sửa cho nó dừng lại.",
+      "howTo": "Bí mật: có những vòng lặp không bao giờ chịu dừng...",
+      "secret": true,
+      "goal": null
+    }
+  ]
+}
