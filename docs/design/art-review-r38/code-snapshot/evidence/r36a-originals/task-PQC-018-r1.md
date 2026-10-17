@@ -1,0 +1,139 @@
+# PQC-018 — Hoàn thiện phần concept còn thiếu từ bộ ảnh chung r35
+
+- revision: 1 · 2026-10-18
+- status: **IN_PROGRESS — Batch A handoff complete; Batch B pending** — art/design-only; giao theo hai đợt có giới hạn
+- owner: CODE; DESIGN review/canonical catalog
+- authorization: user yêu cầu review017, đồng bộ ảnh và giao các ảnh còn lại cho CODE
+- design_source: **commit DESIGN chứa PQD-003 r35 và task này**; fetch/pin SHA thật trước làm
+- previous_design_pin: `dd03a93d1432f0dcb28bb2e0ae7d14f649ea8a66`
+- received_art_pin: `e3ec5f1b6887eea5fa168efd265531425a531719`
+- runtime_identity_pin: `a331ac110f19de63e9be6884d08db8c436054f50` (runtime trong e3 không đổi)
+- runtime/app_tests/dependencies/CI/SDK/economy: **no**
+- design_art/layout_checks/coordination: **yes**, chỉ allowlist §5
+- runtime_ready: **false**, production approval: **not granted**
+
+## 1. BẮT BUỘC xem hết bộ ảnh đã đồng bộ, không chỉ đọc tài liệu
+
+Trước khi sinh ảnh đầu tiên:
+
+1. Fetch DESIGN, ghi SHA thật. Đọc `docs/design/art-sync-r35/README.md`,
+   `catalog.json`, `STYLE_SYNC.md`, review `docs/design/coordination/reviews/PQD-003-r35.md`.
+2. Mở **cả16 ảnh active** liệt kê trong `catalog.json` ở kích thước đủ lớn. Gallery
+   `docs/design/art-sync-r35/index.html` có từng ảnh và nút mở đủ kích thước. Không
+   chỉ xem thumbnail/contact sheet, không nói “đã xem tất cả” khi chỉ kiểm hash.
+3. Xem bố cục/trạng thái r34 và cả3layout r35 đã đồng bộ. Đặc biệt W14 **dùng correction
+   r35**, không dùng concept frontal/cúp bake của017 làm neo nội thất.
+4. W01 là neo chính camera/material/light. W13 giúp hiểu Nova/đồ học; W11 giúp hiểu
+   Robo teal/brass. W02/W03/W07/W08 có lỗi geometry/detail đã ghi, không sao chép lỗi.
+   Không “trung bình”16style để tự đổi mỹ thuật. Nhân vật khác nhau không bị recolor
+   thành cùng một robot. Ghép cảnh nhà phải phân biệt mẫu nghiên cứu với cùng một nhà.
+5. Giữ bốn tài liệu gốc và ART_DIRECTION_2_5D/WORLD_EXPANSION làm nguồn luật. Đọc module/
+   character source thích hợp để tránh biến mini-game thật thành một trò khác.
+
+Ghi `reviewed-inputs.json` **cùng commit công việc thực chất**, không ACK-only:
+DESIGN SHA, đủ16id/path/SHA256, `viewed_fullsize` đúng thực tế, một nhận xét ngắn mỗi
+ảnh, nguồn layout đã xem; chọn ref cụ thể và giải thích vì sao cho từng ảnh mới.
+Nếu không có image viewer/tool, báo thiếu khả năng thật; không đánh dấu đã xem.
+
+## 2. Phạm vi:9 ảnh độc lập, chia A5 rồi B4
+
+Mỗi ảnh một file riêng, không ghép grid/contact sheet để thay deliverable. Mỗi đợt
+commit `[skip ci]` và bàn giao riêng. Không cần đợi user chọn roadmap; nếu công cụ
+chạm giới hạn, báo phần đã có/còn thiếu và tiếp tục khi được gọi, không retry vượt limit.
+Không hứa chạy nền sau khi phiên kết thúc.
+
+### Đợt A —5 cảnh ưu tiên, bàn giao trước
+
+| ID/path dưới code/ | Cảnh cần làm | Source/không được giả | State overlay tối thiểu |
+|---|---|---|---|
+| A01 `w04-journal/` | Bàn/sổ hành trình có khối, trang đọc front-facing, dự án đang theo khác daily và kết quả chờ nhận | WORLD W04; không tạo grant/receipt/giá mới | có dự án, chưa theo dự án, nhiều kết quả chờ, lỗi tải |
+| A02 `shared-settings/` | Góc bảng điều khiển gỗ/đá cùng nhà; vùng chữ sạch, không form web với một ảnh hero | `app/lib/app/settings_sheet.dart`, locale014–016 và Settings ARB hiện hữu; system+override VI/EN đã có | System+active/fallback, manual VI/EN, save failure/retry; không claim quyền thiết bị đã bật |
+| A03 `shared-welcome/` | Bến/cổng làng mở, hướng vào thế giới cùng W01; dùng lại silhouette tháp, không thêm spires | Ngôn ngữ mặc định hệ thống; không ép học Tutor/mua hàng trước khi vào hub | first visit, returning/resume fixture, loading/retry; không giả cloud account |
+| A04 `w05-catch-stars/` | Đài Thiên Văn/Hái Sao: vùng rơi sao, bình hứng/thiên thạch có khối, camera phục vụ kéo bắt | `catch_stars_module.dart`, `stars_game.dart`; source host Robo; không đổi tốc độ/collision/score, không biến thành quiz | ready, pause, result fixture; panel không che đường rơi; night lighting có lý do nhưng cùng vật liệu |
+| A05 `w05-bug-hunter/` | Xưởng Bitsy: bàn debug/code có khối, nơi tìm lỗi và thử cách sửa, không chỉ gallery côn trùng | `bug_hunter_module.dart`, `bug_models.dart`, dataset & Bitsy painter; giữ actual unlock gate, không bịa đáp án/code | source-locked, ready, wrong fix/error study; code/output tách UI, literals đúng source cả VI/EN |
+
+### Đợt B —4 cảnh sau A, cùng standard/canonical refs
+
+| ID/path | Cảnh cần làm | Ranh giới | State overlay tối thiểu |
+|---|---|---|---|
+| B01 `w09-friends-invites/` | Khu cộng đồng/bàn lời mời có không gian thật; danh sách bạn/người nhận rõ, không bưu đình thay toàn UI | Danh tính hư cấu có nhãn fixture; không giả online, backend, moderation đã hoạt động | empty friend list, invite pending/expired, host away, blocked/report confirmation; private access không lộ |
+| B02 `w12-creator-editor/` | Xưởng với editor front-facing, vùng thử và version tray rõ; nối W12 đã có, không lại một ảnh bàn làm việc không có editor | Code/preview/phiên bản read-only hoặc mock; không suy persisted/published khi chỉ vẽ | draft+unsaved, test error, saved-private, moderation pending; không grader/economy mới |
+| B03 `w07-built-room/` | Phòng hoàn tất có thể dùng: sàn solid, cửa/nối phòng thật, workbench; lấy W03 ground-floor project làm ví dụ trước/sau | Không sao chép floating previewW02; W02 nghiên cứu nhà2tầng không phải cùng blueprint W03. Giữ wood/ivory/teal; không bake cost | completed/enter, use workbench, arrangement blocked; ảnh hoàn tất **không còn ghost cyan** |
+| B04 `w10-pet-rest/` | **Cùng Miu mèo cam W10** nằm nghỉ ở góc pergola hiện có; đúng màu lông/tỷ lệ, không đổi sang mèo xám shop | Một pose/cảnh nghỉ mới; không montage poses, không claim animation hoặc AI | rest, device AI unsupported, model removed nhưng baseline còn; không pet buồn đòi mua |
+
+Không mở thêm9màn Flutter. Các bảng trên là design brief, không quyền thay rules.
+Các geometry/actor corrections còn lại của16ảnh hiện có ghi backlog trongSTYLE_SYNC,
+DESIGN quản lý riêng; không tự ghi đè master để “sửa cho đồng bộ” ngoài scope9ảnh này.
+
+## 3. Cách giao để không lặp lỗi017
+
+Mỗi thư mục: `concept.png/jpg`, `layout.html` (+shared CSS/JS nếu cần), README,
+manifest và prompt gốc. Mỗi ảnh cần source reference paths/hashes + DESIGN SHA thật;
+source code chỉ map identity/rules. Nếu correction: giữ original bytes/hash **trước**
+khi ghi bản mới; không lặp khoảng trống provenanceW14 cũ.
+
+Phone390×844/360×640, VI/EN,1×/2×. Có thể tái dùng grammar của r35layouts hoặc r34,
+nhưng không copy tên/title/state sai màn. Chữ2 phải wrap, flexchild min-width0;
+header badge không white-space:nowrap gây scroll ngang. Một vertical scroll owner.
+Nguồn code/output phải front-facing; không bake text/giá/quyền vào generated scene.
+Empty state thật khác taxonomy mẫu; trophies/owned items không bake vào nềnempty.
+Không để debug lesson IDs nổi trong UI trẻ. Controls là disabledmock hoặc chuyển
+fixture có nhãn, không giả app; chọn rõ một cơ chế và ghi thật.
+
+Browser nếu có: kiểm từng state ×2viewport ×2locale ×2scale, overflow ngang, cuộn tới
+footer, chữ thực tăng, controls >=48px; lưu captures và actual report. Có thể dùng
+`tools/design/review_art_r35.cjs` làm tham khảo logic, không chạy rồi báo nó đã kiểm
+các file018 mới khi chưa chỉnh target. Tooling install chỉ scratch, không appdeps.
+Nếu không có browser: static checks + ghi BROWSER_UNVERIFIED, không tự ghi PASS.
+Không cần Flutter/CI/APK cho art. Không benchmark runtime hoặc network trong task.
+
+## 4. Acceptance/gate
+
+- Đủ ảnh/bố cục/state/source của mỗi đợt; xem fullsize, không vài SVG phẳng thay cảnh.
+- Có `reviewed-inputs.json` đủ16ảnh thật, đã xem correctionW14 và biết W01 là neo.
+- Camera/material/door/actor source nhất quán; không ép Dragon side-view thànhiso.
+- Không bakedtext/giá/claim; không bịa online/AI/refund/earned state.
+- Hash trước/sau correction, manifests/runtime_ready:false; biết concept≠production.
+- Source/HTMLchecks báo thực chạy; không claim browserpass nếu không có engine.
+- Dừng báo blocker cụ thể nếu thiếu nguồn/tool; không sửa runtime để “khớp tranh”.
+
+## 5. Allowlist chính xác
+
+Chỉ ghi:
+- `docs/design/art-completion-r36/code/**` (9nhóm trên, shared design CSS/JS,
+  manifests/prompts/readme/reviewed-inputs/evidence vừa đủ; không caches/modelweights)
+- `docs/implementation/coordination/tasks/PQC-018.md` (status/handoff)
+
+Được đọc tất cả refs cần thiết từ SHA DESIGN pin. Không merge/cherry-pick cả nhánh
+DESIGN; không ghi r33/code package gốc, r34, r35canonical, ART_DIRECTION, app/**,
+pubspec/lock/deps/SDK, CI/CircleCI/APK, giá/recipe/engine/backend/LLM.
+Giữ nhánh phiên CODE đang được phép, bảo vệ stash/thay đổi có sẵn, không tự popstash.
+Không ACK-only commit. Push nhánh CODE của phiên; trả DESIGN exactSHA + ảnh + checks.
+
+## 6. Thông tin mới thay bản chưa chuyển
+
+PQC-017 đã review/nhập chung qua r35, không yêu cầu vẽ lại cả ba. W14 correction và
+layout fixes doDESIGN giao; dùng bản canonical r35. Không port vào runtime.
+
+**PQC-011 vẫn CHANGES_REQUESTED theo reviewr34**; user chưa chuyển bản tinr34 nên
+handoff017 ghiSUBMITTED_UNVERIFIED là lịch sử, không phủ quyết review mới. Khi sửa011,
+dùng allowlist011 và commit runtime riêng;018 không mở app changes. CI117462432865
+exacta331 đã fail analyze8issues, suites skipped; không tự accept vì có artwork.
+
+## 7. CODE handoff — Batch A (2026-10-18)
+
+**Progress:** Batch A delivered as five separate concept scenes; Batch B remains pending. Overall PQC-018 is not complete until Batch B is separately delivered.
+
+- `docs/design/art-completion-r36/code/a01-w04-journal/`
+- `docs/design/art-completion-r36/code/a02-shared-settings/`
+- `docs/design/art-completion-r36/code/a03-shared-welcome/`
+- `docs/design/art-completion-r36/code/a04-w05-catch-stars/`
+- `docs/design/art-completion-r36/code/a05-w05-bug-hunter/`
+
+Each scene includes a separate 928×1152 PNG concept, prompt provenance, VI/EN layout, manifest and README. `reviewed-inputs.json` records all 16 full-size reviewed active catalog images, exact paths/hashes, observations, r34/r35 layout/state review scope and nine scene-reference choices. The full 42-state visual screenshot audit was not performed; representative captures and all declared state definitions were reviewed. This is not runtime/production acceptance.
+
+**Checks:** static HTML/JSON/JS/provenance checks PASS; headless Chromium 153 PASS, 240 combinations across five scenes × declared states × 390×844/360×640 × VI/EN × 1×/1.3×/2×, no horizontal overflow, controls ≥48×48 CSS px, all primary CTAs disabled, no page errors or failed requests. Evidence: `docs/design/art-completion-r36/code/evidence/`. No Flutter/device/app tests were run. Browser results apply only to the static fixture layouts.
+
+**Runtime and production:** unchanged; all five manifests retain `runtime_ready:false` and `production_approved:false`. The static art does not implement gameplay, storage, cloud, multiplayer, transactions, rewards, AI, geometry calibration, layers or animation. PQC-011 remains CHANGES_REQUESTED and is out of scope for this handoff.
+
+The exact substantive `[skip ci]` Batch A commit is this handoff changeset; its SHA is reported in the CODE handoff message. Batch B must remain a separate substantive `[skip ci]` commit.

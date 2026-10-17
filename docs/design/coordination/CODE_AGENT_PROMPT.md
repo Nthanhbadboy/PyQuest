@@ -32,25 +32,24 @@ asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đíc
 
 ## 2. Làm theo revision hiện tại, không lặp intake đã ACK
 
-Task hiện tại là **PQD-003 revision36**, review CODE018 BatchA exact1053973.
-Đọc `docs/design/coordination/reviews/PQD-003-r36.md`, `docs/design/art-review-r36/README.md`
-và `docs/implementation/coordination/tasks/PQC-018.md` revision2 từ DESIGN SHA mới.
+Task hiện tại là **PQD-003 revision38**, review exactCODEab0ae35 +0990fbc.
+Đọc `docs/design/coordination/reviews/PQD-003-r38.md`,
+`docs/implementation/coordination/tasks/PQC-018.md` revision3 và
+`docs/design/art-review-r38/README.md` từ DESIGN SHA mới.
 
-**Giữ5conceptA; SCREEN_CHANGES_REQUESTED.** Không sinh lại5PNG, không lặp intake16ảnh
-đã có record khớp. CorrectionA riêng: R36-A root-rem/font scaling thực +header48px;
-R36-B childcopy/IDs/source/pause/locale; R36-C scene-first composition, không5hero+card.
-Independent240cases có0overflow nhưng160fontfail/120headeroverlap. Chạy checkcomputed
-font sizes, không coi selector2× làđãscale; report vàscript reproducible trongallowlist.
+**Giữ cả9concept; không vẽ lại hoặc intake16ảnh lại. BatchB đã giao.** R36font/back/
+sourcecopy đã xác minh; còn đúng2findings trong một correctioncommit `[skip ci]`:
+- R38-A: sharedproductbar wrap/stack để badge không ép title thành cột chữ ởEN2×.
+  A01not_following360 vàA03first_visit390/360; innerwidth32.75/10.20/0px.
+- R38-B: Creator B02 cần editor read-only/mock có nội dung front-facing. Hiện chỉ
+  labelEditor,preview3ôtrống vàversiontray. Không interpreter/gameAPI/grader/persistence.
 
-Sau correctioncommit tiếp tục **B4** (friends/invites, Creator editor, completedroomtừW03,
-Miu camrest) trongcommitriêng. Khôngxinuserchọnroadmap, khôngACK-only. BatchB dùnggrammar
-đãsửa, đủstates; khôngbackend/economy/AI/presenceclaims. W01neo/W14corrected, r35catalog16
-khôngđổi; galleryreviewr36gồm21ảnhkhôngproductionapprove. 017khôngvẽlạicảgói.
-
-Allowlist018chỉ `docs/design/art-completion-r36/code/**` +own018. Giữoriginalbytes/hashes
-trướcfix, manifests vàevidence thật. Khôngcopy immutable CODEsnapshot1053973 từDESIGN
-đèbảnđangsửa. Khôngapp/deps/CI/APK; `[skip ci]`; giữstash. Khôngthêmruntime/layer/animation
-đểgiảhoàntấtart. Đọc reviewđầyđủ, đừngchỉlấy tóm tắtnày rồi tựaccept.
+Regression432case toàngói sau sharedCSS, thêmeditor visible-content/computedfont
+checks48caseB02. Giữ originals và9PNG, updatehashes/evidence/task actualcounts.
+Không ghi đè snapshot0990fbc trongDESIGN; CODE sửa package làm việc của chính mình.
+Allowlist018giữ code/**+own018; khôngACK-only,khôngpopstash,khôngapp/deps/CI/backend.
+DESIGN W08r37 làlane riêng, khôngđổi refs/brief củaCODE haygiaoCODElàmtravel.
+Sáuscreenstudiesgiữởmứcconcept/layout; tấtcảchưaproduction/runtime. Đọc reviewđầyđủ.
 
 **011 CHANGES_REQUESTED @a331ac1** vẫn hiệu lực: CI117462432865failanalyze8issues,
 suites skipped. SửaR34-A imports/compile/pumpAndSettle; BSetcontent equalitycả2;

@@ -1,0 +1,539 @@
+{
+  "task": "PQC-018 Batch A R36-A/B/C correction",
+  "review_pin": "68f2590b5883ca8aa746ffde0814d60a32dacb3c",
+  "baseline_commit": "1053973da1ad11378f7263d7b13a4d61667133af",
+  "check_count": 90,
+  "passed": 90,
+  "failed": 0,
+  "status": "PASS",
+  "scenes": [
+    {
+      "scene_id": "a01-w04-journal",
+      "layout_sha256": "ad19456b8be9c9f6af27cc2b515faf48f8ab51382aea0d63c71eba2e12afca4e",
+      "image_sha256": "2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6",
+      "image_dimensions": [
+        928,
+        1152
+      ],
+      "states": [
+        "following",
+        "not_following",
+        "pending_results",
+        "load_error"
+      ]
+    },
+    {
+      "scene_id": "a02-shared-settings",
+      "layout_sha256": "71e453619934549047a187e657141f80dcc394172e648ff202d3ed9afd31d2e0",
+      "image_sha256": "99033a84778a4f9cd8a9a2c2b247ae4ab5a81f515864ed3f22051f8033de0219",
+      "image_dimensions": [
+        928,
+        1152
+      ],
+      "states": [
+        "system_active",
+        "system_fallback",
+        "manual_vi",
+        "manual_en",
+        "save_error",
+        "retry"
+      ]
+    },
+    {
+      "scene_id": "a03-shared-welcome",
+      "layout_sha256": "6fe5471213224e7e1bc5f899d3f34514f7e864105c0549cb82f43f46e3500891",
+      "image_sha256": "35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb",
+      "image_dimensions": [
+        928,
+        1152
+      ],
+      "states": [
+        "first_visit",
+        "returning",
+        "loading",
+        "retry"
+      ]
+    },
+    {
+      "scene_id": "a04-w05-catch-stars",
+      "layout_sha256": "ba07e993ab0607c6bcb095488e9f3a6e9bc3d6be8bf3cf3a965c64fa4b3d57ea",
+      "image_sha256": "1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718",
+      "image_dimensions": [
+        928,
+        1152
+      ],
+      "states": [
+        "ready",
+        "paused",
+        "result"
+      ]
+    },
+    {
+      "scene_id": "a05-w05-bug-hunter",
+      "layout_sha256": "48aba4ca2a4b7650f9d3b09216ad5367890a46489ba57583c95a7b8d7f8dfe4d",
+      "image_sha256": "65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073",
+      "image_dimensions": [
+        928,
+        1152
+      ],
+      "states": [
+        "locked",
+        "ready",
+        "wrong_error"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "check": "present: shared.css",
+      "status": "PASS",
+      "detail": "/home/user/PyQuest/docs/design/art-completion-r36/code/shared.css"
+    },
+    {
+      "check": "present: shared.js",
+      "status": "PASS",
+      "detail": "/home/user/PyQuest/docs/design/art-completion-r36/code/shared.js"
+    },
+    {
+      "check": "present: reviewed-inputs.json",
+      "status": "PASS",
+      "detail": "/home/user/PyQuest/docs/design/art-completion-r36/code/reviewed-inputs.json"
+    },
+    {
+      "check": "archive baseline pin",
+      "status": "PASS",
+      "detail": "1053973da1ad11378f7263d7b13a4d61667133af"
+    },
+    {
+      "check": "original preserved: shared.css",
+      "status": "PASS",
+      "detail": "expected=aaa90cba523a311934ba0ed23f8a3bbed33e9c476afe36c1ae483670299893b1 actual=aaa90cba523a311934ba0ed23f8a3bbed33e9c476afe36c1ae483670299893b1"
+    },
+    {
+      "check": "original preserved: shared.js",
+      "status": "PASS",
+      "detail": "expected=19657dc24c33b9fbe21b7b678688fefa693ee1c1b2aa008739c46dbec73b458e actual=19657dc24c33b9fbe21b7b678688fefa693ee1c1b2aa008739c46dbec73b458e"
+    },
+    {
+      "check": "original preserved: a01-w04-journal/layout.html",
+      "status": "PASS",
+      "detail": "expected=47aa9dc14cbeb0051b2ae5e7f6eb863497718709328cd6d2a66c1e96913968af actual=47aa9dc14cbeb0051b2ae5e7f6eb863497718709328cd6d2a66c1e96913968af"
+    },
+    {
+      "check": "original preserved: a02-shared-settings/layout.html",
+      "status": "PASS",
+      "detail": "expected=d0ae996da28380a5cc3bee10227ed6ea83ee0342a2c4a724e2cf345c9024d223 actual=d0ae996da28380a5cc3bee10227ed6ea83ee0342a2c4a724e2cf345c9024d223"
+    },
+    {
+      "check": "original preserved: a03-shared-welcome/layout.html",
+      "status": "PASS",
+      "detail": "expected=3fa126e22a0f7828184b2e5fa21065da3bf1536edcf76e1679f108a9a4a63c87 actual=3fa126e22a0f7828184b2e5fa21065da3bf1536edcf76e1679f108a9a4a63c87"
+    },
+    {
+      "check": "original preserved: a04-w05-catch-stars/layout.html",
+      "status": "PASS",
+      "detail": "expected=0956ef1bddca72ece27e3300a3a2ca4b1e63b30253a6f39be84e56fd68781423 actual=0956ef1bddca72ece27e3300a3a2ca4b1e63b30253a6f39be84e56fd68781423"
+    },
+    {
+      "check": "original preserved: a05-w05-bug-hunter/layout.html",
+      "status": "PASS",
+      "detail": "expected=1afe420f10da80826d8213a199692637903b67c5de20f6c227ea1d2c130cc89c actual=1afe420f10da80826d8213a199692637903b67c5de20f6c227ea1d2c130cc89c"
+    },
+    {
+      "check": "original preserved: a01-w04-journal/concept.png",
+      "status": "PASS",
+      "detail": "expected=2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6 actual=2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6"
+    },
+    {
+      "check": "original preserved: a02-shared-settings/concept.png",
+      "status": "PASS",
+      "detail": "expected=99033a84778a4f9cd8a9a2c2b247ae4ab5a81f515864ed3f22051f8033de0219 actual=99033a84778a4f9cd8a9a2c2b247ae4ab5a81f515864ed3f22051f8033de0219"
+    },
+    {
+      "check": "original preserved: a03-shared-welcome/concept.png",
+      "status": "PASS",
+      "detail": "expected=35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb actual=35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb"
+    },
+    {
+      "check": "original preserved: a04-w05-catch-stars/concept.png",
+      "status": "PASS",
+      "detail": "expected=1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718 actual=1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718"
+    },
+    {
+      "check": "original preserved: a05-w05-bug-hunter/concept.png",
+      "status": "PASS",
+      "detail": "expected=65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073 actual=65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073"
+    },
+    {
+      "check": "original preserved: README.md",
+      "status": "PASS",
+      "detail": "expected=ddb7b3a1e8857cf85d7d83eb34c9bf9dc27c8dafd11b0c6a20580d5f12e7d52e actual=ddb7b3a1e8857cf85d7d83eb34c9bf9dc27c8dafd11b0c6a20580d5f12e7d52e"
+    },
+    {
+      "check": "original preserved: reviewed-inputs.json",
+      "status": "PASS",
+      "detail": "expected=0cd56c1838bd97558bf7a9787426f0ee31080ae754ecc4223ac703f47089e345 actual=0cd56c1838bd97558bf7a9787426f0ee31080ae754ecc4223ac703f47089e345"
+    },
+    {
+      "check": "original preserved: evidence/BROWSER_CHECKS.md",
+      "status": "PASS",
+      "detail": "expected=7995b69ac62b6e7fe7d2a2bbe06bcfe807ff87aa5ac3a0d6f3564936244506a2 actual=7995b69ac62b6e7fe7d2a2bbe06bcfe807ff87aa5ac3a0d6f3564936244506a2"
+    },
+    {
+      "check": "original preserved: evidence/browser-checks.json",
+      "status": "PASS",
+      "detail": "expected=89fa3f2b22f83dcae53cf703de3588a8cbe3f3aaea4c2703dc6d64aa41375610 actual=89fa3f2b22f83dcae53cf703de3588a8cbe3f3aaea4c2703dc6d64aa41375610"
+    },
+    {
+      "check": "original preserved: evidence/static-checks.json",
+      "status": "PASS",
+      "detail": "expected=e019d5e09b8bf79e11c22f18284be35e3c3aff5e7c4797d16f81c643b1c7c1a9 actual=e019d5e09b8bf79e11c22f18284be35e3c3aff5e7c4797d16f81c643b1c7c1a9"
+    },
+    {
+      "check": "original preserved: docs/implementation/coordination/tasks/PQC-018.md",
+      "status": "PASS",
+      "detail": "expected=46d967092bdc994e9c37707ff1fec89592d9395d1234f5ee850f8b7cd9a7ad15 actual=46d967092bdc994e9c37707ff1fec89592d9395d1234f5ee850f8b7cd9a7ad15"
+    },
+    {
+      "check": "original preserved: a01-w04-journal/manifest.json",
+      "status": "PASS",
+      "detail": "expected=4b6cb2087d6147bcfd05776a78594e802fdd43c4d674232a6a68b7f444b4cc9a actual=4b6cb2087d6147bcfd05776a78594e802fdd43c4d674232a6a68b7f444b4cc9a"
+    },
+    {
+      "check": "original preserved: a02-shared-settings/manifest.json",
+      "status": "PASS",
+      "detail": "expected=224d20add20abacca0e11ff6ce8343216f1e6f66cb1e734c429619e52e69ca5f actual=224d20add20abacca0e11ff6ce8343216f1e6f66cb1e734c429619e52e69ca5f"
+    },
+    {
+      "check": "original preserved: a03-shared-welcome/manifest.json",
+      "status": "PASS",
+      "detail": "expected=33a0414c950ea8230175eb9c33b822ffb56cfb01d4f23fd15ba14969f861c028 actual=33a0414c950ea8230175eb9c33b822ffb56cfb01d4f23fd15ba14969f861c028"
+    },
+    {
+      "check": "original preserved: a04-w05-catch-stars/manifest.json",
+      "status": "PASS",
+      "detail": "expected=b9311c97d0777aed2bb2fd92a4da408cf22d2b30ee33b2745780704982d87bc5 actual=b9311c97d0777aed2bb2fd92a4da408cf22d2b30ee33b2745780704982d87bc5"
+    },
+    {
+      "check": "original preserved: a05-w05-bug-hunter/manifest.json",
+      "status": "PASS",
+      "detail": "expected=8b49ac06325b1ebba717e709addea218d6697742963d132062bcfd62034285da actual=8b49ac06325b1ebba717e709addea218d6697742963d132062bcfd62034285da"
+    },
+    {
+      "check": "original preserved: a01-w04-journal/README.md",
+      "status": "PASS",
+      "detail": "expected=d1dacc38a7eecaedf358a26b53304bd44435222f1c5d1297cd6adfb975666db4 actual=d1dacc38a7eecaedf358a26b53304bd44435222f1c5d1297cd6adfb975666db4"
+    },
+    {
+      "check": "original preserved: a02-shared-settings/README.md",
+      "status": "PASS",
+      "detail": "expected=75e6b4eca877e3b72753646c2412b3cca198aa4a4e976c42697cea2d25d4010b actual=75e6b4eca877e3b72753646c2412b3cca198aa4a4e976c42697cea2d25d4010b"
+    },
+    {
+      "check": "original preserved: a03-shared-welcome/README.md",
+      "status": "PASS",
+      "detail": "expected=34087e46c1d581a95eab727a1c630a15f4c2f79b960d47fd8eaf95b1f39c1af1 actual=34087e46c1d581a95eab727a1c630a15f4c2f79b960d47fd8eaf95b1f39c1af1"
+    },
+    {
+      "check": "original preserved: a04-w05-catch-stars/README.md",
+      "status": "PASS",
+      "detail": "expected=b1bef0058e0e86fbb422adcab136429bc25cebc7c7f6e74b4dfa7bee98f15143 actual=b1bef0058e0e86fbb422adcab136429bc25cebc7c7f6e74b4dfa7bee98f15143"
+    },
+    {
+      "check": "original preserved: a05-w05-bug-hunter/README.md",
+      "status": "PASS",
+      "detail": "expected=883a85d543faa534af1e72a3fc0afd734edcd90e7848793bc2cc9991227b6ee9 actual=883a85d543faa534af1e72a3fc0afd734edcd90e7848793bc2cc9991227b6ee9"
+    },
+    {
+      "check": "a01-w04-journal: JSON manifest",
+      "status": "PASS",
+      "detail": "valid JSON and matching scene_id"
+    },
+    {
+      "check": "a01-w04-journal: design review pin",
+      "status": "PASS",
+      "detail": "68f2590b5883ca8aa746ffde0814d60a32dacb3c"
+    },
+    {
+      "check": "a01-w04-journal: screen disposition",
+      "status": "PASS",
+      "detail": "SCREEN_CHANGES_REQUESTED — correction implemented; pending DESIGN review"
+    },
+    {
+      "check": "a01-w04-journal: layout hash",
+      "status": "PASS",
+      "detail": "ad19456b8be9c9f6af27cc2b515faf48f8ab51382aea0d63c71eba2e12afca4e"
+    },
+    {
+      "check": "a01-w04-journal: shared hashes",
+      "status": "PASS",
+      "detail": "css=47bd9c66e0749f430655befa64de7fe09168205465479e04a1dafa02912cfc22; js=e2d80ee83952358c52ebcf20f41c21834cc610f99aa6e97028d0fb548b1d2bc7"
+    },
+    {
+      "check": "a01-w04-journal: runtime boundary",
+      "status": "PASS",
+      "detail": "runtime_ready/production_approved/animation_present remain false"
+    },
+    {
+      "check": "a01-w04-journal: original concept image",
+      "status": "PASS",
+      "detail": "928x1152, 2312191 bytes, sha256=2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6"
+    },
+    {
+      "check": "a01-w04-journal: prompt hash",
+      "status": "PASS",
+      "detail": "6a44ad77467a583faf6b483bc12720382f5f795c35717b33f0616e233bf67a0c"
+    },
+    {
+      "check": "a01-w04-journal: fixture DOM markers",
+      "status": "PASS",
+      "detail": "all required markers present"
+    },
+    {
+      "check": "a01-w04-journal: reviewer/product separation markup",
+      "status": "PASS",
+      "detail": "review controls/notes outside product viewport in source layout"
+    },
+    {
+      "check": "a02-shared-settings: JSON manifest",
+      "status": "PASS",
+      "detail": "valid JSON and matching scene_id"
+    },
+    {
+      "check": "a02-shared-settings: design review pin",
+      "status": "PASS",
+      "detail": "68f2590b5883ca8aa746ffde0814d60a32dacb3c"
+    },
+    {
+      "check": "a02-shared-settings: screen disposition",
+      "status": "PASS",
+      "detail": "SCREEN_CHANGES_REQUESTED — correction implemented; pending DESIGN review"
+    },
+    {
+      "check": "a02-shared-settings: layout hash",
+      "status": "PASS",
+      "detail": "71e453619934549047a187e657141f80dcc394172e648ff202d3ed9afd31d2e0"
+    },
+    {
+      "check": "a02-shared-settings: shared hashes",
+      "status": "PASS",
+      "detail": "css=47bd9c66e0749f430655befa64de7fe09168205465479e04a1dafa02912cfc22; js=e2d80ee83952358c52ebcf20f41c21834cc610f99aa6e97028d0fb548b1d2bc7"
+    },
+    {
+      "check": "a02-shared-settings: runtime boundary",
+      "status": "PASS",
+      "detail": "runtime_ready/production_approved/animation_present remain false"
+    },
+    {
+      "check": "a02-shared-settings: original concept image",
+      "status": "PASS",
+      "detail": "928x1152, 1978925 bytes, sha256=99033a84778a4f9cd8a9a2c2b247ae4ab5a81f515864ed3f22051f8033de0219"
+    },
+    {
+      "check": "a02-shared-settings: prompt hash",
+      "status": "PASS",
+      "detail": "d64ad2bb4bfc49ad02c8f394ad16b4a78732d1bdd546c94a38ba0c15456157a4"
+    },
+    {
+      "check": "a02-shared-settings: fixture DOM markers",
+      "status": "PASS",
+      "detail": "all required markers present"
+    },
+    {
+      "check": "a02-shared-settings: reviewer/product separation markup",
+      "status": "PASS",
+      "detail": "review controls/notes outside product viewport in source layout"
+    },
+    {
+      "check": "a03-shared-welcome: JSON manifest",
+      "status": "PASS",
+      "detail": "valid JSON and matching scene_id"
+    },
+    {
+      "check": "a03-shared-welcome: design review pin",
+      "status": "PASS",
+      "detail": "68f2590b5883ca8aa746ffde0814d60a32dacb3c"
+    },
+    {
+      "check": "a03-shared-welcome: screen disposition",
+      "status": "PASS",
+      "detail": "SCREEN_CHANGES_REQUESTED — correction implemented; pending DESIGN review"
+    },
+    {
+      "check": "a03-shared-welcome: layout hash",
+      "status": "PASS",
+      "detail": "6fe5471213224e7e1bc5f899d3f34514f7e864105c0549cb82f43f46e3500891"
+    },
+    {
+      "check": "a03-shared-welcome: shared hashes",
+      "status": "PASS",
+      "detail": "css=47bd9c66e0749f430655befa64de7fe09168205465479e04a1dafa02912cfc22; js=e2d80ee83952358c52ebcf20f41c21834cc610f99aa6e97028d0fb548b1d2bc7"
+    },
+    {
+      "check": "a03-shared-welcome: runtime boundary",
+      "status": "PASS",
+      "detail": "runtime_ready/production_approved/animation_present remain false"
+    },
+    {
+      "check": "a03-shared-welcome: original concept image",
+      "status": "PASS",
+      "detail": "928x1152, 2406784 bytes, sha256=35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb"
+    },
+    {
+      "check": "a03-shared-welcome: prompt hash",
+      "status": "PASS",
+      "detail": "a1600533b8bb060b14d8959ed44138b0aa64a9e484bad9299b0aa5d804969216"
+    },
+    {
+      "check": "a03-shared-welcome: fixture DOM markers",
+      "status": "PASS",
+      "detail": "all required markers present"
+    },
+    {
+      "check": "a03-shared-welcome: reviewer/product separation markup",
+      "status": "PASS",
+      "detail": "review controls/notes outside product viewport in source layout"
+    },
+    {
+      "check": "a04-w05-catch-stars: JSON manifest",
+      "status": "PASS",
+      "detail": "valid JSON and matching scene_id"
+    },
+    {
+      "check": "a04-w05-catch-stars: design review pin",
+      "status": "PASS",
+      "detail": "68f2590b5883ca8aa746ffde0814d60a32dacb3c"
+    },
+    {
+      "check": "a04-w05-catch-stars: screen disposition",
+      "status": "PASS",
+      "detail": "SCREEN_CHANGES_REQUESTED — correction implemented; pending DESIGN review"
+    },
+    {
+      "check": "a04-w05-catch-stars: layout hash",
+      "status": "PASS",
+      "detail": "ba07e993ab0607c6bcb095488e9f3a6e9bc3d6be8bf3cf3a965c64fa4b3d57ea"
+    },
+    {
+      "check": "a04-w05-catch-stars: shared hashes",
+      "status": "PASS",
+      "detail": "css=47bd9c66e0749f430655befa64de7fe09168205465479e04a1dafa02912cfc22; js=e2d80ee83952358c52ebcf20f41c21834cc610f99aa6e97028d0fb548b1d2bc7"
+    },
+    {
+      "check": "a04-w05-catch-stars: runtime boundary",
+      "status": "PASS",
+      "detail": "runtime_ready/production_approved/animation_present remain false"
+    },
+    {
+      "check": "a04-w05-catch-stars: original concept image",
+      "status": "PASS",
+      "detail": "928x1152, 1896701 bytes, sha256=1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718"
+    },
+    {
+      "check": "a04-w05-catch-stars: prompt hash",
+      "status": "PASS",
+      "detail": "2357fb8a7f7dd054c8abd1adce97e5aae64bd5e98699dcfa8224777248d3956c"
+    },
+    {
+      "check": "a04-w05-catch-stars: fixture DOM markers",
+      "status": "PASS",
+      "detail": "all required markers present"
+    },
+    {
+      "check": "a04-w05-catch-stars: reviewer/product separation markup",
+      "status": "PASS",
+      "detail": "review controls/notes outside product viewport in source layout"
+    },
+    {
+      "check": "a05-w05-bug-hunter: JSON manifest",
+      "status": "PASS",
+      "detail": "valid JSON and matching scene_id"
+    },
+    {
+      "check": "a05-w05-bug-hunter: design review pin",
+      "status": "PASS",
+      "detail": "68f2590b5883ca8aa746ffde0814d60a32dacb3c"
+    },
+    {
+      "check": "a05-w05-bug-hunter: screen disposition",
+      "status": "PASS",
+      "detail": "SCREEN_CHANGES_REQUESTED — correction implemented; pending DESIGN review"
+    },
+    {
+      "check": "a05-w05-bug-hunter: layout hash",
+      "status": "PASS",
+      "detail": "48aba4ca2a4b7650f9d3b09216ad5367890a46489ba57583c95a7b8d7f8dfe4d"
+    },
+    {
+      "check": "a05-w05-bug-hunter: shared hashes",
+      "status": "PASS",
+      "detail": "css=47bd9c66e0749f430655befa64de7fe09168205465479e04a1dafa02912cfc22; js=e2d80ee83952358c52ebcf20f41c21834cc610f99aa6e97028d0fb548b1d2bc7"
+    },
+    {
+      "check": "a05-w05-bug-hunter: runtime boundary",
+      "status": "PASS",
+      "detail": "runtime_ready/production_approved/animation_present remain false"
+    },
+    {
+      "check": "a05-w05-bug-hunter: original concept image",
+      "status": "PASS",
+      "detail": "928x1152, 2419256 bytes, sha256=65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073"
+    },
+    {
+      "check": "a05-w05-bug-hunter: prompt hash",
+      "status": "PASS",
+      "detail": "26177989cfc935c51150a7584b9d6caef882987daaa06e387ada3d51c1c73a95"
+    },
+    {
+      "check": "a05-w05-bug-hunter: fixture DOM markers",
+      "status": "PASS",
+      "detail": "all required markers present"
+    },
+    {
+      "check": "a05-w05-bug-hunter: reviewer/product separation markup",
+      "status": "PASS",
+      "detail": "review controls/notes outside product viewport in source layout"
+    },
+    {
+      "check": "16-image intake record retained",
+      "status": "PASS",
+      "detail": "assets=16; base source pin=cbb0f8bed808a888ae607bb31ba6343c182bf0b8"
+    },
+    {
+      "check": "r36 review pin recorded",
+      "status": "PASS",
+      "detail": "{'pin': '68f2590b5883ca8aa746ffde0814d60a32dacb3c', 'review_path': 'docs/design/coordination/reviews/PQD-003-r36.md', 'disposition': 'SCREEN_CHANGES_REQUESTED; R36-A/B/C correction implemented by CODE, awaiting DESIGN re-review', 'findings': ['R36-A computed font scale', 'R36-A 48px back target/title overlap', 'R36-B child-facing source IDs and state copy', 'R36-C scene-first composition and reviewer/product separation'], 'five_concept_pngs': 'retained byte-for-byte; original SHA-256 values unchanged', 'batch_b': 'pending four distinct concepts'}"
+    },
+    {
+      "check": "manual English translated in Vietnamese",
+      "status": "PASS",
+      "detail": "manual_en VI/EN labels checked in shared fixture data"
+    },
+    {
+      "check": "Catch Stars no program copy",
+      "status": "PASS",
+      "detail": "paused copy is attempt/play, not a program"
+    },
+    {
+      "check": "Journal selector/CTA note",
+      "status": "PASS",
+      "detail": "selector remains reviewer control; primary CTA disabled"
+    },
+    {
+      "check": "Bug Hunter source mapping stays in reviewer notes",
+      "status": "PASS",
+      "detail": "exact identifiers remain available outside product copy"
+    },
+    {
+      "check": "Bug Hunter Python literals retained",
+      "status": "PASS",
+      "detail": "both source literals preserved character-for-character"
+    },
+    {
+      "check": "expected output remains unexecuted data",
+      "status": "PASS",
+      "detail": "data output remains distinct from execution"
+    }
+  ],
+  "limits": "Static provenance/structure checks only. Browser measurements are reported separately; this does not self-accept DESIGN screen disposition or prove runtime/device behavior."
+}

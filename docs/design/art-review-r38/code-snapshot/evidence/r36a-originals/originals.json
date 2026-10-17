@@ -1,0 +1,174 @@
+{
+  "baseline_commit": "1053973da1ad11378f7263d7b13a4d61667133af",
+  "captured_before": "R36-A/B/C correction",
+  "files": [
+    {
+      "path": "shared.css",
+      "archive_path": "evidence/r36a-originals/shared.css",
+      "bytes": 8718,
+      "sha256": "aaa90cba523a311934ba0ed23f8a3bbed33e9c476afe36c1ae483670299893b1"
+    },
+    {
+      "path": "shared.js",
+      "archive_path": "evidence/r36a-originals/shared.js",
+      "bytes": 27027,
+      "sha256": "19657dc24c33b9fbe21b7b678688fefa693ee1c1b2aa008739c46dbec73b458e"
+    },
+    {
+      "path": "a01-w04-journal/layout.html",
+      "archive_path": "evidence/r36a-originals/a01-w04-journal__layout.html",
+      "bytes": 2430,
+      "sha256": "47aa9dc14cbeb0051b2ae5e7f6eb863497718709328cd6d2a66c1e96913968af"
+    },
+    {
+      "path": "a02-shared-settings/layout.html",
+      "archive_path": "evidence/r36a-originals/a02-shared-settings__layout.html",
+      "bytes": 2948,
+      "sha256": "d0ae996da28380a5cc3bee10227ed6ea83ee0342a2c4a724e2cf345c9024d223"
+    },
+    {
+      "path": "a03-shared-welcome/layout.html",
+      "archive_path": "evidence/r36a-originals/a03-shared-welcome__layout.html",
+      "bytes": 2314,
+      "sha256": "3fa126e22a0f7828184b2e5fa21065da3bf1536edcf76e1679f108a9a4a63c87"
+    },
+    {
+      "path": "a04-w05-catch-stars/layout.html",
+      "archive_path": "evidence/r36a-originals/a04-w05-catch-stars__layout.html",
+      "bytes": 2323,
+      "sha256": "0956ef1bddca72ece27e3300a3a2ca4b1e63b30253a6f39be84e56fd68781423"
+    },
+    {
+      "path": "a05-w05-bug-hunter/layout.html",
+      "archive_path": "evidence/r36a-originals/a05-w05-bug-hunter__layout.html",
+      "bytes": 2626,
+      "sha256": "1afe420f10da80826d8213a199692637903b67c5de20f6c227ea1d2c130cc89c"
+    },
+    {
+      "path": "a01-w04-journal/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 2312191,
+      "sha256": "2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6"
+    },
+    {
+      "path": "a02-shared-settings/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 1978925,
+      "sha256": "99033a84778a4f9cd8a9a2c2b247ae4ab5a81f515864ed3f22051f8033de0219"
+    },
+    {
+      "path": "a03-shared-welcome/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 2406784,
+      "sha256": "35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb"
+    },
+    {
+      "path": "a04-w05-catch-stars/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 1896701,
+      "sha256": "1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718"
+    },
+    {
+      "path": "a05-w05-bug-hunter/concept.png",
+      "archive_path": "unchanged-in-place",
+      "bytes": 2419256,
+      "sha256": "65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073"
+    },
+    {
+      "path": "README.md",
+      "archive_path": "README.md",
+      "bytes": 3002,
+      "sha256": "ddb7b3a1e8857cf85d7d83eb34c9bf9dc27c8dafd11b0c6a20580d5f12e7d52e"
+    },
+    {
+      "path": "reviewed-inputs.json",
+      "archive_path": "reviewed-inputs.json",
+      "bytes": 17069,
+      "sha256": "0cd56c1838bd97558bf7a9787426f0ee31080ae754ecc4223ac703f47089e345"
+    },
+    {
+      "path": "evidence/BROWSER_CHECKS.md",
+      "archive_path": "evidence__BROWSER_CHECKS.md",
+      "bytes": 1608,
+      "sha256": "7995b69ac62b6e7fe7d2a2bbe06bcfe807ff87aa5ac3a0d6f3564936244506a2"
+    },
+    {
+      "path": "evidence/browser-checks.json",
+      "archive_path": "evidence__browser-checks.json",
+      "bytes": 1894,
+      "sha256": "89fa3f2b22f83dcae53cf703de3588a8cbe3f3aaea4c2703dc6d64aa41375610"
+    },
+    {
+      "path": "evidence/static-checks.json",
+      "archive_path": "evidence__static-checks.json",
+      "bytes": 1026,
+      "sha256": "e019d5e09b8bf79e11c22f18284be35e3c3aff5e7c4797d16f81c643b1c7c1a9"
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-018.md",
+      "archive_path": "task-PQC-018-r1.md",
+      "bytes": 12621,
+      "sha256": "46d967092bdc994e9c37707ff1fec89592d9395d1234f5ee850f8b7cd9a7ad15"
+    },
+    {
+      "path": "a01-w04-journal/manifest.json",
+      "archive_path": "a01-w04-journal__manifest.json",
+      "bytes": 3275,
+      "sha256": "4b6cb2087d6147bcfd05776a78594e802fdd43c4d674232a6a68b7f444b4cc9a"
+    },
+    {
+      "path": "a02-shared-settings/manifest.json",
+      "archive_path": "a02-shared-settings__manifest.json",
+      "bytes": 3862,
+      "sha256": "224d20add20abacca0e11ff6ce8343216f1e6f66cb1e734c429619e52e69ca5f"
+    },
+    {
+      "path": "a03-shared-welcome/manifest.json",
+      "archive_path": "a03-shared-welcome__manifest.json",
+      "bytes": 3169,
+      "sha256": "33a0414c950ea8230175eb9c33b822ffb56cfb01d4f23fd15ba14969f861c028"
+    },
+    {
+      "path": "a04-w05-catch-stars/manifest.json",
+      "archive_path": "a04-w05-catch-stars__manifest.json",
+      "bytes": 3708,
+      "sha256": "b9311c97d0777aed2bb2fd92a4da408cf22d2b30ee33b2745780704982d87bc5"
+    },
+    {
+      "path": "a05-w05-bug-hunter/manifest.json",
+      "archive_path": "a05-w05-bug-hunter__manifest.json",
+      "bytes": 3912,
+      "sha256": "8b49ac06325b1ebba717e709addea218d6697742963d132062bcfd62034285da"
+    },
+    {
+      "path": "a01-w04-journal/README.md",
+      "archive_path": "a01-w04-journal__README.md",
+      "bytes": 960,
+      "sha256": "d1dacc38a7eecaedf358a26b53304bd44435222f1c5d1297cd6adfb975666db4"
+    },
+    {
+      "path": "a02-shared-settings/README.md",
+      "archive_path": "a02-shared-settings__README.md",
+      "bytes": 1073,
+      "sha256": "75e6b4eca877e3b72753646c2412b3cca198aa4a4e976c42697cea2d25d4010b"
+    },
+    {
+      "path": "a03-shared-welcome/README.md",
+      "archive_path": "a03-shared-welcome__README.md",
+      "bytes": 957,
+      "sha256": "34087e46c1d581a95eab727a1c630a15f4c2f79b960d47fd8eaf95b1f39c1af1"
+    },
+    {
+      "path": "a04-w05-catch-stars/README.md",
+      "archive_path": "a04-w05-catch-stars__README.md",
+      "bytes": 993,
+      "sha256": "b1bef0058e0e86fbb422adcab136429bc25cebc7c7f6e74b4dfa7bee98f15143"
+    },
+    {
+      "path": "a05-w05-bug-hunter/README.md",
+      "archive_path": "a05-w05-bug-hunter__README.md",
+      "bytes": 1040,
+      "sha256": "883a85d543faa534af1e72a3fc0afd734edcd90e7848793bc2cc9991227b6ee9"
+    }
+  ]
+}

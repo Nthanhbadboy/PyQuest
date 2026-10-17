@@ -1,0 +1,20 @@
+{
+  "review_inventory_images": 25,
+  "source_sha": "0990fbcbf6045bd64244239e36ccbca8c8dc394b",
+  "correction_sha": "ab0ae35eafebf8602ef714d85004ad4b744898a4",
+  "exact_imports": 145,
+  "original_archive_entries_verified": 28,
+  "canonical_review_records": 16,
+  "manifests": 9,
+  "states": 36,
+  "runtime_source_blobs": 15,
+  "original_A_images_unchanged": 5,
+  "A_active_files_unchanged_by_B": true,
+  "code_allowlist": "PASS",
+  "app_ci_diff_since_a331": false,
+  "limits": [
+    "Hash checks do not prove visual review; DESIGN separately opened four new concepts",
+    "Metadata structure cannot prove an editor exists",
+    "No runtime or production approval"
+  ]
+}

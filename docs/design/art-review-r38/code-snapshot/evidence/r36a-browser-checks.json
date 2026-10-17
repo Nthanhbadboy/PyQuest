@@ -1,0 +1,55 @@
+{
+  "task": "PQC-018 Batch A R36-A/B/C correction",
+  "review_pin": "68f2590b5883ca8aa746ffde0814d60a32dacb3c",
+  "date": "2026-10-17T19:57:24.322Z",
+  "browser": "153.0.8010.0",
+  "source": "Static local HTML fixtures only; no Flutter/app execution, network/backend, gameplay, persistence, transaction or AI.",
+  "scenes": 5,
+  "stateConfigurations": 20,
+  "viewportWidths": [
+    390,
+    360
+  ],
+  "locales": [
+    "vi",
+    "en"
+  ],
+  "textScales": [
+    "1",
+    "1.3",
+    "2"
+  ],
+  "cases": 240,
+  "computedFontAssertions": 1259,
+  "headerOverlapCases": 0,
+  "controlsChecked": 2160,
+  "primaryCtaChecks": 240,
+  "reviewerSeparationChecks": 240,
+  "horizontalOverflowCases": 0,
+  "pageErrors": [],
+  "failedRequests": [],
+  "failures": [],
+  "allPrimaryCtasDisabled": true,
+  "allImagesDecoded": true,
+  "captures": 16,
+  "screenshots": [
+    "a01-w04-journal-r36a-360x640-en-2x.jpg",
+    "a01-w04-journal-r36a-390x844-vi-1x.jpg",
+    "a01-w04-journal-r36a-load_error-390x844-vi-1.3x.jpg",
+    "a02-shared-settings-r36a-360x640-en-2x.jpg",
+    "a02-shared-settings-r36a-390x844-vi-1x.jpg",
+    "a02-shared-settings-r36a-retry-390x844-vi-1.3x.jpg",
+    "a03-shared-welcome-r36a-360x640-en-2x.jpg",
+    "a03-shared-welcome-r36a-390x844-vi-1x.jpg",
+    "a03-shared-welcome-r36a-retry-390x844-vi-1.3x.jpg",
+    "a04-w05-catch-stars-r36a-360x640-en-2x.jpg",
+    "a04-w05-catch-stars-r36a-390x844-vi-1x.jpg",
+    "a04-w05-catch-stars-r36a-result-390x844-vi-1.3x.jpg",
+    "a05-w05-bug-hunter-r36a-360x640-en-2x.jpg",
+    "a05-w05-bug-hunter-r36a-390x844-vi-1x.jpg",
+    "a05-w05-bug-hunter-r36a-ready-code-output-390x844-vi-1.3x.jpg",
+    "a05-w05-bug-hunter-r36a-wrong_error-390x844-vi-1.3x.jpg"
+  ],
+  "status": "PASS",
+  "limits": "Headless browser measurements for static studies only; screenshots are representative, not a manual review of every state/case. Not Flutter, device, accessibility certification or production acceptance."
+}

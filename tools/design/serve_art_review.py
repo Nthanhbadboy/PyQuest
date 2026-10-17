@@ -44,9 +44,11 @@ class ArtHandler(SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, default=8000)
-    parser.add_argument('--landing', choices=('r36', 'w08'), default='r36')
+    parser.add_argument('--landing', choices=('r36', 'w08', 'r38'), default='r36')
     args = parser.parse_args()
     if args.landing == 'w08':
         ArtHandler.landing = '/docs/design/world-travel-r37/index.html'
+    if args.landing == 'r38':
+        ArtHandler.landing = '/docs/design/art-review-r38/index.html'
     handler = partial(ArtHandler, directory=str(ROOT))
     ThreadingHTTPServer(('0.0.0.0', args.port), handler).serve_forever()
