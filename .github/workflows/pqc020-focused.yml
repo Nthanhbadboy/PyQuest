@@ -187,6 +187,7 @@ jobs:
                       if target.is_file():
                           bundle.add(target, arcname=relative)
           snapshot = base64.b64encode(archive.getvalue()).decode('ascii')
+          chunks = [snapshot[index:index + 40000] for index in range(0, len(snapshot), 40000)] or ['']
 
           rows = ['| Gate | Outcome |', '|---|---|']
           rows.extend(f'| {name} | {value} |' for name, value in outcomes.items())
@@ -194,15 +195,30 @@ jobs:
           rows.append('| SDK | Flutter 3.47.7 / Dart 3.13.5 / framework abaf9c523780a608bd46686fd5e53740a07077f8 |')
           summary = '\n'.join(rows)
           text = (
-              'The following base64 value is a gzip tar of the selected PQC-020 Dart sources '
-              'after the pinned Dart formatter was applied in a temporary directory, plus '
-              'the exact generated localization files from this run. No files were changed, '
-              'committed, or pushed by this workflow. Decode with `base64 -d | tar -xz` from '
-              'the repository root.\n\n'
-              '```text\n' + snapshot + '\n```\n'
+              'The formatted source snapshot is split across check runs named '
+              '`PQC-020 formatted source snapshot i/N`. Concatenate their text payloads in '
+              'numeric order, base64-decode, then extract the gzip tar at the repository root. '
+              'It includes only the selected changed PQC-020 Dart files and generated localizations. '
+              'Formatting happened in a temporary directory; this workflow changed, committed, '
+              'and pushed no files.'
           )
           now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
-          payload = {
+          def post_check(payload):
+              request = urllib.request.Request(
+                  f'https://api.github.com/repos/{repository}/check-runs',
+                  data=json.dumps(payload).encode('utf-8'),
+                  headers={
+                      'Accept': 'application/vnd.github+json',
+                      'Authorization': f"Bearer {os.environ['GH_TOKEN']}",
+                      'X-GitHub-Api-Version': '2022-11-28',
+                      'Content-Type': 'application/json',
+                  },
+                  method='POST',
+              )
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  return json.load(response)
+
+          evidence = post_check({
               'name': 'PQC-020 focused gate evidence',
               'head_sha': sha,
               'external_id': f'{run_id}-pqc020',
@@ -216,21 +232,25 @@ jobs:
                   'summary': summary,
                   'text': text,
               },
-          }
-          request = urllib.request.Request(
-              f'https://api.github.com/repos/{repository}/check-runs',
-              data=json.dumps(payload).encode('utf-8'),
-              headers={
-                  'Accept': 'application/vnd.github+json',
-                  'Authorization': f"Bearer {os.environ['GH_TOKEN']}",
-                  'X-GitHub-Api-Version': '2022-11-28',
-                  'Content-Type': 'application/json',
-              },
-              method='POST',
-          )
-          with urllib.request.urlopen(request, timeout=30) as response:
-              evidence = json.load(response)
-          print(f"Published PQC-020 gate evidence: {evidence.get('html_url', '')}")
+          })
+          print(f\"Published PQC-020 gate evidence: {evidence.get('html_url', '')}\")
+          for index, chunk in enumerate(chunks, start=1):
+              snapshot_check = post_check({
+                  'name': f'PQC-020 formatted source snapshot {index}/{len(chunks)}',
+                  'head_sha': sha,
+                  'external_id': f'{run_id}-pqc020-snapshot-{index}',
+                  'details_url': f'https://github.com/{repository}/actions/runs/{run_id}',
+                  'status': 'completed',
+                  'conclusion': 'neutral',
+                  'started_at': now,
+                  'completed_at': now,
+                  'output': {
+                      'title': 'Formatted PQC-020 source snapshot segment',
+                      'summary': f'Base64 segment {index}/{len(chunks)}; concatenate in numeric order.',
+                      'text': chunk,
+                  },
+              })
+              print(f\"Published source snapshot segment {index}/{len(chunks)}: {snapshot_check.get('html_url', '')}\")
           if not successful:
               print('One or more required focused gates did not pass.')
           PY
