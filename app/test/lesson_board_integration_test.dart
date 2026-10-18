@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/app/app_scope.dart';
@@ -271,31 +272,80 @@ void main() {
       await tester.tap(find.byKey(const ValueKey<String>('example_run')));
       await _waitForContinueEnabled(tester);
       expect(find.text('12'), findsOneWidget);
-      // Keep the focused editor visible before measuring tutor-route scroll.
+      // Bring the editor into view; the caret-specific wait below, not this
+      // whole-widget reveal, establishes the scroll baseline.
       await tester.ensureVisible(
         find.byKey(const ValueKey<String>('example_code_editor_mq1_03_s2')),
       );
       await tester.pump();
       final ScrollPosition lessonScroll = _lessonScrollPosition(tester);
+      final Finder editorField = find.byKey(
+        const ValueKey<String>('code_editor_field'),
+        skipOffstage: false,
+      );
+      final Finder editableText = find.descendant(
+        of: editorField,
+        matching: find.byType(EditableText, skipOffstage: false),
+      );
       final Stopwatch tutorTraceClock = Stopwatch()..start();
+      ModalRoute<dynamic>? tutorRoute;
+      String tutorRouteState() {
+        final ModalRoute<dynamic>? route = tutorRoute;
+        if (route == null) return 'tutorRoute=not-yet-captured';
+        return 'tutorRoute=${route.runtimeType} active=${route.isActive} '
+            'current=${route.isCurrent} animation=${route.animation?.status}';
+      }
+
       void traceTutorState(String event) {
         debugPrint(
-          '[PQC-011 tutor trace] event=$event '
+          '[PQC-011 tutor transition] event=$event '
           'elapsed=${tutorTraceClock.elapsed} '
+          '${tutorRouteState()} '
           'focus=${editor.focusNode!.hasFocus} '
-          'scroll=${lessonScroll.pixels.toStringAsFixed(2)} '
-          'zone=${identityHashCode(Zone.current)}',
+          'scroll=${lessonScroll.pixels.toStringAsFixed(2)}',
         );
       }
 
-      void traceFocusChange() => traceTutorState('focus-change');
-      void traceScrollChange() => traceTutorState('scroll-change');
+      void traceFocusChange() => debugPrint(
+        '[PQC-011 focus event] elapsed=${tutorTraceClock.elapsed} '
+        '${tutorRouteState()} focus=${editor.focusNode!.hasFocus} '
+        'scroll=${lessonScroll.pixels.toStringAsFixed(2)}',
+      );
+      void traceScrollChange() => debugPrint(
+        '[PQC-011 scroll event] elapsed=${tutorTraceClock.elapsed} '
+        '${tutorRouteState()} focus=${editor.focusNode!.hasFocus} '
+        'scroll=${lessonScroll.pixels.toStringAsFixed(2)}',
+      );
+      void traceCaretSnapshot(String event, [_CaretScrollSnapshot? snapshot]) {
+        final _CaretScrollSnapshot sample =
+            snapshot ?? _captureCaretScrollSnapshot(tester, editor);
+        debugPrint(
+          '[PQC-011 caret viewport] event=$event '
+          'elapsed=${tutorTraceClock.elapsed} ${tutorRouteState()} $sample',
+        );
+      }
+
       editor.focusNode!.addListener(traceFocusChange);
       lessonScroll.addListener(traceScrollChange);
-      traceTutorState('before-baseline-stabilization');
-      final double scrollOffsetBeforeTutor =
-          await _waitForStableLessonScrollOffset(tester, 'before tutor open');
-      traceTutorState('before tutor open; baseline stable');
+      await tester.ensureVisible(editableText);
+      await tester.pump();
+      expect(
+        editor.focusNode!.hasFocus,
+        isTrue,
+        reason: 'the existing tutor-state case reaches the baseline focused',
+      );
+      final _CaretScrollSnapshot caretBaselineBeforeTutor =
+          await _waitForCaretScrollToSettle(
+            tester,
+            editor,
+            'before opening Tutor',
+          );
+      traceTutorState('focused editor settled before opening Tutor');
+      traceCaretSnapshot(
+        'dynamic baseline before Tutor',
+        caretBaselineBeforeTutor,
+      );
+
       await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
       await _waitForCondition(
         tester,
@@ -305,10 +355,25 @@ void main() {
             .isNotEmpty,
         'tutor sheet opening completes',
       );
+      tutorRoute = ModalRoute.of<dynamic>(
+        tester.element(
+          find.byKey(
+            const ValueKey<String>('tutor_close'),
+            skipOffstage: false,
+          ),
+        ),
+      );
+      expect(tutorRoute, isNotNull);
       await tester.pump(const Duration(milliseconds: 300));
-      traceTutorState('sheet opening transition settled');
+      traceTutorState('Tutor open transition settled, before close tap');
+      traceCaretSnapshot('before close tap');
       expect(find.byKey(const ValueKey<String>('tutor_close')), findsOneWidget);
+
       await tester.tap(find.byKey(const ValueKey<String>('tutor_close')));
+      traceTutorState('immediately after close tap returns');
+      traceCaretSnapshot('immediately after close tap');
+      await tester.pump();
+      traceTutorState('one frame after close tap');
       await _waitForCondition(
         tester,
         () =>
@@ -319,14 +384,18 @@ void main() {
             editor.focusNode!.hasFocus,
         'tutor sheet closes and restores editor focus',
       );
-      traceTutorState('sheet closed; post-_openTutor focus checkpoint');
-      await tester.pump();
-      final double scrollOffsetAfterTutor =
-          await _waitForStableLessonScrollOffset(
+      traceTutorState('Tutor route absent and editor focus restored');
+      traceCaretSnapshot('after route closes and focus returns');
+      final _CaretScrollSnapshot caretStateAfterTutor =
+          await _waitForCaretScrollToSettle(
             tester,
-            'after first tutor close',
+            editor,
+            'after first Tutor close',
           );
-      traceTutorState('first tutor close; scroll stable');
+      traceCaretSnapshot(
+        'after first close caret scrolling settles',
+        caretStateAfterTutor,
+      );
 
       final BoardController afterTutor = tester
           .widget<BoardView>(find.byType(BoardView))
@@ -346,7 +415,17 @@ void main() {
         findsOneWidget,
         reason: 'the last run result survives the tutor route',
       );
-      expect(scrollOffsetAfterTutor, closeTo(scrollOffsetBeforeTutor, 0.5));
+      final double firstCloseScrollDelta =
+          caretStateAfterTutor.scrollPixels -
+          caretBaselineBeforeTutor.scrollPixels;
+      debugPrint(
+        '[PQC-011 caret comparison] first close scroll delta='
+        '${firstCloseScrollDelta.toStringAsFixed(2)}',
+      );
+      expect(
+        caretStateAfterTutor.scrollPixels,
+        closeTo(caretBaselineBeforeTutor.scrollPixels, 0.5),
+      );
 
       await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
       await _waitForCondition(
@@ -357,10 +436,24 @@ void main() {
             .isNotEmpty,
         'tutor sheet opening completes',
       );
+      tutorRoute = ModalRoute.of<dynamic>(
+        tester.element(
+          find.byKey(
+            const ValueKey<String>('tutor_close'),
+            skipOffstage: false,
+          ),
+        ),
+      );
+      expect(tutorRoute, isNotNull);
       await tester.pump(const Duration(milliseconds: 300));
-      traceTutorState('reopened sheet transition settled');
+      traceTutorState('reopened Tutor route settled, before close tap');
+      traceCaretSnapshot('before second close tap');
       expect(find.byKey(const ValueKey<String>('tutor_close')), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey<String>('tutor_close')));
+      traceTutorState('immediately after second close tap returns');
+      traceCaretSnapshot('immediately after second close tap');
+      await tester.pump();
+      traceTutorState('one frame after second close tap');
       await _waitForCondition(
         tester,
         () =>
@@ -371,14 +464,25 @@ void main() {
             editor.focusNode!.hasFocus,
         'tutor sheet closes and restores editor focus after reopening',
       );
-      traceTutorState('reopened sheet closed; post-_openTutor checkpoint');
-      await tester.pump();
-      final double scrollOffsetAfterReopen =
-          await _waitForStableLessonScrollOffset(
+      traceTutorState('Tutor route absent and focus restored after reopening');
+      traceCaretSnapshot('after second route closes and focus returns');
+      final _CaretScrollSnapshot caretStateAfterReopen =
+          await _waitForCaretScrollToSettle(
             tester,
-            'after second tutor close',
+            editor,
+            'after second Tutor close',
           );
-      traceTutorState('second tutor close; scroll stable');
+      traceCaretSnapshot(
+        'after second close caret scrolling settles',
+        caretStateAfterReopen,
+      );
+      final double secondCloseScrollDelta =
+          caretStateAfterReopen.scrollPixels -
+          caretBaselineBeforeTutor.scrollPixels;
+      debugPrint(
+        '[PQC-011 caret comparison] second close scroll delta='
+        '${secondCloseScrollDelta.toStringAsFixed(2)}',
+      );
       expect(
         identical(
           tester.widget<BoardView>(find.byType(BoardView)).controller,
@@ -396,7 +500,10 @@ void main() {
       );
       expect(editor.focusNode!.hasFocus, isTrue);
       expect(find.text('12'), findsOneWidget);
-      expect(scrollOffsetAfterReopen, closeTo(scrollOffsetBeforeTutor, 0.5));
+      expect(
+        caretStateAfterReopen.scrollPixels,
+        closeTo(caretBaselineBeforeTutor.scrollPixels, 0.5),
+      );
       editor.focusNode!.removeListener(traceFocusChange);
       lessonScroll.removeListener(traceScrollChange);
 
@@ -793,41 +900,219 @@ Future<void> _mountLesson(
   );
 }
 
+class _CaretScrollSnapshot {
+  const _CaretScrollSnapshot({
+    required this.hasFocus,
+    required this.selectionOffset,
+    required this.scrollPixels,
+    required this.viewportDimension,
+    required this.caretRect,
+    required this.viewportRect,
+    required this.visibleViewportRect,
+    required this.paddedViewportRect,
+    required this.viewInsets,
+    required this.scrollPadding,
+  });
+
+  final bool hasFocus;
+  final int selectionOffset;
+  final double scrollPixels;
+  final double viewportDimension;
+  final Rect caretRect;
+  final Rect viewportRect;
+  final Rect visibleViewportRect;
+  final Rect paddedViewportRect;
+  final EdgeInsets viewInsets;
+  final EdgeInsets scrollPadding;
+
+  bool get caretWithinViewport =>
+      visibleViewportRect.contains(caretRect.topLeft) &&
+      visibleViewportRect.contains(caretRect.bottomRight);
+
+  bool get caretWithinScrollPadding =>
+      paddedViewportRect.contains(caretRect.topLeft) &&
+      paddedViewportRect.contains(caretRect.bottomRight);
+
+  bool stableWith(_CaretScrollSnapshot other) =>
+      hasFocus == other.hasFocus &&
+      _closeEnough(scrollPixels, other.scrollPixels) &&
+      _closeEnough(viewportDimension, other.viewportDimension) &&
+      _closeRects(caretRect, other.caretRect) &&
+      _closeRects(viewportRect, other.viewportRect) &&
+      _closeRects(visibleViewportRect, other.visibleViewportRect) &&
+      viewInsets == other.viewInsets &&
+      scrollPadding == other.scrollPadding;
+
+  @override
+  String toString() =>
+      'focus=$hasFocus selection=$selectionOffset '
+      'scroll=${scrollPixels.toStringAsFixed(2)} '
+      'viewportDimension=${viewportDimension.toStringAsFixed(2)} '
+      'caret=$caretRect viewport=$viewportRect '
+      'visibleViewport=$visibleViewportRect '
+      'paddedViewport=$paddedViewportRect '
+      'caretWithinViewport=$caretWithinViewport '
+      'caretWithinScrollPadding=$caretWithinScrollPadding '
+      'viewInsets=$viewInsets scrollPadding=$scrollPadding';
+}
+
+bool _closeEnough(double first, double second) =>
+    (first - second).abs() <= 0.05;
+
+bool _closeRects(Rect first, Rect second) =>
+    _closeEnough(first.left, second.left) &&
+    _closeEnough(first.top, second.top) &&
+    _closeEnough(first.right, second.right) &&
+    _closeEnough(first.bottom, second.bottom);
+
 ScrollPosition _lessonScrollPosition(WidgetTester tester) {
+  final Finder lessonScroll = find.byKey(
+    const ValueKey<String>('step_scroll_1'),
+    skipOffstage: false,
+  );
   final Finder scrollable = find
       .descendant(
-        of: find.byKey(const ValueKey<String>('step_scroll_1')),
-        matching: find.byType(Scrollable),
+        of: lessonScroll,
+        matching: find.byType(Scrollable, skipOffstage: false),
       )
       .first;
   return tester.state<ScrollableState>(scrollable).position;
 }
 
-double _lessonScrollOffset(WidgetTester tester) =>
-    _lessonScrollPosition(tester).pixels;
+RenderBox _lessonViewportRenderBox(WidgetTester tester) {
+  final Finder lessonScroll = find.byKey(
+    const ValueKey<String>('step_scroll_1'),
+    skipOffstage: false,
+  );
+  final Finder scrollable = find
+      .descendant(
+        of: lessonScroll,
+        matching: find.byType(Scrollable, skipOffstage: false),
+      )
+      .first;
+  final Element scrollableElement = scrollable.evaluate().single;
+  // The first abstract viewport is the lesson's vertical viewport; the
+  // EditableText's own viewport is nested deeper in this subtree.
+  RenderBox? viewportBox;
+  void findViewportBox(Element element) {
+    if (viewportBox != null) return;
+    if (element is RenderObjectElement &&
+        element.renderObject is RenderAbstractViewport &&
+        element.renderObject is RenderBox) {
+      viewportBox = element.renderObject as RenderBox;
+      return;
+    }
+    element.visitChildren(findViewportBox);
+  }
 
-Future<double> _waitForStableLessonScrollOffset(
+  scrollableElement.visitChildren(findViewportBox);
+  expect(viewportBox, isNotNull, reason: 'lesson scroll viewport is laid out');
+  return viewportBox!;
+}
+
+_CaretScrollSnapshot _captureCaretScrollSnapshot(
   WidgetTester tester,
+  CodeEditor editor,
+) {
+  final Finder codeField = find.byKey(
+    const ValueKey<String>('code_editor_field'),
+    skipOffstage: false,
+  );
+  final Finder editableText = find.descendant(
+    of: codeField,
+    matching: find.byType(EditableText, skipOffstage: false),
+  );
+  final EditableText editableWidget = tester.widget<EditableText>(editableText);
+  final RenderEditable renderEditable = tester.renderObject<RenderEditable>(
+    editableText,
+  );
+  final int selectionOffset = editor.controller.selection.extentOffset;
+  expect(selectionOffset, greaterThanOrEqualTo(0));
+  final Rect localCaret = renderEditable.getLocalRectForCaret(
+    TextPosition(offset: selectionOffset),
+  );
+  final Rect caretRect = Rect.fromPoints(
+    renderEditable.localToGlobal(localCaret.topLeft),
+    renderEditable.localToGlobal(localCaret.bottomRight),
+  );
+
+  final RenderBox viewportBox = _lessonViewportRenderBox(tester);
+  final Rect viewportRect = Rect.fromPoints(
+    viewportBox.localToGlobal(Offset.zero),
+    viewportBox.localToGlobal(
+      Offset(viewportBox.size.width, viewportBox.size.height),
+    ),
+  );
+  final EdgeInsets scrollPadding = editableWidget.scrollPadding;
+  final MediaQueryData mediaQuery = MediaQuery.of(
+    tester.element(editableText),
+  );
+  final EdgeInsets viewInsets = mediaQuery.viewInsets;
+  final Rect mediaVisibleRect = Rect.fromLTRB(
+    viewInsets.left,
+    viewInsets.top,
+    mediaQuery.size.width - viewInsets.right,
+    mediaQuery.size.height - viewInsets.bottom,
+  );
+  final Rect visibleViewportRect = viewportRect.intersect(mediaVisibleRect);
+  final Rect paddedViewportRect = Rect.fromLTRB(
+    visibleViewportRect.left + scrollPadding.left,
+    visibleViewportRect.top + scrollPadding.top,
+    visibleViewportRect.right - scrollPadding.right,
+    visibleViewportRect.bottom - scrollPadding.bottom,
+  );
+  final ScrollPosition lessonScroll = _lessonScrollPosition(tester);
+  expect(
+    viewportRect.height,
+    closeTo(lessonScroll.viewportDimension, 0.5),
+    reason: 'the measured render box matches the lesson viewport dimension',
+  );
+
+  return _CaretScrollSnapshot(
+    hasFocus: editor.focusNode!.hasFocus,
+    selectionOffset: selectionOffset,
+    scrollPixels: lessonScroll.pixels,
+    viewportDimension: lessonScroll.viewportDimension,
+    caretRect: caretRect,
+    viewportRect: viewportRect,
+    visibleViewportRect: visibleViewportRect,
+    paddedViewportRect: paddedViewportRect,
+    viewInsets: viewInsets,
+    scrollPadding: scrollPadding,
+  );
+}
+
+Future<_CaretScrollSnapshot> _waitForCaretScrollToSettle(
+  WidgetTester tester,
+  CodeEditor editor,
   String description, {
-  int stableFrames = 3,
+  int stableSamples = 3,
   int maxFrames = 30,
 }) async {
-  double previous = _lessonScrollOffset(tester);
+  _CaretScrollSnapshot? previous;
+  _CaretScrollSnapshot? last;
   int stableCount = 0;
   for (int frame = 0; frame < maxFrames; frame++) {
     await tester.pump(const Duration(milliseconds: 50));
-    final double current = _lessonScrollOffset(tester);
-    if ((current - previous).abs() <= 0.05) {
+    final _CaretScrollSnapshot current = _captureCaretScrollSnapshot(
+      tester,
+      editor,
+    );
+    last = current;
+    if (current.hasFocus &&
+        current.caretWithinScrollPadding &&
+        previous != null &&
+        current.stableWith(previous)) {
       stableCount++;
-      if (stableCount >= stableFrames) return current;
+      if (stableCount >= stableSamples) return current;
     } else {
       stableCount = 0;
     }
     previous = current;
   }
   fail(
-    'Lesson scroll did not stabilize $description within '
-    '${maxFrames * 50}ms (last offset=$previous)',
+    'Focused editor caret did not settle inside its scrollPadding $description '
+    'within ${maxFrames * 50}ms; last snapshot: $last',
   );
 }
 

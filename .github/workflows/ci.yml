@@ -21,10 +21,100 @@ env:
   FLUTTER_VERSION: '3.47.7'
 
 jobs:
+  diagnostic_route:
+    name: Validate PQC-011 diagnostic-only routing
+    if: >-
+      github.event_name == 'push' &&
+      contains(github.event.head_commit.message, '[pqc011-diag]')
+    runs-on: ubuntu-latest
+    outputs:
+      valid: ${{ steps.validate.outputs.valid }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Validate diagnostic marker and four-file scope
+        id: validate
+        env:
+          EXPECTED_REF: refs/heads/arena/0d4fcb38-pyquest
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_AFTER: ${{ github.event.after }}
+          HEAD_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import subprocess
+          import sys
+
+          expected_ref = os.environ['EXPECTED_REF']
+          actual_ref = os.environ['GITHUB_REF']
+          before = os.environ['PUSH_BEFORE']
+          after = os.environ['PUSH_AFTER']
+          message = os.environ['HEAD_MESSAGE']
+          marker = '[pqc011-diag]'
+          banned = (
+              '[pqc011-verify]',
+              '[pqc011-normalize]',
+              '[apk]',
+              '[emulator]',
+              '[skip ci]',
+              '[ci skip]',
+          )
+          allowed = {
+              '.github/workflows/ci.yml',
+              '.github/workflows/pqc011-maintenance.yml',
+              'app/test/lesson_board_integration_test.dart',
+              'docs/implementation/coordination/tasks/PQC-011.md',
+          }
+
+          problems = []
+          if actual_ref != expected_ref:
+              problems.append(f'wrong branch: {actual_ref}')
+          if message.count(marker) != 1:
+              problems.append('commit message must contain exactly one [pqc011-diag] marker')
+          mixed = [item for item in banned if item in message]
+          if mixed:
+              problems.append(f'forbidden mixed marker(s): {", ".join(mixed)}')
+          commit_count = int(subprocess.check_output(
+              ['git', 'rev-list', '--count', f'{before}..{after}'], text=True
+          ).strip())
+          if commit_count != 1:
+              problems.append(f'diagnostic push must contain exactly one commit, found {commit_count}')
+          changed = set(subprocess.check_output(
+              ['git', 'diff', '--name-only', '--no-renames', before, after], text=True
+          ).splitlines())
+          unexpected = sorted(changed - allowed)
+          if not changed:
+              problems.append('diagnostic push contains no changed files')
+          if unexpected:
+              problems.append(f'paths outside diagnostic allowlist: {", ".join(unexpected)}')
+          print(f'Validated ref: {actual_ref}')
+          print(f'Push commit count: {commit_count}')
+          print(f'Changed paths: {sorted(changed)}')
+          if problems:
+              print('Diagnostic-only route rejected:')
+              for problem in problems:
+                  print(f'- {problem}')
+              sys.exit(1)
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write('valid=true\n')
+          print('Diagnostic-only routing approved; no Flutter SDK was installed in this job.')
+          PY
+
   # One-time: generate the Android/iOS platform folders with `flutter create`
   # and commit them back, so the repository can be opened with plain
   # `flutter run` afterwards.
   bootstrap:
+    needs: diagnostic_route
+    if: >-
+      always() &&
+      !(github.event_name == 'push' &&
+        github.ref == 'refs/heads/arena/0d4fcb38-pyquest' &&
+        contains(github.event.head_commit.message, '[pqc011-diag]') &&
+        needs.diagnostic_route.result == 'success' &&
+        needs.diagnostic_route.outputs.valid == 'true')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -53,6 +143,14 @@ jobs:
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
   check:
+    needs: diagnostic_route
+    if: >-
+      always() &&
+      !(github.event_name == 'push' &&
+        github.ref == 'refs/heads/arena/0d4fcb38-pyquest' &&
+        contains(github.event.head_commit.message, '[pqc011-diag]') &&
+        needs.diagnostic_route.result == 'success' &&
+        needs.diagnostic_route.outputs.valid == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -288,10 +386,19 @@ jobs:
           fi
 
   apk:
+    needs: diagnostic_route
     # Live Gemini PCM streaming, tutor music ducking, AI-only bubbles; keep audioplayers for game SFX/music [apk].
     # APK-only test builds can run on [apk] commits without waiting for the
     # unrelated render-test gate. Emulator runs remain opt-in via [emulator].
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[emulator]') || contains(github.event.head_commit.message, '[apk]')
+    if: >-
+      always() &&
+      (github.event_name == 'workflow_dispatch' ||
+       contains(github.event.head_commit.message, '[emulator]') ||
+       contains(github.event.head_commit.message, '[apk]')) &&
+      !(github.event_name == 'push' &&
+        contains(github.event.head_commit.message, '[pqc011-diag]') &&
+        needs.diagnostic_route.result == 'success' &&
+        needs.diagnostic_route.outputs.valid == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:

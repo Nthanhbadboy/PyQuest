@@ -25,13 +25,22 @@ concurrency:
 
 jobs:
   maintenance:
+    name: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[pqc011-diag]') && 'PQC-011 diagnostic-only') || 'maintenance' }}
     if: >-
       github.ref == 'refs/heads/arena/0d4fcb38-pyquest' &&
       (github.event_name == 'workflow_dispatch' ||
-       contains(github.event.head_commit.message, '[pqc011-normalize]') ||
-       contains(github.event.head_commit.message, '[pqc011-verify]'))
+       (contains(github.event.head_commit.message, '[pqc011-diag]') &&
+        !contains(github.event.head_commit.message, '[pqc011-normalize]') &&
+        !contains(github.event.head_commit.message, '[pqc011-verify]') &&
+        !contains(github.event.head_commit.message, '[apk]') &&
+        !contains(github.event.head_commit.message, '[emulator]') &&
+        !contains(github.event.head_commit.message, '[skip ci]') &&
+        !contains(github.event.head_commit.message, '[ci skip]')) ||
+       (!contains(github.event.head_commit.message, '[pqc011-diag]') &&
+        (contains(github.event.head_commit.message, '[pqc011-normalize]') ||
+         contains(github.event.head_commit.message, '[pqc011-verify]'))))
     env:
-      MAINTENANCE_PHASE: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[pqc011-normalize]') && 'normalize') || (github.event_name == 'push' && contains(github.event.head_commit.message, '[pqc011-verify]') && 'verify') || inputs.phase }}
+      MAINTENANCE_PHASE: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[pqc011-diag]') && 'diagnose') || (github.event_name == 'push' && contains(github.event.head_commit.message, '[pqc011-normalize]') && 'normalize') || (github.event_name == 'push' && contains(github.event.head_commit.message, '[pqc011-verify]') && 'verify') || inputs.phase }}
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
@@ -68,6 +77,211 @@ jobs:
           if actual != expected:
               raise SystemExit(f'Pinned SDK mismatch: expected {expected!r}')
           PY
+
+      - name: Validate diagnostic commit scope
+        if: env.MAINTENANCE_PHASE == 'diagnose'
+        id: diagnostic_scope
+        env:
+          EXPECTED_REF: refs/heads/arena/0d4fcb38-pyquest
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_AFTER: ${{ github.sha }}
+          HEAD_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import subprocess
+          import sys
+
+          allowed = {
+              '.github/workflows/ci.yml',
+              '.github/workflows/pqc011-maintenance.yml',
+              'app/test/lesson_board_integration_test.dart',
+              'docs/implementation/coordination/tasks/PQC-011.md',
+          }
+          before = os.environ['PUSH_BEFORE']
+          after = os.environ['PUSH_AFTER']
+          message = os.environ['HEAD_MESSAGE']
+          problems = []
+          if os.environ['GITHUB_REF'] != os.environ['EXPECTED_REF']:
+              problems.append('push is not on the exact CODE branch')
+          if message.count('[pqc011-diag]') != 1:
+              problems.append('commit must contain exactly one [pqc011-diag] marker')
+          mixed = [
+              marker for marker in (
+                  '[pqc011-verify]', '[pqc011-normalize]', '[apk]', '[emulator]',
+                  '[skip ci]', '[ci skip]',
+              ) if marker in message
+          ]
+          if mixed:
+              problems.append(f'forbidden mixed marker(s): {", ".join(mixed)}')
+          commit_count = int(subprocess.check_output(
+              ['git', 'rev-list', '--count', f'{before}..{after}'], text=True
+          ).strip())
+          if commit_count != 1:
+              problems.append(f'expected one pushed commit, found {commit_count}')
+          changed = set(subprocess.check_output(
+              ['git', 'diff', '--name-only', '--no-renames', before, after], text=True
+          ).splitlines())
+          unexpected = sorted(changed - allowed)
+          if not changed:
+              problems.append('push contains no changed files')
+          if unexpected:
+              problems.append(f'out-of-scope changed paths: {", ".join(unexpected)}')
+          print(f'Pushed commit count: {commit_count}; changed paths: {sorted(changed)}')
+          if problems:
+              for problem in problems:
+                  print(f'REJECTED: {problem}')
+              sys.exit(1)
+          print('Diagnostic marker and exact four-file scope validated.')
+          PY
+
+      - name: Resolve dependencies for diagnostic-only tests
+        if: env.MAINTENANCE_PHASE == 'diagnose' && steps.diagnostic_scope.outcome == 'success'
+        id: diagnostic_pub_get
+        continue-on-error: true
+        working-directory: app
+        run: |
+          set -euo pipefail
+          flutter pub get 2>&1 | tee "$RUNNER_TEMP/pqc011-diagnostic-pub-get.log"
+          git diff --exit-code -- pubspec.lock
+
+      - name: Isolated tutor-state diagnostic
+        if: env.MAINTENANCE_PHASE == 'diagnose' && steps.diagnostic_scope.outcome == 'success' && steps.diagnostic_pub_get.outcome == 'success'
+        id: diagnostic_isolated
+        continue-on-error: true
+        timeout-minutes: 3
+        working-directory: app
+        run: |
+          set -euo pipefail
+          flutter test --reporter expanded --timeout 45s \
+            --plain-name 'tutor sheet and locale changes preserve the lesson-owned board/editor state' \
+            test/lesson_board_integration_test.dart \
+            2>&1 | tee "$RUNNER_TEMP/pqc011-diagnostic-isolated.log"
+
+      - name: First-test then tutor-state diagnostic
+        if: env.MAINTENANCE_PHASE == 'diagnose' && steps.diagnostic_scope.outcome == 'success' && steps.diagnostic_pub_get.outcome == 'success'
+        id: diagnostic_sequence
+        continue-on-error: true
+        timeout-minutes: 3
+        working-directory: app
+        run: |
+          set -euo pipefail
+          flutter test --reporter expanded --timeout 45s \
+            --name 'authored example editor/run and board controls do not grade or progress|tutor sheet and locale changes preserve the lesson-owned board/editor state' \
+            test/lesson_board_integration_test.dart \
+            2>&1 | tee "$RUNNER_TEMP/pqc011-diagnostic-sequence.log"
+
+      - name: Summarize PQC-011 diagnostic-only results
+        if: ${{ always() && env.MAINTENANCE_PHASE == 'diagnose' }}
+        id: diagnostic_summary
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+          SCOPE_OUTCOME: ${{ steps.diagnostic_scope.outcome }}
+          PUB_GET_OUTCOME: ${{ steps.diagnostic_pub_get.outcome }}
+          ISOLATED_OUTCOME: ${{ steps.diagnostic_isolated.outcome }}
+          SEQUENCE_OUTCOME: ${{ steps.diagnostic_sequence.outcome }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          import re
+          import subprocess
+          import sys
+
+          temp = Path(os.environ['RUNNER_TEMP'])
+          summary = Path(os.environ['GITHUB_STEP_SUMMARY'])
+
+          def result(label, filename, expected, outcome):
+              if outcome == 'skipped':
+                  return f'{label}: NOT_RUN (diagnostic scope or dependency prerequisite failed/skipped)'
+              path = temp / filename
+              if not path.exists():
+                  return f'{label}: FAIL (test log/count unavailable)'
+              text = path.read_text(encoding='utf-8', errors='replace')
+              matches = re.findall(
+                  r'\+(\d+)(?:\s+-(\d+))?:\s*(All tests passed!|Some tests failed\.)',
+                  text,
+              )
+              if not matches:
+                  return f'{label}: FAIL (summary/count unavailable)'
+              passed_text, failed_text, marker = matches[-1]
+              passed, failed = int(passed_text), int(failed_text or 0)
+              total = passed + failed
+              ok = outcome == 'success' and marker == 'All tests passed!' and failed == 0 and passed == expected
+              status = 'PASS' if ok else 'FAIL'
+              return f'{label}: {status} — {passed} passed, {failed} failed ({total} total); expected {expected} passing tests'
+
+          isolated = result(
+              'Isolated tutor-state test',
+              'pqc011-diagnostic-isolated.log',
+              1,
+              os.environ['ISOLATED_OUTCOME'],
+          )
+          sequence = result(
+              'First-test → tutor-state sequence',
+              'pqc011-diagnostic-sequence.log',
+              2,
+              os.environ['SEQUENCE_OUTCOME'],
+          )
+          dirty = subprocess.check_output(
+              ['git', 'status', '--porcelain=v1', '--untracked-files=all'],
+              text=True,
+          ).strip()
+          clean_result = 'PASS' if not dirty else 'FAIL (working tree changed; no auto-commit/push performed)'
+          pub_result = os.environ['PUB_GET_OUTCOME'].upper()
+          overall = (
+              os.environ['SCOPE_OUTCOME'] == 'success'
+              and os.environ['PUB_GET_OUTCOME'] == 'success'
+              and isolated.startswith('Isolated tutor-state test: PASS')
+              and sequence.startswith('First-test → tutor-state sequence: PASS')
+              and not dirty
+          )
+          conclusion = 'PASS' if overall else 'FAIL'
+          lines = [
+              '# PQC-011 diagnostic-only',
+              '',
+              f'- Source SHA: `{os.environ["SOURCE_SHA"]}`',
+              '- SDK: Flutter 3.47.7 / Dart 3.13.5 / framework `abaf9c523780a608bd46686fd5e53740a07077f8` (pin verified before tests)',
+              f'- Diagnostic commit scope: {os.environ["SCOPE_OUTCOME"].upper()}',
+              f'- `flutter pub get` / lock unchanged: {pub_result}',
+              f'- {isolated}',
+              f'- {sequence}',
+              f'- Source cleanliness: {clean_result}',
+              f'- Diagnostic result: **{conclusion}**; this check is diagnostic evidence only and does not accept PQC-011.',
+              '',
+          ]
+          for label, filename in (
+              ('Isolated trace and failure excerpt', 'pqc011-diagnostic-isolated.log'),
+              ('Ordered sequence trace and failure excerpt', 'pqc011-diagnostic-sequence.log'),
+          ):
+              path = temp / filename
+              lines.extend([f'## {label}', '```text'])
+              if not path.exists():
+                  lines.append('NOT_RUN: no test log was produced.')
+              else:
+                  text = path.read_text(encoding='utf-8', errors='replace')
+                  trace = [line for line in text.splitlines() if '[PQC-011' in line]
+                  tail = '\n'.join(text.splitlines()[-80:])
+                  excerpt = '\n'.join(trace[-100:]) + '\n--- test output tail ---\n' + tail
+                  lines.append(excerpt[-12000:])
+              lines.extend(['```', ''])
+          summary.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          print('\n'.join(lines[:12]))
+          if not overall:
+              sys.exit(1)
+          PY
+
+      - name: Upload PQC-011 diagnostic-only logs
+        if: ${{ always() && env.MAINTENANCE_PHASE == 'diagnose' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pqc011-diagnostic-only-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/pqc011-diagnostic-*.log
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Normalize the authorized 13 Dart files and pub lock
         if: env.MAINTENANCE_PHASE == 'normalize'
