@@ -328,11 +328,17 @@ void main() {
           await _waitForCaretScrollToSettle(
             tester,
             editor,
-            'before opening Tutor',
+            'before first Tutor open; visible but outside safe padding',
           );
-      traceTutorState('focused editor settled before opening Tutor');
+      expect(caretBaselineBeforeTutor.caretWithinViewport, isTrue);
+      expect(
+        caretBaselineBeforeTutor.caretWithinScrollPadding,
+        isFalse,
+        reason: 'retain the measured visible-but-outside-padding case',
+      );
+      traceTutorState('visible caret baseline before first Tutor open');
       traceCaretSnapshot(
-        'dynamic baseline before Tutor',
+        'case B baseline: caret visible but outside scrollPadding',
         caretBaselineBeforeTutor,
       );
 
@@ -405,16 +411,45 @@ void main() {
         findsOneWidget,
         reason: 'the last run result survives the tutor route',
       );
+      final double expectedFirstCloseScrollDelta =
+          _expectedVerticalCaretScrollDelta(caretBaselineBeforeTutor);
       final double firstCloseScrollDelta =
           caretStateAfterTutor.scrollPixels -
           caretBaselineBeforeTutor.scrollPixels;
       debugPrint(
-        '[PQC-011 caret comparison] first close scroll delta='
-        '${firstCloseScrollDelta.toStringAsFixed(2)}',
+        '[PQC-011 caret comparison] case B observed delta='
+        '${firstCloseScrollDelta.toStringAsFixed(2)} expected minimal delta='
+        '${expectedFirstCloseScrollDelta.toStringAsFixed(2)}',
       );
       expect(
-        caretStateAfterTutor.scrollPixels,
-        closeTo(caretBaselineBeforeTutor.scrollPixels, 0.5),
+        expectedFirstCloseScrollDelta,
+        lessThan(0.0),
+        reason: 'the measured caret is above the padded viewport',
+      );
+      expect(
+        firstCloseScrollDelta,
+        closeTo(expectedFirstCloseScrollDelta, 0.5),
+        reason: 'only the measured, scroll-limit-bounded caret correction occurs',
+      );
+      expect(caretStateAfterTutor.caretWithinScrollPadding, isTrue);
+
+      // Case A starts from a caret already in the safe padded viewport. The
+      // explicit focus cycle is test setup; establish the baseline only after
+      // the resulting bounded caret reveal has settled.
+      editor.focusNode!.unfocus();
+      await tester.pump();
+      editor.focusNode!.requestFocus();
+      final _CaretScrollSnapshot safeCaretBaselineBeforeReopen =
+          await _waitForCaretScrollToSettle(
+            tester,
+            editor,
+            'case A baseline before reopening Tutor',
+            requireCaretInScrollPadding: true,
+          );
+      expect(safeCaretBaselineBeforeReopen.caretWithinScrollPadding, isTrue);
+      traceCaretSnapshot(
+        'case A baseline: caret inside scrollPadding',
+        safeCaretBaselineBeforeReopen,
       );
 
       await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
@@ -468,7 +503,7 @@ void main() {
       );
       final double secondCloseScrollDelta =
           caretStateAfterReopen.scrollPixels -
-          caretBaselineBeforeTutor.scrollPixels;
+          safeCaretBaselineBeforeReopen.scrollPixels;
       debugPrint(
         '[PQC-011 caret comparison] second close scroll delta='
         '${secondCloseScrollDelta.toStringAsFixed(2)}',
@@ -492,7 +527,7 @@ void main() {
       expect(find.text('12'), findsOneWidget);
       expect(
         caretStateAfterReopen.scrollPixels,
-        closeTo(caretBaselineBeforeTutor.scrollPixels, 0.5),
+        closeTo(safeCaretBaselineBeforeReopen.scrollPixels, 0.5),
       );
       editor.focusNode!.removeListener(traceFocusChange);
       lessonScroll.removeListener(traceScrollChange);
@@ -895,6 +930,8 @@ class _CaretScrollSnapshot {
     required this.hasFocus,
     required this.selectionOffset,
     required this.scrollPixels,
+    required this.minScrollExtent,
+    required this.maxScrollExtent,
     required this.viewportDimension,
     required this.caretRect,
     required this.viewportRect,
@@ -907,6 +944,8 @@ class _CaretScrollSnapshot {
   final bool hasFocus;
   final int selectionOffset;
   final double scrollPixels;
+  final double minScrollExtent;
+  final double maxScrollExtent;
   final double viewportDimension;
   final Rect caretRect;
   final Rect viewportRect;
@@ -926,6 +965,8 @@ class _CaretScrollSnapshot {
   bool stableWith(_CaretScrollSnapshot other) =>
       hasFocus == other.hasFocus &&
       _closeEnough(scrollPixels, other.scrollPixels) &&
+      _closeEnough(minScrollExtent, other.minScrollExtent) &&
+      _closeEnough(maxScrollExtent, other.maxScrollExtent) &&
       _closeEnough(viewportDimension, other.viewportDimension) &&
       _closeRects(caretRect, other.caretRect) &&
       _closeRects(viewportRect, other.viewportRect) &&
@@ -937,6 +978,7 @@ class _CaretScrollSnapshot {
   String toString() =>
       'focus=$hasFocus selection=$selectionOffset '
       'scroll=${scrollPixels.toStringAsFixed(2)} '
+      'scrollExtents=$minScrollExtent..$maxScrollExtent '
       'viewportDimension=${viewportDimension.toStringAsFixed(2)} '
       'caret=$caretRect viewport=$viewportRect '
       'visibleViewport=$visibleViewportRect '
@@ -1084,6 +1126,8 @@ _CaretScrollSnapshot _captureCaretScrollSnapshot(
     hasFocus: editor.focusNode!.hasFocus,
     selectionOffset: selectionOffset,
     scrollPixels: lessonScroll.pixels,
+    minScrollExtent: lessonScroll.minScrollExtent,
+    maxScrollExtent: lessonScroll.maxScrollExtent,
     viewportDimension: lessonScroll.viewportDimension,
     caretRect: caretRect,
     viewportRect: viewportRect,
@@ -1094,10 +1138,30 @@ _CaretScrollSnapshot _captureCaretScrollSnapshot(
   );
 }
 
+double _expectedVerticalCaretScrollDelta(_CaretScrollSnapshot snapshot) {
+  final double movementNeededAtTop =
+      snapshot.paddedViewportRect.top - snapshot.caretRect.top;
+  final double movementNeededAtBottom =
+      snapshot.caretRect.bottom - snapshot.paddedViewportRect.bottom;
+  final double requestedDelta = movementNeededAtTop > 0
+      ? -movementNeededAtTop
+      : movementNeededAtBottom > 0
+      ? movementNeededAtBottom
+      : 0.0;
+  final double minimumAllowedDelta =
+      snapshot.minScrollExtent - snapshot.scrollPixels;
+  final double maximumAllowedDelta =
+      snapshot.maxScrollExtent - snapshot.scrollPixels;
+  return requestedDelta
+      .clamp(minimumAllowedDelta, maximumAllowedDelta)
+      .toDouble();
+}
+
 Future<_CaretScrollSnapshot> _waitForCaretScrollToSettle(
   WidgetTester tester,
   CodeEditor editor,
   String description, {
+  bool requireCaretInScrollPadding = false,
   int stableSamples = 3,
   int maxFrames = 30,
 }) async {
@@ -1111,8 +1175,11 @@ Future<_CaretScrollSnapshot> _waitForCaretScrollToSettle(
       editor,
     );
     last = current;
+    final bool caretMeetsRequiredViewport = requireCaretInScrollPadding
+        ? current.caretWithinScrollPadding
+        : current.caretWithinViewport;
     if (current.hasFocus &&
-        current.caretWithinViewport &&
+        caretMeetsRequiredViewport &&
         previous != null &&
         current.stableWith(previous)) {
       stableCount++;
@@ -1123,7 +1190,7 @@ Future<_CaretScrollSnapshot> _waitForCaretScrollToSettle(
     previous = current;
   }
   fail(
-    'Focused editor caret did not settle inside the visible viewport $description '
+    'Focused editor caret did not settle inside the required viewport $description '
     'within ${maxFrames * 50}ms; last snapshot: $last',
   );
 }
