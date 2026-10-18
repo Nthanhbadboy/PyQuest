@@ -302,6 +302,7 @@ void main() {
             editor.focusNode!.hasFocus,
         'tutor sheet closes and restores editor focus',
       );
+      await tester.pump(const Duration(milliseconds: 300));
 
       final BoardController afterTutor = tester
           .widget<BoardView>(find.byType(BoardView))
@@ -348,6 +349,7 @@ void main() {
             editor.focusNode!.hasFocus,
         'tutor sheet closes and restores editor focus after reopening',
       );
+      await tester.pump(const Duration(milliseconds: 300));
       expect(
         identical(
           tester.widget<BoardView>(find.byType(BoardView)).controller,
