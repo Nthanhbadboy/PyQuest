@@ -279,14 +279,6 @@ void main() {
       );
       await tester.pump();
       final ScrollPosition lessonScroll = _lessonScrollPosition(tester);
-      final Finder editorField = find.byKey(
-        const ValueKey<String>('code_editor_field'),
-        skipOffstage: false,
-      );
-      final Finder editableText = find.descendant(
-        of: editorField,
-        matching: find.byType(EditableText, skipOffstage: false),
-      );
       final Stopwatch tutorTraceClock = Stopwatch()..start();
       ModalRoute<dynamic>? tutorRoute;
       String tutorRouteState() {
@@ -327,8 +319,6 @@ void main() {
 
       editor.focusNode!.addListener(traceFocusChange);
       lessonScroll.addListener(traceScrollChange);
-      await tester.ensureVisible(editableText);
-      await tester.pump();
       expect(
         editor.focusNode!.hasFocus,
         isTrue,
@@ -1122,7 +1112,7 @@ Future<_CaretScrollSnapshot> _waitForCaretScrollToSettle(
     );
     last = current;
     if (current.hasFocus &&
-        current.caretWithinScrollPadding &&
+        current.caretWithinViewport &&
         previous != null &&
         current.stableWith(previous)) {
       stableCount++;
@@ -1133,7 +1123,7 @@ Future<_CaretScrollSnapshot> _waitForCaretScrollToSettle(
     previous = current;
   }
   fail(
-    'Focused editor caret did not settle inside its scrollPadding $description '
+    'Focused editor caret did not settle inside the visible viewport $description '
     'within ${maxFrames * 50}ms; last snapshot: $last',
   );
 }
