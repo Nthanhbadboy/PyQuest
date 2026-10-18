@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import '../../app/activity.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -6,6 +7,24 @@ import '../../shared/theme/app_theme.dart';
 import '../../shared/theme/palette.dart';
 import 'main_map_scene_geometry.dart';
 import 'main_map_scene_state.dart';
+
+void _ensureVisibleIfNeeded(BuildContext context, {required double alignment}) {
+  final RenderObject? target = context.findRenderObject();
+  final RenderAbstractViewport? viewport = RenderAbstractViewport.maybeOf(target);
+  final ScrollableState? scrollable = Scrollable.maybeOf(context);
+  if (target != null && viewport != null && scrollable != null) {
+    final ScrollPosition position = scrollable.position;
+    final double leading = viewport.getOffsetToReveal(target, 0).offset;
+    final double trailing = viewport.getOffsetToReveal(target, 1).offset;
+    if (position.pixels >= trailing && position.pixels <= leading) return;
+  }
+  Scrollable.ensureVisible(
+    context,
+    alignment: alignment,
+    duration: const Duration(milliseconds: 180),
+    curve: Curves.easeOut,
+  );
+}
 
 /// R1-A presentation for the six existing registry activities.
 /// The W01 background is deliberately one flattened, static image; the
@@ -133,14 +152,8 @@ class MainMapScene extends StatelessWidget {
             name: placeName(l10n, id),
             state: places[id] ?? const MainMapPlaceState.loading(),
             focusNode: focusNodeFor(id),
-            onFocused: (BuildContext buttonContext) {
-              Scrollable.ensureVisible(
-                buttonContext,
-                alignment: 0.45,
-                duration: const Duration(milliseconds: 180),
-                curve: Curves.easeOut,
-              );
-            },
+            onFocused: (BuildContext buttonContext) =>
+                _ensureVisibleIfNeeded(buttonContext, alignment: 0.45),
             onPressed: () => _activate(module),
             l10n: l10n,
           ),
@@ -182,12 +195,7 @@ class MainMapScene extends StatelessWidget {
                           const MainMapPlaceState.loading(),
                       focusNode: focusNodeFor(modules[i].def.id),
                       onFocused: (BuildContext buttonContext) =>
-                          Scrollable.ensureVisible(
-                            buttonContext,
-                            alignment: 0.35,
-                            duration: const Duration(milliseconds: 180),
-                            curve: Curves.easeOut,
-                          ),
+                          _ensureVisibleIfNeeded(buttonContext, alignment: 0.35),
                       onPressed: () => _activate(modules[i]),
                       l10n: l10n,
                     ),

@@ -160,64 +160,67 @@ void main() {
       tester.view.physicalSize = const Size(390, 844);
       addTearDown(tester.view.reset);
       final SemanticsHandle semantics = tester.ensureSemantics();
-      addTearDown(semantics.dispose);
-      final AppServices services = (await tester.runAsync(createServices))!;
-      await tester.runAsync(() => services.settings.setIntroSeen());
-      addTearDown(services.dispose);
+      try {
+        final AppServices services = (await tester.runAsync(createServices))!;
+        await tester.runAsync(() => services.settings.setIntroSeen());
+        addTearDown(services.dispose);
 
-      await tester.pumpWidget(
-        mainMapHost(services, locale: const Locale('vi'), textScale: 1),
-      );
-      await pumpFor(tester, const Duration(milliseconds: 300));
-      const Map<String, String> names = <String, String>{
-        'main_quest': 'Tháp Python',
-        'robot_maze': 'Mê Cung Robo',
-        'dragon_jump': 'Núi Lửa',
-        'catch_stars': 'Đài Thiên Văn',
-        'bug_hunter': 'Xưởng Bitsy',
-        'achievement_house': 'Nhà Thành Tích',
-      };
-      for (final MapEntry<String, String> entry in names.entries) {
-        final Finder marker = find.byKey(
-          ValueKey<String>('map_label_${entry.key}'),
+        await tester.pumpWidget(
+          mainMapHost(services, locale: const Locale('vi'), textScale: 1),
         );
-        await tester.ensureVisible(marker);
+        await pumpFor(tester, const Duration(milliseconds: 300));
+        const Map<String, String> names = <String, String>{
+          'main_quest': 'Tháp Python',
+          'robot_maze': 'Mê Cung Robo',
+          'dragon_jump': 'Núi Lửa',
+          'catch_stars': 'Đài Thiên Văn',
+          'bug_hunter': 'Xưởng Bitsy',
+          'achievement_house': 'Nhà Thành Tích',
+        };
+        for (final MapEntry<String, String> entry in names.entries) {
+          final Finder marker = find.byKey(
+            ValueKey<String>('map_label_${entry.key}'),
+          );
+          await tester.ensureVisible(marker);
+          await tester.pump();
+          final SemanticsNode node = tester.getSemantics(marker);
+          expect(
+            node.getSemanticsData().hasAction(SemanticsAction.tap),
+            isTrue,
+            reason: '${entry.key} has a real accessible action',
+          );
+          expect(
+            node.label,
+            contains(entry.value),
+            reason: '${entry.key} has a localized accessible name',
+          );
+        }
+        await tester.tap(
+          find.byKey(const ValueKey<String>('main_map_mode_places')),
+        );
         await tester.pump();
-        final SemanticsNode node = tester.getSemantics(marker);
-        expect(
-          node.getSemanticsData().hasAction(SemanticsAction.tap),
-          isTrue,
-          reason: '${entry.key} has a real accessible action',
-        );
-        expect(
-          node.label,
-          contains(entry.value),
-          reason: '${entry.key} has a localized accessible name',
-        );
+        for (final MapEntry<String, String> entry in names.entries) {
+          final Finder place = find.byKey(
+            ValueKey<String>('directory_place_${entry.key}'),
+          );
+          await tester.ensureVisible(place);
+          await tester.pump();
+          final SemanticsNode node = tester.getSemantics(place);
+          expect(
+            node.getSemanticsData().hasAction(SemanticsAction.tap),
+            isTrue,
+            reason: '${entry.key} directory entry is actionable',
+          );
+          expect(
+            node.label,
+            contains(entry.value),
+            reason: '${entry.key} directory name remains localized',
+          );
+        }
+        expect(tester.takeException(), isNull);
+      } finally {
+        semantics.dispose();
       }
-      await tester.tap(
-        find.byKey(const ValueKey<String>('main_map_mode_places')),
-      );
-      await tester.pump();
-      for (final MapEntry<String, String> entry in names.entries) {
-        final Finder place = find.byKey(
-          ValueKey<String>('directory_place_${entry.key}'),
-        );
-        await tester.ensureVisible(place);
-        await tester.pump();
-        final SemanticsNode node = tester.getSemantics(place);
-        expect(
-          node.getSemanticsData().hasAction(SemanticsAction.tap),
-          isTrue,
-          reason: '${entry.key} directory entry is actionable',
-        );
-        expect(
-          node.label,
-          contains(entry.value),
-          reason: '${entry.key} directory name remains localized',
-        );
-      }
-      expect(tester.takeException(), isNull);
     },
   );
 

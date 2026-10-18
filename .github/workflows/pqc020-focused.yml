@@ -150,7 +150,12 @@ jobs:
           clean_log = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', log)
           passed_matches = re.findall(r'\+(\d+):\s+All tests passed!', clean_log)
           failed_matches = re.findall(r'\+(\d+)\s+-\s*(\d+):', clean_log)
-          if failed_matches:
+          final_summary = re.findall(r'(\d+) tests passed, (\d+) failed\.', clean_log)
+          if final_summary:
+              passed_count, failed_count = map(int, final_summary[-1])
+              test_result = f'{passed_count} passed, {failed_count} failed ({passed_count + failed_count} total)'
+              test_count = passed_count
+          elif failed_matches:
               passed_count, failed_count = map(int, failed_matches[-1])
               test_result = f'{passed_count} passed, {failed_count} failed ({passed_count + failed_count} total)'
               test_count = passed_count
