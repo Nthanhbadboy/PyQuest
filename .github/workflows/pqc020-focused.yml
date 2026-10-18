@@ -205,7 +205,7 @@ jobs:
           )
           if format_error:
               text += '\\n\\nFormatter output:\\n```text\\n' + format_error[:12000] + '\\n```'
-          now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+          now = dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00', 'Z')
           def post_check(payload):
               response = subprocess.run(
                   ['gh', 'api', f'repos/{repository}/check-runs', '--method', 'POST', '--input', '-'],
@@ -219,11 +219,8 @@ jobs:
           evidence = post_check({
               'name': 'PQC-020 focused gate evidence',
               'head_sha': sha,
-              'external_id': f'{run_id}-pqc020',
-              'details_url': f'https://github.com/{repository}/actions/runs/{run_id}',
               'status': 'completed',
               'conclusion': 'success' if successful else 'failure',
-              'started_at': now,
               'completed_at': now,
               'output': {
                   'title': 'PQC-020 R1-A focused verification',
@@ -236,11 +233,8 @@ jobs:
               snapshot_check = post_check({
                   'name': f'PQC-020 formatted source snapshot {index}/{len(chunks)}',
                   'head_sha': sha,
-                  'external_id': f'{run_id}-pqc020-snapshot-{index}',
-                  'details_url': f'https://github.com/{repository}/actions/runs/{run_id}',
                   'status': 'completed',
                   'conclusion': 'neutral',
-                  'started_at': now,
                   'completed_at': now,
                   'output': {
                       'title': 'Formatted PQC-020 source snapshot segment',
