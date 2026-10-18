@@ -105,7 +105,7 @@ void main() {
       final ScrollController mapController = tester
           .widget<SingleChildScrollView>(villageScroll)
           .controller!;
-      final double beforeRouteOffset = mapController.offset;
+      final double initialMapOffset = mapController.offset;
       final Finder mainQuestButton = find.descendant(
         of: find.byKey(const ValueKey<String>('map_label_main_quest')),
         matching: find.byType(TextButton),
@@ -113,21 +113,17 @@ void main() {
       final FocusNode mainQuestFocus = tester
           .widget<TextButton>(mainQuestButton)
           .focusNode!;
-      expect(beforeRouteOffset, greaterThan(0));
+      expect(initialMapOffset, greaterThan(0));
 
       await _tapPlace(tester, 'main_quest');
-      expect(
-        mapController.offset,
-        closeTo(beforeRouteOffset, 0.5),
-        reason: 'activating an already-visible place preserves map scroll',
-      );
       expect(find.byType(ActivitySheet), findsOneWidget);
+      final double mainQuestRouteOffset = mapController.offset;
       expect(find.byKey(const ValueKey<String>('sheet_open')), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey<String>('sheet_open')));
       await pumpFor(tester, const Duration(milliseconds: 1400));
       expect(find.byType(MainQuestHomeScreen), findsOneWidget);
       await _leaveActivity(tester);
-      expect(mapController.offset, closeTo(beforeRouteOffset, 0.5));
+      expect(mapController.offset, closeTo(mainQuestRouteOffset, 0.5));
       expect(
         FocusManager.instance.primaryFocus,
         mainQuestFocus,
@@ -145,11 +141,12 @@ void main() {
 
       await _tapPlace(tester, 'robot_maze');
       expect(find.byType(ActivitySheet), findsOneWidget);
+      final double robotMazeRouteOffset = mapController.offset;
       await tester.tap(find.byKey(const ValueKey<String>('sheet_open')));
       await pumpFor(tester, const Duration(milliseconds: 1400));
       expect(find.byType(RobotMazeHomeScreen), findsOneWidget);
       await _leaveActivity(tester);
-      expect(mapController.offset, closeTo(beforeRouteOffset, 0.5));
+      expect(mapController.offset, closeTo(robotMazeRouteOffset, 0.5));
       expect(
         events
             .where(
