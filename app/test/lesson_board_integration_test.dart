@@ -859,7 +859,7 @@ Future<Map<String, ByteData>> _preloadAuthoredAssetBytes(
   final _TracingAssetBundle assetBundle =
       bundle ?? _TracingAssetBundle(rootBundle);
   final Map<String, ByteData>? sources = await tester.runAsync(
-    () => runZoned<Map<String, ByteData>>(
+    () => runZoned<Future<Map<String, ByteData>>>(
       () async {
         final int zoneId = identityHashCode(Zone.current);
         final Map<String, Object> errors = <String, Object>{};
