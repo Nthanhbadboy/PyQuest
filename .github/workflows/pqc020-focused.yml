@@ -148,7 +148,7 @@ jobs:
           format_log = format_log_path.read_text(encoding='utf-8', errors='replace') if format_log_path.exists() else ''
           import re
           passed_matches = re.findall(r'\+(\d+):\s+All tests passed!', log)
-          failed_matches = re.findall(r'\+(\d+)\s+-\s+(\d+):\s+Some tests failed\.', log)
+          failed_matches = re.findall(r'\+(\d+)\s+-\s*(\d+):\s+Some tests failed\.', log)
           if failed_matches:
               passed_count, failed_count = map(int, failed_matches[-1])
               test_result = f'{passed_count} passed, {failed_count} failed ({passed_count + failed_count} total)'

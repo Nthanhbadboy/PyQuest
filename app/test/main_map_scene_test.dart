@@ -8,7 +8,6 @@ import 'package:pyquest/app/activity.dart';
 import 'package:pyquest/app/activity_registry.dart';
 import 'package:pyquest/app/app_scope.dart';
 import 'package:pyquest/app/app_services.dart';
-import 'package:pyquest/core/clock.dart';
 import 'package:pyquest/l10n/generated/app_localizations.dart';
 import 'package:pyquest/modules/main_map/main_map_scene_state.dart';
 import 'package:pyquest/modules/main_map/main_map_screen.dart';
@@ -186,7 +185,7 @@ void main() {
         await tester.pump();
         final SemanticsNode node = tester.getSemantics(marker);
         expect(
-          node.hasAction(SemanticsAction.tap),
+          node.getSemanticsData().hasAction(SemanticsAction.tap),
           isTrue,
           reason: '${entry.key} has a real accessible action',
         );
@@ -208,7 +207,7 @@ void main() {
         await tester.pump();
         final SemanticsNode node = tester.getSemantics(place);
         expect(
-          node.hasAction(SemanticsAction.tap),
+          node.getSemanticsData().hasAction(SemanticsAction.tap),
           isTrue,
           reason: '${entry.key} directory entry is actionable',
         );
