@@ -82,7 +82,8 @@ jobs:
             test/main_map_scene_geometry_test.dart \
             test/main_map_scene_route_test.dart \
             test/activity_sheet_thumbnails_test.dart \
-            test/render/render_screens_test.dart
+            test/render/render_screens_test.dart \
+            2>&1 | tee "$RUNNER_TEMP/pqc020-format-check.log"
 
       - name: Run focused R1-A and existing map-geometry tests
         id: focused_tests
@@ -143,6 +144,8 @@ jobs:
           }
           log_path = Path(os.environ['RUNNER_TEMP']) / 'pqc020-focused-tests.log'
           log = log_path.read_text(encoding='utf-8', errors='replace') if log_path.exists() else ''
+          format_log_path = Path(os.environ['RUNNER_TEMP']) / 'pqc020-format-check.log'
+          format_log = format_log_path.read_text(encoding='utf-8', errors='replace') if format_log_path.exists() else ''
           import re
           matches = re.findall(r'\+(\d+):\s+All tests passed!', log)
           test_count = int(matches[-1]) if matches else 0
@@ -200,8 +203,10 @@ jobs:
               'Formatting happened in a temporary directory; this workflow changed, committed, '
               'and pushed no files.'
           )
+          if format_log:
+              text += '\n\nFormatter-check log:\n```text\n' + format_log[-12000:] + '\n```'
           if format_error:
-              text += '\n\nFormatter output:\n```text\n' + format_error[:12000] + '\n```'
+              text += '\n\nFormatter-preview output:\n```text\n' + format_error[:12000] + '\n```'
           now = dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00', 'Z')
           def post_check(payload):
               response = subprocess.run(
