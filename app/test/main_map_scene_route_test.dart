@@ -164,11 +164,14 @@ void main() {
         await _tapPlace(tester, id);
         expect(find.byType(ActivitySheet), findsOneWidget);
         expect(
-          find.text(
-            activityRegistry
-                .firstWhere((module) => module.def.id == id)
-                .def
-                .name,
+          find.descendant(
+            of: find.byType(ActivitySheet),
+            matching: find.text(
+              activityRegistry
+                  .firstWhere((module) => module.def.id == id)
+                  .def
+                  .name,
+            ),
           ),
           findsOneWidget,
         );
