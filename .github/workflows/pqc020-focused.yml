@@ -181,7 +181,7 @@ jobs:
               format_error = ''
               if dart_files:
                   formatted = subprocess.run(['dart', 'format', *dart_files], capture_output=True, text=True)
-                  format_error = '\\n'.join(part for part in (formatted.stdout, formatted.stderr) if part).strip()
+                  format_error = '\n'.join(part for part in (formatted.stdout, formatted.stderr) if part).strip()
               with tarfile.open(fileobj=archive, mode='w:gz', compresslevel=9) as bundle:
                   for relative in source_files:
                       target = root / relative
@@ -204,7 +204,7 @@ jobs:
               'and pushed no files.'
           )
           if format_error:
-              text += '\\n\\nFormatter output:\\n```text\\n' + format_error[:12000] + '\\n```'
+              text += '\n\nFormatter output:\n```text\n' + format_error[:12000] + '\n```'
           now = dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00', 'Z')
           def post_check(payload):
               response = subprocess.run(
@@ -228,7 +228,7 @@ jobs:
                   'text': text,
               },
           })
-          print(f\"Published PQC-020 gate evidence: {evidence.get('html_url', '')}\")
+          print(f"Published PQC-020 gate evidence: {evidence.get('html_url', '')}")
           for index, chunk in enumerate(chunks, start=1):
               snapshot_check = post_check({
                   'name': f'PQC-020 formatted source snapshot {index}/{len(chunks)}',
@@ -242,7 +242,7 @@ jobs:
                       'text': chunk,
                   },
               })
-              print(f\"Published source snapshot segment {index}/{len(chunks)}: {snapshot_check.get('html_url', '')}\")
+              print(f"Published source snapshot segment {index}/{len(chunks)}: {snapshot_check.get('html_url', '')}")
           if not successful:
               print('One or more required focused gates did not pass.')
           PY
