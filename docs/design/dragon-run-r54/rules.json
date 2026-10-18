@@ -1,0 +1,26 @@
+{
+  "dragon_jump": {
+    "star_scores": [
+      150,
+      300,
+      500
+    ],
+    "start_speed": 250,
+    "max_speed": 540,
+    "speed_gain_per_sec": 5,
+    "hearts": 3,
+    "coin_value": 1
+  },
+  "run_cost": 2,
+  "physics": {
+    "gravity": 2700,
+    "first_jump": 900,
+    "air_jump": 800,
+    "default_jumps": 2,
+    "wings_jumps": 3,
+    "invulnerable_seconds": 1.5,
+    "meter_units": 50,
+    "coin_score": 3,
+    "gem_coin_value": 5
+  }
+}

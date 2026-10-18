@@ -1,10 +1,23 @@
-# Thiết kế hình ảnh PyQuest — tình trạng đến r53
+# Thiết kế hình ảnh PyQuest — tình trạng đến r54
 
 **2026-10-18 · Chưa hoàn tất toàn bộ.** Không dùng số concept hoặc HTML PASS để
 nói app đã được redesign xong. Ba mức tách riêng: concept → screen/interaction study
 → runtime art pack +after-runtime evidence.
 
-## Mới nhất r53 — chuyển Main Map sang triển khai Flutter
+## Mới nhất r54 — Dragon Jump gameplay và kết quả
+
+![Dragon Jump r54, HTML study](dragon-run-r54/evidence/desktop-overview.jpg)
+
+[Study/spec/art](dragon-run-r54/README.md): đường chạy liên tục đúng luật nguồn,
+Pip/rock/beetle2,5D mới; nhảy/vỗ cánh, hit/pause/finish, kết quả và receipt states.
+Camera responsive không thu nhỏ actor để né chữ2×; điểm/xu/gem/record tách rõ.
+30modelchecks +1.000record comparisons,192browserconfigs,300fontassertions,
+99flows,16captures. **JS/RAM, không Flutter/SQLite/device/engine parity.**
+
+Runtime Dragon chưa mở. CODE giữPQC-020/R1-A; không bị giao thêm study này.
+DESIGN tiếp Catch Stars rồiR1-B. [TaskPQD-015](coordination/tasks/PQD-015.md).
+
+## Đợt trước r53 — chuyển Main Map sang triển khai Flutter
 
 [PQC-020](../implementation/coordination/tasks/PQC-020.md) READY_FOR_CODE trên nền
 011 đãACCEPTED6dc8ca8. [R1-A study/export/spec](r1-village-r53/README.md): staticW01,

@@ -1,6 +1,6 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · review/design r53.**
+**2026-10-18 · review r53 / design r54.**
 
 **Hiện hành:** PQC-011 **ACCEPTED** tại CODE
 `6dc8ca8feeed54cc0fa6a82109e3a59d24a16153`: Settings12, isolated1, ordered2,
@@ -13,6 +13,11 @@ READY_FOR_CODE: Main Map2,5D +sáu routes hiện có. [Package r53](design/r1-vi
 có static W01 export, scene/directory, source geometry và browser study. Cho phép
 flattened static scene trong lát cắt này, không gọi là layered/animated world.
 R1-A chưa triển khai/accept; toànR1/R4 vànhà/đất/đảo còn scope riêng.
+
+**Design mới r54:** [Dragon Jump gameplay/results](design/dragon-run-r54/README.md)
+đã có bốn artwork mới và interactive JS study.30modelchecks +1.000record comparisons,
+192browserconfigs/300fontassertions/99flows; không chạy Flutter/DB/thiết bị, không
+mở runtime Dragon. CODE tip quan sát vẫn6dc8ca8, work order020 không đổi.
 
 Các quan sát r49–r52 dưới đây là **lịch sử**, không disposition hiện hành.
 
@@ -90,6 +95,7 @@ thu một tiêu chí cần ghi rõ scope, SHA, log/test/device evidence và gi�
 | PQC-011 | **ACCEPTED tại6dc8ca8**; không APK/device claim | [Independent review r53](design/coordination/reviews/PQC-011-r53/README.md) |
 | PQC-018 | **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**; không runtime/production approval | [Task revision4 tại DESIGN30394b7](https://github.com/Nthanhbadboy/PyQuest/blob/30394b7bb23ad1fcf371c8dee644fd6caaf3793d/docs/implementation/coordination/tasks/PQC-018.md) |
 | DESIGN r45 /r46 | Maze selection và Creator interaction study đã giao | [Visual status tại DESIGNc68bdcd](https://github.com/Nthanhbadboy/PyQuest/blob/c68bdcd73b400c4d449216023a54499b202bda1d/docs/design/VISUAL_DESIGN_STATUS.md) |
+| DESIGN r54 /PQD-015 | Dragon Jump gameplay/results study đã giao; chưa runtime order | [r54 spec/evidence](design/dragon-run-r54/README.md) |
 | DESIGN r52 /PQD-013 | Record/notices/custom proof study đã giao; không backend/runtime order | [r52 spec/evidence](design/maze-result-r52/README.md) |
 | DESIGN r51 /PQD-012 | Custom Python editor/diagnostics study đã giao; không runtime execution/order | [r51 spec/evidence](design/maze-python-r51/README.md) |
 | DESIGN r50 /PQD-011 | Block-play Maze và result study đã giao; không runtime order | [r50 spec/evidence](design/maze-play-r50/README.md) |

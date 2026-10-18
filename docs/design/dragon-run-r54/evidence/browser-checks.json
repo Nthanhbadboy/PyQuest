@@ -1,0 +1,27 @@
+{
+  "scope": "HTML/JS design study; not Dart, SQLite, device or engine parity",
+  "browser": "153.0.8010.0",
+  "cases": 192,
+  "targets": 684,
+  "fontChecks": 300,
+  "flows": 99,
+  "captures": [
+    "docs/design/dragon-run-r54/evidence/home-360-en-2x.png",
+    "docs/design/dragon-run-r54/evidence/running-360-en-2x.png",
+    "docs/design/dragon-run-r54/evidence/paused-360-en-2x.png",
+    "docs/design/dragon-run-r54/evidence/best-360-en-2x.png",
+    "docs/design/dragon-run-r54/evidence/best-360-en-2x-bottom.png",
+    "docs/design/dragon-run-r54/evidence/save_error-360-en-2x.png",
+    "docs/design/dragon-run-r54/evidence/save_error-360-en-2x-bottom.png",
+    "docs/design/dragon-run-r54/evidence/home-390-vi-1x.png",
+    "docs/design/dragon-run-r54/evidence/running-390-vi-1x.png",
+    "docs/design/dragon-run-r54/evidence/jump-390-vi-1x.png",
+    "docs/design/dragon-run-r54/evidence/hit-390-vi-1x.png",
+    "docs/design/dragon-run-r54/evidence/upgraded-390-vi-1x.png",
+    "docs/design/dragon-run-r54/evidence/zero_star-390-vi-1x.png",
+    "docs/design/dragon-run-r54/evidence/first-390-vi-1x.png",
+    "docs/design/dragon-run-r54/evidence/saving-390-vi-1x.png",
+    "docs/design/dragon-run-r54/evidence/desktop-overview.jpg"
+  ],
+  "errors": []
+}

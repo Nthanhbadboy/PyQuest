@@ -1,0 +1,6 @@
+{
+  "scope": "JS design analogue only; not engine parity/SQLite",
+  "checks": 30,
+  "recordComparisons": 1000,
+  "failures": 0
+}
