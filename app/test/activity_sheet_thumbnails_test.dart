@@ -112,8 +112,9 @@ void useViewport(
 Widget sheetHost(Widget child, {double textScale = 1.0, AssetBundle? bundle}) {
   Widget content = Builder(
     builder: (BuildContext context) => MediaQuery(
-      data: MediaQuery.of(context)
-          .copyWith(textScaler: TextScaler.linear(textScale)),
+      data: MediaQuery.of(
+        context,
+      ).copyWith(textScaler: TextScaler.linear(textScale)),
       child: child,
     ),
   );
@@ -387,122 +388,128 @@ void main() {
     }
   });
 
-  group('route thật của sheet (showPQSheet) — CTA phải cuộn tới được và trả đúng nhánh', () {
-    // 360×640 + textScale 2.0: `showPQSheet` chặn chiều cao ở 0.9×screen, nên nếu
-    // CTA nằm ngoài vùng nhìn thì test này đỏ — đó là điều cần biết, không phải
-    // điều cần né. `findsOneWidget` không chứng minh được chạm.
-    Future<Object?> openThroughRoute(
-      WidgetTester tester, {
-      required String activityId,
-      required ActivityStatus status,
-      required String ctaKey,
-      required double textScale,
-      required Size viewport,
-      required double dpr,
-    }) async {
-      Object? popped = routeNotPopped;
-      useViewport(tester, logical: viewport, dpr: dpr);
-      // Route modal kế thừa MediaQuery từ view/Navigator, không từ widget cây cha đang
-      // mở sheet -> phải đặt textScale ở platformDispatcher, không phải MediaQuery nest.
-      tester.platformDispatcher.textScaleFactorTestValue = textScale;
-      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: Builder(
-                builder: (BuildContext context) => TextButton(
-                  key: const ValueKey<String>('launch_sheet'),
-                  onPressed: () async => popped = await showPQSheet<Object>(
-                    context,
-                    builder: (BuildContext ctx) => ActivitySheet(
-                      module: moduleById(activityId),
-                      status: status,
+  group(
+    'route thật của sheet (showPQSheet) — CTA phải cuộn tới được và trả đúng nhánh',
+    () {
+      // 360×640 + textScale 2.0: `showPQSheet` chặn chiều cao ở 0.9×screen, nên nếu
+      // CTA nằm ngoài vùng nhìn thì test này đỏ — đó là điều cần biết, không phải
+      // điều cần né. `findsOneWidget` không chứng minh được chạm.
+      Future<Object?> openThroughRoute(
+        WidgetTester tester, {
+        required String activityId,
+        required ActivityStatus status,
+        required String ctaKey,
+        required double textScale,
+        required Size viewport,
+        required double dpr,
+      }) async {
+        Object? popped = routeNotPopped;
+        useViewport(tester, logical: viewport, dpr: dpr);
+        // Route modal kế thừa MediaQuery từ view/Navigator, không từ widget cây cha đang
+        // mở sheet -> phải đặt textScale ở platformDispatcher, không phải MediaQuery nest.
+        tester.platformDispatcher.textScaleFactorTestValue = textScale;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Builder(
+                  builder: (BuildContext context) => TextButton(
+                    key: const ValueKey<String>('launch_sheet'),
+                    onPressed: () async => popped = await showPQSheet<Object>(
+                      context,
+                      builder: (BuildContext ctx) => ActivitySheet(
+                        module: moduleById(activityId),
+                        status: status,
+                      ),
                     ),
+                    child: const Text('launch'),
                   ),
-                  child: const Text('launch'),
                 ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.tap(find.byKey(const ValueKey<String>('launch_sheet')));
-      await pumpFor(tester, const Duration(milliseconds: 600));
-      final Finder cta = find.byKey(ValueKey<String>(ctaKey)).first;
-      expect(
-        cta,
-        findsOneWidget,
-        reason: 'sheet phải mở ra với CTA $ctaKey trong route của app',
-      );
-      await tester.ensureVisible(cta);
-      await pumpFor(tester, const Duration(milliseconds: 200));
-      await tester.tap(
-        cta,
-      ); // warnIfMissed mặc định = true: chạm không tới thì test đỏ
-      await pumpFor(tester, const Duration(milliseconds: 800));
-      return popped;
-    }
-
-    for (final String id in kPinnedThumb.keys) {
-      testWidgets('$id: chạm "Vào ..." ở 360×640 textScale 2.0 trả về open', (
-        WidgetTester tester,
-      ) async {
-        final Object? popped = await openThroughRoute(
-          tester,
-          activityId: id,
-          status: kUnlocked,
-          ctaKey: 'sheet_open',
-          textScale: 2.0,
-          viewport: kCompact,
-          dpr: kCompactDpr,
         );
+        await tester.tap(find.byKey(const ValueKey<String>('launch_sheet')));
+        await pumpFor(tester, const Duration(milliseconds: 600));
+        final Finder cta = find.byKey(ValueKey<String>(ctaKey)).first;
         expect(
-          popped,
-          'open',
-          reason: '$id phải pop đúng nhánh open, không chỉ tồn tại',
+          cta,
+          findsOneWidget,
+          reason: 'sheet phải mở ra với CTA $ctaKey trong route của app',
         );
-      });
-    }
+        await tester.ensureVisible(cta);
+        await pumpFor(tester, const Duration(milliseconds: 200));
+        await tester.tap(
+          cta,
+        ); // warnIfMissed mặc định = true: chạm không tới thì test đỏ
+        await pumpFor(tester, const Duration(milliseconds: 800));
+        return popped;
+      }
 
-    testWidgets(
-      'Bug Hunter khoá: CTA "đi tới bài học" dùng lesson id THẬT từ data',
-      (WidgetTester tester) async {
-        String realLessonId = '';
-        await tester.runAsync(() async {
-          realLessonId = (await BugHunterContent.load(rootBundle))
-              .unlockLessonId;
+      for (final String id in kPinnedThumb.keys) {
+        testWidgets('$id: chạm "Vào ..." ở 360×640 textScale 2.0 trả về open', (
+          WidgetTester tester,
+        ) async {
+          final Object? popped = await openThroughRoute(
+            tester,
+            activityId: id,
+            status: kUnlocked,
+            ctaKey: 'sheet_open',
+            textScale: 2.0,
+            viewport: kCompact,
+            dpr: kCompactDpr,
+          );
+          expect(
+            popped,
+            'open',
+            reason: '$id phải pop đúng nhánh open, không chỉ tồn tại',
+          );
         });
-        expect(
-          realLessonId,
-          isNotEmpty,
-          reason: 'packs.first.requires_lesson phải có trong bug_hunter_puzzles.json',
-        );
-        final Object? popped = await openThroughRoute(
-          tester,
-          activityId: 'bug_hunter',
-          status: ActivityStatus(
-            progressLabel: kLocked.progressLabel,
-            locked: true,
-            lockReason: kLocked.lockReason,
-            unlockLessonId: realLessonId,
-          ),
-          ctaKey: 'sheet_go_lesson',
-          textScale: 2.0,
-          viewport: kCompact,
-          dpr: kCompactDpr,
-        );
-        // main_map_screen.dart:120 cắt 'lesson:' và mở Main Quest với id đó ->
-        // chỉ cần đúng chuỗi ở tầng sheet; điều hướng thật thuộc test route riêng.
-        expect(popped, 'lesson:$realLessonId');
-      },
-    );
-  });
+      }
+
+      testWidgets(
+        'Bug Hunter khoá: CTA "đi tới bài học" dùng lesson id THẬT từ data',
+        (WidgetTester tester) async {
+          String realLessonId = '';
+          await tester.runAsync(() async {
+            realLessonId = (await BugHunterContent.load(
+              rootBundle,
+            )).unlockLessonId;
+          });
+          expect(
+            realLessonId,
+            isNotEmpty,
+            reason:
+                'packs.first.requires_lesson phải có trong bug_hunter_puzzles.json',
+          );
+          final Object? popped = await openThroughRoute(
+            tester,
+            activityId: 'bug_hunter',
+            status: ActivityStatus(
+              progressLabel: kLocked.progressLabel,
+              locked: true,
+              lockReason: kLocked.lockReason,
+              unlockLessonId: realLessonId,
+            ),
+            ctaKey: 'sheet_go_lesson',
+            textScale: 2.0,
+            viewport: kCompact,
+            dpr: kCompactDpr,
+          );
+          // main_map_screen.dart:120 cắt 'lesson:' và mở Main Quest với id đó ->
+          // chỉ cần đúng chuỗi ở tầng sheet; điều hướng thật thuộc test route riêng.
+          expect(popped, 'lesson:$realLessonId');
+        },
+      );
+    },
+  );
 
   group('visibility + reachability của sáu marker R1-A', () {
     test('marker geometry fits both phone widths and can scroll fully into view', () {
       for (final Size viewport in <Size>[kCompact, kPhone]) {
-        final double sceneWidth = viewport.width; // the scene is full-bleed; only the text/card use side insets
+        final double sceneWidth = viewport
+            .width; // the scene is full-bleed; only the text/card use side insets
         final Size scene = Size(sceneWidth, villageSceneHeight(sceneWidth));
         const double contentLeadIn =
             168; // recommendation card, hint, spacing and scroll padding
@@ -620,7 +627,8 @@ void main() {
       expect(
         entries,
         greaterThanOrEqualTo(kPinnedThumb.length),
-        reason: 'cả sáu key phải cùng nằm trong cache khi còn listener; entries>=1 không đủ',
+        reason:
+            'cả sáu key phải cùng nằm trong cache khi còn listener; entries>=1 không đủ',
       );
       expect(
         bytes,
@@ -741,7 +749,8 @@ void main() {
         expect(
           box.height - box.width,
           closeTo(44 * 0.09, 0.01),
-          reason: 'depth = size*0.09 chỉ cộng theo chiều dọc (chunky_button.dart:159, 172–181)',
+          reason:
+              'depth = size*0.09 chỉ cộng theo chiều dọc (chunky_button.dart:159, 172–181)',
         );
         expect(box.height, greaterThanOrEqualTo(44.0));
 
@@ -780,7 +789,8 @@ void main() {
             'probe_untitled',
           ).where((dynamic p) => p.button == true),
           isNotEmpty,
-          reason: 'role button vẫn được khai báo — không được suy thành screen reader không tới được',
+          reason:
+              'role button vẫn được khai báo — không được suy thành screen reader không tới được',
         );
         expect(
           semanticsProps(
@@ -826,7 +836,8 @@ void main() {
       expect(
         error,
         isNotNull,
-        reason: 'decode thất bại phải nổi thành exception; nếu null thì test chỉ kiểm widget tồn tại',
+        reason:
+            'decode thất bại phải nổi thành exception; nếu null thì test chỉ kiểm widget tồn tại',
       );
 
       await tester.runAsync(() async {

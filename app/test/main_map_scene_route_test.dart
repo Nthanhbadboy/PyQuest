@@ -321,7 +321,8 @@ void main() {
       expect(
         tester.widget<SingleChildScrollView>(villageScroll).controller!.offset,
         closeTo(beforePrerequisiteOffset, 0.5),
-        reason: 'return from the real unlockLessonId route preserves the village scroll',
+        reason:
+            'return from the real unlockLessonId route preserves the village scroll',
       );
       expect(
         FocusManager.instance.primaryFocus,

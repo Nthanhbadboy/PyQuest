@@ -37,8 +37,9 @@ Widget mainMapHost(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       home: Builder(
         builder: (BuildContext context) => MediaQuery(
-          data: MediaQuery.of(context)
-              .copyWith(textScaler: TextScaler.linear(textScale)),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(textScale)),
           child: const MainMapScreen(),
         ),
       ),
@@ -287,46 +288,49 @@ void main() {
     },
   );
 
-  test('status failures stay local and retry only reloads the requested module', () async {
-    int failingAttempts = 0;
-    int healthyAttempts = 0;
-    final MainMapSceneStatusController controller =
-        MainMapSceneStatusController(<String, MainMapStatusLoader>{
-          'bug_hunter': () async {
-            failingAttempts++;
-            if (failingAttempts == 1)
-              throw StateError('temporary status error');
-            return const ActivityStatus(
-              progressLabel: 'unlocked',
-              unlockLessonId: 'real-lesson-id',
-            );
-          },
-          'robot_maze': () async {
-            healthyAttempts++;
-            return readyStatus;
-          },
-        });
-    addTearDown(controller.dispose);
+  test(
+    'status failures stay local and retry only reloads the requested module',
+    () async {
+      int failingAttempts = 0;
+      int healthyAttempts = 0;
+      final MainMapSceneStatusController controller =
+          MainMapSceneStatusController(<String, MainMapStatusLoader>{
+            'bug_hunter': () async {
+              failingAttempts++;
+              if (failingAttempts == 1)
+                throw StateError('temporary status error');
+              return const ActivityStatus(
+                progressLabel: 'unlocked',
+                unlockLessonId: 'real-lesson-id',
+              );
+            },
+            'robot_maze': () async {
+              healthyAttempts++;
+              return readyStatus;
+            },
+          });
+      addTearDown(controller.dispose);
 
-    await controller.refresh();
-    expect(controller.places['bug_hunter']!.phase, MainMapPlacePhase.error);
-    expect(controller.places['robot_maze']!.phase, MainMapPlacePhase.ready);
-    expect(healthyAttempts, 1);
+      await controller.refresh();
+      expect(controller.places['bug_hunter']!.phase, MainMapPlacePhase.error);
+      expect(controller.places['robot_maze']!.phase, MainMapPlacePhase.ready);
+      expect(healthyAttempts, 1);
 
-    await controller.retry('bug_hunter');
-    expect(controller.places['bug_hunter']!.phase, MainMapPlacePhase.ready);
-    expect(
-      controller.places['bug_hunter']!.status!.unlockLessonId,
-      'real-lesson-id',
-    );
-    expect(failingAttempts, 2);
-    expect(
-      healthyAttempts,
-      1,
-      reason:
-          'retry must not reload healthy routes or emit activity-open behavior',
-    );
-  });
+      await controller.retry('bug_hunter');
+      expect(controller.places['bug_hunter']!.phase, MainMapPlacePhase.ready);
+      expect(
+        controller.places['bug_hunter']!.status!.unlockLessonId,
+        'real-lesson-id',
+      );
+      expect(failingAttempts, 2);
+      expect(
+        healthyAttempts,
+        1,
+        reason:
+            'retry must not reload healthy routes or emit activity-open behavior',
+      );
+    },
+  );
 
   test(
     'out-of-order status responses cannot replace the newest refresh',

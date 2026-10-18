@@ -67,12 +67,11 @@ class _MainMapScreenState extends State<MainMapScreen> {
       _services = services;
       services.events.revision.addListener(_refresh);
       services.session.addListener(_onSession);
-      _placeStatuses = MainMapSceneStatusController(
-        <String, MainMapStatusLoader>{
-          for (final ActivityModule module in activityRegistry)
-            module.def.id: () => module.status(services),
-        },
-      );
+      _placeStatuses =
+          MainMapSceneStatusController(<String, MainMapStatusLoader>{
+            for (final ActivityModule module in activityRegistry)
+              module.def.id: () => module.status(services),
+          });
       unawaited(_placeStatuses!.refresh());
       services.audio.music(MusicTrack.island);
       if (!services.settings.introSeen && !_introShown) {

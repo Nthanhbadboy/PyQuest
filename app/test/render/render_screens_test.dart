@@ -198,8 +198,9 @@ void pushMapAtTextScale(
           context: routeContext,
           locale: locale,
           child: MediaQuery(
-            data: MediaQuery.of(routeContext)
-                .copyWith(textScaler: TextScaler.linear(scale)),
+            data: MediaQuery.of(
+              routeContext,
+            ).copyWith(textScaler: TextScaler.linear(scale)),
             child: const MainMapScreen(),
           ),
         ),
