@@ -271,6 +271,13 @@ void main() {
       await tester.tap(find.byKey(const ValueKey<String>('example_run')));
       await _waitForContinueEnabled(tester);
       expect(find.text('12'), findsOneWidget);
+      // Keep the focused editor visible before recording the route scroll state.
+      await tester.ensureVisible(
+        find.byKey(
+          const ValueKey<String>('example_code_editor_mq1_03_s2'),
+        ),
+      );
+      await tester.pump();
 
       final double scrollOffsetBeforeTutor = _lessonScrollOffset(tester);
       await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
