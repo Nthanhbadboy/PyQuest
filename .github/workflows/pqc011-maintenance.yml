@@ -177,6 +177,10 @@ jobs:
         id: diagnostic_summary
         env:
           SOURCE_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          GH_TOKEN: ${{ github.token }}
           SCOPE_OUTCOME: ${{ steps.diagnostic_scope.outcome }}
           PUB_GET_OUTCOME: ${{ steps.diagnostic_pub_get.outcome }}
           ISOLATED_OUTCOME: ${{ steps.diagnostic_isolated.outcome }}
@@ -184,11 +188,14 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
+          import datetime as dt
+          import json
           import os
           from pathlib import Path
           import re
           import subprocess
           import sys
+          from urllib.request import Request, urlopen
 
           temp = Path(os.environ['RUNNER_TEMP'])
           summary = Path(os.environ['GITHUB_STEP_SUMMARY'])
@@ -268,6 +275,39 @@ jobs:
                   lines.append(excerpt[-12000:])
               lines.extend(['```', ''])
           summary.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+          check_conclusion = 'success' if overall else 'failure'
+          payload = {
+              'name': 'PQC-011 diagnostic-only evidence',
+              'head_sha': os.environ['SOURCE_SHA'],
+              'external_id': f"{os.environ['RUN_ID']}-{os.environ['RUN_ATTEMPT']}",
+              'details_url': f"https://github.com/{os.environ['REPOSITORY']}/actions/runs/{os.environ['RUN_ID']}",
+              'status': 'completed',
+              'conclusion': check_conclusion,
+              'started_at': now,
+              'completed_at': now,
+              'output': {
+                  'title': f'PQC-011 diagnostic-only: {check_conclusion.upper()}',
+                  'summary': '\n'.join(lines),
+              },
+          }
+          request = Request(
+              f"https://api.github.com/repos/{os.environ['REPOSITORY']}/check-runs",
+              data=json.dumps(payload).encode('utf-8'),
+              headers={
+                  'Accept': 'application/vnd.github+json',
+                  'Authorization': f"Bearer {os.environ['GH_TOKEN']}",
+                  'X-GitHub-Api-Version': '2022-11-28',
+                  'Content-Type': 'application/json',
+              },
+              method='POST',
+          )
+          with urlopen(request, timeout=30) as response:
+              check = json.load(response)
+          check_url = check.get('html_url', '')
+          with summary.open('a', encoding='utf-8') as output:
+              output.write(f'\nExact evidence check: {check_url}\n')
+          print(f'Published diagnostic evidence check: {check_url}')
           print('\n'.join(lines[:12]))
           if not overall:
               sys.exit(1)
