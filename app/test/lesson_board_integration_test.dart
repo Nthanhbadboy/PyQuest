@@ -322,7 +322,10 @@ void main() {
       traceTutorState('sheet closed; post-_openTutor focus checkpoint');
       await tester.pump();
       final double scrollOffsetAfterTutor =
-          await _waitForStableLessonScrollOffset(tester, 'after first tutor close');
+          await _waitForStableLessonScrollOffset(
+            tester,
+            'after first tutor close',
+          );
       traceTutorState('first tutor close; scroll stable');
 
       final BoardController afterTutor = tester
@@ -343,10 +346,7 @@ void main() {
         findsOneWidget,
         reason: 'the last run result survives the tutor route',
       );
-      expect(
-        scrollOffsetAfterTutor,
-        closeTo(scrollOffsetBeforeTutor, 0.5),
-      );
+      expect(scrollOffsetAfterTutor, closeTo(scrollOffsetBeforeTutor, 0.5));
 
       await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
       await _waitForCondition(
@@ -374,7 +374,10 @@ void main() {
       traceTutorState('reopened sheet closed; post-_openTutor checkpoint');
       await tester.pump();
       final double scrollOffsetAfterReopen =
-          await _waitForStableLessonScrollOffset(tester, 'after second tutor close');
+          await _waitForStableLessonScrollOffset(
+            tester,
+            'after second tutor close',
+          );
       traceTutorState('second tutor close; scroll stable');
       expect(
         identical(
@@ -393,10 +396,7 @@ void main() {
       );
       expect(editor.focusNode!.hasFocus, isTrue);
       expect(find.text('12'), findsOneWidget);
-      expect(
-        scrollOffsetAfterReopen,
-        closeTo(scrollOffsetBeforeTutor, 0.5),
-      );
+      expect(scrollOffsetAfterReopen, closeTo(scrollOffsetBeforeTutor, 0.5));
       editor.focusNode!.removeListener(traceFocusChange);
       lessonScroll.removeListener(traceScrollChange);
 
