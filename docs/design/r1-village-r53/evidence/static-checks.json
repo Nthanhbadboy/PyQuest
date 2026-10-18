@@ -1,0 +1,10 @@
+{
+  "scope": "DESIGN integrity, not runtime acceptance",
+  "source_pins": 10,
+  "asset_hashes": 2,
+  "local_links": 19,
+  "capture_files": 12,
+  "acceptance_sha": "6dc8ca8feeed54cc0fa6a82109e3a59d24a16153",
+  "tracked_runtime_or_ci_changes": 0,
+  "failures": 0
+}

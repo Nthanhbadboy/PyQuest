@@ -199,5 +199,35 @@
   "settingsPythonLimitNames": "Variable names cannot shadow print, len or range, to help avoid confusing errors.",
   "@settingsPythonLimitNames": {
     "description": "PQC-016 Settings surface; settingsPythonLimitNames"
-  }
+  },
+  "hubIslandName": "Starter Island",
+  "hubQuestsTooltip": "Daily quests",
+  "hubSettingsTooltip": "Settings",
+  "hubVillageTab": "Village",
+  "hubPlacesTab": "Places",
+  "hubRecommendationTitle": "A place to explore",
+  "hubVisitRecommended": "Visit {place}",
+  "@hubVisitRecommended": {
+    "description": "Action for the ready, unlocked recommended activity.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Python Tower"
+      }
+    }
+  },
+  "hubExplore": "Explore",
+  "hubLocked": "Locked",
+  "hubLoading": "Loading status",
+  "hubRetry": "Retry",
+  "hubStatusUnavailable": "Status unavailable",
+  "hubSceneScrollHint": "Scroll to explore all six places.",
+  "hubDirectoryHint": "Choose an activity. Your progress and unlocks stay the same.",
+  "hubMainQuest": "Python Tower",
+  "hubRobotMaze": "Robo Maze",
+  "hubDragonJump": "Volcano",
+  "hubCatchStars": "Observatory",
+  "hubBugHunter": "Bitsy's Workshop",
+  "hubAchievements": "Achievement House",
+  "hubHomeSemantics": "PyQuest, Starter Island"
 }

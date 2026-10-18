@@ -1,0 +1,5 @@
+{
+  "scope": "JS design model, not Flutter or persistent state",
+  "checks": 15,
+  "failures": 0
+}

@@ -15,6 +15,8 @@ import 'package:pyquest/app/pyquest_app.dart';
 import 'package:pyquest/core/events.dart';
 import 'package:pyquest/modules/tutor/tutor_config.dart';
 import 'package:pyquest/modules/tutor/tutor_provider.dart';
+import 'package:pyquest/modules/main_map/main_map_screen.dart';
+import 'package:pyquest/modules/main_quest/main_quest_module.dart';
 import 'package:pyquest/shared/characters/cast.dart';
 import 'package:pyquest/shared/characters/characters.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -91,7 +93,7 @@ Future<void> precacheMap(WidgetTester tester) async {
   final ctx = tester.element(find.byType(Scaffold).first);
   await tester.runAsync(() async {
     for (final a in [
-      'assets/images/island_map.webp',
+      'assets/images/village_r53.webp',
       'assets/images/thumb_maze.webp',
       'assets/images/thumb_tower.webp',
       'assets/images/thumb_volcano.webp',
@@ -117,18 +119,52 @@ Future<void> home(WidgetTester tester) async {
   await pumpFor(tester, const Duration(seconds: 2));
 }
 
-Future<AppServices> start(WidgetTester tester, {bool rich = true, bool intro = false, bool small = false, bool tutorAi = false}) async {
+Future<AppServices> start(
+  WidgetTester tester, {
+  bool rich = true,
+  bool intro = false,
+  bool small = false,
+  bool tutorAi = false,
+  List<Locale>? systemLocales,
+}) async {
   // Default: 390 x 844 @3x. Small: 360 x 640 @2x (older/compact Android phones).
   tester.view.physicalSize = small ? const Size(720, 1280) : const Size(1170, 2532);
   tester.view.devicePixelRatio = small ? 2.0 : 3.0;
   addTearDown(tester.view.reset);
   final s = await seeded(tester, rich: rich, tutorAi: tutorAi);
   if (intro) await tester.runAsync(() => s.settings.setRaw('intro_seen', '0'));
-  await tester.pumpWidget(RepaintBoundary(key: _captureKey, child: PyQuestApp(servicesFactory: (_) async => s, minSplash: Duration.zero)));
+  await tester.pumpWidget(
+    RepaintBoundary(
+      key: _captureKey,
+      child: PyQuestApp(
+        servicesFactory: (_) async => s,
+        systemLocalesReader: systemLocales == null ? null : () => systemLocales,
+        minSplash: Duration.zero,
+      ),
+    ),
+  );
   await pumpFor(tester, const Duration(seconds: 2));
   await precacheMap(tester);
   await pumpFor(tester, const Duration(milliseconds: 400));
   return s;
+}
+
+void pushMapAtTextScale(WidgetTester tester, {required Locale locale, required double scale}) {
+  final BuildContext context = tester.element(find.byType(MainMapScreen).last);
+  unawaited(
+    Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (BuildContext routeContext) => Localizations.override(
+          context: routeContext,
+          locale: locale,
+          child: MediaQuery(
+            data: MediaQuery.of(routeContext).copyWith(textScaler: TextScaler.linear(scale)),
+            child: const MainMapScreen(),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 Future<void> finish(WidgetTester tester, AppServices s) async {
@@ -153,14 +189,29 @@ void main() {
   });
 
   testWidgets('render A: first launch', (tester) async {
-    final s = await start(tester, rich: false, intro: true);
+    final s = await start(tester, rich: false, intro: true, systemLocales: const <Locale>[Locale('vi')]);
     await capture(tester, 'a00_welcome');
     for (var i = 0; i < 3; i++) {
       await tap(tester, 'welcome_next', ms: 500);
     }
     await capture(tester, 'a01_map_new_player');
+    await capture(tester, 'r1a_map_390_vi_1x');
+    pushMapAtTextScale(tester, locale: const Locale('vi'), scale: 2);
+    await pumpFor(tester, const Duration(milliseconds: 900));
+    expect(find.byKey(const ValueKey<String>('directory_place_main_quest')), findsOneWidget);
+    await capture(tester, 'r1a_map_390_vi_2x');
+    tester.state<NavigatorState>(find.byType(Navigator).last).pop();
+    await pumpFor(tester, const Duration(milliseconds: 500));
+
     await tap(tester, 'map_label_bug_hunter', ms: 900);
     await capture(tester, 'a02_sheet_locked');
+    await capture(tester, 'r1a_locked_activity_sheet');
+    await tester.tap(find.byKey(const ValueKey<String>('sheet_go_lesson')));
+    await pumpFor(tester, const Duration(milliseconds: 1400));
+    expect(find.byType(MainQuestHomeScreen), findsOneWidget);
+    await capture(tester, 'r1a_locked_prerequisite_route');
+    await home(tester);
+    await capture(tester, 'r1a_map_after_route_return');
     await finish(tester, s);
   });
 
@@ -313,8 +364,15 @@ void main() {
   });
 
   testWidgets('render F: small phone 360x640', (tester) async {
-    final s = await start(tester, small: true);
+    final s = await start(tester, small: true, systemLocales: const <Locale>[Locale('en')]);
     await capture(tester, 'f00_small_map');
+    await capture(tester, 'r1a_map_360_en_1x');
+    pushMapAtTextScale(tester, locale: const Locale('en'), scale: 2);
+    await pumpFor(tester, const Duration(milliseconds: 900));
+    expect(find.byKey(const ValueKey<String>('directory_place_main_quest')), findsOneWidget);
+    await capture(tester, 'r1a_map_360_en_2x');
+    tester.state<NavigatorState>(find.byType(Navigator).last).pop();
+    await pumpFor(tester, const Duration(milliseconds: 500));
     await tap(tester, 'map_label_robot_maze', ms: 900);
     await tap(tester, 'sheet_open', ms: 1500);
     await tap(tester, 'maze_level_4', ms: 1500);

@@ -27,6 +27,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ import 'package:pyquest/app/activity.dart';
 import 'package:pyquest/app/activity_registry.dart';
 import 'package:pyquest/modules/bug_hunter/bug_models.dart';
 import 'package:pyquest/modules/main_map/activity_sheet.dart';
-import 'package:pyquest/modules/main_map/main_map_screen.dart' show kMapImageSize;
+import 'package:pyquest/modules/main_map/main_map_scene_geometry.dart';
 import 'package:pyquest/shared/widgets/chunky_button.dart';
 import 'package:pyquest/shared/widgets/common.dart' show showPQSheet;
 
@@ -392,46 +393,33 @@ void main() {
     });
   });
 
-  group('vùng chạm của landmark trên đảo (toán hitBox, không cần pump)', () {
-    // PQD-002 §A accessibility: charter sàn 48px logical. Đây là phép tính từ
-    // `kMapImageSize` + cover rect của main_map_screen, không phải cảm nhận:
-    // nếu một landmark co lại dưới sàn ở 360×640, con số phải hiện ra ở test.
-    test('mọi hitBox còn >= 48px ở 360x640 sau phép cover của map', () {
-      const Size box = kCompact;
-      final Size image = kMapImageSize;
-      final double scale = (box.width / image.width > box.height / image.height)
-          ? box.width / image.width
-          : box.height / image.height;
-      final double w = image.width * scale;
-      final double h = image.height * scale;
-      final List<String> tooSmall = <String>[];
-      final List<String> cropped = <String>[];
-      for (final ActivityModule m in activityRegistry) {
-        final Rect r = m.def.hitBox;
-        final double pw = r.width * w;
-        final double ph = r.height * h;
-        expect(pw > 0 && ph > 0, isTrue, reason: '${m.def.id} có hitBox rỗng');
-        expect(r.right <= 1.001 && r.bottom <= 1.001, isTrue, reason: '${m.def.id} hitBox vượt 0..1');
-        // PQC-009 item 2: chốt cả mép dưới của không gian normalized.
-        expect(r.left >= 0 && r.top >= 0, isTrue, reason: '${m.def.id} hitBox có tọa độ âm ngoài 0..1');
-        // Rect trên màn PHẢI tính tới crop: BoxFit.cover đặt ảnh lệch tâm, nên phần
-        // chạm thật sự khả dụng là giao với viewport, không phải pw×ph (review PQC-007).
-        final double dx = (box.width - w) / 2;
-        final double dy = (box.height - h) / 2;
-        final Rect visible = Rect.fromLTRB(dx + r.left * w, dy + r.top * h, dx + r.right * w, dy + r.bottom * h)
-            .intersect(Offset.zero & box);
-        if (visible.width < 48 || visible.height < 48) {
-          cropped.add('${m.def.id}=${visible.width.toStringAsFixed(1)}×${visible.height.toStringAsFixed(1)} '
-              '(tổng ${pw.toStringAsFixed(1)}×${ph.toStringAsFixed(1)})');
-        }
-        if (pw < 48 || ph < 48) {
-          tooSmall.add('${m.def.id}=${pw.toStringAsFixed(1)}×${ph.toStringAsFixed(1)}');
+  group('visibility + reachability của sáu marker R1-A', () {
+    test('marker geometry fits both phone widths and can scroll fully into view', () {
+      for (final Size viewport in <Size>[kCompact, kPhone]) {
+        final double sceneWidth = viewport.width; // the scene is full-bleed; only the text/card use side insets
+        final Size scene = Size(sceneWidth, villageSceneHeight(sceneWidth));
+        const double contentLeadIn = 168; // recommendation card, hint, spacing and scroll padding
+        final double contentHeight = scene.height + contentLeadIn;
+        final double scrollViewportHeight = viewport.height - 144; // safe-area header, mode controls, divider
+        final double maxScroll = math.max(0, contentHeight - scrollViewportHeight).toDouble();
+        expect(scene.width / scene.height, closeTo(853 / 1844, 1e-9));
+
+        for (final String id in kVillageMarkerAnchors.keys) {
+          final Rect target = villageMarkerTargetRect(id, scene, height: 96);
+          expect(target.width, greaterThanOrEqualTo(48), reason: '$id hit target width');
+          expect(target.left, greaterThanOrEqualTo(0), reason: '$id stays inside full uncropped art');
+          expect(target.right, lessThanOrEqualTo(scene.width), reason: '$id stays inside full uncropped art');
+          expect(target.top, greaterThanOrEqualTo(0), reason: '$id stays inside full uncropped art');
+          expect(target.bottom, lessThanOrEqualTo(scene.height), reason: '$id stays inside full uncropped art');
+
+          // A scroll offset exists which puts the entire target inside the viewport;
+          // this tests actual scene coordinates, not the old artwork's hitBox.
+          final double firstVisibleOffset = math.max(0, contentLeadIn + target.bottom - scrollViewportHeight).toDouble();
+          final double lastVisibleOffset = math.min(maxScroll, contentLeadIn + target.top).toDouble();
+          expect(firstVisibleOffset, lessThanOrEqualTo(lastVisibleOffset),
+              reason: '$id must be reachable at ${viewport.width}×${viewport.height}');
         }
       }
-      expect(tooSmall, isEmpty,
-          reason: 'dưới sàn chạm 48px ở khung nhỏ nhất; cần design chỉnh hitBox, không tự sửa');
-      expect(cropped, isEmpty, reason: 'landmark bị cover crop che mất phần chạm ở 360x640 — cần design '
-          'cung cấp rect production theo tỷ lệ nền mới, không tự sửa trong app/lib');
     });
   });
 

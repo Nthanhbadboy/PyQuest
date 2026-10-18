@@ -184,5 +184,35 @@
   },
   "@settingsPythonLimitNames": {
     "description": "PQC-016 Settings surface; settingsPythonLimitNames"
-  }
+  },
+  "hubIslandName": "Đảo Khởi Đầu",
+  "hubQuestsTooltip": "Nhiệm vụ hôm nay",
+  "hubSettingsTooltip": "Cài đặt",
+  "hubVillageTab": "Cảnh làng",
+  "hubPlacesTab": "Địa điểm",
+  "hubRecommendationTitle": "Gợi ý cho bạn",
+  "hubVisitRecommended": "Ghé {place}",
+  "@hubVisitRecommended": {
+    "description": "Nút mở hoạt động được đề xuất khi trạng thái đã tải và chưa khóa.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Tháp Python"
+      }
+    }
+  },
+  "hubExplore": "Khám phá",
+  "hubLocked": "Cần học trước",
+  "hubLoading": "Đang tải trạng thái",
+  "hubRetry": "Thử lại",
+  "hubStatusUnavailable": "Chưa tải được trạng thái",
+  "hubSceneScrollHint": "Cuộn để khám phá đủ sáu địa điểm.",
+  "hubDirectoryHint": "Chọn một hoạt động. Tiến trình và khóa mở vẫn được giữ nguyên.",
+  "hubMainQuest": "Tháp Python",
+  "hubRobotMaze": "Mê Cung Robo",
+  "hubDragonJump": "Núi Lửa",
+  "hubCatchStars": "Đài Thiên Văn",
+  "hubBugHunter": "Xưởng Bitsy",
+  "hubAchievements": "Nhà Thành Tích",
+  "hubHomeSemantics": "PyQuest, Đảo Khởi Đầu"
 }

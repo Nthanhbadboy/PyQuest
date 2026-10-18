@@ -1,0 +1,236 @@
+name: PQC-020 R1-A focused verification
+
+on:
+  push:
+    branches:
+      - arena/0d4fcb38-pyquest
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: pqc020-focused-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  focused:
+    if: >-
+      github.ref == 'refs/heads/arena/0d4fcb38-pyquest' &&
+      contains(github.event.head_commit.message, '[pqc020-check]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact CODE source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Set up pinned Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+          cache: true
+
+      - name: Verify branch tip and SDK pin
+        id: pin
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH"
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$EXPECTED_SHA"
+          flutter --version --machine > "$RUNNER_TEMP/pqc020-flutter-version.json"
+          python3 - "$RUNNER_TEMP/pqc020-flutter-version.json" <<'PY'
+          import json, sys
+          with open(sys.argv[1], encoding='utf-8') as source:
+              actual = json.load(source)
+          expected = {
+              'frameworkVersion': '3.47.7',
+              'dartSdkVersion': '3.13.5',
+              'frameworkRevision': 'abaf9c523780a608bd46686fd5e53740a07077f8',
+          }
+          found = {key: actual.get(key) for key in expected}
+          print(json.dumps(found, indent=2))
+          if found != expected:
+              raise SystemExit(f'Pinned SDK mismatch: {found!r}')
+          PY
+
+      - name: Resolve dependencies and verify unchanged lock
+        id: pub_get
+        working-directory: app
+        run: |
+          set -euo pipefail
+          flutter pub get 2>&1 | tee "$RUNNER_TEMP/pqc020-pub-get.log"
+          git diff --exit-code -- pubspec.lock
+
+      - name: Check formatting on changed PQC-020 Dart files
+        id: format
+        working-directory: app
+        run: |
+          set -euo pipefail
+          dart format --output=none --set-exit-if-changed \
+            lib/modules/main_map/main_map_screen.dart \
+            lib/modules/main_map/main_map_scene.dart \
+            lib/modules/main_map/main_map_scene_geometry.dart \
+            lib/modules/main_map/main_map_scene_state.dart \
+            lib/l10n/generated/app_localizations.dart \
+            lib/l10n/generated/app_localizations_en.dart \
+            lib/l10n/generated/app_localizations_vi.dart \
+            test/main_map_scene_test.dart \
+            test/main_map_scene_geometry_test.dart \
+            test/main_map_scene_route_test.dart \
+            test/activity_sheet_thumbnails_test.dart \
+            test/render/render_screens_test.dart
+
+      - name: Run focused R1-A and existing map-geometry tests
+        id: focused_tests
+        working-directory: app
+        run: |
+          set -euo pipefail
+          flutter test --timeout 45s \
+            test/main_map_scene_geometry_test.dart \
+            test/main_map_scene_test.dart \
+            test/main_map_scene_route_test.dart \
+            test/activity_sheet_thumbnails_test.dart \
+            2>&1 | tee "$RUNNER_TEMP/pqc020-focused-tests.log"
+
+      - name: Verify final source cleanliness
+        id: clean
+        run: |
+          set -euo pipefail
+          git diff --check
+          git diff --exit-code
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          git fetch origin "${GITHUB_REF_NAME}"
+          test "$(git rev-parse FETCH_HEAD)" = "${GITHUB_SHA}"
+
+      - name: Publish PQC-020 gate evidence and generated-source snapshot
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SOURCE_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          PIN: ${{ steps.pin.outcome }}
+          PUB_GET: ${{ steps.pub_get.outcome }}
+          FORMAT: ${{ steps.format.outcome }}
+          FOCUSED: ${{ steps.focused_tests.outcome }}
+          CLEAN: ${{ steps.clean.outcome }}
+        run: |
+          python3 - <<'PY'
+          import base64
+          import datetime as dt
+          import io
+          import json
+          import os
+          from pathlib import Path
+          import shutil
+          import subprocess
+          import tarfile
+          import tempfile
+          import urllib.request
+
+          repository = os.environ['REPOSITORY']
+          sha = os.environ['SOURCE_SHA']
+          run_id = os.environ['RUN_ID']
+          outcomes = {
+              'Pinned branch and SDK': os.environ['PIN'],
+              'pub get / unchanged lock': os.environ['PUB_GET'],
+              'Dart formatter': os.environ['FORMAT'],
+              'Focused test files': os.environ['FOCUSED'],
+              'Source cleanliness / branch-tip check': os.environ['CLEAN'],
+          }
+          log_path = Path(os.environ['RUNNER_TEMP']) / 'pqc020-focused-tests.log'
+          log = log_path.read_text(encoding='utf-8', errors='replace') if log_path.exists() else ''
+          import re
+          matches = re.findall(r'\+(\d+):\s+All tests passed!', log)
+          test_count = int(matches[-1]) if matches else 0
+          successful = all(value == 'success' for value in outcomes.values()) and test_count > 0
+
+          source_files = [
+              'app/lib/modules/main_map/main_map_screen.dart',
+              'app/lib/modules/main_map/main_map_scene.dart',
+              'app/lib/modules/main_map/main_map_scene_geometry.dart',
+              'app/lib/modules/main_map/main_map_scene_state.dart',
+              'app/lib/l10n/generated/app_localizations.dart',
+              'app/lib/l10n/generated/app_localizations_en.dart',
+              'app/lib/l10n/generated/app_localizations_vi.dart',
+              'app/test/main_map_scene_test.dart',
+              'app/test/main_map_scene_geometry_test.dart',
+              'app/test/main_map_scene_route_test.dart',
+              'app/test/activity_sheet_thumbnails_test.dart',
+              'app/test/render/render_screens_test.dart',
+          ]
+          archive = io.BytesIO()
+          with tempfile.TemporaryDirectory(prefix='pqc020-format-preview-') as temporary:
+              root = Path(temporary)
+              dart_files = []
+              for relative in source_files:
+                  source = Path(relative)
+                  if not source.is_file():
+                      continue
+                  target = root / relative
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  shutil.copy2(source, target)
+                  if target.suffix == '.dart':
+                      dart_files.append(str(target))
+              if dart_files:
+                  subprocess.run(['dart', 'format', *dart_files], check=True)
+              with tarfile.open(fileobj=archive, mode='w:gz', compresslevel=9) as bundle:
+                  for relative in source_files:
+                      target = root / relative
+                      if target.is_file():
+                          bundle.add(target, arcname=relative)
+          snapshot = base64.b64encode(archive.getvalue()).decode('ascii')
+
+          rows = ['| Gate | Outcome |', '|---|---|']
+          rows.extend(f'| {name} | {value} |' for name, value in outcomes.items())
+          rows.append(f'| Focused tests | {test_count} passed (summary parsed from the test log) |')
+          rows.append('| SDK | Flutter 3.47.7 / Dart 3.13.5 / framework abaf9c523780a608bd46686fd5e53740a07077f8 |')
+          summary = '\n'.join(rows)
+          text = (
+              'The following base64 value is a gzip tar of the selected PQC-020 Dart sources '
+              'after the pinned Dart formatter was applied in a temporary directory, plus '
+              'the exact generated localization files from this run. No files were changed, '
+              'committed, or pushed by this workflow. Decode with `base64 -d | tar -xz` from '
+              'the repository root.\n\n'
+              '```text\n' + snapshot + '\n```\n'
+          )
+          now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+          payload = {
+              'name': 'PQC-020 focused gate evidence',
+              'head_sha': sha,
+              'external_id': f'{run_id}-pqc020',
+              'details_url': f'https://github.com/{repository}/actions/runs/{run_id}',
+              'status': 'completed',
+              'conclusion': 'success' if successful else 'failure',
+              'started_at': now,
+              'completed_at': now,
+              'output': {
+                  'title': 'PQC-020 R1-A focused verification',
+                  'summary': summary,
+                  'text': text,
+              },
+          }
+          request = urllib.request.Request(
+              f'https://api.github.com/repos/{repository}/check-runs',
+              data=json.dumps(payload).encode('utf-8'),
+              headers={
+                  'Accept': 'application/vnd.github+json',
+                  'Authorization': f"Bearer {os.environ['GH_TOKEN']}",
+                  'X-GitHub-Api-Version': '2022-11-28',
+                  'Content-Type': 'application/json',
+              },
+              method='POST',
+          )
+          with urllib.request.urlopen(request, timeout=30) as response:
+              evidence = json.load(response)
+          print(f"Published PQC-020 gate evidence: {evidence.get('html_url', '')}")
+          if not successful:
+              print('One or more required focused gates did not pass.')
+          PY
