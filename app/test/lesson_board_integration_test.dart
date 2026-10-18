@@ -276,6 +276,12 @@ void main() {
         find.byKey(const ValueKey<String>('example_code_editor_mq1_03_s2')),
       );
       await tester.pump();
+      // Prime focus-driven scrolling before measuring tutor-route preservation.
+      editor.focusNode!.unfocus();
+      await tester.pump();
+      editor.focusNode!.requestFocus();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(editor.focusNode!.hasFocus, isTrue);
 
       final double scrollOffsetBeforeTutor = _lessonScrollOffset(tester);
       await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
