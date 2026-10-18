@@ -972,8 +972,9 @@ class _TracingAssetBundle extends CachingAssetBundle {
     final String? contents = loadedStrings[key];
     final int zoneId = identityHashCode(Zone.current);
     if (contents != null) {
-      final SynchronousFuture<String> assetFuture =
-          SynchronousFuture<String>(contents);
+      final SynchronousFuture<String> assetFuture = SynchronousFuture<String>(
+        contents,
+      );
       debugPrint(
         '[PQC-011 route asset] READY key=$key '
         'bundle=$runtimeType#${identityHashCode(this)} '
