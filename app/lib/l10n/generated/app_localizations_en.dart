@@ -163,4 +163,70 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsPythonLimitNames =>
       'Variable names cannot shadow print, len or range, to help avoid confusing errors.';
+
+  @override
+  String get hubIslandName => 'Starter Island';
+
+  @override
+  String get hubQuestsTooltip => 'Daily quests';
+
+  @override
+  String get hubSettingsTooltip => 'Settings';
+
+  @override
+  String get hubVillageTab => 'Village';
+
+  @override
+  String get hubPlacesTab => 'Places';
+
+  @override
+  String get hubRecommendationTitle => 'A place to explore';
+
+  @override
+  String hubVisitRecommended(String place) {
+    return 'Visit $place';
+  }
+
+  @override
+  String get hubExplore => 'Explore';
+
+  @override
+  String get hubLocked => 'Locked';
+
+  @override
+  String get hubLoading => 'Loading status';
+
+  @override
+  String get hubRetry => 'Retry';
+
+  @override
+  String get hubStatusUnavailable => 'Status unavailable';
+
+  @override
+  String get hubSceneScrollHint => 'Scroll to explore all six places.';
+
+  @override
+  String get hubDirectoryHint =>
+      'Choose an activity. Your progress and unlocks stay the same.';
+
+  @override
+  String get hubMainQuest => 'Python Tower';
+
+  @override
+  String get hubRobotMaze => 'Robo Maze';
+
+  @override
+  String get hubDragonJump => 'Volcano';
+
+  @override
+  String get hubCatchStars => 'Observatory';
+
+  @override
+  String get hubBugHunter => 'Bitsy\'s Workshop';
+
+  @override
+  String get hubAchievements => 'Achievement House';
+
+  @override
+  String get hubHomeSemantics => 'PyQuest, Starter Island';
 }

@@ -162,4 +162,70 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get settingsPythonLimitNames =>
       'Không cho đặt tên biến trùng print, len, range để tránh lỗi khó hiểu.';
+
+  @override
+  String get hubIslandName => 'Đảo Khởi Đầu';
+
+  @override
+  String get hubQuestsTooltip => 'Nhiệm vụ hôm nay';
+
+  @override
+  String get hubSettingsTooltip => 'Cài đặt';
+
+  @override
+  String get hubVillageTab => 'Cảnh làng';
+
+  @override
+  String get hubPlacesTab => 'Địa điểm';
+
+  @override
+  String get hubRecommendationTitle => 'Gợi ý cho bạn';
+
+  @override
+  String hubVisitRecommended(String place) {
+    return 'Ghé $place';
+  }
+
+  @override
+  String get hubExplore => 'Khám phá';
+
+  @override
+  String get hubLocked => 'Cần học trước';
+
+  @override
+  String get hubLoading => 'Đang tải trạng thái';
+
+  @override
+  String get hubRetry => 'Thử lại';
+
+  @override
+  String get hubStatusUnavailable => 'Chưa tải được trạng thái';
+
+  @override
+  String get hubSceneScrollHint => 'Cuộn để khám phá đủ sáu địa điểm.';
+
+  @override
+  String get hubDirectoryHint =>
+      'Chọn một hoạt động. Tiến trình và khóa mở vẫn được giữ nguyên.';
+
+  @override
+  String get hubMainQuest => 'Tháp Python';
+
+  @override
+  String get hubRobotMaze => 'Mê Cung Robo';
+
+  @override
+  String get hubDragonJump => 'Núi Lửa';
+
+  @override
+  String get hubCatchStars => 'Đài Thiên Văn';
+
+  @override
+  String get hubBugHunter => 'Xưởng Bitsy';
+
+  @override
+  String get hubAchievements => 'Nhà Thành Tích';
+
+  @override
+  String get hubHomeSemantics => 'PyQuest, Đảo Khởi Đầu';
 }

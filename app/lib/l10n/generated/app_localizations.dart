@@ -355,6 +355,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Variable names cannot shadow print, len or range, to help avoid confusing errors.'**
   String get settingsPythonLimitNames;
+
+  /// No description provided for @hubIslandName.
+  ///
+  /// In en, this message translates to:
+  /// **'Starter Island'**
+  String get hubIslandName;
+
+  /// No description provided for @hubQuestsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily quests'**
+  String get hubQuestsTooltip;
+
+  /// No description provided for @hubSettingsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get hubSettingsTooltip;
+
+  /// No description provided for @hubVillageTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Village'**
+  String get hubVillageTab;
+
+  /// No description provided for @hubPlacesTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Places'**
+  String get hubPlacesTab;
+
+  /// No description provided for @hubRecommendationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A place to explore'**
+  String get hubRecommendationTitle;
+
+  /// Action for the ready, unlocked recommended activity.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit {place}'**
+  String hubVisitRecommended(String place);
+
+  /// No description provided for @hubExplore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get hubExplore;
+
+  /// No description provided for @hubLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get hubLocked;
+
+  /// No description provided for @hubLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading status'**
+  String get hubLoading;
+
+  /// No description provided for @hubRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get hubRetry;
+
+  /// No description provided for @hubStatusUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Status unavailable'**
+  String get hubStatusUnavailable;
+
+  /// No description provided for @hubSceneScrollHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll to explore all six places.'**
+  String get hubSceneScrollHint;
+
+  /// No description provided for @hubDirectoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an activity. Your progress and unlocks stay the same.'**
+  String get hubDirectoryHint;
+
+  /// No description provided for @hubMainQuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Python Tower'**
+  String get hubMainQuest;
+
+  /// No description provided for @hubRobotMaze.
+  ///
+  /// In en, this message translates to:
+  /// **'Robo Maze'**
+  String get hubRobotMaze;
+
+  /// No description provided for @hubDragonJump.
+  ///
+  /// In en, this message translates to:
+  /// **'Volcano'**
+  String get hubDragonJump;
+
+  /// No description provided for @hubCatchStars.
+  ///
+  /// In en, this message translates to:
+  /// **'Observatory'**
+  String get hubCatchStars;
+
+  /// No description provided for @hubBugHunter.
+  ///
+  /// In en, this message translates to:
+  /// **'Bitsy\'s Workshop'**
+  String get hubBugHunter;
+
+  /// No description provided for @hubAchievements.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievement House'**
+  String get hubAchievements;
+
+  /// No description provided for @hubHomeSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'PyQuest, Starter Island'**
+  String get hubHomeSemantics;
 }
 
 class _AppLocalizationsDelegate
