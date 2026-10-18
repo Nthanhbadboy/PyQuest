@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -867,7 +868,7 @@ Future<Map<String, ByteData>> _preloadAuthoredAssetBytes(
 
         Future<void> load(String key) async {
           final Stopwatch stopwatch = Stopwatch()..start();
-          final Future<String> assetFuture = assetBundle.loadString(key);
+          final Future<String> assetFuture = assetBundle.preloadString(key);
           debugPrint(
             '[PQC-011 preload] START key=$key '
             'bundle=${assetBundle.runtimeType}#'
@@ -933,17 +934,73 @@ class _TracingAssetBundle extends CachingAssetBundle {
 
   final AssetBundle delegate;
   final Map<String, ByteData> loadedSources = <String, ByteData>{};
+  final Map<String, String> loadedStrings = <String, String>{};
+
+  Future<String> preloadString(String key) async {
+    final Stopwatch stopwatch = Stopwatch()..start();
+    final int zoneId = identityHashCode(Zone.current);
+    final Future<String> assetFuture = super.loadString(key);
+    debugPrint(
+      '[PQC-011 asset preload] START key=$key '
+      'bundle=$runtimeType#${identityHashCode(this)} '
+      'async=${Zone.current[_pqc011AssetLoadContextKey]} zone=$zoneId '
+      'future=${assetFuture.runtimeType}',
+    );
+    try {
+      final String contents = await assetFuture.timeout(
+        const Duration(seconds: 5),
+      );
+      loadedStrings[key] = contents;
+      debugPrint(
+        '[PQC-011 asset preload] END key=$key elapsed=${stopwatch.elapsed} '
+        'characters=${contents.length} zone=$zoneId',
+      );
+      return contents;
+    } on Object catch (error, stackTrace) {
+      debugPrint(
+        '[PQC-011 asset preload] ERROR key=$key elapsed=${stopwatch.elapsed} '
+        'zone=$zoneId error=$error',
+      );
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<String> loadString(String key, {bool cache = true}) {
+    final String? contents = loadedStrings[key];
+    final int zoneId = identityHashCode(Zone.current);
+    if (contents != null) {
+      final SynchronousFuture<String> assetFuture =
+          SynchronousFuture<String>(contents);
+      debugPrint(
+        '[PQC-011 route asset] READY key=$key '
+        'bundle=$runtimeType#${identityHashCode(this)} '
+        'async=${Zone.current[_pqc011AssetLoadContextKey] ?? 'widget-test'} '
+        'zone=$zoneId future=${assetFuture.runtimeType}',
+      );
+      return assetFuture;
+    }
+
+    final Future<String> assetFuture = super.loadString(key, cache: cache);
+    debugPrint(
+      '[PQC-011 route asset] START key=$key '
+      'bundle=$runtimeType#${identityHashCode(this)} '
+      'async=${Zone.current[_pqc011AssetLoadContextKey] ?? 'widget-test'} '
+      'zone=$zoneId future=${assetFuture.runtimeType}',
+    );
+    return assetFuture.timeout(const Duration(seconds: 5));
+  }
 
   @override
   Future<ByteData> load(String key) async {
     final Stopwatch stopwatch = Stopwatch()..start();
     final int zoneId = identityHashCode(Zone.current);
-    final Object? asyncContext = Zone.current[_pqc011AssetLoadContextKey];
     debugPrint(
       '[PQC-011 route asset] START key=$key '
       'bundle=$runtimeType#${identityHashCode(this)} '
       'delegate=${delegate.runtimeType} '
-      'async=${asyncContext ?? 'widget-test'} zone=$zoneId',
+      'async=${Zone.current[_pqc011AssetLoadContextKey] ?? 'widget-test'} '
+      'zone=$zoneId',
     );
     final Future<ByteData> assetFuture = delegate.load(key);
     debugPrint(
