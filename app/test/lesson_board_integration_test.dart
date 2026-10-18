@@ -282,6 +282,7 @@ void main() {
             .isNotEmpty,
         'tutor sheet opening completes',
       );
+      await tester.pump(const Duration(milliseconds: 300));
       expect(find.byKey(const ValueKey<String>('tutor_close')), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey<String>('tutor_close')));
       await _waitForCondition(
@@ -327,6 +328,7 @@ void main() {
             .isNotEmpty,
         'tutor sheet opening completes',
       );
+      await tester.pump(const Duration(milliseconds: 300));
       expect(find.byKey(const ValueKey<String>('tutor_close')), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey<String>('tutor_close')));
       await _waitForCondition(
