@@ -67,10 +67,12 @@ class _MainMapScreenState extends State<MainMapScreen> {
       _services = services;
       services.events.revision.addListener(_refresh);
       services.session.addListener(_onSession);
-      _placeStatuses = MainMapSceneStatusController(<String, MainMapStatusLoader>{
-        for (final ActivityModule module in activityRegistry)
-          module.def.id: () => module.status(services),
-      });
+      _placeStatuses = MainMapSceneStatusController(
+        <String, MainMapStatusLoader>{
+          for (final ActivityModule module in activityRegistry)
+            module.def.id: () => module.status(services),
+        },
+      );
       unawaited(_placeStatuses!.refresh());
       services.audio.music(MusicTrack.island);
       if (!services.settings.introSeen && !_introShown) {
@@ -107,7 +109,10 @@ class _MainMapScreenState extends State<MainMapScreen> {
 
   void _onSession() {
     final AppServices? services = _services;
-    if (services == null || services.session.pendingReminder == null || !mounted) return;
+    if (services == null ||
+        services.session.pendingReminder == null ||
+        !mounted)
+      return;
     final int minutes = services.session.pendingReminder!;
     services.session.consumeReminder();
     showBreakReminder(context, minutes);
@@ -127,17 +132,27 @@ class _MainMapScreenState extends State<MainMapScreen> {
   Future<void> _openPlace(ActivityModule module) async {
     final AppServices? services = _services;
     final MainMapPlaceState? place = _placeStatuses?.places[module.def.id];
-    if (!mounted || services == null || _routeBusy || place?.status == null || place?.phase != MainMapPlacePhase.ready) return;
+    if (!mounted ||
+        services == null ||
+        _routeBusy ||
+        place?.status == null ||
+        place?.phase != MainMapPlacePhase.ready)
+      return;
 
-    final double villageOffset = _villageScroll.hasClients ? _villageScroll.offset : 0;
-    final double directoryOffset = _directoryScroll.hasClients ? _directoryScroll.offset : 0;
+    final double villageOffset = _villageScroll.hasClients
+        ? _villageScroll.offset
+        : 0;
+    final double directoryOffset = _directoryScroll.hasClients
+        ? _directoryScroll.offset
+        : 0;
     setState(() => _routeBusy = true);
     services.audio.play(Sfx.pop);
     bool enteredActivity = false;
     try {
       final String? action = await showPQSheet<String>(
         context,
-        builder: (BuildContext context) => ActivitySheet(module: module, status: place!.status!),
+        builder: (BuildContext context) =>
+            ActivitySheet(module: module, status: place!.status!),
       );
       if (!mounted || action == null) return;
       if (action == 'open') {
@@ -171,7 +186,11 @@ class _MainMapScreenState extends State<MainMapScreen> {
   void _restoreScrollOffset(ScrollController controller, double offset) {
     if (!controller.hasClients) return;
     final ScrollPosition position = controller.position;
-    controller.jumpTo(offset.clamp(position.minScrollExtent, position.maxScrollExtent).toDouble());
+    controller.jumpTo(
+      offset
+          .clamp(position.minScrollExtent, position.maxScrollExtent)
+          .toDouble(),
+    );
   }
 
   void _chooseMode(bool directory) {
@@ -226,16 +245,18 @@ class _MainMapScreenState extends State<MainMapScreen> {
                   ? const Center(child: CircularProgressIndicator())
                   : AnimatedBuilder(
                       animation: statuses,
-                      builder: (BuildContext context, Widget? child) => MainMapScene(
-                        modules: activityRegistry,
-                        places: statuses.places,
-                        directoryMode: _directoryMode,
-                        villageScrollController: _villageScroll,
-                        directoryScrollController: _directoryScroll,
-                        focusNodeFor: (String id) => _placeFocus[id]!,
-                        onOpen: _openPlace,
-                        onRetry: (ActivityModule module) => unawaited(_retry(module)),
-                      ),
+                      builder: (BuildContext context, Widget? child) =>
+                          MainMapScene(
+                            modules: activityRegistry,
+                            places: statuses.places,
+                            directoryMode: _directoryMode,
+                            villageScrollController: _villageScroll,
+                            directoryScrollController: _directoryScroll,
+                            focusNodeFor: (String id) => _placeFocus[id]!,
+                            onOpen: _openPlace,
+                            onRetry: (ActivityModule module) =>
+                                unawaited(_retry(module)),
+                          ),
                     ),
             ),
           ],
@@ -306,7 +327,13 @@ class _IslandTitle extends StatelessWidget {
           decoration: BoxDecoration(
             color: PQColors.seaDeep,
             borderRadius: BorderRadius.circular(14),
-            boxShadow: const <BoxShadow>[BoxShadow(color: PQColors.inkSoft, offset: Offset(0, 3), blurRadius: 0)],
+            boxShadow: const <BoxShadow>[
+              BoxShadow(
+                color: PQColors.inkSoft,
+                offset: Offset(0, 3),
+                blurRadius: 0,
+              ),
+            ],
           ),
           child: Text('PQ', style: PQText.h3.copyWith(color: Colors.white)),
         ),
@@ -317,7 +344,11 @@ class _IslandTitle extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text('PyQuest', style: PQText.h3, softWrap: true),
-              Text(name, style: PQText.small.copyWith(color: PQColors.inkSoft), softWrap: true),
+              Text(
+                name,
+                style: PQText.small.copyWith(color: PQColors.inkSoft),
+                softWrap: true,
+              ),
             ],
           ),
         ),
@@ -327,7 +358,12 @@ class _IslandTitle extends StatelessWidget {
 }
 
 class _MapModeButton extends StatelessWidget {
-  const _MapModeButton({super.key, required this.label, required this.selected, required this.onPressed});
+  const _MapModeButton({
+    super.key,
+    required this.label,
+    required this.selected,
+    required this.onPressed,
+  });
 
   final String label;
   final bool selected;
@@ -351,10 +387,20 @@ class _MapModeButton extends StatelessWidget {
             foregroundColor: selected ? Colors.white : PQColors.ink,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
-              side: BorderSide(color: selected ? PQColors.seaDeep : PQColors.parchmentEdge, width: 1.5),
+              side: BorderSide(
+                color: selected ? PQColors.seaDeep : PQColors.parchmentEdge,
+                width: 1.5,
+              ),
             ),
           ),
-          child: Text(label, textAlign: TextAlign.center, softWrap: true, style: PQText.bodyStrong.copyWith(color: selected ? Colors.white : PQColors.ink)),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            softWrap: true,
+            style: PQText.bodyStrong.copyWith(
+              color: selected ? Colors.white : PQColors.ink,
+            ),
+          ),
         ),
       ),
     );
@@ -362,26 +408,38 @@ class _MapModeButton extends StatelessWidget {
 }
 
 /// Opens an activity's existing home and records the existing activity-open event.
-Future<void> openActivity(BuildContext context, ActivityModule module, {String? lessonId}) async {
+Future<void> openActivity(
+  BuildContext context,
+  ActivityModule module, {
+  String? lessonId,
+}) async {
   final AppServices s = AppScope.of(context);
-  final outcome = await s.events.emit(StandardEvent(
-    type: EventTypes.activityOpened,
-    sourceId: 'main_map',
-    data: <String, Object?>{'activity_id': module.def.id},
-  ));
+  final outcome = await s.events.emit(
+    StandardEvent(
+      type: EventTypes.activityOpened,
+      sourceId: 'main_map',
+      data: <String, Object?>{'activity_id': module.def.id},
+    ),
+  );
   if (!context.mounted) return;
   s.audio.play(Sfx.whoosh);
   WidgetBuilder page = module.buildHome;
   if (lessonId != null && module is MainQuestModule) {
     final MainQuestModule main = module;
-    page = (BuildContext context) => main.buildHome(context, openLessonId: lessonId);
+    page = (BuildContext context) =>
+        main.buildHome(context, openLessonId: lessonId);
   }
   final NavigatorState navigator = Navigator.of(context);
-  final route = navigator.push<void>(CloudRoute<void>(builder: page, calm: s.settings.calmMode));
+  final route = navigator.push<void>(
+    CloudRoute<void>(builder: page, calm: s.settings.calmMode),
+  );
   if (outcome.notices.isNotEmpty) {
-    unawaited(Future<void>.delayed(const Duration(milliseconds: 900), () {
-      if (navigator.mounted) showRewardToasts(navigator.context, outcome.notices);
-    }));
+    unawaited(
+      Future<void>.delayed(const Duration(milliseconds: 900), () {
+        if (navigator.mounted)
+          showRewardToasts(navigator.context, outcome.notices);
+      }),
+    );
   }
   await route;
   if (context.mounted) s.audio.music(MusicTrack.island);
@@ -398,12 +456,21 @@ class _WelcomeDialogState extends State<_WelcomeDialog> {
   int _page = 0;
 
   static const _pages = [
-    (CharacterId.robo, 'Chào mừng tới Đảo Khởi Đầu!',
-        'Mình là Robo. Mỗi địa điểm trên đảo là một trò chơi hoặc một chặng phiêu lưu riêng. Chạm vào một nơi để khám phá nhé!'),
-    (CharacterId.py, 'Học Python ở Tháp Python',
-        'Tớ là thầy Py. Ở Tháp Python bạn sẽ học viết code thật từng bước. Nhiều trò chơi khác trên đảo không cần biết Python đâu!'),
-    (CharacterId.pip, 'Năng lượng và nghỉ ngơi',
-        'Chơi màn mới và học bài mới dùng một chút năng lượng. Năng lượng tự hồi theo thời gian. Không có quảng cáo, không có mua bán!'),
+    (
+      CharacterId.robo,
+      'Chào mừng tới Đảo Khởi Đầu!',
+      'Mình là Robo. Mỗi địa điểm trên đảo là một trò chơi hoặc một chặng phiêu lưu riêng. Chạm vào một nơi để khám phá nhé!',
+    ),
+    (
+      CharacterId.py,
+      'Học Python ở Tháp Python',
+      'Tớ là thầy Py. Ở Tháp Python bạn sẽ học viết code thật từng bước. Nhiều trò chơi khác trên đảo không cần biết Python đâu!',
+    ),
+    (
+      CharacterId.pip,
+      'Năng lượng và nghỉ ngơi',
+      'Chơi màn mới và học bài mới dùng một chút năng lượng. Năng lượng tự hồi theo thời gian. Không có quảng cáo, không có mua bán!',
+    ),
   ];
 
   @override
@@ -475,8 +542,16 @@ Future<void> showBreakReminder(BuildContext context, int minutes) {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const CharacterView(id: CharacterId.robo, size: 110, mood: Mood.neutral),
-            Text('Bạn đã chơi $minutes phút rồi!', textAlign: TextAlign.center, style: PQText.h2),
+            const CharacterView(
+              id: CharacterId.robo,
+              size: 110,
+              mood: Mood.neutral,
+            ),
+            Text(
+              'Bạn đã chơi $minutes phút rồi!',
+              textAlign: TextAlign.center,
+              style: PQText.h2,
+            ),
             const SizedBox(height: 8),
             Text(
               minutes >= 60
@@ -496,7 +571,12 @@ Future<void> showBreakReminder(BuildContext context, int minutes) {
               },
             ),
             const SizedBox(height: 10),
-            ChunkyButton(label: 'Chơi tiếp một chút', tone: PQTone.parchment, expand: true, onPressed: () => Navigator.of(ctx).pop()),
+            ChunkyButton(
+              label: 'Chơi tiếp một chút',
+              tone: PQTone.parchment,
+              expand: true,
+              onPressed: () => Navigator.of(ctx).pop(),
+            ),
           ],
         ),
       ),
