@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-18",
+  "scope": "Result/receipt/inbox/proof study; no engine, database, events or Flutter execution",
+  "artifacts": {
+    "docs/design/maze-result-r52/ASSET_PLAN.md": "7b2bf9d7bfada6ce29e7ccefca52d1a7f0fe526de4332d64287ec863cb04c7b2",
+    "docs/design/maze-result-r52/README.md": "8e502f86497466f2d1bb97aca2a7d966b6274baf45bacbd0f60a5d33619384ff",
+    "docs/design/maze-result-r52/SOURCE_EXCERPTS.md": "ecba203bdf8623eaade40adbe337b296dbd30d892f0949e0ca567718a3b28283",
+    "docs/design/maze-result-r52/SPEC.md": "e13d240d727d24c164e17ae791e1e531f03be63cab21329acda0aab90ce88e55",
+    "docs/design/maze-result-r52/assets/provenance.json": "8db3e921dc5698eb6a9b4ea6e831fcab2e4428dfe6c3ea0d2841fcd3ad163798",
+    "docs/design/maze-result-r52/assets/robo-celebration.png": "b2a68d117f934aa932fd2fbe6457b854236779bd270eb8368fbcf492dc318199",
+    "docs/design/maze-result-r52/evidence/browser-checks.json": "8521bb27f5ed82942d55885a2f3011763a25d7cfbb791114b35a79bcf19fe731",
+    "docs/design/maze-result-r52/evidence/desktop-overview.jpg": "ed26eb94e468196d547d056cde2e7485168fde9b2fd002b0a509bc523aa60aca",
+    "docs/design/maze-result-r52/evidence/landscape-result.png": "1bc384424b85f347475329f0754d610035cb990cffbb2acfcc7b4404a27af49c",
+    "docs/design/maze-result-r52/evidence/model-checks.json": "7014ed3cd261c5b527424d66147d72ab2b3201cae75d4ab5560db03f82699cf7",
+    "docs/design/maze-result-r52/evidence/phone-custom-edited.png": "a1333fd6753a766a9182f1c418ad2a8d44395830fedcf38d01bae2337baaabe9",
+    "docs/design/maze-result-r52/evidence/phone-custom-pending.png": "d3c44b6bea2d27c9001925b5d15fdff28e77520142857379842416ddfaefa88a",
+    "docs/design/maze-result-r52/evidence/phone-custom-saved.png": "9d1c064cbca3dcf538138fa2557d5d9b5a8c2223dc71ae78929b046131816852",
+    "docs/design/maze-result-r52/evidence/phone-first.png": "715280a29ea1b10aaadc193d49cff0084ff32db3c7058602503ee0d589b04e00",
+    "docs/design/maze-result-r52/evidence/phone-large-en.png": "832fed2d00b33e7f93b40066b7173e340d8a4efb47b7af9ab16b1cd0be224230",
+    "docs/design/maze-result-r52/evidence/phone-large-vi.png": "1b52e810271f957b3032909bf89bc7f753aabbe46bd9dd3c2bc06432d9d6db40",
+    "docs/design/maze-result-r52/evidence/phone-lower.png": "ea5c856ef568d6e86a9f23fdde1381799ab1a0286a6a1f2eeafa5fabf87f44fb",
+    "docs/design/maze-result-r52/evidence/phone-not-won.png": "3ad40b2df5587af730e19772cc3002de91fd32bf580fd1c3dd8adc8190b7d495",
+    "docs/design/maze-result-r52/evidence/phone-partial.png": "baf60a8e02d9b66a7f4aa17c8cbbaba47a0b4b7f303fa97168e9e2cb6106b41d",
+    "docs/design/maze-result-r52/evidence/phone-rewards-en.png": "e3b3ce94e4b78a4645d10f29291c13f4126e9c1ab46deb82cf6595638e8090df",
+    "docs/design/maze-result-r52/index.html": "aea2691cd7d01419483fb8696a525deb966dd7777cd4b8d792baf7d37f51e9c5",
+    "docs/design/maze-result-r52/model.js": "0223679599fbb059a6f70be00666bbb5ea03aadfd4c60a0380dd0d2c6ee4d05d",
+    "docs/design/maze-result-r52/partner-observation.json": "f366cf5365e8665270405acaa0bca8ecb211adf36ccabd248ba0a91dd68e7d5c",
+    "docs/design/maze-result-r52/source-manifest.json": "27e3e7e99d9b7db95e851e9d3d8d467fbd72bb96a4cb786948b35cc5a1c82b41",
+    "docs/design/maze-result-r52/study.js": "639d13924fe7c74653fbe5e65b540f34a981a81bd5d0114ccea7926960b71181",
+    "docs/design/maze-result-r52/style.css": "355dcc0ebb9f1446832661cbdcc0c2bb794a019792b58b362b0409aa4600ffac"
+  },
+  "dependencies": {
+    "app/assets/fonts/OFL-Nunito.txt": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
+    "docs/design/maze-play-r50/assets/garden-stage.png": "8349615e0cdacb46faf827f31ba08805c96163d7eefd5fa8219e2b3009a0a3db",
+    "docs/design/maze-play-r50/assets/hedge-token.png": "a4698cb00e4d326b4f8b6696ddd7acd897e8dc363d33731ad57a11f75117010a",
+    "docs/design/maze-play-r50/assets/provenance.json": "443264837342e8ab1a6aefe50732bb6653e017ae1e7e13cbbbd673b3740a2038",
+    "docs/design/maze-play-r50/assets/robo-portrait.png": "734a58d729a099531e6767a563e897cb8a857b1adcc7c0ac3b2cf93f55b03fd2",
+    "docs/design/maze-play-r50/assets/robo-token.png": "c2f58b4eda7303e252474694c73e05b48d85563effda1035e0dc4fad8d747f05",
+    "docs/design/maze-play-r50/style.css": "e3b92fcbacd7127d7de0d1942ecaf67e79f94ac630113ad0725861d19b0e6158",
+    "docs/design/tutor-board-prototype/fonts/Nunito-ExtraBold.ttf": "6aeac28bd008e77fe752c2c2c2ace44bf81c296534bfeb6bac582bb2d44b6347",
+    "docs/design/tutor-board-prototype/fonts/Nunito-Medium.ttf": "c5ac621e788f8acf1ae43518f45f5eb3b3dc1eede0cddbcabb67e468595bb687",
+    "docs/screenshots/09_maze_result.jpg": "f9d03dc74629bfb49eb157f129930f9c745fa61d469a0ae252d65850bd45584f",
+    "docs/screenshots/28_workshop_verified.jpg": "38ff8174143fa3608d76b45fd3672999c189b0dc5116356525ea7493c969e39b"
+  },
+  "tools": {
+    "tools/design/check_maze_result_r52.cjs": "cd5cbfe8aeda80d923208faf7d379a4b8979b4904758fc36fd8f1bc9c44b25f7",
+    "tools/design/serve_art_review.py": "c1210e56f2a16490cfab0d156e7dfc1de52a485c29c0f031c603c7e78ef6c4f1",
+    "tools/design/test_maze_result_r52.cjs": "4cf84e5d4e111adbcbc27c44cadff8220703f304d1a121b8090316591ca680b1",
+    "tools/design/validate_maze_result_r52.py": "0cf0c91ccce6e8384e490f46ab14adc431291f6a22fca5dc5f3e424e89b369eb"
+  }
+}

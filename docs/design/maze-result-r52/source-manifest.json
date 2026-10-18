@@ -1,0 +1,149 @@
+{
+  "code_pin": "bcf2bfc5088ca80f1a6f0fd1d2211032f5ce416a",
+  "files": [
+    {
+      "path": "app/lib/modules/robot_maze/maze_play_screen.dart",
+      "sha256": "0a4b44d8d0bc7ff03e36742253a68222cedba33df94e508ec84ffda8592666c4",
+      "ranges": [
+        [
+          476,
+          566
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_workshop_screen.dart",
+      "sha256": "aa22b98f4466ca9227dc18031c6f12eb29789dd3dbe5278a79709246620ed145",
+      "ranges": [
+        [
+          180,
+          214
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_models.dart",
+      "sha256": "238cc06597a0010a3f8335e7b219f85deda0a53aa23c2e96b5c88a05315d9092",
+      "ranges": [
+        [
+          343,
+          359
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/data/repositories/progress_repository.dart",
+      "sha256": "cb7960c854f7270f4e61e6082a47cb1e1ab90c88980cba5f178a952f4cf2765b",
+      "ranges": [
+        [
+          30,
+          41
+        ],
+        [
+          63,
+          105
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/modules/progress/progress_tracker.dart",
+      "sha256": "ea0f42ca94188fc7aa40fd8a921a9391dd70d9b020692391153579a988231f2e",
+      "ranges": [
+        [
+          15,
+          43
+        ],
+        [
+          54,
+          61
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/core/events.dart",
+      "sha256": "0f6cc29fca74e65d585126e052e5b11332ccb9b09a45162206ae9a328dcb2686",
+      "ranges": [
+        [
+          67,
+          85
+        ],
+        [
+          92,
+          119
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/shared/widgets/result_screen.dart",
+      "sha256": "d84eb7ebdfa1b4761323e42fe5e3582d763ed7758762f463b18703cb4543bf21",
+      "ranges": [
+        [
+          30,
+          68
+        ],
+        [
+          175,
+          186
+        ],
+        [
+          218,
+          260
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/shared/widgets/reward_toast.dart",
+      "sha256": "a8a66e35e80c1ee3558d89176038f2fc394bbbe6288278127e5b37a34612c698",
+      "ranges": [
+        [
+          13,
+          31
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/modules/achievements/achievement_catalog.dart",
+      "sha256": "07d52e12d2552ddff0fb7786146184df421c8ad2267e57fbb1cb7c9ef6c67200",
+      "ranges": [
+        [
+          80,
+          90
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/modules/daily_quests/daily_quest_service.dart",
+      "sha256": "06ec535dc64495759ef7c2dd16843464476bef10ad0d4ffa5458f21567d6ecdd",
+      "ranges": [
+        [
+          149,
+          158
+        ],
+        [
+          163,
+          180
+        ]
+      ]
+    },
+    {
+      "path": "app/assets/data/robot_maze_levels.json",
+      "sha256": "0c0d728a067b99d47fe85c18ed5c80cecd36c026284b3a3d15a246a6f5747f39",
+      "ranges": [
+        [
+          1,
+          27
+        ]
+      ]
+    },
+    {
+      "path": "app/assets/config/game_config.json",
+      "sha256": "f7b9d1a80be65a49ad2bf7c68de46bbf33243b0a27cd5eb5e80d77467b5f15c5",
+      "ranges": [
+        [
+          1,
+          26
+        ]
+      ]
+    }
+  ]
+}

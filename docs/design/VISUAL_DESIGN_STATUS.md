@@ -1,10 +1,23 @@
-# Thiết kế hình ảnh PyQuest — tình trạng đến r51
+# Thiết kế hình ảnh PyQuest — tình trạng đến r52
 
 **2026-10-18 · Chưa hoàn tất toàn bộ.** Không dùng số concept hoặc HTML PASS để
 nói app đã được redesign xong. Ba mức tách riêng: concept → screen/interaction study
 → runtime art pack +after-runtime evidence.
 
-## Mới nhất: Xưởng Python và phản hồi lỗi r51
+## Mới nhất: kết quả và ghi nhận Mê Cung r52
+
+![Kết quả và ghi nhận r52](maze-result-r52/evidence/desktop-overview.jpg)
+
+**Đã giao r52:** [study tương tác](maze-result-r52/index.html),
+[spec/evidence](maze-result-r52/README.md). Điểm/sao lượt này tách record;
+first/better/tie/lower, skill reminder không mastery; pending/error/partial receipt,
+inbox5notice kinds; custom report≠saved proof, bản sửa không nhận callback cũ.
+Một illustration2,5D mới đồng bộ r50, không bake số sao vào ảnh.26model checks
++1.000record comparisons;342browser cases/3.420font assertions/18flows/12captures.
+**RAM fixtures, không engine/DB/events/rewards hoặc Flutter port**; reconciliation
+là contract đề xuất, không endpoint/transaction thật. [PQD-013](coordination/tasks/PQD-013.md).
+
+## Đợt trước: Xưởng Python và phản hồi lỗi r51
 
 ![Xưởng Python r51](maze-python-r51/evidence/desktop-overview.jpg)
 
@@ -71,6 +84,7 @@ bổ sung các khoảng thiếu trong [audit r41](runtime-gap-r41/README.md), kh
 | Maze Creator | [r46](maze-creator-r46/index.html) — editable grid, guards, sample shelf/test | Không Python engine/DB/event, runtime verification hay production tile/actor pack |
 | Chọn màn Maze | [r45](maze-trail-r45/index.html) — scene, state, level diagrams | Chưa gameplay skin/engine/editor hoặc runtime art pack |
 | Bài học / bảng Tutor | [Board study](tutor-board-prototype/index.html), W13concept; runtime011review [r49](coordination/reviews/PQC-011-r49/README.md) | 011chưaaccepted; không lấy art để thay formatter/analyzer/Flutter tests |
+| Maze record/notices/custom results | [r52](maze-result-r52/index.html) — result/receipt/inbox/proof study | Không backend receipt, transaction/exactly-once, reward grants hoặc Flutter port |
 | Maze Python editor/diagnostics | [r51](maze-python-r51/index.html) — native text editing +authored response fixtures | Không Python execution, verified/save, custom-result transaction hay Flutter port |
 | Maze block-play/result | [r50](maze-play-r50/index.html) — run/failure/result/ack/next guards | Chưa full Python mode, custom results, bestscore/reward-notice hoặc Flutter port |
 | Gameplay/result khác và các entry sheets | [First-play](first-play-prototype/index.html), [result](result-adventure-prototype/index.html), [r40](art-review-r40/index.html) | Nhiều surface còn partial, chưa screen-by-screen hoàn chỉnh cùng skin |
@@ -82,9 +96,9 @@ bổ sung các khoảng thiếu trong [audit r41](runtime-gap-r41/README.md), kh
 2. **Maze Creator — đã giao editor study r46** cho baseline26–28. Grid/brush,
    resize/marker, dirty-save và test-run đã thao tác được; chỉ HTML/JS mẫu, không
    runtime port. Python/production art và các integration gates vẫn còn.
-3. **Maze block-play/result đã có r50, Python editor/diagnostics có r51**; reward-notice/custom-result
-   vẫn partial. **Ưu tiên tiếp theo: hoàn thiện các màn partial** từ [18nhóm audit](runtime-gap-r41/coverage.json):
-   phần còn lại của Maze, gameplay Dragon/Stars, kết quả, activityentry, welcome; lesson states phải
+3. **Maze block-play/result đã có r50, Python editor/diagnostics có r51; record/notices/custom-result có r52.**
+   Các study không thay production pack hoặc runtime integration. **Ưu tiên tiếp theo: hoàn thiện các màn partial** từ [18nhóm audit](runtime-gap-r41/coverage.json):
+   gameplay Dragon/Stars và kết quả là ưu tiên tiếp; activityentry, welcome; lesson states phải
    phối hợp011để không trộn source correction với skin redesign.
 4. **Splash và rà soát các surface mở rộng** còn thiếu state/interactions, rồi
    xuất runtime art pack thật: layers/alpha/pivots/footprints/hitbounds/occluders/rig.
@@ -93,5 +107,5 @@ bổ sung các khoảng thiếu trong [audit r41](runtime-gap-r41/README.md), kh
 Không gán phần trăm hoàn thành giả khi phạm vi screen/production khác nhau.
 Các links trên là nguồn cụ thể để xem, không lời hứa rằng toàn app đã triển khai.
 PQC-018 không bị mở lại; CODE011 theo r49 là PINNED_SDK_EXECUTED_FAILURE và đã có
-bounded correction order riêng. R50/r51 không thay order đó hoặc giao thêm runtime
-work. Không có taskFlutter mới trong các gói designr45/r46/r50/r51. DESIGN không tự watcher/background làm việc sau khi kết thúc lượt.
+bounded correction order riêng. R50/r51/r52 không thay order đó hoặc giao thêm runtime
+work. Không có taskFlutter mới trong các gói designr45/r46/r50/r51/r52. DESIGN không tự watcher/background làm việc sau khi kết thúc lượt.

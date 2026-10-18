@@ -1,0 +1,30 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto'),M=require('../../docs/design/maze-result-r52/model.js');const names=[];function test(n,f){f();names.push(n)}
+test('First completion is not a newHighScore',()=>{const s=M.fixture('first');assert.equal(s.previous,null);assert.equal(M.newBest(s),false);assert.equal(s.record.score,100)});
+test('Improvement over a prior record is new best',()=>{const s=M.fixture('better');assert(M.newBest(s));assert.equal(s.record.plays,2)});
+test('Tie is not a new record',()=>assert.equal(M.newBest(M.fixture('tie')),false));
+test('Lower run preserves prior stars and score independently',()=>{const s=M.fixture('lower');assert.equal(s.attempt.score,40);assert.equal(s.record.score,100);assert.equal(s.record.stars,3)});
+test('No gems still meets the allGems criterion',()=>{const s=M.fixture('no-gems');assert.equal(s.attempt.totalGems,0);assert(s.attempt.allGems);assert.equal(s.attempt.stars,3)});
+test('Every fixture score/star total matches authored goal flags',()=>{for(const id of M.fixtures){const a=M.fixture(id).attempt;assert.equal(a.score,a.won?40+30*Number(a.allGems)+30*Number(a.withinLimit):0);assert.equal(a.stars,a.won?1+Number(a.allGems)+Number(a.withinLimit):0)}});
+test('Pending has neither record nor notices authority',()=>{const s=M.fixture('pending');assert.equal(s.record,null);assert.equal(s.noticeStatus,'unknown');assert.equal(M.available(s),false)});
+test('Repeated request is coalesced',()=>{const s=M.begin(M.initial());assert.equal(M.begin(s),s)});
+test('Unknown reply kind cannot acknowledge a result',()=>{const s=M.begin(M.initial());assert.equal(M.settle(s,s.token,'surprise'),s)});
+test('Failure preserves prior result and report without a new record',()=>{let s=M.begin(M.initial());s=M.settle(s,s.token,'error');assert.equal(s.previous.score,70);assert.equal(s.record,null);assert.equal(s.attempt.score,100)});
+test('Partial result retains record but not notice authority',()=>{const s=M.fixture('partial');assert.equal(s.record.score,100);assert.equal(s.noticeStatus,'unknown');assert.equal(M.available(s),false)});
+test('Reconciliation after partial never increments plays twice',()=>{let s=M.fixture('partial');const r=s.record;s=M.begin(s);s=M.settle(s,s.token,'complete');assert.deepEqual(s.record,r);assert.equal(s.record.plays,2)});
+test('Failed reconciliation after partial does not roll back the record',()=>{let s=M.fixture('partial'),r=s.record;s=M.begin(s);s=M.settle(s,s.token,'error');assert.deepEqual(s.record,r);assert.equal(s.phase,'partial')});
+test('Duplicate callback is a no-op',()=>{let s=M.begin(M.initial());s=M.settle(s,s.token);assert.equal(M.settle(s,s.token),s)});
+test('Cancellation invalidates late reply',()=>{let s=M.begin(M.initial()),token=s.token;s=M.cancel(s);assert.equal(M.settle(s,token),s);assert.equal(s.record,null)});
+test('Scope mismatch rejects response',()=>{let s=M.begin(M.initial());s={...s,scope:'other'};s=M.settle(s,s.token);assert.equal(s.phase,'stale');assert.equal(s.record,null)});
+test('Custom winning report alone is not verified',()=>{const s=M.fixture('custom-pending');assert(s.attempt.won);assert.equal(M.verified(s),false);assert.equal(s.record,null)});
+test('Custom saved receipt creates revision-scoped proof, not ordinary score',()=>{const s=M.fixture('custom-saved');assert(M.verified(s));assert.equal(s.record,null);assert.equal(s.previous,null)});
+test('Custom partial preserves proof without declaring notices ready',()=>{const s=M.fixture('custom-partial');assert(M.verified(s));assert.equal(s.noticeStatus,'unknown')});
+test('Editing custom draft invalidates old proof',()=>{const s=M.editCustom(M.fixture('custom-saved'));assert.equal(s.revision,2);assert.equal(M.verified(s),false);assert.equal(M.available(s),false)});
+test('Late response for edited custom draft is rejected',()=>{let s=M.begin(M.fixture('custom-pending')),token=s.token;s=M.editCustom(s);s=M.settle(s,token);assert.equal(s.phase,'stale');assert.equal(s.proof,null)});
+test('Unsuccessful custom run cannot request save',()=>{const s=M.fixture('not-won');assert.equal(M.begin(s),s);assert.equal(M.verified(s),false)});
+test('Repeat verification is visibly distinct, does not create a badge',()=>{const s=M.fixture('custom-repeat');assert(s.wasVerified);assert.equal(s.notices.length,0)});
+test('Notice queue preserves order, deduplicates only within supplied receipt',()=>{const a=M.notices[0],b=M.notices[1],copy={...a,kind:'item'};assert.deepEqual(M.unique([a,b,a,copy]),[a,b,copy])});
+test('Seen is idempotent and cannot mark arbitrary keys',()=>{let s=M.fixture('rewards');s=M.mark(s,M.key(s.notices[0]));assert.equal(M.mark(s,M.key(s.notices[0])),s);assert.equal(M.mark(s,'fake'),s);assert.equal(s.record.score,100)});
+test('Postponing notices keeps unread state and saved record',()=>{let s=M.fixture('rewards'),r=s.record;s=M.inbox(s,false);assert.equal(s.seen.length,0);assert.deepEqual(s.record,r);s=M.inbox(s,true);assert.equal(s.seen.length,0)});
+let seed=52;for(let i=0;i<1000;i++){seed=(seed*1664525+1013904223)>>>0;const prev={score:seed%101,stars:seed%3+1,plays:seed%20+1};let s={...M.initial(),previous:prev,attempt:{...M.initial().attempt,score:(seed>>>8)%101,stars:(seed>>>16)%3+1}};s=M.begin(s);s=M.settle(s,s.token,'partial');s=M.begin(s);s=M.settle(s,s.token,'complete');assert.equal(s.record.score,Math.max(prev.score,s.attempt.score));assert.equal(s.record.stars,Math.max(prev.stars,s.attempt.stars));assert.equal(s.record.plays,prev.plays+1)}
+const inputs=Object.fromEntries(['docs/design/maze-result-r52/model.js','tools/design/test_maze_result_r52.cjs'].map(p=>[p,crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex')]));const r={result:'PASS',checks:names.length,names,random_record_comparisons:1000,engine_executed:false,database_written:false,inputs};fs.mkdirSync('docs/design/maze-result-r52/evidence',{recursive:true});fs.writeFileSync('docs/design/maze-result-r52/evidence/model-checks.json',JSON.stringify(r,null,2)+'\n');console.log(JSON.stringify(r,null,2));

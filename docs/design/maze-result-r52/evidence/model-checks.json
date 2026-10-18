@@ -1,0 +1,39 @@
+{
+  "result": "PASS",
+  "checks": 26,
+  "names": [
+    "First completion is not a newHighScore",
+    "Improvement over a prior record is new best",
+    "Tie is not a new record",
+    "Lower run preserves prior stars and score independently",
+    "No gems still meets the allGems criterion",
+    "Every fixture score/star total matches authored goal flags",
+    "Pending has neither record nor notices authority",
+    "Repeated request is coalesced",
+    "Unknown reply kind cannot acknowledge a result",
+    "Failure preserves prior result and report without a new record",
+    "Partial result retains record but not notice authority",
+    "Reconciliation after partial never increments plays twice",
+    "Failed reconciliation after partial does not roll back the record",
+    "Duplicate callback is a no-op",
+    "Cancellation invalidates late reply",
+    "Scope mismatch rejects response",
+    "Custom winning report alone is not verified",
+    "Custom saved receipt creates revision-scoped proof, not ordinary score",
+    "Custom partial preserves proof without declaring notices ready",
+    "Editing custom draft invalidates old proof",
+    "Late response for edited custom draft is rejected",
+    "Unsuccessful custom run cannot request save",
+    "Repeat verification is visibly distinct, does not create a badge",
+    "Notice queue preserves order, deduplicates only within supplied receipt",
+    "Seen is idempotent and cannot mark arbitrary keys",
+    "Postponing notices keeps unread state and saved record"
+  ],
+  "random_record_comparisons": 1000,
+  "engine_executed": false,
+  "database_written": false,
+  "inputs": {
+    "docs/design/maze-result-r52/model.js": "0223679599fbb059a6f70be00666bbb5ea03aadfd4c60a0380dd0d2c6ee4d05d",
+    "tools/design/test_maze_result_r52.cjs": "4cf84e5d4e111adbcbc27c44cadff8220703f304d1a121b8090316591ca680b1"
+  }
+}

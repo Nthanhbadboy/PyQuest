@@ -1,6 +1,6 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · source review r49 +design r51 · không phải chứng nhận runtime mới.**
+**2026-10-18 · source review r49 +design r52 · không phải chứng nhận runtime mới.**
 
 Tài liệu này phân biệt **có source**, **đã kiểm chứng tại một SHA**, **thiết kế** và
 **kế hoạch**. Product Vision/Game Design/Technical Architecture/Roadmap giữ vai trò
@@ -12,7 +12,15 @@ riêng; không lấy checklist hoặc hình concept làm trạng thái triển k
 đúng pin; analyze,12Settings,10render đạt;7integration fail,415ordinary pass/7fail,
 13file format fail và lockfile drift. APK chưa build; không còn thiếu SDK. Token/backend/giới hạn token hoãn cho lần thử này.
 
-**Design mới r51:** [Xưởng Python/editor/diagnostics](design/maze-python-r51/README.md)
+**Design mới r52:** [Kết quả/record/notices/custom proof](design/maze-result-r52/README.md)
+đã có study342browser cases và artwork mới. RAM fixtures, không save/award/runtime
+transaction. Không thay disposition011 bằng browser PASS.
+
+**Quan sát CODE trong r52:** tip `0d001f0de9186454eda7f3e71d409c68d4b10dbd`, thêm
+integration-test readiness và taskdoc sau bcf2bfc. Không query/dispatch CI trong
+đợt design này, chưa review/nhận correction. [Observation](design/maze-result-r52/partner-observation.json).
+
+**Design trước r51:** [Xưởng Python/editor/diagnostics](design/maze-python-r51/README.md)
 đã có study tương tác; chỉ custom mazes, authored response lookup, không chạy Python.
 Không portFlutter hoặc thay disposition011 bằng browser PASS.
 
@@ -68,6 +76,7 @@ thu một tiêu chí cần ghi rõ scope, SHA, log/test/device evidence và gi�
 | PQC-011 | **CHANGES_REQUESTED / PINNED_SDK_EXECUTED_FAILURE**; corrections R49-A/B/C, không thiếu SDK | [Actual Actions evidence + order r49](design/coordination/reviews/PQC-011-r49/README.md) |
 | PQC-018 | **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**; không runtime/production approval | [Task revision4 tại DESIGN30394b7](https://github.com/Nthanhbadboy/PyQuest/blob/30394b7bb23ad1fcf371c8dee644fd6caaf3793d/docs/implementation/coordination/tasks/PQC-018.md) |
 | DESIGN r45 /r46 | Maze selection và Creator interaction study đã giao | [Visual status tại DESIGNc68bdcd](https://github.com/Nthanhbadboy/PyQuest/blob/c68bdcd73b400c4d449216023a54499b202bda1d/docs/design/VISUAL_DESIGN_STATUS.md) |
+| DESIGN r52 /PQD-013 | Record/notices/custom proof study đã giao; không backend/runtime order | [r52 spec/evidence](design/maze-result-r52/README.md) |
 | DESIGN r51 /PQD-012 | Custom Python editor/diagnostics study đã giao; không runtime execution/order | [r51 spec/evidence](design/maze-python-r51/README.md) |
 | DESIGN r50 /PQD-011 | Block-play Maze và result study đã giao; không runtime order | [r50 spec/evidence](design/maze-play-r50/README.md) |
 | PQC-019 | **ACCEPTED_WITH_LIMITS — DOCS_AND_KEYLESS_POLICY_SCOPE_COMPLETE** tại CODEde01a49 | [Review độc lập r48](design/coordination/reviews/PQD-010-r48/README.md) |

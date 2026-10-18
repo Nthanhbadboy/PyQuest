@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-18",
+  "tool": "Arena image generation/editing",
+  "offer_options": false,
+  "purpose": "Illustration asset inside larger interactive design study",
+  "file": "robo-celebration.png",
+  "width": 1200,
+  "height": 896,
+  "sha256": "b2a68d117f934aa932fd2fbe6457b854236779bd270eb8368fbcf492dc318199",
+  "prompt_record_kind": "Summaries, not verbatim tool invocation",
+  "generation_summary": "One 2.5D mint-teal Robo beside open wooden chest/turquoise gems on wooden garden podium, warm upper-left light, consistent with r50 actor/garden references. No UI or text. Initial art had three hanging decorative stars.",
+  "correction_summary": "Image edit removed all three hanging stars and strings; retained robot, chest, garden and framing. Final illustration has no star-count symbols. Only corrected final image retained.",
+  "references": [
+    {
+      "path": "docs/design/maze-play-r50/assets/robo-portrait.png",
+      "sha256": "734a58d729a099531e6767a563e897cb8a857b1adcc7c0ac3b2cf93f55b03fd2"
+    },
+    {
+      "path": "docs/design/maze-play-r50/assets/garden-stage.png",
+      "sha256": "8349615e0cdacb46faf827f31ba08805c96163d7eefd5fa8219e2b3009a0a3db"
+    }
+  ],
+  "production_sprite_pack": false
+}
