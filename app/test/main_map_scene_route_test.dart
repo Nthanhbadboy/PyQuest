@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/app/activity_registry.dart';
 import 'package:pyquest/app/app_scope.dart';
 import 'package:pyquest/app/app_services.dart';
-import 'package:pyquest/core/clock.dart';
 import 'package:pyquest/core/events.dart';
 import 'package:pyquest/l10n/generated/app_localizations.dart';
 import 'package:pyquest/modules/main_map/activity_sheet.dart';

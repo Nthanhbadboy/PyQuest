@@ -3,6 +3,7 @@ library;
 
 // Renders key screens to PNG (build/previews/) with the real fonts so the UI
 // can be reviewed without a device. Not a golden test: nothing is compared.
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 

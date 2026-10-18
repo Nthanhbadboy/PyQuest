@@ -147,9 +147,21 @@ jobs:
           format_log_path = Path(os.environ['RUNNER_TEMP']) / 'pqc020-format-check.log'
           format_log = format_log_path.read_text(encoding='utf-8', errors='replace') if format_log_path.exists() else ''
           import re
-          matches = re.findall(r'\+(\d+):\s+All tests passed!', log)
-          test_count = int(matches[-1]) if matches else 0
-          successful = all(value == 'success' for value in outcomes.values()) and test_count > 0
+          passed_matches = re.findall(r'\+(\d+):\s+All tests passed!', log)
+          failed_matches = re.findall(r'\+(\d+)\s+-\s+(\d+):\s+Some tests failed\.', log)
+          if failed_matches:
+              passed_count, failed_count = map(int, failed_matches[-1])
+              test_result = f'{passed_count} passed, {failed_count} failed ({passed_count + failed_count} total)'
+              test_count = passed_count
+          elif passed_matches:
+              passed_count = int(passed_matches[-1])
+              failed_count = 0
+              test_result = f'{passed_count} passed, 0 failed ({passed_count} total)'
+              test_count = passed_count
+          else:
+              passed_count = failed_count = test_count = 0
+              test_result = 'no Flutter test summary found'
+          successful = all(value == 'success' for value in outcomes.values()) and test_count > 0 and failed_count == 0
 
           source_files = [
               'app/lib/modules/main_map/main_map_screen.dart',
@@ -200,7 +212,7 @@ jobs:
 
           rows = ['| Gate | Outcome |', '|---|---|']
           rows.extend(f'| {name} | {value} |' for name, value in outcomes.items())
-          rows.append(f'| Focused tests | {test_count} passed (summary parsed from the test log) |')
+          rows.append(f'| Focused tests | {test_result} |')
           rows.append('| SDK | Flutter 3.47.7 / Dart 3.13.5 / framework abaf9c523780a608bd46686fd5e53740a07077f8 |')
           summary = '\n'.join(rows)
           text = (
@@ -215,6 +227,8 @@ jobs:
               text += '\n\nFormatter-check log:\n```text\n' + format_log[-12000:] + '\n```'
           if format_error:
               text += '\n\nFormatter-preview output:\n```text\n' + format_error[:12000] + '\n```'
+          if failed_count:
+              text += '\n\nFocused Flutter test failure log (bounded tail):\n```text\n' + log[-18000:] + '\n```'
           now = dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00', 'Z')
           def post_check(payload):
               response = subprocess.run(

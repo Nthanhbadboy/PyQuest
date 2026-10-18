@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/app/activity.dart';
@@ -297,8 +298,9 @@ void main() {
           MainMapSceneStatusController(<String, MainMapStatusLoader>{
             'bug_hunter': () async {
               failingAttempts++;
-              if (failingAttempts == 1)
+              if (failingAttempts == 1) {
                 throw StateError('temporary status error');
+              }
               return const ActivityStatus(
                 progressLabel: 'unlocked',
                 unlockLessonId: 'real-lesson-id',
