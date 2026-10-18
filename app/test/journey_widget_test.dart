@@ -28,7 +28,15 @@ void main() {
           startSessionTimer: false,
         )))!;
 
-    await tester.pumpWidget(PyQuestApp(servicesFactory: (_) async => services, minSplash: Duration.zero));
+    // A widget-test host reports en-US, while the R1-A hub directory labels come from l10n,
+    // so the Vietnamese assertions below need an explicit `vi` system list. Test-only: the
+    // production app still reads the platform dispatcher. Authorization
+    // DESIGN-PQC020-AUTH-JOURNEY-VI-01db21a6.
+    await tester.pumpWidget(PyQuestApp(
+      servicesFactory: (_) async => services,
+      systemLocalesReader: () => const <Locale>[Locale('vi')],
+      minSplash: Duration.zero,
+    ));
     await pumpFor(tester, const Duration(seconds: 2));
 
     // First launch shows the welcome guide (3 pages).
@@ -97,7 +105,13 @@ void main() {
         )))!;
     await tester.runAsync(() => services.settings.setIntroSeen());
 
-    await tester.pumpWidget(PyQuestApp(servicesFactory: (_) async => services, minSplash: Duration.zero));
+    // Same test-only `vi` injection as the journey above: this case asserts Vietnamese
+    // lesson and achievement copy. Authorization DESIGN-PQC020-AUTH-JOURNEY-VI-01db21a6.
+    await tester.pumpWidget(PyQuestApp(
+      servicesFactory: (_) async => services,
+      systemLocalesReader: () => const <Locale>[Locale('vi')],
+      minSplash: Duration.zero,
+    ));
     await pumpFor(tester, const Duration(seconds: 2));
 
     await tapAndSettle(tester, find.byKey(const ValueKey('map_label_main_quest')));
