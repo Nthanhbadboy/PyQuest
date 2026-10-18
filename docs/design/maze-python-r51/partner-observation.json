@@ -1,0 +1,31 @@
+{
+  "observed_date": "2026-10-18",
+  "branch": "arena/0d4fcb38-pyquest",
+  "tip": "bcf2bfc5088ca80f1a6f0fd1d2211032f5ce416a",
+  "scope": "Metadata observation only; no logs or correction acceptance review; no new run dispatched.",
+  "runs": [
+    {
+      "id": 39080793621,
+      "name": "PQC-011 pinned SDK maintenance",
+      "head_sha": "bcf2bfc5088ca80f1a6f0fd1d2211032f5ce416a",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39080793621"
+    },
+    {
+      "id": 39080793623,
+      "name": "PyQuest CI",
+      "head_sha": "bcf2bfc5088ca80f1a6f0fd1d2211032f5ce416a",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39080793623"
+    }
+  ],
+  "r51_source_files_unchanged_from_pin": [
+    "app/lib/modules/robot_maze/maze_play_screen.dart",
+    "app/lib/modules/robot_maze/maze_workshop_screen.dart",
+    "app/lib/shared/widgets/code_widgets.dart",
+    "app/lib/python_runtime/python_runtime.dart",
+    "app/lib/modules/robot_maze/maze_models.dart"
+  ]
+}

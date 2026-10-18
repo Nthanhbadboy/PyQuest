@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "source_pins": 5,
+  "local_link_targets": 22,
+  "artifacts": 24,
+  "dependencies": 12,
+  "tools": 4,
+  "test_input_hashes_verified": true,
+  "python_executed": false,
+  "manifest_sha256": "61eae7908e7d17f1b105b65a82b254f23d6135560459ec9abe2db3406c07154c"
+}

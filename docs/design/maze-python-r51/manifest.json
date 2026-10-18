@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-18",
+  "scope": "HTML editor and authored response study; no Python/Flutter execution",
+  "artifacts": {
+    "docs/design/maze-python-r51/ASSET_PLAN.md": "1fc33cf9fb29df9fee205e6a24876797db22c541d171ffdb4ed0da607dbb0d15",
+    "docs/design/maze-python-r51/README.md": "41a853044314ce446370bbfccdab05566f956ccca48599ee212f3e5aac1346dc",
+    "docs/design/maze-python-r51/SOURCE_EXCERPTS.md": "5597cb06fbc2ac312634ab7429a0f237e8cf845fd9cd0193a265da7e75061e3a",
+    "docs/design/maze-python-r51/SPEC.md": "f1d296c611acc531ef7c1e08c39f931d3b30153de1d0b27a6e2bd35706df26df",
+    "docs/design/maze-python-r51/evidence/browser-checks.json": "4044d69b27cb364bac8f87bfbf54eb234b6994d4be6e35eda0b09b5a25b0ffb8",
+    "docs/design/maze-python-r51/evidence/desktop-overview.jpg": "bf45f3622d14a92d48d3eef1d9a4cd8c3ac258538fcada56314b730757192625",
+    "docs/design/maze-python-r51/evidence/landscape-editor.png": "a42d0c412535213dd757c16637bad187ff8f116230850f48694c9fcb99f76aed",
+    "docs/design/maze-python-r51/evidence/model-checks.json": "395f5797a854bdb8bb96db9eec3690c04417e0e064c905826a3fa89b3f5f3a74",
+    "docs/design/maze-python-r51/evidence/phone-editor-vi.png": "4851bd89b3efe4655adf7a10397cfc67ba8285c7fe8104f7393b5d14e117c3d3",
+    "docs/design/maze-python-r51/evidence/phone-large-en.png": "9aed659497c69c370977a58edae7cdfbe687940274044992b047bdd4ab3b1c3b",
+    "docs/design/maze-python-r51/evidence/phone-large-vi.png": "797bb12a82f1ceed03fdb9c6ea82453bc01a26caecc36da7ec19ed07309743d9",
+    "docs/design/maze-python-r51/evidence/phone-limit-en.png": "6954d9f9d6a5b193d2eadbf3b0b80702457f70bdd80ffefb78e1f61a9a1a5f62",
+    "docs/design/maze-python-r51/evidence/phone-output-en.png": "108fac63f400370f6d42937e696aa1313375692e6853ec0b18ffaa722332a37f",
+    "docs/design/maze-python-r51/evidence/phone-replace-confirm.png": "16ade2ca05461dca67f8deda94ba3b78b81a32d4e7b708a99d9f2b0c196b2ff5",
+    "docs/design/maze-python-r51/evidence/phone-stale-vi.png": "f2d7fb0335fca2ea6b37e3c7ba99ffbbbbd014a3e42abf56d8772fb6d3016677",
+    "docs/design/maze-python-r51/evidence/phone-syntax-vi.png": "96d1380751ee28315fc9af40a0e865d0c01db41f5bb14b740a8daf1e95396a6e",
+    "docs/design/maze-python-r51/evidence/phone-unknown-vi.png": "d15bbde2241e7ceb53fe112b64bb58b60c4436c4b20b2ffc5d52f499626400cf",
+    "docs/design/maze-python-r51/evidence/phone-win-vi.png": "95bfe9a428616df95d56bd5b083be1ee326acf04e5b3b5f5682a9295ac2feb24",
+    "docs/design/maze-python-r51/index.html": "6736c4a6cb4f01f4dd482c1936949c0665d2eb32fad220284739b5785a045474",
+    "docs/design/maze-python-r51/model.js": "5d6897ce6a8415e9526493eece1c2c48285403bf7121627326dd7f1d8b64c727",
+    "docs/design/maze-python-r51/partner-observation.json": "cb9f1888a1144c3b8973e42494106dd7d03a3896c4a884fd7b0e78de78f4ed14",
+    "docs/design/maze-python-r51/source-manifest.json": "e7f3ab03442d1a119ac7eedce9229feb0a6a3dbca75cec34a8f5b5d8424dd7bd",
+    "docs/design/maze-python-r51/study.js": "9918afe608f88ceb66351c6be87e1066581df08994e17e47759a24d052fcbbd6",
+    "docs/design/maze-python-r51/style.css": "af454aceeca5164885dd994bcbe8d08f4fdb96b2f5a8ac97d46568624c9a1d6a"
+  },
+  "dependencies": {
+    "app/assets/fonts/JetBrainsMono-Medium.ttf": "3ac3f4943cf74b30ef4b31f3538f55b160839322a342a3b50b73582960fca3c1",
+    "app/assets/fonts/OFL-JetBrainsMono.txt": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
+    "app/assets/fonts/OFL-Nunito.txt": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
+    "docs/design/maze-creator-r46/assets/workbench.png": "f57d698f03d849236cd1550611482a4e0057cf7b3947f6f3e5c243995eec0ae9",
+    "docs/design/maze-play-r50/assets/garden-stage.png": "8349615e0cdacb46faf827f31ba08805c96163d7eefd5fa8219e2b3009a0a3db",
+    "docs/design/maze-play-r50/assets/hedge-token.png": "a4698cb00e4d326b4f8b6696ddd7acd897e8dc363d33731ad57a11f75117010a",
+    "docs/design/maze-play-r50/assets/provenance.json": "443264837342e8ab1a6aefe50732bb6653e017ae1e7e13cbbbd673b3740a2038",
+    "docs/design/maze-play-r50/assets/robo-token.png": "c2f58b4eda7303e252474694c73e05b48d85563effda1035e0dc4fad8d747f05",
+    "docs/design/maze-play-r50/style.css": "e3b92fcbacd7127d7de0d1942ecaf67e79f94ac630113ad0725861d19b0e6158",
+    "docs/design/tutor-board-prototype/fonts/Nunito-ExtraBold.ttf": "6aeac28bd008e77fe752c2c2c2ace44bf81c296534bfeb6bac582bb2d44b6347",
+    "docs/design/tutor-board-prototype/fonts/Nunito-Medium.ttf": "c5ac621e788f8acf1ae43518f45f5eb3b3dc1eede0cddbcabb67e468595bb687",
+    "docs/screenshots/27_workshop_code.jpg": "7128346f9f2b6c7086b6bab538b9e517c3032f05be3469ba585656d19648055e"
+  },
+  "tools": {
+    "tools/design/check_maze_python_r51.cjs": "c922f76c501a28802de8e72714cfb1ccb4a0c536c983c68f9e6b89668ac64606",
+    "tools/design/serve_art_review.py": "66b140d6ca7374ae079218f724e9979840d95e0dc2ee91628f0c46af8ceda2ca",
+    "tools/design/test_maze_python_r51.cjs": "9a73cc3d5d1b01357fad1d84bb8196f43660b2bdc1ea93d7f64572861d90f495",
+    "tools/design/validate_maze_python_r51.py": "309f8294cc9952c14e91aca2b566a5b9c684525b9ee536b6d3ee7815d0236f4e"
+  }
+}

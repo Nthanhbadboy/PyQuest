@@ -1,0 +1,79 @@
+{
+  "code_pin": "de01a490743982356ad5240d77ea99e9dbf8c7f5",
+  "files": [
+    {
+      "path": "app/lib/modules/robot_maze/maze_play_screen.dart",
+      "sha256": "0a4b44d8d0bc7ff03e36742253a68222cedba33df94e508ec84ffda8592666c4",
+      "ranges": [
+        [
+          24,
+          35
+        ],
+        [
+          65,
+          76
+        ],
+        [
+          224,
+          267
+        ],
+        [
+          301,
+          310
+        ],
+        [
+          659,
+          706
+        ],
+        [
+          726,
+          750
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_workshop_screen.dart",
+      "sha256": "aa22b98f4466ca9227dc18031c6f12eb29789dd3dbe5278a79709246620ed145",
+      "ranges": [
+        [
+          163,
+          205
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/shared/widgets/code_widgets.dart",
+      "sha256": "7d90944d6c4f32f31e3442ba23b0d45debb4723900cf8495f6a2de1e28e60eb9",
+      "ranges": [
+        [
+          125,
+          164
+        ],
+        [
+          209,
+          231
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/python_runtime/python_runtime.dart",
+      "sha256": "2db005321c434122938e51655763cb9a653d455e1fd6c617bc1dad3953f6233f",
+      "ranges": [
+        [
+          1,
+          97
+        ]
+      ]
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_models.dart",
+      "sha256": "238cc06597a0010a3f8335e7b219f85deda0a53aa23c2e96b5c88a05315d9092",
+      "ranges": [
+        [
+          1,
+          25
+        ]
+      ]
+    }
+  ]
+}

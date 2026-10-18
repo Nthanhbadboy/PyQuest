@@ -1,0 +1,92 @@
+{
+  "result": "PASS",
+  "browser": "153.0.8010.0",
+  "matrix_cases": 252,
+  "font_assertions": 1476,
+  "flows": [
+    "Native typing and selection replacement; undo/redo restore selection",
+    "Enter indentation, Tab, ShiftTab and keyboard undo/redo",
+    "Escape exits textarea keyboard indentation trap",
+    "Synthetic composing Enter bypasses heuristic, not a real IME certification",
+    "Dialog print snippet preserves selection and places caret inside parentheses",
+    "Authored syntax diagnostic navigates exact line; editing clears current-line marker",
+    "Unknown corrected code receives unavailable, never invented successful execution",
+    "A null error line has no line navigation or highlighted line1",
+    "Locale/scale changes preserve code and output byte-for-byte",
+    "Pending remains editable and rejects old-source response",
+    "Cancel and duplicate late delivery cannot resurrect a result",
+    "New fixture rejects response from previous request scope",
+    "CtrlEnter requests sample response and runtime success is not maze win",
+    "Mode roundtrip preserves draft, caret and scrolled editor viewport",
+    "Block replacement requires confirmation, Cancel preserves and Undo restores",
+    "All authored outgoing page links warn that drafts are session-only",
+    "Oversize paste is rejected without silently truncating or replacing existing code",
+    "Dialog keyboard focus wraps both directions and Escape restores opener",
+    "Textarea scroll gutter stays aligned and explicit maze/editor navigation works"
+  ],
+  "captures": [
+    "desktop-overview.jpg",
+    "phone-editor-vi.png",
+    "phone-syntax-vi.png",
+    "phone-limit-en.png",
+    "phone-output-en.png",
+    "phone-stale-vi.png",
+    "phone-unknown-vi.png",
+    "phone-win-vi.png",
+    "phone-large-en.png",
+    "phone-large-vi.png",
+    "landscape-editor.png",
+    "phone-replace-confirm.png"
+  ],
+  "errors": [],
+  "external_requests": [],
+  "fixtures": [
+    "draft",
+    "syntax",
+    "runtime",
+    "unsupported",
+    "limit",
+    "output",
+    "won",
+    "pending",
+    "cancelled",
+    "outdated",
+    "edited",
+    "unavailable",
+    "blocks",
+    "long"
+  ],
+  "viewports": [
+    [
+      360,
+      640
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      844,
+      390
+    ]
+  ],
+  "languages": [
+    "vi",
+    "en"
+  ],
+  "scales": [
+    1,
+    1.3,
+    2
+  ],
+  "python_executed": false,
+  "flutter_tested": false,
+  "physical_ime_tested": false,
+  "inputs": {
+    "docs/design/maze-python-r51/index.html": "6736c4a6cb4f01f4dd482c1936949c0665d2eb32fad220284739b5785a045474",
+    "docs/design/maze-python-r51/model.js": "5d6897ce6a8415e9526493eece1c2c48285403bf7121627326dd7f1d8b64c727",
+    "docs/design/maze-python-r51/study.js": "9918afe608f88ceb66351c6be87e1066581df08994e17e47759a24d052fcbbd6",
+    "docs/design/maze-python-r51/style.css": "af454aceeca5164885dd994bcbe8d08f4fdb96b2f5a8ac97d46568624c9a1d6a",
+    "tools/design/check_maze_python_r51.cjs": "c922f76c501a28802de8e72714cfb1ccb4a0c536c983c68f9e6b89668ac64606"
+  }
+}
