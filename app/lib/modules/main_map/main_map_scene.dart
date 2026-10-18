@@ -10,7 +10,9 @@ import 'main_map_scene_state.dart';
 
 void _ensureVisibleIfNeeded(BuildContext context, {required double alignment}) {
   final RenderObject? target = context.findRenderObject();
-  final RenderAbstractViewport? viewport = RenderAbstractViewport.maybeOf(target);
+  final RenderAbstractViewport? viewport = RenderAbstractViewport.maybeOf(
+    target,
+  );
   final ScrollableState? scrollable = Scrollable.maybeOf(context);
   if (target != null && viewport != null && scrollable != null) {
     final ScrollPosition position = scrollable.position;
@@ -195,7 +197,10 @@ class MainMapScene extends StatelessWidget {
                           const MainMapPlaceState.loading(),
                       focusNode: focusNodeFor(modules[i].def.id),
                       onFocused: (BuildContext buttonContext) =>
-                          _ensureVisibleIfNeeded(buttonContext, alignment: 0.35),
+                          _ensureVisibleIfNeeded(
+                            buttonContext,
+                            alignment: 0.35,
+                          ),
                       onPressed: () => _activate(modules[i]),
                       l10n: l10n,
                     ),
