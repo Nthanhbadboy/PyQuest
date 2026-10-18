@@ -1,0 +1,23 @@
+{
+  "scope": "Chromium HTML study, not Flutter/device/SQLite",
+  "browser": "153.0.8010.0",
+  "cases": 60,
+  "targets": 688,
+  "fontChecks": 360,
+  "flows": 108,
+  "captures": [
+    "docs/design/r1-village-r53/evidence/fresh-360-vi-1x.png",
+    "docs/design/r1-village-r53/evidence/fresh-360-vi-2x.png",
+    "docs/design/r1-village-r53/evidence/fresh-360-en-1x.png",
+    "docs/design/r1-village-r53/evidence/error-360-en-1.3x.png",
+    "docs/design/r1-village-r53/evidence/fresh-360-en-2x.png",
+    "docs/design/r1-village-r53/evidence/fresh-360-en-2x-bottom.png",
+    "docs/design/r1-village-r53/evidence/fresh-390-vi-1x.png",
+    "docs/design/r1-village-r53/evidence/fresh-390-vi-1x-bottom.png",
+    "docs/design/r1-village-r53/evidence/fresh-390-vi-2x.png",
+    "docs/design/r1-village-r53/evidence/fresh-390-en-1x.png",
+    "docs/design/r1-village-r53/evidence/fresh-390-en-2x.png",
+    "docs/design/r1-village-r53/evidence/desktop-overview.jpg"
+  ],
+  "errors": []
+}

@@ -4,6 +4,15 @@
 phải xác nhận artwork đã được duyệt hay app đã đổi UI. Thay các diễn giải cũ cho
 phép “trang thẻ phẳng + một hình 2,5D” được coi là hoàn tất redesign.
 
+## Quyết định hiện hành r53 — ngoại lệ triển khai phân kỳ R1-A
+
+PQC-020 cho phép dùng W01 đã chọn làm **flattened static background** với marker
+và route hiện hữu. Chỉ exportWebP có hash vàgeometry ở `r1-village-r53/manifest.json`.
+Đây không phải layered production pack: không giảalpha, actor animation/navmesh,
+shadow/occlusion hoặc NPC intelligence từ ảnh. Mục tiêu runtime pack ba mức bên
+dưới vẫn giữ cho các gói world interaction tiếp theo. Không nâng mọi concept018
+thành asset runtime, không tự mởR2–R4. [Bounded contract](r1-village-r53/SPEC.md).
+
 ## 1. Phạm vi và thứ tự nguồn
 
 Áp dụng **mọi màn**: onboarding, làng, nhà/sân/nội thất, dự án/túi/sổ, hải đồ, visit,

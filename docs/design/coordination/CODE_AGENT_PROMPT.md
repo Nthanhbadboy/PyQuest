@@ -18,9 +18,9 @@ git ls-tree -r --name-only origin/arena/00838eb9-pyquest -- docs/design/coordina
 Pin SHA thật từ lệnh trên. Dùng `git show <SHA>:<path>` để đọc lần lượt:
 
 1. `docs/design/CROSS_BRANCH_COLLABORATION.md`
-2. `docs/design/coordination/tasks/PQD-001.md`
-3. `docs/design/AI_IMPLEMENTATION_HANDOFF.md`
-4. `docs/design/village-kit/README.md` và `manifest.json`
+2. `docs/design/coordination/tasks/PQD-003.md` (revision hiện hành; không lặp lịch sử)
+3. `docs/implementation/coordination/tasks/PQC-020.md`
+4. `docs/design/r1-village-r53/README.md`, `SPEC.md` và `manifest.json`
 
 Nếu commit/task chưa có trên remote: báo `WAITING_FOR_DESIGN_COMMIT`, không tự
 sáng tác spec, không dùng bản asset cũ rồi tuyên bố đã nhận bản mới. Nếu lỗi auth,
@@ -30,44 +30,24 @@ báo người dùng kết nối GitHub cần được xử lý; không xin token
 `dafde39` nhập từ code cũ, không phải bản cập nhật code dành cho bạn. Chỉ lấy đúng
 asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đích trước khi ghi.
 
-## 2. Làm theo revision hiện tại, không lặp intake đã ACK
+## 2. Work order hiện hành — r53 / PQC-020
 
-Task hiện tại là **PQD-003 revision44**, review exact CODE
-`71b0fd3fd8fb07c73596ce089fa2e68f6fe87964`. Đọc từ DESIGN SHA mới:
-`docs/design/coordination/reviews/PQD-003-r44.md`,
-`docs/implementation/coordination/tasks/PQC-011.md` (contract revision2, review r44)
-và `docs/design/coordination/reviews/PQC-011-r5/relay.md`.
+PQC-011 **ACCEPTED** tại `6dc8ca8feeed54cc0fa6a82109e3a59d24a16153`.
+Đọc `reviews/PQC-011-r53/README.md` vàevidence. Cập nhật task011 của CODE bằngrecord
+acceptance, không restore taskDESIGN cũ đè lịch sử. Không lặp diagnostics/guard.
 
-**Không có correction source mới.** R34-A/B/C/D và R42-A/B đã SOURCE_ADDRESSED,
-EXECUTION_UNVERIFIED. Không làm lại patches hoặc tạo commit ACK-only.
-**011 vẫn CHANGES_REQUESTED**, blocker **WAITING_FOR_PINNED_SDK_EVIDENCE**.
-Không suy PASS từ source/diff/art; GitHub exact71b0 hiện0checks/0workflowruns.
+Triển khai **PQC-020 revision1 / R1-A Main Map** theo:
+- `docs/implementation/coordination/tasks/PQC-020.md` — authority/allowlist/gates;
+- `docs/design/r1-village-r53/{README.md,SPEC.md,manifest.json,source-manifest.json}`;
+- Mở exportW01 vàcaptures390VI/360EN2×, không chỉ đọc tên ảnh.
 
-Không cài/đổiSDK/deps/CI hoặc tự trigger/rerun để đáp review này. Khi môi trường
-pinned SDK đã được phép sẵn sàng, formatter theoallowlist và gates hiện hữu vẫn
-cần: analyze sạch,12Settings,406ordinary baseline+new,10render và integration011.
-Gửi exact finalSHA/log/counts thực chạy; format/fix đổiSHA thì evidence theoSHA mới.
-Nếu có failure thật, báo repro/log để triage trongallowlist011, không tự mởscope.
-Trong lúc thiếutoolchain: chờevidence, khôngcorrection/ACK/CIloop hoặc giảwatcher.
+Runtime chỉ mainmap/geometry/status/copy trongallowlist; sáu module/routes/locks
+vàgameplay/save giữ nguyên. W01 được phép dùng **flattened static**, không phải
+layered world, khôngtựvẽlại018 hoặc mởR4/NPC/nhà. Một focused020workflow được phép;
+existingCI/SDK/deps/keypolicy giữ nguyên. Final verify cùngSHA, không `[skip ci]`.
+011/018/019 không mở lại. Không có ACK-only khi source task đã published.
 
-018 giữ **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**, R38-A/Bclosed. Không redo9PNG,
-receipt/archive/intake hay portFlutter; B02vẫnprosemock. DESIGN đã giaochapterselection
-r43, tiếp tụcMazelevels/actualCreator độc lập. Không mởR1/R4; không giaoCODEstudy mới.
-
-PQC-009 đã ACCEPTED tại r5 (175+10,38897787848@41752fd), không làm lại. Contract D/U/V/L
-của r4 và corrections §M vẫn áp dụng, không hỏi lại quyết định đã chốt. Nhập ba orders
-chọn lọc, không merge/cherry-pick cả nhánh design; giữ mọi thay đổi riêng đang có.
-
-Bạn bè/Arena/thưởng/danh hiệu/động viên/mini-game là trụ cột song song trong charter,
-không bị bỏ vì các patch nền hiện tập trung board/locale. Đây không phải quyền làm
-backend social/online hoặc sửa economy trong010/014/015. Không thêm framework điều phối.
-
-Mục tiêu vẫn là redesign toàn app theo `FULL_APP_REDESIGN_CHARTER.md`, không dừng ở
-thumbnail. Ghi phản hồi bảng giảng vào `docs/implementation/coordination/tasks/PQD-003.md`;
-không ghi đè handoff PQD-002/PQC-009 đã xuất bản.
-
-Runtime chỉ được thay khi READY_FOR_CODE + runtime=yes và gate của task đạt.
-Test/coordination có flag và allowlist riêng; không suy từ đó ra quyền thay art/lib.
+DESIGN tiếp Dragon/Catch vàR1-B độc lập; CODE không làm trùng study này.
 
 ## 3. Commit, trả kết quả và chủ động theo dõi
 

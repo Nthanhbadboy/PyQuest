@@ -1,7 +1,10 @@
 # PyQuest — Roadmap
 
-> **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
+> **Trạng thái hiện hành r53 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
 > Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
+> PQC-011 đã ACCEPTED tại6dc8ca8. **R1-A/Main Map READY_FOR_CODE** theo
+> [PQC-020](implementation/coordination/tasks/PQC-020.md); chỉ static scene +sáu route
+> hiện có, không hoàn tất toànR1. Các mốc r44/r47 bên dưới giữ làm lịch sử.
 
 > **Đồng bộ mở rộng · 2026-10-18:** nhà → đất → đảo, nhiệm vụ liên kết,
 > thăm nhà có hoạt động, thú thông minh, bạn bè/Arena đều thuộc thiết kế sản phẩm.
@@ -81,11 +84,12 @@ Cập nhật2026-10-18 theo user: đồng bộ tài liệu chưa đủ; mọi m�
 P02–P06C như final UI. DESIGN làm neo làng/nhà/hải đồ; CODE được giao phần art qua
 PQC-017 design-only (Tutor/nội thất thành tích/Arena), không mở app/CI/deps.
 
-R1 vẫn là ưu tiên UI sau gate thiết kế, **chưa READY_FOR_CODE runtime**. Trước R1
-phải review concept chung, composition phone/state/copy, rồi asset export phù hợp.
+R1 là ưu tiên UI. **R1-A đã READY_FOR_CODE tại r53** với composition phone/state/copy,
+source geometry và static W01 export; xemPQC-020. Ngoại lệflattenedscene chỉ cho lát
+cắt này, không miễn layer/actor/occlusion gates cho thế giới tương tác về sau.
 Không chờ hoàn tất local AI/voice, nhưng cũng không bỏ art gate để nhanh có APK.
 PQC-017/018 đã được review trong phạm vi art;018 ART_SCOPE_COMPLETE theo r40.
-PQC-011 tại71b0 vẫn chờ pinned-SDK evidence theo r44; xem PROJECT_STATUS.
+PQC-011 đã ACCEPTED tại6dc8ca8 theo reviewr53; xemPROJECT_STATUS.
 
 ---
 

@@ -1,0 +1,51 @@
+{
+  "name": "PQC-011 r49 exact gate counts",
+  "head_sha": "6dc8ca8feeed54cc0fa6a82109e3a59d24a16153",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Nthanhbadboy/PyQuest/runs/117641471826",
+  "gate_summary": "| Gate | Result |\n|---|---|\n| Pinned SDK | Flutter 3.47.7 / Dart 3.13.5 / framework abaf9c523780a608bd46686fd5e53740a07077f8 |\n| Settings | success; PASS: 12 passed, 0 failed (12 total); required exactly 12 passed and zero failures |\n| Isolated tutor-state test | success; PASS: 1 passed, 0 failed (1 total); required exactly 1 passed and zero failures |\n| First-test then tutor-state sequence | success; PASS: 2 passed, 0 failed (2 total); required exactly 2 passed and zero failures |\n| Lesson-board integration | success; PASS: 7 passed, 0 failed (7 total); required exactly 7 passed and zero failures |\n| Ordinary suite | success; PASS: 422 passed, 0 failed (422 total); required at least 422 passed and zero failures |\n| Render suite | success; PASS: 10 passed, 0 failed (10 total); required exactly 10 passed and zero failures |\n| Localization helper tests | success |\n| Localization evidence collection | success |\n| Analyze | success |\n| Formatter | success |\n| pub get / lock reproducibility | success |\n| Source cleanliness | success |",
+  "caret_traces": [
+    "[PQC-011 caret comparison] case B observed delta=-6.96 expected minimal delta=-6.96",
+    "[PQC-011 caret viewport] event=case A baseline: caret inside scrollPadding elapsed=0:00:00.455626 tutorRoute=ModalBottomSheetRoute<void> active=false current=false animation=AnimationStatus.dismissed focus=true selection=8 scroll=126.04 scrollExtents=0.0..433.3600000000001 viewportDimension=694.04 caret=Rect.fromLTRB(142.0, 80.0, 144.5, 104.0) viewport=Rect.fromLTRB(0.0, 60.0, 390.0, 754.0) visibleViewport=Rect.fromLTRB(0.0, 60.0, 390.0, 754.0) paddedViewport=Rect.fromLTRB(20.0, 80.0, 370.0, 734.0) caretWithinViewport=true caretWithinScrollPadding=true viewInsets=EdgeInsets.zero scrollPadding=EdgeInsets.all(20.0)",
+    "[PQC-011 caret comparison] second close scroll delta=0.00",
+    "[PQC-011 caret comparison] case B observed delta=-6.96 expected minimal delta=-6.96",
+    "[PQC-011 caret viewport] event=case A baseline: caret inside scrollPadding elapsed=0:00:00.414314 tutorRoute=ModalBottomSheetRoute<void> active=false current=false animation=AnimationStatus.dismissed focus=true selection=8 scroll=126.04 scrollExtents=0.0..433.3600000000001 viewportDimension=694.04 caret=Rect.fromLTRB(142.0, 80.0, 144.5, 104.0) viewport=Rect.fromLTRB(0.0, 60.0, 390.0, 754.0) visibleViewport=Rect.fromLTRB(0.0, 60.0, 390.0, 754.0) paddedViewport=Rect.fromLTRB(20.0, 80.0, 370.0, 734.0) caretWithinViewport=true caretWithinScrollPadding=true viewInsets=EdgeInsets.zero scrollPadding=EdgeInsets.all(20.0)",
+    "[PQC-011 caret comparison] second close scroll delta=0.00",
+    "[PQC-011 caret comparison] case B observed delta=-6.96 expected minimal delta=-6.96",
+    "[PQC-011 caret viewport] event=case A baseline: caret inside scrollPadding elapsed=0:00:00.480332 tutorRoute=ModalBottomSheetRoute<void> active=false current=false animation=AnimationStatus.dismissed focus=true selection=8 scroll=126.04 scrollExtents=0.0..433.3600000000001 viewportDimension=694.04 caret=Rect.fromLTRB(142.0, 80.0, 144.5, 104.0) viewport=Rect.fromLTRB(0.0, 60.0, 390.0, 754.0) visibleViewport=Rect.fromLTRB(0.0, 60.0, 390.0, 754.0) paddedViewport=Rect.fromLTRB(20.0, 80.0, 370.0, 734.0) caretWithinViewport=true caretWithinScrollPadding=true viewInsets=EdgeInsets.zero scrollPadding=EdgeInsets.all(20.0)",
+    "[PQC-011 caret comparison] second close scroll delta=0.00"
+  ],
+  "regular_ci": {
+    "headSha": "6dc8ca8feeed54cc0fa6a82109e3a59d24a16153",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39115732724",
+    "jobs": [
+      {
+        "name": "PQC-011 r49 exact gate counts",
+        "conclusion": "success"
+      },
+      {
+        "name": "bootstrap",
+        "conclusion": "success"
+      },
+      {
+        "name": "check",
+        "conclusion": "success"
+      },
+      {
+        "name": "apk",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Validate PQC-011 diagnostic-only routing",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "PyQuest localization generation evidence",
+        "conclusion": "success"
+      }
+    ]
+  }
+}

@@ -1,8 +1,19 @@
-# Thiết kế hình ảnh PyQuest — tình trạng đến r52
+# Thiết kế hình ảnh PyQuest — tình trạng đến r53
 
 **2026-10-18 · Chưa hoàn tất toàn bộ.** Không dùng số concept hoặc HTML PASS để
 nói app đã được redesign xong. Ba mức tách riêng: concept → screen/interaction study
 → runtime art pack +after-runtime evidence.
+
+## Mới nhất r53 — chuyển Main Map sang triển khai Flutter
+
+[PQC-020](../implementation/coordination/tasks/PQC-020.md) READY_FOR_CODE trên nền
+011 đãACCEPTED6dc8ca8. [R1-A study/export/spec](r1-village-r53/README.md): staticW01,
+6markers nối source, directory chữ lớn, loading/error/return. 15modelchecks,
+60browserconfigs/360fontchecks/108flows; không phải Flutter captures.
+
+Lead cho phép **flattened static scene riêng R1-A**, không tự chứng nhậnlayered
+pack hoặc NPC/world. CODE chưa implementation/accept, chưa APK. Các study r50–r52
+vẫn có giá trị, không làm lại. DESIGN tiếp Dragon/Catch gameplay và R1-B độc lập.
 
 ## Mới nhất: kết quả và ghi nhận Mê Cung r52
 

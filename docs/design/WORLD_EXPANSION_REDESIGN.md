@@ -236,7 +236,11 @@ R5 thăm nhà thật và R6 Arena/đội/giao lưu có authority riêng; pet loc
 là lane R7 có benchmark/entitlement riêng, không chặn R1–R4. Các lane có thể song song
 khi không tranh cùng owner dữ liệu. Thứ tự này không cấp runtime ngoài011.
 
-**Đầu ra kế tiếp của DESIGN:** gói R1 chi tiết từ source hiện hành: map scene layers,
+**Cập nhật r53:** gói R1-A đã được giao tại [village-r53](r1-village-r53/README.md),
+CODE triển khai theoPQC-020. Chỉ static scene/sáu route hiện có; các phần dưới tiếp
+tục theo lane riêng, không coi toànR1 đã xong.
+
+**Đầu ra R1 tổng thể cần hoàn thiện:** map scene layers,
 control/state/copy VI/EN, mapping đủ sáu activity IDs, asset manifest và phone evidence;
 đưa allowlist/test cụ thể trước khi CODE làm. Không yêu cầu CODE port toàn bộ bản
 thiết kế này trong một task, không gọi R1 là xong toàn app.

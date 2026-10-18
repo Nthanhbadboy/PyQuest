@@ -44,7 +44,7 @@ class ArtHandler(SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, default=8000)
-    parser.add_argument('--landing', choices=('r36', 'w08', 'r38', 'w14', 'r40', 'r41', 'r43', 'r45', 'r46', 'r50', 'r51', 'r52'), default='r36')
+    parser.add_argument('--landing', choices=('r36', 'w08', 'r38', 'w14', 'r40', 'r41', 'r43', 'r45', 'r46', 'r50', 'r51', 'r52', 'r53'), default='r36')
     args = parser.parse_args()
     if args.landing == 'w08':
         ArtHandler.landing = '/docs/design/world-travel-r37/index.html'
@@ -68,5 +68,7 @@ if __name__ == '__main__':
         ArtHandler.landing = '/docs/design/maze-python-r51/index.html'
     if args.landing == 'r52':
         ArtHandler.landing = '/docs/design/maze-result-r52/index.html'
+    if args.landing == 'r53':
+        ArtHandler.landing = '/docs/design/r1-village-r53/index.html'
     handler = partial(ArtHandler, directory=str(ROOT))
     ThreadingHTTPServer(('0.0.0.0', args.port), handler).serve_forever()

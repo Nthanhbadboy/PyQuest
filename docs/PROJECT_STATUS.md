@@ -1,6 +1,20 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · source review r49 +design r52 · không phải chứng nhận runtime mới.**
+**2026-10-18 · review/design r53.**
+
+**Hiện hành:** PQC-011 **ACCEPTED** tại CODE
+`6dc8ca8feeed54cc0fa6a82109e3a59d24a16153`: Settings12, isolated1, ordered2,
+integration7, ordinary422/0failed, render10 và format/analyze/localization/lock/clean
+đềuPASS. [Independent review/evidence](design/coordination/reviews/PQC-011-r53/README.md).
+Không APK mới, không device/voice claim.
+
+**Bước triển khai mới:** [PQC-020 R1-A](implementation/coordination/tasks/PQC-020.md)
+READY_FOR_CODE: Main Map2,5D +sáu routes hiện có. [Package r53](design/r1-village-r53/README.md)
+có static W01 export, scene/directory, source geometry và browser study. Cho phép
+flattened static scene trong lát cắt này, không gọi là layered/animated world.
+R1-A chưa triển khai/accept; toànR1/R4 vànhà/đất/đảo còn scope riêng.
+
+Các quan sát r49–r52 dưới đây là **lịch sử**, không disposition hiện hành.
 
 Tài liệu này phân biệt **có source**, **đã kiểm chứng tại một SHA**, **thiết kế** và
 **kế hoạch**. Product Vision/Game Design/Technical Architecture/Roadmap giữ vai trò
@@ -73,14 +87,15 @@ thu một tiêu chí cần ghi rõ scope, SHA, log/test/device evidence và gi�
 | Task | Disposition có thẩm quyền | Nguồn |
 |---|---|---|
 | PQC-010 /014 /015 /016 | Đã nhận trong phạm vi riêng; không có nghĩa whole-app complete | Snapshot/evidence lịch sử ở §1 |
-| PQC-011 | **CHANGES_REQUESTED / PINNED_SDK_EXECUTED_FAILURE**; corrections R49-A/B/C, không thiếu SDK | [Actual Actions evidence + order r49](design/coordination/reviews/PQC-011-r49/README.md) |
+| PQC-011 | **ACCEPTED tại6dc8ca8**; không APK/device claim | [Independent review r53](design/coordination/reviews/PQC-011-r53/README.md) |
 | PQC-018 | **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**; không runtime/production approval | [Task revision4 tại DESIGN30394b7](https://github.com/Nthanhbadboy/PyQuest/blob/30394b7bb23ad1fcf371c8dee644fd6caaf3793d/docs/implementation/coordination/tasks/PQC-018.md) |
 | DESIGN r45 /r46 | Maze selection và Creator interaction study đã giao | [Visual status tại DESIGNc68bdcd](https://github.com/Nthanhbadboy/PyQuest/blob/c68bdcd73b400c4d449216023a54499b202bda1d/docs/design/VISUAL_DESIGN_STATUS.md) |
 | DESIGN r52 /PQD-013 | Record/notices/custom proof study đã giao; không backend/runtime order | [r52 spec/evidence](design/maze-result-r52/README.md) |
 | DESIGN r51 /PQD-012 | Custom Python editor/diagnostics study đã giao; không runtime execution/order | [r51 spec/evidence](design/maze-python-r51/README.md) |
 | DESIGN r50 /PQD-011 | Block-play Maze và result study đã giao; không runtime order | [r50 spec/evidence](design/maze-play-r50/README.md) |
 | PQC-019 | **ACCEPTED_WITH_LIMITS — DOCS_AND_KEYLESS_POLICY_SCOPE_COMPLETE** tại CODEde01a49 | [Review độc lập r48](design/coordination/reviews/PQD-010-r48/README.md) |
-| Runtime R1 /R4 | Chưa mở | Cần order/asset/allowlist/gates riêng; không suy quyền từ art study |
+| Runtime R1-A /PQC-020 | **READY_FOR_CODE**, chỉ Main Map scene/navigation | [Bounded order020](implementation/coordination/tasks/PQC-020.md); chưa implementation/acceptance |
+| Runtime R1 còn lại /R4 | Chưa mở | Không suy quyền từ R1-A hoặc art study |
 
 **Độ lệch nhánh đã được sửa trong phạm vi r47:** CODE71b0 từng còn câu ads đã có,
 chỉ dẫn bắt đầu Foundation và header018 `IN_PROGRESS`. CODEde01a49 đã áp dụng patch

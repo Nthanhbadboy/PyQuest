@@ -1,0 +1,113 @@
+{
+  "revision": 53,
+  "code_pin": "6dc8ca8feeed54cc0fa6a82109e3a59d24a16153",
+  "asset": {
+    "path": "assets/village-r53.webp",
+    "source": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+    "source_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+    "sha256": "d3130b407e08f146ae633b50fad9f1e05aa466dd5dc049cdc75c1b36f8804c0e",
+    "size": [
+      853,
+      1844
+    ],
+    "bytes": 349864,
+    "decoded_rgba_bytes": 6291728,
+    "alpha": false,
+    "role": "approved static scene ONLY for R1-A; not layered world assets",
+    "provenance": "WebP export of user-selected AI-generated W01; no redraw or upscaling"
+  },
+  "layout": {
+    "fit": "width; aspect ratio preserved; vertical scroll; no cover crop",
+    "marker_width_fraction": 0.32,
+    "minimum_target_px": 48,
+    "directory_default_at_text_scale": 1.5,
+    "markers": [
+      {
+        "id": "main_quest",
+        "anchor": [
+          0.48,
+          0.29
+        ],
+        "art_bounds": [
+          0.385,
+          0.11,
+          0.61,
+          0.34
+        ]
+      },
+      {
+        "id": "robot_maze",
+        "anchor": [
+          0.23,
+          0.445
+        ],
+        "art_bounds": [
+          0.025,
+          0.31,
+          0.47,
+          0.46
+        ]
+      },
+      {
+        "id": "dragon_jump",
+        "anchor": [
+          0.82,
+          0.33
+        ],
+        "art_bounds": [
+          0.63,
+          0.235,
+          0.98,
+          0.39
+        ]
+      },
+      {
+        "id": "catch_stars",
+        "anchor": [
+          0.8,
+          0.515
+        ],
+        "art_bounds": [
+          0.72,
+          0.38,
+          0.98,
+          0.51
+        ]
+      },
+      {
+        "id": "bug_hunter",
+        "anchor": [
+          0.22,
+          0.64
+        ],
+        "art_bounds": [
+          0.06,
+          0.46,
+          0.36,
+          0.65
+        ]
+      },
+      {
+        "id": "achievement_house",
+        "anchor": [
+          0.8,
+          0.68
+        ],
+        "art_bounds": [
+          0.66,
+          0.535,
+          0.98,
+          0.71
+        ]
+      }
+    ]
+  },
+  "unavailable_routes": [
+    "private_home",
+    "dock",
+    "travel",
+    "friends",
+    "arena"
+  ],
+  "runtime_authority": "PQC-020 revision1 only; not blanket R1/R4 authorization"
+}
