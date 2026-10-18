@@ -7,18 +7,18 @@ enum MainMapPlacePhase { loading, ready, error }
 @immutable
 class MainMapPlaceState {
   const MainMapPlaceState.loading()
-      : phase = MainMapPlacePhase.loading,
-        status = null,
-        error = null;
+    : phase = MainMapPlacePhase.loading,
+      status = null,
+      error = null;
 
   const MainMapPlaceState.ready(ActivityStatus value)
-      : phase = MainMapPlacePhase.ready,
-        status = value,
-        error = null;
+    : phase = MainMapPlacePhase.ready,
+      status = value,
+      error = null;
 
   const MainMapPlaceState.error(this.error)
-      : phase = MainMapPlacePhase.error,
-        status = null;
+    : phase = MainMapPlacePhase.error,
+      status = null;
 
   final MainMapPlacePhase phase;
   final ActivityStatus? status;
@@ -31,18 +31,20 @@ typedef MainMapStatusLoader = Future<ActivityStatus> Function();
 /// Each loader owns only status reads; retry never emits activity-open events.
 class MainMapSceneStatusController extends ChangeNotifier {
   MainMapSceneStatusController(Map<String, MainMapStatusLoader> loaders)
-      : _loaders = Map<String, MainMapStatusLoader>.unmodifiable(loaders),
-        _places = <String, MainMapPlaceState>{
-          for (final String id in loaders.keys) id: const MainMapPlaceState.loading(),
-        },
-        _attempts = <String, int>{for (final String id in loaders.keys) id: 0};
+    : _loaders = Map<String, MainMapStatusLoader>.unmodifiable(loaders),
+      _places = <String, MainMapPlaceState>{
+        for (final String id in loaders.keys)
+          id: const MainMapPlaceState.loading(),
+      },
+      _attempts = <String, int>{for (final String id in loaders.keys) id: 0};
 
   final Map<String, MainMapStatusLoader> _loaders;
   final Map<String, MainMapPlaceState> _places;
   final Map<String, int> _attempts;
   bool _disposed = false;
 
-  Map<String, MainMapPlaceState> get places => Map<String, MainMapPlaceState>.unmodifiable(_places);
+  Map<String, MainMapPlaceState> get places =>
+      Map<String, MainMapPlaceState>.unmodifiable(_places);
 
   Future<void> refresh() async {
     if (_disposed) return;
@@ -78,7 +80,8 @@ class MainMapSceneStatusController extends ChangeNotifier {
     }
   }
 
-  bool _isCurrent(String id, int attempt) => !_disposed && _attempts[id] == attempt;
+  bool _isCurrent(String id, int attempt) =>
+      !_disposed && _attempts[id] == attempt;
 
   @override
   void dispose() {

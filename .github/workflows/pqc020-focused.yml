@@ -78,9 +78,6 @@ jobs:
             lib/modules/main_map/main_map_scene.dart \
             lib/modules/main_map/main_map_scene_geometry.dart \
             lib/modules/main_map/main_map_scene_state.dart \
-            lib/l10n/generated/app_localizations.dart \
-            lib/l10n/generated/app_localizations_en.dart \
-            lib/l10n/generated/app_localizations_vi.dart \
             test/main_map_scene_test.dart \
             test/main_map_scene_geometry_test.dart \
             test/main_map_scene_route_test.dart \
@@ -176,7 +173,7 @@ jobs:
                   target = root / relative
                   target.parent.mkdir(parents=True, exist_ok=True)
                   shutil.copy2(source, target)
-                  if target.suffix == '.dart':
+                  if target.suffix == '.dart' and not relative.startswith('app/lib/l10n/generated/'):
                       dart_files.append(str(target))
               format_error = ''
               if dart_files:

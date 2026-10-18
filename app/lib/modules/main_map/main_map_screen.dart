@@ -377,7 +377,7 @@ Future<void> openActivity(BuildContext context, ActivityModule module, {String? 
     page = (BuildContext context) => main.buildHome(context, openLessonId: lessonId);
   }
   final NavigatorState navigator = Navigator.of(context);
-  final Future<void?> route = navigator.push<void>(CloudRoute<void>(builder: page, calm: s.settings.calmMode));
+  final route = navigator.push<void>(CloudRoute<void>(builder: page, calm: s.settings.calmMode));
   if (outcome.notices.isNotEmpty) {
     unawaited(Future<void>.delayed(const Duration(milliseconds: 900), () {
       if (navigator.mounted) showRewardToasts(navigator.context, outcome.notices);

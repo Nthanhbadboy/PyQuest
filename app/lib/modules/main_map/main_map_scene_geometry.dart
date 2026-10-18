@@ -17,7 +17,8 @@ const Map<String, Offset> kVillageMarkerAnchors = <String, Offset>{
 };
 
 /// Returns the image's full, uncropped height when it is displayed at [width].
-double villageSceneHeight(double width) => width * kVillageSceneImageSize.height / kVillageSceneImageSize.width;
+double villageSceneHeight(double width) =>
+    width * kVillageSceneImageSize.height / kVillageSceneImageSize.width;
 
 /// Projects a normalized DESIGN anchor into the displayed scene rectangle.
 Offset villageMarkerCenter(String activityId, Size sceneSize) {
@@ -26,7 +27,11 @@ Offset villageMarkerCenter(String activityId, Size sceneSize) {
 }
 
 /// The visible marker footprint, used by geometry tests (not inferred from art bounds).
-Rect villageMarkerTargetRect(String activityId, Size sceneSize, {double height = kVillageMinimumTargetSize}) {
+Rect villageMarkerTargetRect(
+  String activityId,
+  Size sceneSize, {
+  double height = kVillageMinimumTargetSize,
+}) {
   final Offset center = villageMarkerCenter(activityId, sceneSize);
   final double width = sceneSize.width * kVillageMarkerWidthFraction;
   return Rect.fromCenter(center: center, width: width, height: height);

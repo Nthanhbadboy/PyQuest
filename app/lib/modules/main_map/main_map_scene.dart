@@ -60,7 +60,10 @@ class MainMapScene extends StatelessWidget {
           ],
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Text(l10n.hubSceneScrollHint, style: PQText.small.copyWith(color: PQColors.inkSoft)),
+            child: Text(
+              l10n.hubSceneScrollHint,
+              style: PQText.small.copyWith(color: PQColors.inkSoft),
+            ),
           ),
           LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
@@ -156,7 +159,10 @@ class MainMapScene extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: Text(l10n.hubDirectoryHint, style: PQText.bodyStrong.copyWith(color: PQColors.inkSoft)),
+            child: Text(
+              l10n.hubDirectoryHint,
+              style: PQText.bodyStrong.copyWith(color: PQColors.inkSoft),
+            ),
           ),
           FocusTraversalGroup(
             policy: OrderedTraversalPolicy(),
@@ -167,16 +173,21 @@ class MainMapScene extends StatelessWidget {
                   FocusTraversalOrder(
                     order: NumericFocusOrder((i + 1).toDouble()),
                     child: _DirectoryPlaceButton(
-                      key: ValueKey<String>('directory_place_${modules[i].def.id}'),
-                      name: placeName(l10n, modules[i].def.id),
-                      state: places[modules[i].def.id] ?? const MainMapPlaceState.loading(),
-                      focusNode: focusNodeFor(modules[i].def.id),
-                      onFocused: (BuildContext buttonContext) => Scrollable.ensureVisible(
-                        buttonContext,
-                        alignment: 0.35,
-                        duration: const Duration(milliseconds: 180),
-                        curve: Curves.easeOut,
+                      key: ValueKey<String>(
+                        'directory_place_${modules[i].def.id}',
                       ),
+                      name: placeName(l10n, modules[i].def.id),
+                      state:
+                          places[modules[i].def.id] ??
+                          const MainMapPlaceState.loading(),
+                      focusNode: focusNodeFor(modules[i].def.id),
+                      onFocused: (BuildContext buttonContext) =>
+                          Scrollable.ensureVisible(
+                            buttonContext,
+                            alignment: 0.35,
+                            duration: const Duration(milliseconds: 180),
+                            curve: Curves.easeOut,
+                          ),
                       onPressed: () => _activate(modules[i]),
                       l10n: l10n,
                     ),
@@ -194,7 +205,10 @@ class MainMapScene extends StatelessWidget {
     for (final ActivityModule module in modules) {
       final MainMapPlaceState? state = places[module.def.id];
       final ActivityStatus? status = state?.status;
-      if (state?.phase == MainMapPlacePhase.ready && status != null && !status.locked && status.recommended) {
+      if (state?.phase == MainMapPlacePhase.ready &&
+          status != null &&
+          !status.locked &&
+          status.recommended) {
         return module;
       }
     }
@@ -222,17 +236,21 @@ class MainMapScene extends StatelessWidget {
 }
 
 String placeName(AppLocalizations l10n, String id) => switch (id) {
-      'main_quest' => l10n.hubMainQuest,
-      'robot_maze' => l10n.hubRobotMaze,
-      'dragon_jump' => l10n.hubDragonJump,
-      'catch_stars' => l10n.hubCatchStars,
-      'bug_hunter' => l10n.hubBugHunter,
-      'achievement_house' => l10n.hubAchievements,
-      _ => id,
-    };
+  'main_quest' => l10n.hubMainQuest,
+  'robot_maze' => l10n.hubRobotMaze,
+  'dragon_jump' => l10n.hubDragonJump,
+  'catch_stars' => l10n.hubCatchStars,
+  'bug_hunter' => l10n.hubBugHunter,
+  'achievement_house' => l10n.hubAchievements,
+  _ => id,
+};
 
 class _RecommendationCard extends StatelessWidget {
-  const _RecommendationCard({required this.title, required this.placeName, required this.onPressed});
+  const _RecommendationCard({
+    required this.title,
+    required this.placeName,
+    required this.onPressed,
+  });
 
   final String title;
   final String placeName;
@@ -253,7 +271,13 @@ class _RecommendationCard extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: Text(title, style: PQText.small.copyWith(color: PQColors.inkSoft, letterSpacing: 1.2)),
+            child: Text(
+              title,
+              style: PQText.small.copyWith(
+                color: PQColors.inkSoft,
+                letterSpacing: 1.2,
+              ),
+            ),
           ),
           TextButton(
             key: const ValueKey<String>('main_map_recommended'),
@@ -263,7 +287,9 @@ class _RecommendationCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               backgroundColor: PQColors.seaDeep,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
             child: Text(
               l10n.hubVisitRecommended(placeName),
@@ -306,10 +332,10 @@ class _PlaceButton extends StatelessWidget {
     final String statusLabel = isLoading
         ? l10n.hubLoading
         : isError
-            ? '${l10n.hubStatusUnavailable} · ${l10n.hubRetry}'
-            : locked
-                ? l10n.hubLocked
-                : l10n.hubExplore;
+        ? '${l10n.hubStatusUnavailable} · ${l10n.hubRetry}'
+        : locked
+        ? l10n.hubLocked
+        : l10n.hubExplore;
     final Color face = locked ? const Color(0xFFEDE4D7) : PQColors.cream;
     return Focus(
       skipTraversal: true,
@@ -334,7 +360,10 @@ class _PlaceButton extends StatelessWidget {
               foregroundColor: PQColors.ink,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
-                side: const BorderSide(color: PQColors.parchmentEdge, width: 1.5),
+                side: const BorderSide(
+                  color: PQColors.parchmentEdge,
+                  width: 1.5,
+                ),
               ),
             ),
             child: Column(
@@ -386,10 +415,10 @@ class _DirectoryPlaceButton extends StatelessWidget {
     final String stateLabel = isLoading
         ? l10n.hubLoading
         : isError
-            ? '${l10n.hubStatusUnavailable} · ${l10n.hubRetry}'
-            : locked
-                ? l10n.hubLocked
-                : l10n.hubExplore;
+        ? '${l10n.hubStatusUnavailable} · ${l10n.hubRetry}'
+        : locked
+        ? l10n.hubLocked
+        : l10n.hubExplore;
     return Focus(
       skipTraversal: true,
       canRequestFocus: false,
@@ -414,13 +443,20 @@ class _DirectoryPlaceButton extends StatelessWidget {
               foregroundColor: PQColors.ink,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: const BorderSide(color: PQColors.parchmentEdge, width: 1.5),
+                side: const BorderSide(
+                  color: PQColors.parchmentEdge,
+                  width: 1.5,
+                ),
               ),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                SizedBox(width: 32, height: 32, child: _PlaceStateIcon(state: state)),
+                SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: _PlaceStateIcon(state: state),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -428,7 +464,11 @@ class _DirectoryPlaceButton extends StatelessWidget {
                     children: <Widget>[
                       Text(name, softWrap: true, style: PQText.h3),
                       const SizedBox(height: 2),
-                      _PlaceStateLine(state: state, label: stateLabel, alignStart: true),
+                      _PlaceStateLine(
+                        state: state,
+                        label: stateLabel,
+                        alignStart: true,
+                      ),
                     ],
                   ),
                 ),
@@ -442,7 +482,11 @@ class _DirectoryPlaceButton extends StatelessWidget {
 }
 
 class _PlaceStateLine extends StatelessWidget {
-  const _PlaceStateLine({required this.state, required this.label, this.alignStart = false});
+  const _PlaceStateLine({
+    required this.state,
+    required this.label,
+    this.alignStart = false,
+  });
 
   final MainMapPlaceState state;
   final String label;
@@ -453,18 +497,34 @@ class _PlaceStateLine extends StatelessWidget {
     if (state.phase == MainMapPlacePhase.loading) {
       return Row(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: alignStart ? MainAxisAlignment.start : MainAxisAlignment.center,
+        mainAxisAlignment: alignStart
+            ? MainAxisAlignment.start
+            : MainAxisAlignment.center,
         children: <Widget>[
-          const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)),
+          const SizedBox(
+            width: 14,
+            height: 14,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
           const SizedBox(width: 6),
           Flexible(child: Text(label, softWrap: true, style: PQText.small)),
         ],
       );
     }
     if (state.phase == MainMapPlacePhase.error) {
-      return Text(label, textAlign: alignStart ? TextAlign.start : TextAlign.center, softWrap: true, style: PQText.small.copyWith(color: PQColors.dangerDeep));
+      return Text(
+        label,
+        textAlign: alignStart ? TextAlign.start : TextAlign.center,
+        softWrap: true,
+        style: PQText.small.copyWith(color: PQColors.dangerDeep),
+      );
     }
-    return Text(label, textAlign: alignStart ? TextAlign.start : TextAlign.center, softWrap: true, style: PQText.small.copyWith(color: PQColors.inkSoft));
+    return Text(
+      label,
+      textAlign: alignStart ? TextAlign.start : TextAlign.center,
+      softWrap: true,
+      style: PQText.small.copyWith(color: PQColors.inkSoft),
+    );
   }
 }
 
@@ -476,10 +536,19 @@ class _PlaceStateIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (state.phase) {
-      MainMapPlacePhase.loading => const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-      MainMapPlacePhase.error => const Icon(Icons.refresh_rounded, color: PQColors.dangerDeep),
-      MainMapPlacePhase.ready when (state.status?.locked ?? false) => const Icon(Icons.lock_outline_rounded, color: PQColors.inkSoft),
-      MainMapPlacePhase.ready => const Icon(Icons.place_outlined, color: PQColors.seaDeep),
+      MainMapPlacePhase.loading => const Center(
+        child: CircularProgressIndicator(strokeWidth: 2),
+      ),
+      MainMapPlacePhase.error => const Icon(
+        Icons.refresh_rounded,
+        color: PQColors.dangerDeep,
+      ),
+      MainMapPlacePhase.ready when (state.status?.locked ?? false) =>
+        const Icon(Icons.lock_outline_rounded, color: PQColors.inkSoft),
+      MainMapPlacePhase.ready => const Icon(
+        Icons.place_outlined,
+        color: PQColors.seaDeep,
+      ),
     };
   }
 }
