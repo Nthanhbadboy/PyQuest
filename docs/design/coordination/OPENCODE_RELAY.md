@@ -17,7 +17,9 @@ kế watcher/router GitHub ở commit e4c2895. Không cài runner, không đổi
   cho người dùng dùng thử/đánh giá. Không tự nhận app hoàn tất khi thiếu evidence.
 
 Design branch: `arena/00838eb9-pyquest`.
-Code branch hiện tại: `arena/0d4fcb38-pyquest`.
+Code branch hiện tại: `arena/4253d4f1-pyquest`.
+`arena/0d4fcb38-pyquest` là nhánh CODE trước, không phải đích push/fast-forward
+của phiên mới. Work order hiện hành: [PQC-020 revision2](specs/PQC-020-R2.md).
 Nhánh `arena/b813b575-pyquest` là lịch sử. Người vận hành gắn DESIGN/CODE với đúng
 khung chat; OpenCode không suy session ID từ tên nhánh. Chưa kiểm thử browser relay
 bên ngoài từ phiên này; tài liệu không phải xác nhận đã gửi tin thành công.

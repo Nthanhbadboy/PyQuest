@@ -1,0 +1,97 @@
+{
+  "decision": "Locale-only change conforms to authorization; PQC020 CHANGES_REQUIRED / NOT_ACCEPTED",
+  "source_pin": "bed783cf9b7a327fe9766e96bd2e3020dc08ff82",
+  "base": "01db21a64b332a758d32aae635304f75137431dd",
+  "observed_branch": "arena/4253d4f1-pyquest",
+  "old_branch_tip": "01db21a64b332a758d32aae635304f75137431dd",
+  "observed_design_tip_before_review": "ed3b115a0b7efac72479b035b30a79452e9d86a2",
+  "read_only_review": true,
+  "ci_dispatch_or_rerun": false,
+  "diff_paths": [
+    "app/test/journey_widget_test.dart",
+    "docs/implementation/coordination/tasks/PQC-020.md"
+  ],
+  "app_lib_changes_in_locale_delta": 0,
+  "locale_injections": 2,
+  "normal_run": {
+    "headSha": "bed783cf9b7a327fe9766e96bd2e3020dc08ff82",
+    "status": "completed",
+    "conclusion": "failure",
+    "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39139439970"
+  },
+  "normal_check": {
+    "id": 117711299154,
+    "url": "https://github.com/Nthanhbadboy/PyQuest/runs/117711299154",
+    "conclusion": "failure",
+    "summary": "| phase key | exit |\n|---|---|\n| flutter_version | 0 |\n| pub_get | 0 |\n| l10n_evidence_tests | 0 |\n| l10n_evidence | 0 |\n| analyze | 0 |\n| settings_test | 0 |\n| ordinary_tests | 1 |\n| l10n_evidence_publish | 0 |\n\n| workflow step | outcome |\n|---|---|\n| Flutter version | success |\n| Dependencies | success |\n| Localization evidence tests | success |\n| Localization evidence collection | success |\n| Flutter analyze | success |\n| Focused Settings test | success |\n| Ordinary tests | failure |\n| Render tests | skipped |\n| Evidence publication | success |\n| Preview publication | success |\n\n**Why not success**: phase key ordinary_tests=1; step 'Ordinary tests' ended with 'failure'; step 'Render tests' was skipped although it is not optional",
+    "failure_excerpt": "Failing tests:\n  /home/runner/work/PyQuest/PyQuest/app/test/journey_widget_test.dart: new player: map → Robot Maze level 1 solved → result → progress saved\n  /home/runner/work/PyQuest/PyQuest/app/test/lesson_route_regression_test.dart: characterization những gì code đang có/không có (chưa phải kết luận thiết bị) characterization keyboard: TỪNG lần Tab đều không đổi focus (rev 4 §V1)"
+  },
+  "ordinary": {
+    "passed": 433,
+    "failed": 2,
+    "total": 435
+  },
+  "settings": {
+    "passed": 12,
+    "failed": 0
+  },
+  "render": "SKIPPED in regular CI; no final-SHA render10 proof",
+  "focused": "NOT_RUN on finalSHA; push/job routing excludes new CODE branch",
+  "maintenance": "NOT_RUN on finalSHA; push/job routing excludes new CODE branch",
+  "runs_for_sha": [
+    {
+      "id": 39139439970,
+      "name": "PyQuest CI",
+      "branch": "arena/4253d4f1-pyquest",
+      "status": "completed",
+      "conclusion": "failure"
+    }
+  ],
+  "source_pins": [
+    {
+      "path": "app/test/journey_widget_test.dart",
+      "sha256": "f6d62a12940012479e7cb91e680b1ef09582e002c8ae873f6e94cc55727fe6ea"
+    },
+    {
+      "path": "app/test/lesson_route_regression_test.dart",
+      "sha256": "5a0b369f36217ce88fc69cec2d23e0cd19fbb241c1fac52c1ddcf762c7ef7b1f"
+    },
+    {
+      "path": "app/lib/app/pyquest_app.dart",
+      "sha256": "18d15adf7e6bee160c71ac5c947855486fdd1739af7a0c396b248a747ba463d1"
+    },
+    {
+      "path": "app/lib/l10n/app_vi.arb",
+      "sha256": "4d34540f3e394b4cff8bbeed66bf72d00e9628e43dbae9e0ade4a3fecae87897"
+    },
+    {
+      "path": "app/lib/modules/main_map/main_map_scene.dart",
+      "sha256": "bd65e183e1e932991c9c661ce7f3fb226cdc72a1bc2cdc2f9609c4b905e4fb3d"
+    },
+    {
+      "path": ".github/workflows/pqc020-focused.yml",
+      "sha256": "e7fed82d15849b75207dd1db6d56f74c9e7643446e0f09c8062fa379fc23359a"
+    },
+    {
+      "path": ".github/workflows/pqc011-maintenance.yml",
+      "sha256": "f5c6106292beeb8122ea2415e4b46fb0270dfb26b32d7a4409b6094769c87ac9"
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-020.md",
+      "sha256": "b8dedf5c702c7586d1e037151fadae55b056c2f56d686a565e08e017bcb0d1d0"
+    }
+  ],
+  "source_findings": {
+    "hub_label": "Núi Lửa",
+    "journey_expectation": "Núi Lửa Pip",
+    "label_failure_location_authority": "source inference only; log names failing case but does not locate failed assertion",
+    "keyboard_oracle": "old characterization expects unchanged focus after every Tab; conflicts with authorized R1-A keyboard behavior",
+    "root_font_cap": "MediaQuery.withClampedTextScaling(maxScaleFactor: 1.2) still in app root"
+  },
+  "not_claimed": [
+    "No Flutter run performed locally",
+    "No full regression absence inferred from unchanged counts",
+    "No APK/device/screenshots acceptance",
+    "No global font fix authorized in revision2"
+  ]
+}

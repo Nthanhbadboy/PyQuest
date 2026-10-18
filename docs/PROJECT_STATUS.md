@@ -1,6 +1,6 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · review r53 / design r56.**
+**2026-10-18 · review PQC-020 bed783cf / design r56.**
 
 **Hiện hành:** PQC-011 **ACCEPTED** tại CODE
 `6dc8ca8feeed54cc0fa6a82109e3a59d24a16153`: Settings12, isolated1, ordered2,
@@ -12,9 +12,20 @@ Không APK mới, không device/voice claim.
 IMPLEMENTATION_PUSHED / NOT_ACCEPTED: Main Map2,5D +sáu routes hiện có. [Package r53](design/r1-village-r53/README.md)
 có static W01 export, scene/directory, source geometry và browser study. Cho phép
 flattened static scene trong lát cắt này, không gọi là layered/animated world.
-CODE đã push source R1-A tới `831f7cb4`; focused/normal failure và maintenance còn
-chạy tại lần quan sát r56, chưa ACCEPTED. [Observation r56](design/arrival-entrance-r56/partner-observation.json).
-Toàn R1/R4 và nhà/đất/đảo còn scope riêng.
+CODE hiện ở `bed783cf9b7a327fe9766e96bd2e3020dc08ff82`, nhánh
+`arena/4253d4f1-pyquest`. Locale fixture đúng scope; normal CI39139439970
+**433 passed / 2 failed**, Settings12/analyze/localization/pub-get PASS, render
+SKIPPED. Focused020/maintenance011 NOT_RUN trên SHA này vì routing nhánh cũ.
+[Independent review + evidence](design/coordination/reviews/PQC-020-bed783cf/README.md).
+
+**Order bổ sung [revision2](design/coordination/specs/PQC-020-R2.md):** sửa expected
+hub label `Núi Lửa`, thay keyboard/semantics characterization cũ, và mở routing
+verify-only cho exact branch CODE mới trong hai workflow hiện có. Không đổi ARB,
+không skip/delete case, không normalize/diagnose/dispatch hoặc push nhánh cũ.
+Cho phép corrective commits; mọi gate chạy lại trên finalSHA mới (ordinary≥435/0,
+render10). **Root clamp1.2 vẫn chặn chứng minh app2×**; order này không mở quyền
+sửa global app root hoặc tự nghiệm thu020. Toàn R1/R4 và nhà/đất/đảo còn scope riêng.
+Quan sát831f7cb4 trong [r56](design/arrival-entrance-r56/partner-observation.json) là lịch sử.
 
 **Design mới r56 / R1-B:** [Welcome và bảng giới thiệu sáu địa điểm](design/arrival-entrance-r56/README.md).
 Hai character studies Py/Bitsy2,5D mới; ba bước Welcome, sáu entrance panels,
