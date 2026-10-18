@@ -13,12 +13,16 @@ void _ensureVisibleIfNeeded(BuildContext context, {required double alignment}) {
   final RenderAbstractViewport? viewport = RenderAbstractViewport.maybeOf(
     target,
   );
-  final ScrollableState? scrollable = Scrollable.maybeOf(context);
-  if (target != null && viewport != null && scrollable != null) {
-    final ScrollPosition position = scrollable.position;
-    final double leading = viewport.getOffsetToReveal(target, 0).offset;
-    final double trailing = viewport.getOffsetToReveal(target, 1).offset;
-    if (position.pixels >= trailing && position.pixels <= leading) return;
+  if (target is RenderBox && viewport is RenderBox) {
+    final Rect targetRect = MatrixUtils.transformRect(
+      target.getTransformTo(viewport),
+      Offset.zero & target.size,
+    );
+    final Rect viewportRect = Offset.zero & viewport.size;
+    if (viewportRect.contains(targetRect.topLeft) &&
+        viewportRect.contains(targetRect.bottomRight)) {
+      return;
+    }
   }
   Scrollable.ensureVisible(
     context,

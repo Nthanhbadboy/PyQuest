@@ -116,6 +116,11 @@ void main() {
       expect(beforeRouteOffset, greaterThan(0));
 
       await _tapPlace(tester, 'main_quest');
+      expect(
+        mapController.offset,
+        closeTo(beforeRouteOffset, 0.5),
+        reason: 'activating an already-visible place preserves map scroll',
+      );
       expect(find.byType(ActivitySheet), findsOneWidget);
       expect(find.byKey(const ValueKey<String>('sheet_open')), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey<String>('sheet_open')));
