@@ -1010,6 +1010,27 @@ RenderBox _lessonViewportRenderBox(WidgetTester tester) {
   return viewportBox!;
 }
 
+RenderEditable _renderEditableBelow(WidgetTester tester, Finder finder) {
+  final RenderObject root = tester.renderObject<RenderObject>(finder);
+  RenderEditable? renderEditable;
+  void visit(RenderObject object) {
+    if (renderEditable != null) return;
+    if (object is RenderEditable) {
+      renderEditable = object;
+      return;
+    }
+    object.visitChildren(visit);
+  }
+
+  visit(root);
+  expect(
+    renderEditable,
+    isNotNull,
+    reason: 'the EditableText subtree contains its RenderEditable',
+  );
+  return renderEditable!;
+}
+
 _CaretScrollSnapshot _captureCaretScrollSnapshot(
   WidgetTester tester,
   CodeEditor editor,
@@ -1023,7 +1044,8 @@ _CaretScrollSnapshot _captureCaretScrollSnapshot(
     matching: find.byType(EditableText, skipOffstage: false),
   );
   final EditableText editableWidget = tester.widget<EditableText>(editableText);
-  final RenderEditable renderEditable = tester.renderObject<RenderEditable>(
+  final RenderEditable renderEditable = _renderEditableBelow(
+    tester,
     editableText,
   );
   final int selectionOffset = editor.controller.selection.extentOffset;
