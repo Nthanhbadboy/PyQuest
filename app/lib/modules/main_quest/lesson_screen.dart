@@ -133,7 +133,10 @@ class _LessonScreenState extends State<LessonScreen> {
       character: CastRegistry.tutorForSkill(ctx.skill).id,
       startWithHint: withHint,
     );
-    if (mounted && restoreEditorFocus && editorFocus?.canRequestFocus == true) {
+    if (mounted &&
+        restoreEditorFocus &&
+        editorFocus?.hasFocus != true &&
+        editorFocus?.canRequestFocus == true) {
       editorFocus!.requestFocus();
     }
   }
