@@ -147,8 +147,9 @@ jobs:
           format_log_path = Path(os.environ['RUNNER_TEMP']) / 'pqc020-format-check.log'
           format_log = format_log_path.read_text(encoding='utf-8', errors='replace') if format_log_path.exists() else ''
           import re
-          passed_matches = re.findall(r'\+(\d+):\s+All tests passed!', log)
-          failed_matches = re.findall(r'\+(\d+)\s+-\s*(\d+):\s+Some tests failed\.', log)
+          clean_log = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', log)
+          passed_matches = re.findall(r'\+(\d+):\s+All tests passed!', clean_log)
+          failed_matches = re.findall(r'\+(\d+)\s+-\s*(\d+):', clean_log)
           if failed_matches:
               passed_count, failed_count = map(int, failed_matches[-1])
               test_result = f'{passed_count} passed, {failed_count} failed ({passed_count + failed_count} total)'
@@ -227,8 +228,8 @@ jobs:
               text += '\n\nFormatter-check log:\n```text\n' + format_log[-12000:] + '\n```'
           if format_error:
               text += '\n\nFormatter-preview output:\n```text\n' + format_error[:12000] + '\n```'
-          if failed_count:
-              text += '\n\nFocused Flutter test failure log (bounded tail):\n```text\n' + log[-18000:] + '\n```'
+          if outcomes['Focused test files'] != 'success':
+              text += '\n\nFocused Flutter test log (bounded tail):\n```text\n' + log[-18000:] + '\n```'
           now = dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00', 'Z')
           def post_check(payload):
               response = subprocess.run(
