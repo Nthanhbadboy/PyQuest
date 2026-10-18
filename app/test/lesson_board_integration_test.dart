@@ -271,19 +271,31 @@ void main() {
       await tester.tap(find.byKey(const ValueKey<String>('example_run')));
       await _waitForContinueEnabled(tester);
       expect(find.text('12'), findsOneWidget);
-      // Keep the focused editor visible before recording the route scroll state.
+      // Keep the focused editor visible before measuring tutor-route scroll.
       await tester.ensureVisible(
         find.byKey(const ValueKey<String>('example_code_editor_mq1_03_s2')),
       );
       await tester.pump();
-      // Prime focus-driven scrolling before measuring tutor-route preservation.
-      editor.focusNode!.unfocus();
-      await tester.pump();
-      editor.focusNode!.requestFocus();
-      await tester.pump(const Duration(milliseconds: 300));
-      expect(editor.focusNode!.hasFocus, isTrue);
+      final ScrollPosition lessonScroll = _lessonScrollPosition(tester);
+      final Stopwatch tutorTraceClock = Stopwatch()..start();
+      void traceTutorState(String event) {
+        debugPrint(
+          '[PQC-011 tutor trace] event=$event '
+          'elapsed=${tutorTraceClock.elapsed} '
+          'focus=${editor.focusNode!.hasFocus} '
+          'scroll=${lessonScroll.pixels.toStringAsFixed(2)} '
+          'zone=${identityHashCode(Zone.current)}',
+        );
+      }
 
-      final double scrollOffsetBeforeTutor = _lessonScrollOffset(tester);
+      void traceFocusChange() => traceTutorState('focus-change');
+      void traceScrollChange() => traceTutorState('scroll-change');
+      editor.focusNode!.addListener(traceFocusChange);
+      lessonScroll.addListener(traceScrollChange);
+      traceTutorState('before-baseline-stabilization');
+      final double scrollOffsetBeforeTutor =
+          await _waitForStableLessonScrollOffset(tester, 'before tutor open');
+      traceTutorState('before tutor open; baseline stable');
       await tester.tap(find.byKey(const ValueKey<String>('lesson_tutor')));
       await _waitForCondition(
         tester,
@@ -294,6 +306,7 @@ void main() {
         'tutor sheet opening completes',
       );
       await tester.pump(const Duration(milliseconds: 300));
+      traceTutorState('sheet opening transition settled');
       expect(find.byKey(const ValueKey<String>('tutor_close')), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey<String>('tutor_close')));
       await _waitForCondition(
@@ -306,7 +319,11 @@ void main() {
             editor.focusNode!.hasFocus,
         'tutor sheet closes and restores editor focus',
       );
-      await tester.pump(const Duration(milliseconds: 300));
+      traceTutorState('sheet closed; post-_openTutor focus checkpoint');
+      await tester.pump();
+      final double scrollOffsetAfterTutor =
+          await _waitForStableLessonScrollOffset(tester, 'after first tutor close');
+      traceTutorState('first tutor close; scroll stable');
 
       final BoardController afterTutor = tester
           .widget<BoardView>(find.byType(BoardView))
@@ -327,7 +344,7 @@ void main() {
         reason: 'the last run result survives the tutor route',
       );
       expect(
-        _lessonScrollOffset(tester),
+        scrollOffsetAfterTutor,
         closeTo(scrollOffsetBeforeTutor, 0.5),
       );
 
@@ -341,6 +358,7 @@ void main() {
         'tutor sheet opening completes',
       );
       await tester.pump(const Duration(milliseconds: 300));
+      traceTutorState('reopened sheet transition settled');
       expect(find.byKey(const ValueKey<String>('tutor_close')), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey<String>('tutor_close')));
       await _waitForCondition(
@@ -353,7 +371,11 @@ void main() {
             editor.focusNode!.hasFocus,
         'tutor sheet closes and restores editor focus after reopening',
       );
-      await tester.pump(const Duration(milliseconds: 300));
+      traceTutorState('reopened sheet closed; post-_openTutor checkpoint');
+      await tester.pump();
+      final double scrollOffsetAfterReopen =
+          await _waitForStableLessonScrollOffset(tester, 'after second tutor close');
+      traceTutorState('second tutor close; scroll stable');
       expect(
         identical(
           tester.widget<BoardView>(find.byType(BoardView)).controller,
@@ -372,9 +394,11 @@ void main() {
       expect(editor.focusNode!.hasFocus, isTrue);
       expect(find.text('12'), findsOneWidget);
       expect(
-        _lessonScrollOffset(tester),
+        scrollOffsetAfterReopen,
         closeTo(scrollOffsetBeforeTutor, 0.5),
       );
+      editor.focusNode!.removeListener(traceFocusChange);
+      lessonScroll.removeListener(traceScrollChange);
 
       await tester.runAsync(() => services.settings.setLang(PqLang.en));
       await _waitForCondition(
@@ -769,14 +793,42 @@ Future<void> _mountLesson(
   );
 }
 
-double _lessonScrollOffset(WidgetTester tester) {
+ScrollPosition _lessonScrollPosition(WidgetTester tester) {
   final Finder scrollable = find
       .descendant(
         of: find.byKey(const ValueKey<String>('step_scroll_1')),
         matching: find.byType(Scrollable),
       )
       .first;
-  return tester.state<ScrollableState>(scrollable).position.pixels;
+  return tester.state<ScrollableState>(scrollable).position;
+}
+
+double _lessonScrollOffset(WidgetTester tester) =>
+    _lessonScrollPosition(tester).pixels;
+
+Future<double> _waitForStableLessonScrollOffset(
+  WidgetTester tester,
+  String description, {
+  int stableFrames = 3,
+  int maxFrames = 30,
+}) async {
+  double previous = _lessonScrollOffset(tester);
+  int stableCount = 0;
+  for (int frame = 0; frame < maxFrames; frame++) {
+    await tester.pump(const Duration(milliseconds: 50));
+    final double current = _lessonScrollOffset(tester);
+    if ((current - previous).abs() <= 0.05) {
+      stableCount++;
+      if (stableCount >= stableFrames) return current;
+    } else {
+      stableCount = 0;
+    }
+    previous = current;
+  }
+  fail(
+    'Lesson scroll did not stabilize $description within '
+    '${maxFrames * 50}ms (last offset=$previous)',
+  );
 }
 
 Future<void> _advanceStoryToExample(WidgetTester tester, Lesson lesson) async {
