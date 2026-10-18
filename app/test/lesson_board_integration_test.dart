@@ -429,7 +429,8 @@ void main() {
       expect(
         firstCloseScrollDelta,
         closeTo(expectedFirstCloseScrollDelta, 0.5),
-        reason: 'only the measured, scroll-limit-bounded caret correction occurs',
+        reason:
+            'only the measured, scroll-limit-bounded caret correction occurs',
       );
       expect(caretStateAfterTutor.caretWithinScrollPadding, isTrue);
 
@@ -1098,9 +1099,7 @@ _CaretScrollSnapshot _captureCaretScrollSnapshot(
     ),
   );
   final EdgeInsets scrollPadding = editableWidget.scrollPadding;
-  final MediaQueryData mediaQuery = MediaQuery.of(
-    tester.element(editableText),
-  );
+  final MediaQueryData mediaQuery = MediaQuery.of(tester.element(editableText));
   final EdgeInsets viewInsets = mediaQuery.viewInsets;
   final Rect mediaVisibleRect = Rect.fromLTRB(
     viewInsets.left,
