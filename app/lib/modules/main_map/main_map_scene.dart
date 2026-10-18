@@ -14,11 +14,12 @@ void _ensureVisibleIfNeeded(BuildContext context, {required double alignment}) {
     target,
   );
   if (target is RenderBox && viewport is RenderBox) {
+    final RenderBox viewportBox = viewport as RenderBox;
     final Rect targetRect = MatrixUtils.transformRect(
-      target.getTransformTo(viewport),
+      target.getTransformTo(viewportBox),
       Offset.zero & target.size,
     );
-    final Rect viewportRect = Offset.zero & viewport.size;
+    final Rect viewportRect = Offset.zero & viewportBox.size;
     if (viewportRect.contains(targetRect.topLeft) &&
         viewportRect.contains(targetRect.bottomRight)) {
       return;
