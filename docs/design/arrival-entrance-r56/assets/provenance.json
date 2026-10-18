@@ -1,0 +1,193 @@
+{
+  "revision": 56,
+  "runtime_ready": false,
+  "origin": "Two Arena AI-generated character studies, edge-matted; seven WebP exports of existing study scenes, no new scene generation. Reuse r50 Robo and r54 Pip. Not animation or native-alpha production pack.",
+  "cutouts": {
+    "py": {
+      "crop": [
+        200,
+        52,
+        945,
+        923
+      ],
+      "size": [
+        438,
+        512
+      ],
+      "method": "edge-connected white flood fill, minRGB232/chroma26; 1px erode +0.35 blur; study matte, not native alpha"
+    },
+    "bitsy": {
+      "crop": [
+        177,
+        21,
+        1029,
+        960
+      ],
+      "size": [
+        465,
+        512
+      ],
+      "method": "edge-connected white flood fill, minRGB232/chroma26; 1px erode +0.35 blur; study matte, not native alpha"
+    }
+  },
+  "references": [
+    {
+      "path": "docs/screenshots/13_lesson_story.jpg",
+      "sha256": "ba9c47237195b59386e58966b19cb210709cdfe961759b1c7bfbdd74b3332247"
+    },
+    {
+      "path": "docs/design/maze-play-r50/assets/robo-token.png",
+      "sha256": "c2f58b4eda7303e252474694c73e05b48d85563effda1035e0dc4fad8d747f05"
+    },
+    {
+      "path": "docs/design/dragon-run-r54/assets/pip-token.png",
+      "sha256": "615b21e1f7a10900d60b89c2ce81ee2ef0d21630a037c4c31ede0d7b9b293ef6"
+    },
+    {
+      "path": "docs/design/art-review-r40/code-snapshot/a03-shared-welcome/concept.png",
+      "sha256": "35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb"
+    },
+    {
+      "path": "docs/design/chapter-journey-r43/assets/tower-garden.png",
+      "sha256": "9f1ec8fe17c0b3476ac9a1b1e57a02a8b1bd1c9ce4687dd00b53eef044adf830"
+    },
+    {
+      "path": "docs/design/maze-play-r50/assets/garden-stage.png",
+      "sha256": "8349615e0cdacb46faf827f31ba08805c96163d7eefd5fa8219e2b3009a0a3db"
+    },
+    {
+      "path": "docs/design/dragon-run-r54/assets/volcano-trail.png",
+      "sha256": "63499174eebf7247935e574e5585e8e7a19f598dd83255b4c4932897eac81199"
+    },
+    {
+      "path": "docs/design/catch-stars-r55/assets/observatory-sky.png",
+      "sha256": "b983422eca10e5fb3c67f965ab630fb0e5e596b95309848d658ddd9780e5686a"
+    },
+    {
+      "path": "docs/design/art-review-r40/code-snapshot/a05-w05-bug-hunter/concept.png",
+      "sha256": "65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073"
+    },
+    {
+      "path": "docs/design/art-sync-r35/corrections/w14-achievements.jpg",
+      "sha256": "5663f576cd4cf273e516ea1eee500face165879ed9710b6455959b90c34db66d"
+    },
+    {
+      "path": "docs/design/r1-village-r53/assets/village-r53.webp",
+      "sha256": "d3130b407e08f146ae633b50fad9f1e05aa466dd5dc049cdc75c1b36f8804c0e"
+    },
+    {
+      "path": "docs/design/chapter-journey-r43/catalog.js",
+      "sha256": "f79a19cb71e07fb398d8a6b0a618039985459db310203961e02b656232eb10cf"
+    }
+  ],
+  "exports": {
+    "arrival": "docs/design/art-review-r40/code-snapshot/a03-shared-welcome/concept.png",
+    "main_quest": "docs/design/chapter-journey-r43/assets/tower-garden.png",
+    "robot_maze": "docs/design/maze-play-r50/assets/garden-stage.png",
+    "dragon_jump": "docs/design/dragon-run-r54/assets/volcano-trail.png",
+    "catch_stars": "docs/design/catch-stars-r55/assets/observatory-sky.png",
+    "bug_hunter": "docs/design/art-review-r40/code-snapshot/a05-w05-bug-hunter/concept.png",
+    "achievement_house": "docs/design/art-sync-r35/corrections/w14-achievements.jpg"
+  },
+  "files": [
+    {
+      "path": "assets/achievement_house.webp",
+      "size": [
+        720,
+        964
+      ],
+      "bytes": 68030,
+      "sha256": "a4cae74e93a72fe6108beb45b3bf9c6ed94c6fc3c7599108c35bb03b648906d7"
+    },
+    {
+      "path": "assets/arrival.webp",
+      "size": [
+        720,
+        894
+      ],
+      "bytes": 108042,
+      "sha256": "0cd453866e804317aed274c9c03c58dde382616981d63bdef6280385d9f0a4ce"
+    },
+    {
+      "path": "assets/bitsy-source.png",
+      "size": [
+        1095,
+        960
+      ],
+      "bytes": 1293285,
+      "sha256": "5b7b0ea06f2d754362e8e41794d17077978f0696d20c42fd1bdefd7aeee30e48"
+    },
+    {
+      "path": "assets/bitsy-token.png",
+      "size": [
+        465,
+        512
+      ],
+      "bytes": 264896,
+      "sha256": "78aad5e57aebf54ea8e430f5f05ba11de8bffe0415f01b89a7ee433b3f5d9448"
+    },
+    {
+      "path": "assets/bug_hunter.webp",
+      "size": [
+        720,
+        894
+      ],
+      "bytes": 69616,
+      "sha256": "b25f2104495e3bff842e98f64d447e0621ae1213b774024b3fba2a5593f47ed6"
+    },
+    {
+      "path": "assets/catch_stars.webp",
+      "size": [
+        671,
+        1000
+      ],
+      "bytes": 29664,
+      "sha256": "b2b5aa77673a85218ef57eb80c212664c5aab8b5c1a0c43c758ac892ac2da15a"
+    },
+    {
+      "path": "assets/dragon_jump.webp",
+      "size": [
+        720,
+        866
+      ],
+      "bytes": 28076,
+      "sha256": "9419dc33a9a1d19a206d9a6a665676f8516d8a58890b3782d9bd2dad098d58e3"
+    },
+    {
+      "path": "assets/main_quest.webp",
+      "size": [
+        671,
+        1000
+      ],
+      "bytes": 112096,
+      "sha256": "ccb17b9ab5eb2f889fd88c1179bb0233ed145178764fbbd93d346b0d8eb6b98c"
+    },
+    {
+      "path": "assets/py-source.png",
+      "size": [
+        1095,
+        960
+      ],
+      "bytes": 884502,
+      "sha256": "b3da1fa75b0980fa922aba210c280460be85d8ff022d3d0d3d1206b7ad4e9ff3"
+    },
+    {
+      "path": "assets/py-token.png",
+      "size": [
+        438,
+        512
+      ],
+      "bytes": 174312,
+      "sha256": "f219bb09b04f0d0ef660b4fcad50a5060294bf00936e17f478a5ff52c1e1f9b6"
+    },
+    {
+      "path": "assets/robot_maze.webp",
+      "size": [
+        720,
+        538
+      ],
+      "bytes": 68472,
+      "sha256": "1d4ddd36fd252fdbd27f44da021362091e01a1bca39432ffd803d9ea369d20e6"
+    }
+  ]
+}

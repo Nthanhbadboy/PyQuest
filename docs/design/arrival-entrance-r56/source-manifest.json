@@ -1,0 +1,90 @@
+{
+  "code_pin": "5c97577c32c27d36f33c09bf3af2fa01ad0111f5",
+  "code_acceptance": "PQC020 NOT_ACCEPTED; source pin only",
+  "files": [
+    {
+      "path": "app/lib/app/activity.dart",
+      "sha256": "a67f85db05dc25c95bb67fed2f2b8e59d58356f1883afad2814c0cd13ec37225"
+    },
+    {
+      "path": "app/lib/app/activity_registry.dart",
+      "sha256": "c904f52be3ba2b21eb9807d677008a02d9bb3971459029d678f022048e786c17"
+    },
+    {
+      "path": "app/lib/modules/main_map/activity_sheet.dart",
+      "sha256": "8d6c99037121b1ca3c1acb5f256ee25c7c308652bd6c81f360c4a9c03e7e5e0c"
+    },
+    {
+      "path": "app/lib/modules/main_map/main_map_screen.dart",
+      "sha256": "f350c72a0d2c253d2b68fc9504efb6d0dd79f5ae70da5d6fe80d919e136c13e0"
+    },
+    {
+      "path": "app/lib/core/settings_service.dart",
+      "sha256": "e2cd2b0720966c48db59327ce5989ceabe7a07b74d62e0bb16ed50e9cdd1fbe7"
+    },
+    {
+      "path": "app/lib/core/localization/locale_preference.dart",
+      "sha256": "8528359507934afd9880024efe464fa7f7fcdbf66126bd647a514dc109c0a60b"
+    },
+    {
+      "path": "app/assets/config/game_config.json",
+      "sha256": "f7b9d1a80be65a49ad2bf7c68de46bbf33243b0a27cd5eb5e80d77467b5f15c5"
+    },
+    {
+      "path": "app/assets/data/main_quest_ch1.json",
+      "sha256": "bead251d9f290db0b8fa4475f7413976324b00e7b0f498c633a25a5e6392f8b8"
+    },
+    {
+      "path": "app/assets/data/robot_maze_levels.json",
+      "sha256": "0c0d728a067b99d47fe85c18ed5c80cecd36c026284b3a3d15a246a6f5747f39"
+    },
+    {
+      "path": "app/assets/data/bug_hunter_puzzles.json",
+      "sha256": "48b5e064d16e62e2d72a43e7e7bf68e80add6f7483ec7966da5fe9704fcfd473"
+    },
+    {
+      "path": "app/lib/modules/bug_hunter/bug_models.dart",
+      "sha256": "a6d0781baf3be9d8700e3b79bd7e7e8a3166ede9032fbbfb8786d4631d4b8b18"
+    },
+    {
+      "path": "app/lib/modules/achievements/achievement_catalog.dart",
+      "sha256": "07d52e12d2552ddff0fb7786146184df421c8ad2267e57fbb1cb7c9ef6c67200"
+    },
+    {
+      "path": "app/lib/modules/catch_stars/stars_game.dart",
+      "sha256": "98376e26dbb7bafc5e10fea7ac2d30b7bfdda20ec28da3adeb4b8bdbd7fd39f4"
+    },
+    {
+      "path": "app/lib/shared/characters/characters.dart",
+      "sha256": "09ce8c0e00a61133dac64c72704c7896f07c0002b65b96cf5bb343cd35bcfc6b"
+    },
+    {
+      "path": "app/lib/shared/characters/cast.dart",
+      "sha256": "b8115b14be89858802199ff8b824e4ce72c92c7ffd2948a7abbd7bdd87e53c0c"
+    },
+    {
+      "path": "app/lib/modules/main_quest/main_quest_module.dart",
+      "sha256": "d327b59bccfeb0a7c2c6c86df9cfb28ce027648ae7c43ee1b4eb37f024a61882"
+    },
+    {
+      "path": "app/lib/modules/robot_maze/robot_maze_module.dart",
+      "sha256": "18ef0c39aa2cf6c91d8bf6b5b869a03394810e5d06c48e97013f30f5e49a71f5"
+    },
+    {
+      "path": "app/lib/modules/dragon_jump/dragon_jump_module.dart",
+      "sha256": "121d3dbf9dc0f096d2e11f57324926df111b75ec4898aab89245fd3c178d79ef"
+    },
+    {
+      "path": "app/lib/modules/catch_stars/catch_stars_module.dart",
+      "sha256": "59db296bb6908a8f5f6f27b6b2cf53cd910a8d2f58380d949c3493026600eddc"
+    },
+    {
+      "path": "app/lib/modules/bug_hunter/bug_hunter_module.dart",
+      "sha256": "c13f4ffa98cd690c31ef87b4a1e48c23212612e1c25372671edc0909d813eb78"
+    },
+    {
+      "path": "app/lib/modules/achievements/achievement_house_module.dart",
+      "sha256": "49060c2d988d40047dbf7768fe5846071d8702053d4337c2589ef431cc0301b0"
+    }
+  ]
+}

@@ -44,7 +44,7 @@ class ArtHandler(SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, default=8000)
-    parser.add_argument('--landing', choices=('r36', 'w08', 'r38', 'w14', 'r40', 'r41', 'r43', 'r45', 'r46', 'r50', 'r51', 'r52', 'r53', 'r54', 'r55'), default='r36')
+    parser.add_argument('--landing', choices=('r36', 'w08', 'r38', 'w14', 'r40', 'r41', 'r43', 'r45', 'r46', 'r50', 'r51', 'r52', 'r53', 'r54', 'r55', 'r56'), default='r36')
     args = parser.parse_args()
     if args.landing == 'w08':
         ArtHandler.landing = '/docs/design/world-travel-r37/index.html'
@@ -74,5 +74,7 @@ if __name__ == '__main__':
         ArtHandler.landing = '/docs/design/dragon-run-r54/index.html'
     if args.landing == 'r55':
         ArtHandler.landing = '/docs/design/catch-stars-r55/index.html'
+    if args.landing == 'r56':
+        ArtHandler.landing = '/docs/design/arrival-entrance-r56/index.html'
     handler = partial(ArtHandler, directory=str(ROOT))
     ThreadingHTTPServer(('0.0.0.0', args.port), handler).serve_forever()

@@ -1,0 +1,60 @@
+{
+  "observed_on": "2026-10-18",
+  "design_base": "58d08d5ab160de59b678a012830a58020f5b5130",
+  "source_pin": "5c97577c32c27d36f33c09bf3af2fa01ad0111f5",
+  "observed_code_tip": "831f7cb4bb1cc5f3c1ca609b6e30e77bebb47ef6",
+  "unchanged_pinned_files": [
+    "app/lib/app/activity.dart",
+    "app/lib/app/activity_registry.dart",
+    "app/lib/modules/main_map/activity_sheet.dart",
+    "app/lib/modules/main_map/main_map_screen.dart",
+    "app/lib/core/settings_service.dart",
+    "app/lib/core/localization/locale_preference.dart",
+    "app/assets/config/game_config.json",
+    "app/assets/data/main_quest_ch1.json",
+    "app/assets/data/robot_maze_levels.json",
+    "app/assets/data/bug_hunter_puzzles.json",
+    "app/lib/modules/bug_hunter/bug_models.dart",
+    "app/lib/modules/achievements/achievement_catalog.dart",
+    "app/lib/modules/catch_stars/stars_game.dart",
+    "app/lib/shared/characters/characters.dart",
+    "app/lib/shared/characters/cast.dart",
+    "app/lib/modules/main_quest/main_quest_module.dart",
+    "app/lib/modules/robot_maze/robot_maze_module.dart",
+    "app/lib/modules/dragon_jump/dragon_jump_module.dart",
+    "app/lib/modules/catch_stars/catch_stars_module.dart",
+    "app/lib/modules/bug_hunter/bug_hunter_module.dart",
+    "app/lib/modules/achievements/achievement_house_module.dart"
+  ],
+  "changes_since_source_pin": [
+    ".github/workflows/pqc020-focused.yml",
+    "app/test/main_map_scene_route_test.dart",
+    "app/test/main_map_scene_test.dart",
+    "app/test/render/render_screens_test.dart"
+  ],
+  "runs": [
+    {
+      "id": 39122476426,
+      "conclusion": "failure",
+      "headSha": "831f7cb4bb1cc5f3c1ca609b6e30e77bebb47ef6",
+      "status": "completed",
+      "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39122476426"
+    },
+    {
+      "id": 39122476385,
+      "conclusion": "failure",
+      "headSha": "831f7cb4bb1cc5f3c1ca609b6e30e77bebb47ef6",
+      "status": "completed",
+      "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39122476385"
+    },
+    {
+      "id": 39122476375,
+      "conclusion": "",
+      "headSha": "831f7cb4bb1cc5f3c1ca609b6e30e77bebb47ef6",
+      "status": "in_progress",
+      "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39122476375"
+    }
+  ],
+  "disposition": "PQC020 remains NOT_ACCEPTED. This is source compatibility/status observation only, not a new CODE review or runtime order.",
+  "actions": "No CODE files, workflow changes, dispatch/rerun, merge or SDK installation. CODE continues R1-A; DESIGN delivers independent R1-B study."
+}

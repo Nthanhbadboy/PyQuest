@@ -1,6 +1,6 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · review r53 / design r55.**
+**2026-10-18 · review r53 / design r56.**
 
 **Hiện hành:** PQC-011 **ACCEPTED** tại CODE
 `6dc8ca8feeed54cc0fa6a82109e3a59d24a16153`: Settings12, isolated1, ordered2,
@@ -12,9 +12,17 @@ Không APK mới, không device/voice claim.
 IMPLEMENTATION_PUSHED / NOT_ACCEPTED: Main Map2,5D +sáu routes hiện có. [Package r53](design/r1-village-r53/README.md)
 có static W01 export, scene/directory, source geometry và browser study. Cho phép
 flattened static scene trong lát cắt này, không gọi là layered/animated world.
-CODE đã push source R1-A tới `e440239`; focused/normal/maintenance tại SHA quan sát
-đều failure, chưa ACCEPTED. [Observation r55](design/catch-stars-r55/partner-observation.json).
+CODE đã push source R1-A tới `831f7cb4`; focused/normal failure và maintenance còn
+chạy tại lần quan sát r56, chưa ACCEPTED. [Observation r56](design/arrival-entrance-r56/partner-observation.json).
 Toàn R1/R4 và nhà/đất/đảo còn scope riêng.
+
+**Design mới r56 / R1-B:** [Welcome và bảng giới thiệu sáu địa điểm](design/arrival-entrance-r56/README.md).
+Hai character studies Py/Bitsy2,5D mới; ba bước Welcome, sáu entrance panels,
+progress/lock/prerequisite thật, zero-energy entry và pending/unknown intro states.
+36modelchecks +18zero-charge combinations;252browserconfigs/468fontchecks/278flows.
+Chọn bài dùng study r43, không làm lại lesson/Tutor. Status localization và intro
+receipt là đề xuất JS/RAM; không Flutter/SQLite/device hoặc runtime R1-B order.
+CODE tiếp020, DESIGN tiếp Bug Hunter gameplay/results độc lập.
 
 **Design mới r55:** [Catch Stars gameplay/results/atlas](design/catch-stars-r55/README.md)
 đã có bốn artwork mới và bản chơi JS: 45 giây, 3 tim, năm loại vật rơi, combo,

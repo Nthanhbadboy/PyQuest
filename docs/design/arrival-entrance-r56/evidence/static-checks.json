@@ -1,0 +1,21 @@
+{
+  "scope": "DESIGN-only integrity; not Flutter or runtime acceptance",
+  "source_pins": 21,
+  "unchanged_at_observed_CODE_tip": 21,
+  "catalog_activities": 6,
+  "welcome_pages": 3,
+  "art_files": 11,
+  "reference_hashes": 12,
+  "captures": 22,
+  "local_links": 28,
+  "runtime_or_CI_changes": 0,
+  "failures": 0,
+  "study_inputs": {
+    "index.html": "9d0c049e08d05d073cfd8513d3bfadc57a667154537efd6bdaa4a0f38c02d3d5",
+    "style.css": "bb58f88552a66c516cdbe9ddb7d82d52fd53230a69d13e03c2be482392838b22",
+    "app.mjs": "fc53c4f0ab64fc2af023ad78460b112ccdad7e36645b5802f79df215bec37509",
+    "model.mjs": "fdf2f23ab5b26af210652e72d3db05f8adf6135baf1f4b9af4b880de436fc1ad",
+    "copy.mjs": "294f07a515c94b228bbeb5e061565bc8e88f1c1b90018550605de5adec0e583c",
+    "catalog.json": "48b209beaae884f2b484fb40e37ae8fd947c057f891fbc058ca313ff4479384c"
+  }
+}

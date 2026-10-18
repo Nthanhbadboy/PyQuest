@@ -1,10 +1,28 @@
-# Thiết kế hình ảnh PyQuest — tình trạng đến r55
+# Thiết kế hình ảnh PyQuest — tình trạng đến r56
 
 **2026-10-18 · Chưa hoàn tất toàn bộ.** Không dùng số concept hoặc HTML PASS để
 nói app đã được redesign xong. Ba mức tách riêng: concept → screen/interaction study
 → runtime art pack +after-runtime evidence.
 
-## Mới nhất r55 — Catch Stars gameplay, kết quả và bản đồ sao
+## Mới nhất r56 — R1-B Welcome và ActivitySheet
+
+![R1-B r56, HTML study](arrival-entrance-r56/evidence/desktop-overview.jpg)
+
+[Study/spec/art](arrival-entrance-r56/README.md): ba bước chào mừng, sáu bảng địa điểm,
+hai character studies Py/Bitsy mới, reuse Robo/Pip và các scene đã có. Mở địa điểm
+không tiêu năng lượng; prerequisite dẫn tới bài được đánh dấu, không tự bắt đầu.
+Ở chữ lớn, nội dung đứng trước art; body cuộn, footer không che nội dung.
+
+36modelchecks +18zero-charge combinations;252configs/768targets/468fonts/278flows,
+22captures. **JS/RAM, không Flutter/SQLite/device/modal-semantics acceptance.**
+Presenter đa ngôn ngữ và intro receipt là proposal; không parse status VI thành EN.
+[Task PQD-017](coordination/tasks/PQD-017.md). Không mở runtime R1-B.
+
+CODE đang sửa020; quan sát831f7cb4 không đổi21sourcepins của r56, chưa ACCEPTED.
+[Observation](arrival-entrance-r56/partner-observation.json). DESIGN độc lập tiếp
+Bug Hunter gameplay/results; chọn bài đã có r43, không dựng lại cùng một luồng.
+
+## Đợt trước r55 — Catch Stars gameplay, kết quả và bản đồ sao
 
 ![Catch Stars r55, HTML study](catch-stars-r55/evidence/desktop-overview.jpg)
 
