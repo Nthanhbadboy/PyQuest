@@ -270,15 +270,29 @@ jobs:
           set -euo pipefail
           flutter analyze --no-fatal-infos 2>&1 | tee "$RUNNER_TEMP/pqc011-analyze.log"
 
-      - name: Focused Settings tests
+      - name: Reproduce tutor-state test in isolation
         if: env.MAINTENANCE_PHASE == 'verify'
-        id: settings
+        id: integration_isolated
         continue-on-error: true
-        timeout-minutes: 5
+        timeout-minutes: 3
         working-directory: app
         run: |
           set -euo pipefail
-          flutter test --reporter expanded --timeout 45s test/l10n/settings_sheet_localization_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-settings.log"
+          flutter test --reporter expanded --timeout 45s \
+            --plain-name 'tutor sheet and locale changes preserve the lesson-owned board/editor state' \
+            test/lesson_board_integration_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-integration-isolated.log"
+
+      - name: Reproduce first-test then tutor-state sequence
+        if: env.MAINTENANCE_PHASE == 'verify'
+        id: integration_sequence
+        continue-on-error: true
+        timeout-minutes: 3
+        working-directory: app
+        run: |
+          set -euo pipefail
+          flutter test --reporter expanded --timeout 45s \
+            --name 'authored example editor/run and board controls do not grade or progress|tutor sheet and locale changes preserve the lesson-owned board/editor state' \
+            test/lesson_board_integration_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-integration-sequence.log"
 
       - name: Lesson board integration tests
         if: env.MAINTENANCE_PHASE == 'verify'
@@ -289,6 +303,17 @@ jobs:
         run: |
           set -euo pipefail
           flutter test --reporter expanded --timeout 45s test/lesson_board_integration_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-integration.log"
+
+
+      - name: Focused Settings tests
+        if: env.MAINTENANCE_PHASE == 'verify'
+        id: settings
+        continue-on-error: true
+        timeout-minutes: 5
+        working-directory: app
+        run: |
+          set -euo pipefail
+          flutter test --reporter expanded --timeout 45s test/l10n/settings_sheet_localization_test.dart 2>&1 | tee "$RUNNER_TEMP/pqc011-settings.log"
 
       - name: Ordinary Flutter suite
         if: env.MAINTENANCE_PHASE == 'verify'
@@ -358,6 +383,8 @@ jobs:
           L10N_COLLECT: ${{ steps.l10n_collect.outcome }}
           ANALYZE: ${{ steps.analyze.outcome }}
           SETTINGS: ${{ steps.settings.outcome }}
+          INTEGRATION_ISOLATED: ${{ steps.integration_isolated.outcome }}
+          INTEGRATION_SEQUENCE: ${{ steps.integration_sequence.outcome }}
           INTEGRATION: ${{ steps.integration.outcome }}
           ORDINARY: ${{ steps.ordinary.outcome }}
           RENDER: ${{ steps.render.outcome }}
@@ -380,6 +407,8 @@ jobs:
               'localization evidence collection': os.environ['L10N_COLLECT'],
               'analyze': os.environ['ANALYZE'],
               'Settings': os.environ['SETTINGS'],
+              'isolated tutor-state test': os.environ['INTEGRATION_ISOLATED'],
+              'first-test then tutor-state sequence': os.environ['INTEGRATION_SEQUENCE'],
               'lesson-board integration': os.environ['INTEGRATION'],
               'ordinary suite': os.environ['ORDINARY'],
               'render suite': os.environ['RENDER'],
@@ -387,22 +416,29 @@ jobs:
               'source cleanliness': os.environ['CLEAN'],
           }
 
-          def test_count(filename):
+          def test_count(filename, required, *, minimum=False):
               path = temp / filename
               if not path.exists():
-                  return 'count unavailable (log missing)'
+                  return 'FAIL: count unavailable (log missing)'
               text = path.read_text(encoding='utf-8', errors='replace')
               matches = re.findall(
                   r'\+(\d+)(?:\s+-(\d+))?:\s*(All tests passed!|Some tests failed\.)',
                   text,
               )
               if not matches:
-                  return 'count unavailable'
-              passed, failed, marker = matches[-1]
-              failed_count = int(failed or 0)
-              total = int(passed) + failed_count
-              result = 'PASS' if marker == 'All tests passed!' else 'FAIL'
-              return f'{result}: {passed} passed, {failed_count} failed ({total} total)'
+                  return 'FAIL: count unavailable (summary missing)'
+              passed_text, failed_text, marker = matches[-1]
+              passed = int(passed_text)
+              failed = int(failed_text or 0)
+              total = passed + failed
+              count_ok = passed >= required if minimum else passed == required
+              ok = marker == 'All tests passed!' and failed == 0 and count_ok
+              requirement = f'at least {required}' if minimum else f'exactly {required}'
+              result = 'PASS' if ok else 'FAIL'
+              return (
+                  f'{result}: {passed} passed, {failed} failed ({total} total); '
+                  f'required {requirement} passed and zero failures'
+              )
 
           def excerpt(filename, limit=16000):
               path = temp / filename
@@ -412,14 +448,24 @@ jobs:
               return text[-limit:]
 
           test_results = {
-              'Settings': test_count('pqc011-settings.log'),
-              'Lesson-board integration': test_count('pqc011-integration.log'),
-              'Ordinary suite': test_count('pqc011-ordinary.log'),
-              'Render suite': test_count('pqc011-render.log'),
+              'Settings': test_count('pqc011-settings.log', 12),
+              'Isolated tutor-state test': test_count(
+                  'pqc011-integration-isolated.log', 1
+              ),
+              'First-test then tutor-state sequence': test_count(
+                  'pqc011-integration-sequence.log', 2
+              ),
+              'Lesson-board integration': test_count('pqc011-integration.log', 7),
+              'Ordinary suite': test_count(
+                  'pqc011-ordinary.log', 422, minimum=True
+              ),
+              'Render suite': test_count('pqc011-render.log', 10),
           }
           summary_rows = [
               ('Pinned SDK', 'Flutter 3.47.7 / Dart 3.13.5 / framework abaf9c523780a608bd46686fd5e53740a07077f8'),
               ('Settings', f"{gates['Settings']}; {test_results['Settings']}"),
+              ('Isolated tutor-state test', f"{gates['isolated tutor-state test']}; {test_results['Isolated tutor-state test']}"),
+              ('First-test then tutor-state sequence', f"{gates['first-test then tutor-state sequence']}; {test_results['First-test then tutor-state sequence']}"),
               ('Lesson-board integration', f"{gates['lesson-board integration']}; {test_results['Lesson-board integration']}"),
               ('Ordinary suite', f"{gates['ordinary suite']}; {test_results['Ordinary suite']}"),
               ('Render suite', f"{gates['render suite']}; {test_results['Render suite']}"),
@@ -443,7 +489,17 @@ jobs:
               '### Failing gate outcomes',
               ', '.join(failures) if failures else 'None',
               '',
-              '### Integration log tail',
+              '### Isolated tutor-state reproduction log tail',
+              '```text',
+              excerpt('pqc011-integration-isolated.log'),
+              '```',
+              '',
+              '### First-test then tutor-state sequence log tail',
+              '```text',
+              excerpt('pqc011-integration-sequence.log'),
+              '```',
+              '',
+              '### Full integration log tail',
               '```text',
               excerpt('pqc011-integration.log'),
               '```',
@@ -499,6 +555,8 @@ jobs:
           L10N_COLLECT: ${{ steps.l10n_collect.outcome }}
           ANALYZE: ${{ steps.analyze.outcome }}
           SETTINGS: ${{ steps.settings.outcome }}
+          INTEGRATION_ISOLATED: ${{ steps.integration_isolated.outcome }}
+          INTEGRATION_SEQUENCE: ${{ steps.integration_sequence.outcome }}
           INTEGRATION: ${{ steps.integration.outcome }}
           ORDINARY: ${{ steps.ordinary.outcome }}
           RENDER: ${{ steps.render.outcome }}
@@ -520,6 +578,8 @@ jobs:
             echo "| localization evidence collection | $L10N_COLLECT |"
             echo "| analyze | $ANALYZE |"
             echo "| Settings | $SETTINGS |"
+            echo "| isolated tutor-state reproduction | $INTEGRATION_ISOLATED |"
+            echo "| first-test then tutor-state sequence | $INTEGRATION_SEQUENCE |"
             echo "| lesson-board integration | $INTEGRATION |"
             echo "| ordinary suite | $ORDINARY |"
             echo "| render suite | $RENDER |"
@@ -527,7 +587,7 @@ jobs:
             echo "| source cleanliness | $CLEAN |"
           } >> "$GITHUB_STEP_SUMMARY"
           for outcome in "$PUB_GET" "$FORMAT" "$L10N_TESTS" "$L10N_COLLECT" \
-            "$ANALYZE" "$SETTINGS" "$INTEGRATION" "$ORDINARY" "$RENDER" "$CLEAN" \
-            "$GATE_CONCLUSION"; do
+            "$ANALYZE" "$SETTINGS" "$INTEGRATION_ISOLATED" "$INTEGRATION_SEQUENCE" \
+            "$INTEGRATION" "$ORDINARY" "$RENDER" "$CLEAN" "$GATE_CONCLUSION"; do
             if [[ "$outcome" != success ]]; then exit 1; fi
           done

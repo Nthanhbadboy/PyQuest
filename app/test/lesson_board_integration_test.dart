@@ -19,6 +19,8 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'test_helpers.dart';
 
+final Object _pqc011AssetLoadContextKey = Object();
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
@@ -29,8 +31,10 @@ void main() {
     'authored example editor/run and board controls do not grade or progress',
     (WidgetTester tester) async {
       final AppServices services = await _createServices(tester);
+      final _TracingAssetBundle assetBundle = _TracingAssetBundle(rootBundle);
+      await _preloadAuthoredAssetBytes(tester, bundle: assetBundle);
       final Lesson lesson = services.mainQuest.byId('mq1_01')!;
-      await _mountLesson(tester, services, lesson);
+      await _mountLesson(tester, services, lesson, bundle: assetBundle);
 
       await _advanceStoryToExample(tester, lesson);
       await _waitForBoard(tester);
@@ -221,9 +225,11 @@ void main() {
     'tutor sheet and locale changes preserve the lesson-owned board/editor state',
     (WidgetTester tester) async {
       final AppServices services = await _createServices(tester);
+      final _TracingAssetBundle assetBundle = _TracingAssetBundle(rootBundle);
+      await _preloadAuthoredAssetBytes(tester, bundle: assetBundle);
       await tester.runAsync(() => services.settings.setLang(PqLang.vi));
       final Lesson lesson = services.mainQuest.byId('mq1_03')!;
-      await _mountLesson(tester, services, lesson);
+      await _mountLesson(tester, services, lesson, bundle: assetBundle);
       await _advanceStoryToExample(tester, lesson);
       await _waitForBoard(
         tester,
@@ -402,6 +408,8 @@ void main() {
     'embedded board controls are hit-testable at both sizes in VI/EN, including 2x text',
     (WidgetTester tester) async {
       final AppServices services = await _createServices(tester);
+      final _TracingAssetBundle assetBundle = _TracingAssetBundle(rootBundle);
+      await _preloadAuthoredAssetBytes(tester, bundle: assetBundle);
       final List<MapEntry<Size, PqLang>> cases = <MapEntry<Size, PqLang>>[
         MapEntry<Size, PqLang>(const Size(390, 844), PqLang.vi),
         MapEntry<Size, PqLang>(const Size(390, 844), PqLang.en),
@@ -417,7 +425,13 @@ void main() {
         final MapEntry<Size, PqLang> testCase = cases[index];
         await tester.runAsync(() => services.settings.setLang(testCase.value));
         final Lesson lesson = services.mainQuest.byId('mq1_01')!;
-        await _mountLesson(tester, services, lesson, viewport: testCase.key);
+        await _mountLesson(
+          tester,
+          services,
+          lesson,
+          bundle: assetBundle,
+          viewport: testCase.key,
+        );
         await _advanceStoryToExample(tester, lesson);
         await _waitForBoard(
           tester,
@@ -762,13 +776,8 @@ Future<void> _waitForBoard(
   WidgetTester tester, {
   String description = 'authored board loads',
 }) async {
-  final AssetBundle routeBundle = DefaultAssetBundle.of(
-    tester.element(find.byType(LessonScreen)),
-  );
-  await tester.runAsync(() async {
-    await routeBundle.loadString(AuthoredBoardRepository.plansAssetKey);
-    await routeBundle.loadString(AuthoredBoardRepository.copyAssetKey);
-  });
+  // Asset Futures are warmed before mounting; readiness is bounded pumping
+  // only, so this helper cannot leave WidgetTester.runAsync active.
   await tester.pump();
   for (
     int i = 0;
@@ -840,20 +849,76 @@ Future<void> _waitForAuthoredAssetDelivery(
   await tester.pump();
 }
 
+/// Warm real authored assets inside runAsync before the lesson route starts
+/// requesting them from the widget-test fake-async zone. Each fetch is logged
+/// and bounded so an unfinished platform asset request cannot hold runAsync.
 Future<Map<String, ByteData>> _preloadAuthoredAssetBytes(
-  WidgetTester tester,
-) async {
+  WidgetTester tester, {
+  _TracingAssetBundle? bundle,
+}) async {
+  final _TracingAssetBundle assetBundle =
+      bundle ?? _TracingAssetBundle(rootBundle);
   final Map<String, ByteData>? sources = await tester.runAsync(
-    () async => <String, ByteData>{
-      AuthoredBoardRepository.plansAssetKey: await rootBundle.load(
-        AuthoredBoardRepository.plansAssetKey,
-      ),
-      AuthoredBoardRepository.copyAssetKey: await rootBundle.load(
-        AuthoredBoardRepository.copyAssetKey,
-      ),
-    },
+    () => runZoned<Map<String, ByteData>>(
+      () async {
+        final int zoneId = identityHashCode(Zone.current);
+        final Map<String, Object> errors = <String, Object>{};
+        final Map<String, StackTrace> stacks = <String, StackTrace>{};
+
+        Future<void> load(String key) async {
+          final Stopwatch stopwatch = Stopwatch()..start();
+          final Future<String> assetFuture = assetBundle.loadString(key);
+          debugPrint(
+            '[PQC-011 preload] START key=$key '
+            'bundle=${assetBundle.runtimeType}#'
+            '${identityHashCode(assetBundle)} '
+            'async=WidgetTester.runAsync zone=$zoneId '
+            'future=${assetFuture.runtimeType}',
+          );
+          try {
+            final String contents = await assetFuture.timeout(
+              const Duration(seconds: 5),
+            );
+            if (!assetBundle.loadedSources.containsKey(key)) {
+              throw StateError(
+                'No real bytes captured for authored asset $key',
+              );
+            }
+            debugPrint(
+              '[PQC-011 preload] END key=$key elapsed=${stopwatch.elapsed} '
+              'characters=${contents.length} zone=$zoneId',
+            );
+          } on Object catch (error, stackTrace) {
+            errors[key] = error;
+            stacks[key] = stackTrace;
+            debugPrint(
+              '[PQC-011 preload] ERROR key=$key elapsed=${stopwatch.elapsed} '
+              'zone=$zoneId error=$error',
+            );
+          }
+        }
+
+        await Future.wait<void>(<Future<void>>[
+          load(AuthoredBoardRepository.plansAssetKey),
+          load(AuthoredBoardRepository.copyAssetKey),
+        ]);
+        if (errors.isNotEmpty) {
+          final String key = errors.keys.first;
+          Error.throwWithStackTrace(errors[key]!, stacks[key]!);
+        }
+        return Map<String, ByteData>.of(assetBundle.loadedSources);
+      },
+      zoneValues: <Object?, Object?>{
+        _pqc011AssetLoadContextKey: 'WidgetTester.runAsync',
+      },
+    ),
   );
-  return sources!;
+  if (sources == null) {
+    throw StateError(
+      'PQC-011 authored asset preload returned null from tester.runAsync',
+    );
+  }
+  return sources;
 }
 
 Future<void> _finish(WidgetTester tester, AppServices services) async {
@@ -861,6 +926,48 @@ Future<void> _finish(WidgetTester tester, AppServices services) async {
   await tester.pump(const Duration(milliseconds: 100));
   services.dispose();
   tester.view.reset();
+}
+
+class _TracingAssetBundle extends CachingAssetBundle {
+  _TracingAssetBundle(this.delegate);
+
+  final AssetBundle delegate;
+  final Map<String, ByteData> loadedSources = <String, ByteData>{};
+
+  @override
+  Future<ByteData> load(String key) async {
+    final Stopwatch stopwatch = Stopwatch()..start();
+    final int zoneId = identityHashCode(Zone.current);
+    final Object? asyncContext = Zone.current[_pqc011AssetLoadContextKey];
+    debugPrint(
+      '[PQC-011 route asset] START key=$key '
+      'bundle=$runtimeType#${identityHashCode(this)} '
+      'delegate=${delegate.runtimeType} '
+      'async=${asyncContext ?? 'widget-test'} zone=$zoneId',
+    );
+    final Future<ByteData> assetFuture = delegate.load(key);
+    debugPrint(
+      '[PQC-011 route asset] FUTURE key=$key type=${assetFuture.runtimeType} '
+      'createdZone=$zoneId',
+    );
+    try {
+      final ByteData bytes = await assetFuture.timeout(
+        const Duration(seconds: 5),
+      );
+      loadedSources[key] = bytes;
+      debugPrint(
+        '[PQC-011 route asset] END key=$key elapsed=${stopwatch.elapsed} '
+        'bytes=${bytes.lengthInBytes} zone=$zoneId',
+      );
+      return bytes;
+    } on Object catch (error, stackTrace) {
+      debugPrint(
+        '[PQC-011 route asset] ERROR key=$key elapsed=${stopwatch.elapsed} '
+        'zone=$zoneId error=$error',
+      );
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+  }
 }
 
 class _CorruptBoardAssetBundle extends CachingAssetBundle {
