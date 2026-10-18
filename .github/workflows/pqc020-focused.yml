@@ -168,6 +168,14 @@ jobs:
           archive = io.BytesIO()
           with tempfile.TemporaryDirectory(prefix='pqc020-format-preview-') as temporary:
               root = Path(temporary)
+              package_root = root / 'app'
+              package_root.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(Path('app/pubspec.yaml'), package_root / 'pubspec.yaml')
+              package_config = Path('app/.dart_tool/package_config.json')
+              if package_config.is_file():
+                  dart_tool = package_root / '.dart_tool'
+                  dart_tool.mkdir(parents=True, exist_ok=True)
+                  shutil.copy2(package_config, dart_tool / 'package_config.json')
               dart_files = []
               for relative in source_files:
                   source = Path(relative)
