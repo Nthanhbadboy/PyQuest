@@ -19,8 +19,6 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'test_helpers.dart';
 
-bool _authoredAssetsPreloaded = false;
-
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
@@ -764,14 +762,14 @@ Future<void> _waitForBoard(
   WidgetTester tester, {
   String description = 'authored board loads',
 }) async {
-  if (!_authoredAssetsPreloaded) {
-    await tester.runAsync(() async {
-      await rootBundle.loadString(AuthoredBoardRepository.plansAssetKey);
-      await rootBundle.loadString(AuthoredBoardRepository.copyAssetKey);
-    });
-    _authoredAssetsPreloaded = true;
-    await tester.pump();
-  }
+  final AssetBundle routeBundle = DefaultAssetBundle.of(
+    tester.element(find.byType(LessonScreen)),
+  );
+  await tester.runAsync(() async {
+    await routeBundle.loadString(AuthoredBoardRepository.plansAssetKey);
+    await routeBundle.loadString(AuthoredBoardRepository.copyAssetKey);
+  });
+  await tester.pump();
   for (
     int i = 0;
     i < 100 &&
