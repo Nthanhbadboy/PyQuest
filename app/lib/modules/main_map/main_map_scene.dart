@@ -37,6 +37,7 @@ class MainMapScene extends StatelessWidget {
     required this.modules,
     required this.places,
     required this.directoryMode,
+    required this.suppressFocusAutoScroll,
     required this.villageScrollController,
     required this.directoryScrollController,
     required this.focusNodeFor,
@@ -47,6 +48,7 @@ class MainMapScene extends StatelessWidget {
   final List<ActivityModule> modules;
   final Map<String, MainMapPlaceState> places;
   final bool directoryMode;
+  final bool suppressFocusAutoScroll;
   final ScrollController villageScrollController;
   final ScrollController directoryScrollController;
   final FocusNode Function(String activityId) focusNodeFor;
@@ -154,8 +156,11 @@ class MainMapScene extends StatelessWidget {
             name: placeName(l10n, id),
             state: places[id] ?? const MainMapPlaceState.loading(),
             focusNode: focusNodeFor(id),
-            onFocused: (BuildContext buttonContext) =>
-                _ensureVisibleIfNeeded(buttonContext, alignment: 0.45),
+            onFocused: (BuildContext buttonContext) {
+              if (!suppressFocusAutoScroll) {
+                _ensureVisibleIfNeeded(buttonContext, alignment: 0.45);
+              }
+            },
             onPressed: () => _activate(module),
             l10n: l10n,
           ),
@@ -196,11 +201,14 @@ class MainMapScene extends StatelessWidget {
                           places[modules[i].def.id] ??
                           const MainMapPlaceState.loading(),
                       focusNode: focusNodeFor(modules[i].def.id),
-                      onFocused: (BuildContext buttonContext) =>
+                      onFocused: (BuildContext buttonContext) {
+                        if (!suppressFocusAutoScroll) {
                           _ensureVisibleIfNeeded(
                             buttonContext,
                             alignment: 0.35,
-                          ),
+                          );
+                        }
+                      },
                       onPressed: () => _activate(modules[i]),
                       l10n: l10n,
                     ),

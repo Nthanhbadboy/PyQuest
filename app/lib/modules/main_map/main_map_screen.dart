@@ -46,6 +46,7 @@ class _MainMapScreenState extends State<MainMapScreen> {
   bool _modeInitialized = false;
   double? _lastTextScale;
   bool _routeBusy = false;
+  bool _restoreFocusInProgress = false;
   bool _refreshPending = false;
   bool _introShown = false;
 
@@ -168,7 +169,10 @@ class _MainMapScreenState extends State<MainMapScreen> {
       if (mounted) {
         final bool shouldRefresh = enteredActivity || _refreshPending;
         _refreshPending = false;
-        setState(() => _routeBusy = false);
+        setState(() {
+          _routeBusy = false;
+          _restoreFocusInProgress = true;
+        });
         if (shouldRefresh) await _placeStatuses?.refresh();
         if (mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -176,6 +180,11 @@ class _MainMapScreenState extends State<MainMapScreen> {
             _restoreScrollOffset(_villageScroll, villageOffset);
             _restoreScrollOffset(_directoryScroll, directoryOffset);
             _placeFocus[module.def.id]?.requestFocus();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() => _restoreFocusInProgress = false);
+              }
+            });
           });
         }
       }
@@ -249,6 +258,8 @@ class _MainMapScreenState extends State<MainMapScreen> {
                             modules: activityRegistry,
                             places: statuses.places,
                             directoryMode: _directoryMode,
+                            suppressFocusAutoScroll:
+                                _routeBusy || _restoreFocusInProgress,
                             villageScrollController: _villageScroll,
                             directoryScrollController: _directoryScroll,
                             focusNodeFor: (String id) => _placeFocus[id]!,
