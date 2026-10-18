@@ -90,7 +90,8 @@ jobs:
         working-directory: app
         run: |
           set -euo pipefail
-          flutter test --timeout 45s \
+          flutter test --timeout 45s --reporter expanded \
+            test/journey_widget_test.dart \
             test/main_map_scene_geometry_test.dart \
             test/main_map_scene_test.dart \
             test/main_map_scene_route_test.dart \
