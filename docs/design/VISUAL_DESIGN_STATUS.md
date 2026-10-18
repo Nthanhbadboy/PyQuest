@@ -1,10 +1,28 @@
-# Thiết kế hình ảnh PyQuest — tình trạng đến r54
+# Thiết kế hình ảnh PyQuest — tình trạng đến r55
 
 **2026-10-18 · Chưa hoàn tất toàn bộ.** Không dùng số concept hoặc HTML PASS để
 nói app đã được redesign xong. Ba mức tách riêng: concept → screen/interaction study
 → runtime art pack +after-runtime evidence.
 
-## Mới nhất r54 — Dragon Jump gameplay và kết quả
+## Mới nhất r55 — Catch Stars gameplay, kết quả và bản đồ sao
+
+![Catch Stars r55, HTML study](catch-stars-r55/evidence/desktop-overview.jpg)
+
+[Study/spec/art](catch-stars-r55/README.md): bốn artwork mới, jar và fallers tách
+nền, Robo tái sử dụng r50. Điểm lượt khác số vật tích lũy; zero-star vẫn mở được
+chòm sao. Tám chòm giữ geometry/story VI/threshold nguồn, có bản dịch EN.
+
+32 model checks +1.000 record comparisons +10.000 spawn samples;
+240 browser configs /1.236 targets /372 font checks /148 flows. Chữ thật1/1.3/2×.
+**JS/RAM, không Flutter/SQLite/device/engine parity.** Camera600, keyboard/buttons,
+lifecycle và receipt authority là đề xuất; jar/alpha/animation còn production gaps.
+[Task PQD-016](coordination/tasks/PQD-016.md). Relay r54 chưa gửi, không chờ relay.
+
+CODE đã push R1-A tới e440239, chưa ACCEPTED: ba workflow quan sát đều failure.
+[Observation](catch-stars-r55/partner-observation.json). Không đổi quyền020 hoặc
+mở Catch runtime; tiếp review020 khi có bàn giao và DESIGN R1-B độc lập.
+
+## Đợt trước r54 — Dragon Jump gameplay và kết quả
 
 ![Dragon Jump r54, HTML study](dragon-run-r54/evidence/desktop-overview.jpg)
 

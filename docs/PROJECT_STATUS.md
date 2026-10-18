@@ -1,6 +1,6 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · review r53 / design r54.**
+**2026-10-18 · review r53 / design r55.**
 
 **Hiện hành:** PQC-011 **ACCEPTED** tại CODE
 `6dc8ca8feeed54cc0fa6a82109e3a59d24a16153`: Settings12, isolated1, ordered2,
@@ -9,15 +9,24 @@ integration7, ordinary422/0failed, render10 và format/analyze/localization/lock
 Không APK mới, không device/voice claim.
 
 **Bước triển khai mới:** [PQC-020 R1-A](implementation/coordination/tasks/PQC-020.md)
-READY_FOR_CODE: Main Map2,5D +sáu routes hiện có. [Package r53](design/r1-village-r53/README.md)
+IMPLEMENTATION_PUSHED / NOT_ACCEPTED: Main Map2,5D +sáu routes hiện có. [Package r53](design/r1-village-r53/README.md)
 có static W01 export, scene/directory, source geometry và browser study. Cho phép
 flattened static scene trong lát cắt này, không gọi là layered/animated world.
-R1-A chưa triển khai/accept; toànR1/R4 vànhà/đất/đảo còn scope riêng.
+CODE đã push source R1-A tới `e440239`; focused/normal/maintenance tại SHA quan sát
+đều failure, chưa ACCEPTED. [Observation r55](design/catch-stars-r55/partner-observation.json).
+Toàn R1/R4 và nhà/đất/đảo còn scope riêng.
+
+**Design mới r55:** [Catch Stars gameplay/results/atlas](design/catch-stars-r55/README.md)
+đã có bốn artwork mới và bản chơi JS: 45 giây, 3 tim, năm loại vật rơi, combo,
+0–3 sao, receipt states và tám chòm sao nguồn. 32 model checks, 1.000 record
+comparisons, 10.000 spawn samples; 240 browser configs / 372 font checks / 148 flows.
+Camera, input bổ sung và receipt authority được đánh dấu là đề xuất. Không Flutter,
+SQLite, thiết bị hoặc runtime Catch authorization. CODE giữ PQC-020; r54 relay chưa gửi.
 
 **Design mới r54:** [Dragon Jump gameplay/results](design/dragon-run-r54/README.md)
 đã có bốn artwork mới và interactive JS study.30modelchecks +1.000record comparisons,
 192browserconfigs/300fontassertions/99flows; không chạy Flutter/DB/thiết bị, không
-mở runtime Dragon. CODE tip quan sát vẫn6dc8ca8, work order020 không đổi.
+mở runtime Dragon. Tại đợt r54, CODE tip quan sát là6dc8ca8; work order020 không đổi.
 
 Các quan sát r49–r52 dưới đây là **lịch sử**, không disposition hiện hành.
 

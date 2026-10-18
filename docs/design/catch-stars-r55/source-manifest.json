@@ -1,0 +1,37 @@
+{
+  "code_pin": "6dc8ca8feeed54cc0fa6a82109e3a59d24a16153",
+  "files": [
+    {
+      "path": "app/lib/modules/catch_stars/stars_game.dart",
+      "sha256": "98376e26dbb7bafc5e10fea7ac2d30b7bfdda20ec28da3adeb4b8bdbd7fd39f4"
+    },
+    {
+      "path": "app/lib/modules/catch_stars/catch_stars_module.dart",
+      "sha256": "59db296bb6908a8f5f6f27b6b2cf53cd910a8d2f58380d949c3493026600eddc"
+    },
+    {
+      "path": "app/assets/config/game_config.json",
+      "sha256": "f7b9d1a80be65a49ad2bf7c68de46bbf33243b0a27cd5eb5e80d77467b5f15c5"
+    },
+    {
+      "path": "app/lib/core/config/game_config.dart",
+      "sha256": "ab994c1ab579e7e28795dd26293aea7d2c901d928e32dc2bd6dc34312c383c66"
+    },
+    {
+      "path": "app/lib/modules/energy/energy_widgets.dart",
+      "sha256": "969cd3298f778ecf63bca02cffbf8d9f683d26df42c4e2f24fc3ab7100e9b840"
+    },
+    {
+      "path": "app/lib/data/repositories/progress_repository.dart",
+      "sha256": "cb7960c854f7270f4e61e6082a47cb1e1ab90c88980cba5f178a952f4cf2765b"
+    },
+    {
+      "path": "app/lib/core/events.dart",
+      "sha256": "0f6cc29fca74e65d585126e052e5b11332ccb9b09a45162206ae9a328dcb2686"
+    },
+    {
+      "path": "app/lib/shared/widgets/result_screen.dart",
+      "sha256": "d84eb7ebdfa1b4761323e42fe5e3582d763ed7758762f463b18703cb4543bf21"
+    }
+  ]
+}
