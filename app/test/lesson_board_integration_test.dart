@@ -273,9 +273,7 @@ void main() {
       expect(find.text('12'), findsOneWidget);
       // Keep the focused editor visible before recording the route scroll state.
       await tester.ensureVisible(
-        find.byKey(
-          const ValueKey<String>('example_code_editor_mq1_03_s2'),
-        ),
+        find.byKey(const ValueKey<String>('example_code_editor_mq1_03_s2')),
       );
       await tester.pump();
 
