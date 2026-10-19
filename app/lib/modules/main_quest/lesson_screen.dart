@@ -737,6 +737,27 @@ class _LessonScreenState extends State<LessonScreen> {
   Widget _stepBody(LessonStep step) {
     switch (step) {
       case StoryStep s:
+        final bool largeText =
+            MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+        if (largeText) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Column(
+              children: [
+                CharacterView(id: s.speaker, size: 120, mood: s.mood),
+                const SizedBox(height: 8),
+                PQPanel(
+                  padding: const EdgeInsets.all(14),
+                  child: Text(
+                    s.text,
+                    key: const ValueKey('story_text'),
+                    style: PQText.bodyStrong.copyWith(fontSize: 17),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
         return Padding(
           padding: const EdgeInsets.only(top: 6),
           child: Column(
