@@ -29,7 +29,7 @@ Widget _host(AppServices services, Widget child, {double scale = 1.0}) {
   return AppScope(
     services: services,
     child: MaterialApp(
-      theme: buildPQTheme(),
+      theme: pqTheme(),
       builder: (BuildContext context, Widget? navigator) => MediaQuery(
         data: MediaQuery.of(
           context,

@@ -176,6 +176,8 @@ void main() {
                     : 'map_label_main_quest',
               ),
             );
+            await tester.ensureVisible(firstPlace);
+            await tester.pump();
             await tester.tap(firstPlace);
             await pumpFor(tester, const Duration(milliseconds: 900));
             expect(
@@ -270,9 +272,12 @@ void main() {
       );
 
       // Mở sheet rồi đóng: focus/scroll trả về, energy và tiến trình không đổi.
-      await tester.tap(
-        find.byKey(const ValueKey<String>('map_label_main_quest')),
+      final Finder questMarker = find.byKey(
+        const ValueKey<String>('map_label_main_quest'),
       );
+      await tester.ensureVisible(questMarker);
+      await tester.pump();
+      await tester.tap(questMarker);
       await pumpFor(tester, const Duration(milliseconds: 900));
       expect(find.byType(ActivitySheet), findsOneWidget);
       await tester.binding.handlePopRoute();
@@ -320,16 +325,22 @@ void main() {
 
       await pumpRoot(tester, services, locale: const Locale('vi'));
       // 2× → directory; người mới thì Bug Hunter còn khóa nên CTA là bài học.
-      await tester.tap(
-        find.byKey(const ValueKey<String>('directory_place_bug_hunter')),
+      final Finder bugPlace = find.byKey(
+        const ValueKey<String>('directory_place_bug_hunter'),
       );
+      await tester.ensureVisible(bugPlace);
+      await tester.pump();
+      await tester.tap(bugPlace);
       await pumpFor(tester, const Duration(milliseconds: 900));
+      final Finder goLesson = find.byKey(const Key('sheet_go_lesson'));
       expect(
-        find.byKey(const Key('sheet_go_lesson')),
+        goLesson,
         findsOneWidget,
         reason: 'prerequisite CTA phải hiện ở 2× directory',
       );
-      await tester.tap(find.byKey(const Key('sheet_go_lesson')));
+      await tester.ensureVisible(goLesson);
+      await tester.pump();
+      await tester.tap(goLesson);
       await pumpFor(tester, const Duration(milliseconds: 1400));
       expect(find.byType(MainQuestHomeScreen), findsOneWidget);
       final double questScaled = scalerAt(
@@ -349,11 +360,17 @@ void main() {
         reason: 'Back từ MainQuest phải về hub',
       );
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('directory_place_robot_maze')),
+      final Finder mazePlace = find.byKey(
+        const ValueKey<String>('directory_place_robot_maze'),
       );
+      await tester.ensureVisible(mazePlace);
+      await tester.pump();
+      await tester.tap(mazePlace);
       await pumpFor(tester, const Duration(milliseconds: 900));
-      await tester.tap(find.byKey(const Key('sheet_open')));
+      final Finder openSheet = find.byKey(const Key('sheet_open'));
+      await tester.ensureVisible(openSheet);
+      await tester.pump();
+      await tester.tap(openSheet);
       await pumpFor(tester, const Duration(milliseconds: 1500));
       expect(find.byType(RobotMazeHomeScreen), findsOneWidget);
       final double mazeScaled = scalerAt(
