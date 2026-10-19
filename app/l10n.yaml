@@ -1,0 +1,13 @@
+# PQC-015 — localization foundation for the Flutter toolchain.
+#
+# `flutter pub get` runs `flutter gen-l10n` from this file (see `generate: true` in
+# pubspec.yaml). The output is **committed** at
+# `app/lib/l10n/generated/` and imported as
+# `package:pyquest/l10n/generated/app_localizations.dart`, so a clean checkout builds
+# and analyzes even before the generator runs again. Regenerate with
+# `flutter gen-l10n` whenever the ARB files below change.
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-dir: lib/l10n/generated
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations

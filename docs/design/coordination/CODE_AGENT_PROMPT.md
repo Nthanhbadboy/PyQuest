@@ -1,18 +1,19 @@
 # Prompt cho agent code — copy phần dưới
 
-Bạn là agent CODE của PyQuest. Agent DESIGN làm ở nhánh `arena/00838eb9-pyquest`;
-nhánh code hiện tại là `arena/4253d4f1-pyquest`. Hai agent giữ hai nhánh riêng,
+Bạn là agent CODE của PyQuest. Agent DESIGN / Co-Dev làm ở nhánh `arena/84456d39-pyquest`
+(kế thừa từ `arena/00838eb9-pyquest`); nhánh code hiện tại là `arena/4253d4f1-pyquest`.
+Hai agent giữ hai nhánh riêng, cùng code Flutter song song theo cụm module tách biệt,
 phối hợp bằng commit và file bàn giao. Chỉ làm trên nhánh mà phiên của bạn được
 phép; nếu khác nhánh dự kiến, báo lại tên nhánh thật, không tự chuyển nhánh.
 
 ## 1. Nhận đúng bàn giao
 
-Kiểm tra working tree, bảo vệ thay đổi đang có. Fetch design bằng:
+Kiểm tra working tree, bảo vệ thay đổi đang có. Fetch nhánh Lead/Co-Dev bằng:
 
 ```sh
-git fetch origin refs/heads/arena/00838eb9-pyquest:refs/remotes/origin/arena/00838eb9-pyquest
-git rev-parse origin/arena/00838eb9-pyquest
-git ls-tree -r --name-only origin/arena/00838eb9-pyquest -- docs/design/coordination/
+git fetch origin refs/heads/arena/84456d39-pyquest:refs/remotes/origin/arena/84456d39-pyquest
+git rev-parse origin/arena/84456d39-pyquest
+git ls-tree -r --name-only origin/arena/84456d39-pyquest -- docs/design/coordination/
 ```
 
 Pin SHA thật từ lệnh trên. Dùng `git show <SHA>:<path>` để đọc lần lượt:

@@ -21,12 +21,100 @@ env:
   FLUTTER_VERSION: '3.47.7'
 
 jobs:
+  diagnostic_route:
+    name: Validate PQC-011 diagnostic-only routing
+    if: >-
+      github.event_name == 'push' &&
+      contains(github.event.head_commit.message, '[pqc011-diag]')
+    runs-on: ubuntu-latest
+    outputs:
+      valid: ${{ steps.validate.outputs.valid }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Validate diagnostic marker and four-file scope
+        id: validate
+        env:
+          EXPECTED_REF: refs/heads/arena/0d4fcb38-pyquest
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_AFTER: ${{ github.event.after }}
+          HEAD_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import subprocess
+          import sys
+
+          expected_ref = os.environ['EXPECTED_REF']
+          actual_ref = os.environ['GITHUB_REF']
+          before = os.environ['PUSH_BEFORE']
+          after = os.environ['PUSH_AFTER']
+          message = os.environ['HEAD_MESSAGE']
+          marker = '[pqc011-diag]'
+          banned = (
+              '[pqc011-verify]',
+              '[pqc011-normalize]',
+              '[apk]',
+              '[emulator]',
+              '[skip ci]',
+              '[ci skip]',
+          )
+          allowed = {
+              '.github/workflows/ci.yml',
+              '.github/workflows/pqc011-maintenance.yml',
+              'app/test/lesson_board_integration_test.dart',
+              'docs/implementation/coordination/tasks/PQC-011.md',
+          }
+
+          problems = []
+          if actual_ref != expected_ref:
+              problems.append(f'wrong branch: {actual_ref}')
+          if message.count(marker) != 1:
+              problems.append('commit message must contain exactly one [pqc011-diag] marker')
+          mixed = [item for item in banned if item in message]
+          if mixed:
+              problems.append(f'forbidden mixed marker(s): {", ".join(mixed)}')
+          commit_count = int(subprocess.check_output(
+              ['git', 'rev-list', '--count', f'{before}..{after}'], text=True
+          ).strip())
+          if commit_count != 1:
+              problems.append(f'diagnostic push must contain exactly one commit, found {commit_count}')
+          changed = set(subprocess.check_output(
+              ['git', 'diff', '--name-only', '--no-renames', before, after], text=True
+          ).splitlines())
+          unexpected = sorted(changed - allowed)
+          if not changed:
+              problems.append('diagnostic push contains no changed files')
+          if unexpected:
+              problems.append(f'paths outside diagnostic allowlist: {", ".join(unexpected)}')
+          print(f'Validated ref: {actual_ref}')
+          print(f'Push commit count: {commit_count}')
+          print(f'Changed paths: {sorted(changed)}')
+          if problems:
+              print('Diagnostic-only route rejected:')
+              for problem in problems:
+                  print(f'- {problem}')
+              sys.exit(1)
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write('valid=true\n')
+          print('Diagnostic-only routing approved; no Flutter SDK was installed in this job.')
+          PY
+
   # One-time: generate the Android/iOS platform folders with `flutter create`
   # and commit them back, so the repository can be opened with plain
   # `flutter run` afterwards.
   bootstrap:
-    # APK-only DESIGN delivery uses already-tested, explicitly pinned CODE source.
-    if: github.event_name != 'push' || github.ref != 'refs/heads/arena/00838eb9-pyquest' || !contains(github.event.head_commit.message, '[preview-apk]')
+    needs: diagnostic_route
+    if: >-
+      always() &&
+      !(github.event_name == 'push' &&
+        github.ref == 'refs/heads/arena/0d4fcb38-pyquest' &&
+        contains(github.event.head_commit.message, '[pqc011-diag]') &&
+        needs.diagnostic_route.result == 'success' &&
+        needs.diagnostic_route.outputs.valid == 'true')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,9 +143,16 @@ jobs:
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
   check:
-    # APK-only DESIGN delivery uses already-tested, explicitly pinned CODE source.
-    if: github.event_name != 'push' || github.ref != 'refs/heads/arena/00838eb9-pyquest' || !contains(github.event.head_commit.message, '[preview-apk]')
+    needs: diagnostic_route
+    if: >-
+      always() &&
+      !(github.event_name == 'push' &&
+        github.ref == 'refs/heads/arena/0d4fcb38-pyquest' &&
+        contains(github.event.head_commit.message, '[pqc011-diag]') &&
+        needs.diagnostic_route.result == 'success' &&
+        needs.diagnostic_route.outputs.valid == 'true')
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
@@ -65,38 +160,245 @@ jobs:
           channel: stable
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
-      - name: Analyze and test
+      - name: Initialize CI status log
+        run: touch status.txt
+      - name: Record Flutter version
+        id: flutter_version
         working-directory: app
         shell: bash
         run: |
+          run_logged() {
+            local key="$1"; shift
+            local logfile="$1"; shift
+            "$@" 2>&1 | tee "$logfile"
+            local -a statuses=("${PIPESTATUS[@]}")
+            printf '%s=%s\n' "$key" "${statuses[0]}" >> ../status.txt
+            if (( statuses[0] != 0 )); then return "${statuses[0]}"; fi
+            return "${statuses[1]}"
+          }
           set +e
-          flutter --version > ../flutter_version.txt 2>&1
-          flutter pub get > ../pub_get.txt 2>&1; echo "pub_get=$?" >> ../status.txt
-          flutter analyze --no-fatal-infos > ../analyze.txt 2>&1; echo "analyze=$?" >> ../status.txt
-          flutter test --reporter expanded --exclude-tags render > ../test.txt 2>&1; echo "test=$?" >> ../status.txt
-          flutter test --reporter expanded --tags render test/render > ../render.txt 2>&1; echo "render=$?" >> ../status.txt
-          cat ../status.txt
+          set -o pipefail
+          run_logged flutter_version ../flutter_version.txt flutter --version
+          exit $?
+      - name: Resolve Flutter dependencies
+        id: pub_get
+        working-directory: app
+        shell: bash
+        run: |
+          run_logged() {
+            local key="$1"; shift
+            local logfile="$1"; shift
+            "$@" 2>&1 | tee "$logfile"
+            local -a statuses=("${PIPESTATUS[@]}")
+            printf '%s=%s\n' "$key" "${statuses[0]}" >> ../status.txt
+            if (( statuses[0] != 0 )); then return "${statuses[0]}"; fi
+            return "${statuses[1]}"
+          }
+          set +e
+          set -o pipefail
+          run_logged pub_get ../pub_get.txt flutter pub get
+          exit $?
+      - name: Verify localization evidence helpers
+        id: l10n_evidence_tests
+        working-directory: app
+        shell: bash
+        run: |
+          run_logged() {
+            local key="$1"; shift
+            local logfile="$1"; shift
+            "$@" 2>&1 | tee "$logfile"
+            local -a statuses=("${PIPESTATUS[@]}")
+            printf '%s=%s\n' "$key" "${statuses[0]}" >> ../status.txt
+            if (( statuses[0] != 0 )); then return "${statuses[0]}"; fi
+            return "${statuses[1]}"
+          }
+          set +e
+          set -o pipefail
+          run_logged l10n_evidence_tests ../l10n_evidence_tests.txt python3 ../ci/test_l10n_evidence.py
+          exit $?
+      - name: Collect localization generation evidence
+        id: l10n_evidence_collect
+        working-directory: app
+        shell: bash
+        run: |
+          run_logged() {
+            local key="$1"; shift
+            local logfile="$1"; shift
+            "$@" 2>&1 | tee "$logfile"
+            local -a statuses=("${PIPESTATUS[@]}")
+            printf '%s=%s\n' "$key" "${statuses[0]}" >> ../status.txt
+            if (( statuses[0] != 0 )); then return "${statuses[0]}"; fi
+            return "${statuses[1]}"
+          }
+          set +e
+          set -o pipefail
+          run_logged l10n_evidence ../l10n_evidence_collect.txt python3 ../ci/l10n_evidence.py collect --repo-root .. --app-dir . --output ../l10n_evidence.json
+          exit $?
+      - name: Analyze Flutter app
+        id: analyze
+        working-directory: app
+        shell: bash
+        run: |
+          run_logged() {
+            local key="$1"; shift
+            local logfile="$1"; shift
+            "$@" 2>&1 | tee "$logfile"
+            local -a statuses=("${PIPESTATUS[@]}")
+            printf '%s=%s\n' "$key" "${statuses[0]}" >> ../status.txt
+            if (( statuses[0] != 0 )); then return "${statuses[0]}"; fi
+            return "${statuses[1]}"
+          }
+          set +e
+          set -o pipefail
+          run_logged analyze ../analyze.txt flutter analyze --no-fatal-infos
+          exit $?
+      - name: Focused Settings localization test (45s per test)
+        id: settings_test
+        working-directory: app
+        timeout-minutes: 4
+        shell: bash
+        run: |
+          run_logged() {
+            local key="$1"; shift
+            local logfile="$1"; shift
+            "$@" 2>&1 | tee "$logfile"
+            local -a statuses=("${PIPESTATUS[@]}")
+            printf '%s=%s\n' "$key" "${statuses[0]}" >> ../status.txt
+            if (( statuses[0] != 0 )); then return "${statuses[0]}"; fi
+            return "${statuses[1]}"
+          }
+          set +e
+          set -o pipefail
+          run_logged settings_test ../settings_test.txt flutter test --reporter expanded --timeout 45s test/l10n/settings_sheet_localization_test.dart
+          exit $?
+      - name: Full ordinary Flutter test suite
+        id: ordinary_tests
+        working-directory: app
+        shell: bash
+        run: |
+          run_logged() {
+            local key="$1"; shift
+            local logfile="$1"; shift
+            "$@" 2>&1 | tee "$logfile"
+            local -a statuses=("${PIPESTATUS[@]}")
+            printf '%s=%s\n' "$key" "${statuses[0]}" >> ../status.txt
+            if (( statuses[0] != 0 )); then return "${statuses[0]}"; fi
+            return "${statuses[1]}"
+          }
+          set +e
+          set -o pipefail
+          run_logged ordinary_tests ../test.txt flutter test --reporter expanded --exclude-tags render
+          exit $?
+      - name: Full render test suite
+        id: render_tests
+        working-directory: app
+        shell: bash
+        run: |
+          run_logged() {
+            local key="$1"; shift
+            local logfile="$1"; shift
+            "$@" 2>&1 | tee "$logfile"
+            local -a statuses=("${PIPESTATUS[@]}")
+            printf '%s=%s\n' "$key" "${statuses[0]}" >> ../status.txt
+            if (( statuses[0] != 0 )); then return "${statuses[0]}"; fi
+            return "${statuses[1]}"
+          }
+          set +e
+          set -o pipefail
+          run_logged render_tests ../render.txt flutter test --reporter expanded --tags render test/render
+          exit $?
+      - name: Publish localization generation evidence
+        id: publish_evidence
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          run_logged() {
+            local key="$1"; shift
+            local logfile="$1"; shift
+            "$@" 2>&1 | tee "$logfile"
+            local -a statuses=("${PIPESTATUS[@]}")
+            printf '%s=%s\n' "$key" "${statuses[0]}" >> status.txt
+            if (( statuses[0] != 0 )); then return "${statuses[0]}"; fi
+            return "${statuses[1]}"
+          }
+          set +e
+          set -o pipefail
+          run_logged l10n_evidence_publish l10n_evidence_publish.txt python3 ci/l10n_evidence.py publish --evidence l10n_evidence.json
+          exit $?
       - name: Publish previews
+        id: publish_previews
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           pip install --quiet pillow || true
-          python3 ci/publish_previews.py app/build/previews > previews.txt 2>&1 || true
-          cat previews.txt
+          python3 ci/publish_previews.py app/build/previews 2>&1 | tee previews.txt || true
       - name: Publish report
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 ci/report.py "PyQuest check" status.txt flutter_version.txt pub_get.txt analyze.txt test.txt render.txt previews.txt
-      - name: Fail if any step failed
-        run: "! grep -v '=0$' status.txt"
+        shell: bash
+        run: |
+          set +e
+          set -o pipefail
+          python3 ci/report.py "PyQuest check" status.txt settings_test.txt flutter_version.txt pub_get.txt l10n_evidence_tests.txt l10n_evidence_collect.txt analyze.txt test.txt render.txt l10n_evidence_publish.txt previews.txt \
+            --step "Flutter version=${{ steps.flutter_version.outcome }}" \
+            --step "Dependencies=${{ steps.pub_get.outcome }}" \
+            --step "Localization evidence tests=${{ steps.l10n_evidence_tests.outcome }}" \
+            --step "Localization evidence collection=${{ steps.l10n_evidence_collect.outcome }}" \
+            --step "Flutter analyze=${{ steps.analyze.outcome }}" \
+            --step "Focused Settings test=${{ steps.settings_test.outcome }}" \
+            --step "Ordinary tests=${{ steps.ordinary_tests.outcome }}" \
+            --step "Render tests=${{ steps.render_tests.outcome }}" \
+            --step "Evidence publication=${{ steps.publish_evidence.outcome }}" \
+            --step "Preview publication=${{ steps.publish_previews.outcome }}" 2>&1 | tee report.txt
+          statuses=("${PIPESTATUS[@]}")
+          if (( statuses[0] != 0 )); then exit "${statuses[0]}"; fi
+          exit "${statuses[1]}"
+      - name: Upload CI logs and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pqc-016-check-diagnostics
+          path: |
+            status.txt
+            flutter_version.txt
+            pub_get.txt
+            l10n_evidence_tests.txt
+            l10n_evidence_collect.txt
+            analyze.txt
+            settings_test.txt
+            test.txt
+            render.txt
+            l10n_evidence_publish.txt
+            previews.txt
+            report.txt
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Fail if any recorded phase failed
+        if: always()
+        run: |
+          if grep -qv '=0$' status.txt; then
+            cat status.txt
+            exit 1
+          fi
 
   apk:
+    needs: diagnostic_route
     # Live Gemini PCM streaming, tutor music ducking, AI-only bubbles; keep audioplayers for game SFX/music [apk].
     # APK-only test builds can run on [apk] commits without waiting for the
     # unrelated render-test gate. Emulator runs remain opt-in via [emulator].
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[emulator]') || contains(github.event.head_commit.message, '[apk]')
+    if: >-
+      always() &&
+      (github.event_name == 'workflow_dispatch' ||
+       contains(github.event.head_commit.message, '[emulator]') ||
+       contains(github.event.head_commit.message, '[apk]')) &&
+      !(github.event_name == 'push' &&
+        contains(github.event.head_commit.message, '[pqc011-diag]') &&
+        needs.diagnostic_route.result == 'success' &&
+        needs.diagnostic_route.outputs.valid == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:

@@ -1,0 +1,233 @@
+{
+  "@@locale": "en",
+  "appTitle": "PyQuest",
+  "@appTitle": {
+    "description": "Name handed to the OS task switcher and to the localization foundation."
+  },
+  "foundationGreeting": "Hello {name}!",
+  "@foundationGreeting": {
+    "description": "Typed-placeholder greeting used to prove the generated delegate resolves per locale.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Pip"
+      }
+    }
+  },
+  "foundationFollowsDevice": "This build follows your device language.",
+  "@foundationFollowsDevice": {
+    "description": "Shown while the app is following the OS language list."
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "PQC-016 Settings surface; settingsTitle"
+  },
+  "settingsLanguageTitle": "Language",
+  "@settingsLanguageTitle": {
+    "description": "PQC-016 Settings surface; settingsLanguageTitle"
+  },
+  "settingsLanguageSystem": "Follow device",
+  "@settingsLanguageSystem": {
+    "description": "PQC-016 Settings surface; settingsLanguageSystem"
+  },
+  "settingsLanguageVi": "Tiếng Việt",
+  "@settingsLanguageVi": {
+    "description": "PQC-016 Settings surface; settingsLanguageVi"
+  },
+  "settingsLanguageEn": "English",
+  "@settingsLanguageEn": {
+    "description": "PQC-016 Settings surface; settingsLanguageEn"
+  },
+  "settingsLanguageEffective": "Currently using: {language}",
+  "@settingsLanguageEffective": {
+    "description": "PQC-016 Settings surface; settingsLanguageEffective",
+    "placeholders": {
+      "language": {
+        "type": "String",
+        "example": "Tiếng Việt"
+      }
+    }
+  },
+  "settingsLanguageFallback": "Your device language is not supported yet. PyQuest is using English.",
+  "@settingsLanguageFallback": {
+    "description": "PQC-016 Settings surface; settingsLanguageFallback"
+  },
+  "settingsLanguageScope": "Settings and system controls update now. Some other content is still being translated.",
+  "@settingsLanguageScope": {
+    "description": "PQC-016 Settings surface; settingsLanguageScope"
+  },
+  "settingsLanguageSaving": "Saving your choice…",
+  "@settingsLanguageSaving": {
+    "description": "PQC-016 Settings surface; settingsLanguageSaving"
+  },
+  "settingsLanguageSaveError": "Your choice could not be saved. It still applies for now; next time, PyQuest may use your previously saved choice.",
+  "@settingsLanguageSaveError": {
+    "description": "PQC-016 Settings surface; settingsLanguageSaveError"
+  },
+  "settingsLanguageRetry": "Retry saving",
+  "@settingsLanguageRetry": {
+    "description": "PQC-016 Settings surface; settingsLanguageRetry"
+  },
+  "settingsSound": "Sound effects",
+  "@settingsSound": {
+    "description": "PQC-016 Settings surface; settingsSound"
+  },
+  "settingsMusic": "Music",
+  "@settingsMusic": {
+    "description": "PQC-016 Settings surface; settingsMusic"
+  },
+  "settingsCalm": "Calm mode (less motion)",
+  "@settingsCalm": {
+    "description": "PQC-016 Settings surface; settingsCalm"
+  },
+  "settingsAboutPython": "About PyQuest Python",
+  "@settingsAboutPython": {
+    "description": "PQC-016 Settings surface; settingsAboutPython"
+  },
+  "settingsResetProgress": "Reset all progress",
+  "@settingsResetProgress": {
+    "description": "PQC-016 Settings surface; settingsResetProgress"
+  },
+  "settingsFooter": "PyQuest 0.1 · Starter Island. Progress is saved on this device.",
+  "@settingsFooter": {
+    "description": "PQC-016 Settings surface; settingsFooter"
+  },
+  "settingsParentTitle": "For parents",
+  "@settingsParentTitle": {
+    "description": "PQC-016 Settings surface; settingsParentTitle"
+  },
+  "settingsParentWarning": "This deletes progress, badges and custom mazes, and resets settings on this device. To continue, enter the answer:",
+  "@settingsParentWarning": {
+    "description": "PQC-016 Settings surface; settingsParentWarning"
+  },
+  "settingsParentQuestion": "{a} × {b} = ?",
+  "@settingsParentQuestion": {
+    "description": "PQC-016 Settings surface; settingsParentQuestion",
+    "placeholders": {
+      "a": {
+        "type": "int",
+        "example": "6"
+      },
+      "b": {
+        "type": "int",
+        "example": "7"
+      }
+    }
+  },
+  "settingsParentAnswer": "Answer",
+  "@settingsParentAnswer": {
+    "description": "PQC-016 Settings surface; settingsParentAnswer"
+  },
+  "settingsCancel": "Cancel",
+  "@settingsCancel": {
+    "description": "PQC-016 Settings surface; settingsCancel"
+  },
+  "settingsDelete": "Delete",
+  "@settingsDelete": {
+    "description": "PQC-016 Settings surface; settingsDelete"
+  },
+  "settingsPythonTitle": "PyQuest Python (simulated)",
+  "@settingsPythonTitle": {
+    "description": "PQC-016 Settings surface; settingsPythonTitle"
+  },
+  "settingsPythonIntro": "Your code runs on a small Python implementation made for PyQuest, on this device and without a network connection. It supports the basics, but it is NOT full Python.",
+  "@settingsPythonIntro": {
+    "description": "PQC-016 Settings surface; settingsPythonIntro"
+  },
+  "settingsPythonSupportedTitle": "You can use",
+  "@settingsPythonSupportedTitle": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedTitle"
+  },
+  "settingsPythonLimitsTitle": "Limits",
+  "@settingsPythonLimitsTitle": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitsTitle"
+  },
+  "settingsPythonSupportedValues": "print(), variables, integers, decimal numbers, strings, True/False, None",
+  "@settingsPythonSupportedValues": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedValues"
+  },
+  "settingsPythonSupportedOperators": "Arithmetic + - * / // % **, comparisons == != < > <= >=, and/or/not",
+  "@settingsPythonSupportedOperators": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedOperators"
+  },
+  "settingsPythonSupportedFlow": "if / elif / else, while, for ... in range(...), break, continue",
+  "@settingsPythonSupportedFlow": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedFlow"
+  },
+  "settingsPythonSupportedLists": "Lists: [1, 2, 3], ds[0], ds.append(), len(), in",
+  "@settingsPythonSupportedLists": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedLists"
+  },
+  "settingsPythonSupportedFunctions": "Functions: def, return, default arguments",
+  "@settingsPythonSupportedFunctions": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedFunctions"
+  },
+  "settingsPythonSupportedFString": "Simple f-strings, for example: {example}",
+  "@settingsPythonSupportedFString": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedFString",
+    "placeholders": {
+      "example": {
+        "type": "String",
+        "example": "f\"Xin chào {ten}\""
+      }
+    }
+  },
+  "settingsPythonSupportedBuiltins": "Built-ins: len, range, str, int, float, bool, abs, round, min, max, sum, list, sorted, type",
+  "@settingsPythonSupportedBuiltins": {
+    "description": "PQC-016 Settings surface; settingsPythonSupportedBuiltins"
+  },
+  "settingsPythonLimitFeatures": "No import, files, networking, input(), class, dictionary, tuple, slicing [a:b], try/except or lambda.",
+  "@settingsPythonLimitFeatures": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitFeatures"
+  },
+  "settingsPythonLimitSteps": "Up to 100,000 execution steps — endless loops are stopped safely.",
+  "@settingsPythonLimitSteps": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitSteps"
+  },
+  "settingsPythonLimitDepthOutput": "Up to 50 nested function calls and 10,000 output characters.",
+  "@settingsPythonLimitDepthOutput": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitDepthOutput"
+  },
+  "settingsPythonLimitIntegers": "Integers are limited to about ±9 quintillion (standard Python integers have no fixed size limit).",
+  "@settingsPythonLimitIntegers": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitIntegers"
+  },
+  "settingsPythonLimitOutputTiming": "Output appears after the program finishes, not line by line in real time.",
+  "@settingsPythonLimitOutputTiming": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitOutputTiming"
+  },
+  "settingsPythonLimitNames": "Variable names cannot shadow print, len or range, to help avoid confusing errors.",
+  "@settingsPythonLimitNames": {
+    "description": "PQC-016 Settings surface; settingsPythonLimitNames"
+  },
+  "hubIslandName": "Starter Island",
+  "hubQuestsTooltip": "Daily quests",
+  "hubSettingsTooltip": "Settings",
+  "hubVillageTab": "Village",
+  "hubPlacesTab": "Places",
+  "hubRecommendationTitle": "A place to explore",
+  "hubVisitRecommended": "Visit {place}",
+  "@hubVisitRecommended": {
+    "description": "Action for the ready, unlocked recommended activity.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Python Tower"
+      }
+    }
+  },
+  "hubExplore": "Explore",
+  "hubLocked": "Locked",
+  "hubLoading": "Loading status",
+  "hubRetry": "Retry",
+  "hubStatusUnavailable": "Status unavailable",
+  "hubSceneScrollHint": "Scroll to explore all six places.",
+  "hubDirectoryHint": "Choose an activity. Your progress and unlocks stay the same.",
+  "hubMainQuest": "Python Tower",
+  "hubRobotMaze": "Robo Maze",
+  "hubDragonJump": "Volcano",
+  "hubCatchStars": "Observatory",
+  "hubBugHunter": "Bitsy's Workshop",
+  "hubAchievements": "Achievement House",
+  "hubHomeSemantics": "PyQuest, Starter Island"
+}

@@ -13,124 +13,249 @@ void main() {
 
   setUpAll(loadAppFonts);
 
-  testWidgets('new player: map → Robot Maze level 1 solved → result → progress saved', (tester) async {
-    tester.view.physicalSize = const Size(1080, 2340);
-    tester.view.devicePixelRatio = 3.0;
-    addTearDown(tester.view.reset);
+  testWidgets(
+    'new player: map → Robot Maze level 1 solved → result → progress saved',
+    (tester) async {
+      tester.view.physicalSize = const Size(1080, 2340);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.reset);
 
-    final clock = FakeClock(DateTime(2026, 10, 15, 10));
-    final services = (await tester.runAsync(() => AppServices.create(
+      final clock = FakeClock(DateTime(2026, 10, 15, 10));
+      final services = (await tester.runAsync(
+        () => AppServices.create(
           bundle: rootBundle,
           databaseFactory: databaseFactoryFfiNoIsolate,
           databasePath: inMemoryDatabasePath,
           clock: clock,
           audioEnabled: false,
           startSessionTimer: false,
-        )))!;
+        ),
+      ))!;
 
-    await tester.pumpWidget(PyQuestApp(servicesFactory: (_) async => services, minSplash: Duration.zero));
-    await pumpFor(tester, const Duration(seconds: 2));
+      // A widget-test host reports en-US, while the R1-A hub directory labels come from l10n,
+      // so the Vietnamese assertions below need an explicit `vi` system list. Test-only: the
+      // production app still reads the platform dispatcher. Authorization
+      // DESIGN-PQC020-AUTH-JOURNEY-VI-01db21a6.
+      await tester.pumpWidget(
+        PyQuestApp(
+          servicesFactory: (_) async => services,
+          systemLocalesReader: () => const <Locale>[Locale('vi')],
+          minSplash: Duration.zero,
+        ),
+      );
+      await pumpFor(tester, const Duration(seconds: 2));
 
-    // First launch shows the welcome guide (3 pages).
-    expect(find.text('Chào mừng tới Đảo Khởi Đầu!'), findsOneWidget);
-    for (var i = 0; i < 3; i++) {
-      await tapAndSettle(tester, find.byKey(const ValueKey('welcome_next')), wait: const Duration(milliseconds: 500));
-    }
-    expect(find.text('Chào mừng tới Đảo Khởi Đầu!'), findsNothing);
+      // First launch shows the welcome guide (3 pages).
+      expect(find.text('Chào mừng tới Đảo Khởi Đầu!'), findsOneWidget);
+      for (var i = 0; i < 3; i++) {
+        await tapAndSettle(
+          tester,
+          find.byKey(const ValueKey('welcome_next')),
+          wait: const Duration(milliseconds: 500),
+        );
+      }
+      expect(find.text('Chào mừng tới Đảo Khởi Đầu!'), findsNothing);
 
-    // The map shows every place.
-    for (final name in ['Tháp Python', 'Mê Cung Robo', 'Núi Lửa Pip', 'Đài Thiên Văn', 'Xưởng Bitsy', 'Nhà Thành Tích']) {
-      expect(find.text(name), findsWidgets, reason: name);
-    }
+      // The map shows every place.
+      for (final name in [
+        'Tháp Python',
+        'Mê Cung Robo',
+        'Núi Lửa',
+        'Đài Thiên Văn',
+        'Xưởng Bitsy',
+        'Nhà Thành Tích',
+      ]) {
+        expect(find.text(name), findsWidgets, reason: name);
+      }
 
-    // Bug Hunter is gated behind Main Quest lesson 3.
-    await tapAndSettle(tester, find.byKey(const ValueKey('map_label_bug_hunter')));
-    expect(find.byKey(const ValueKey('sheet_go_lesson')), findsOneWidget);
-    await tester.tapAt(const Offset(20, 40));
-    await pumpFor(tester, const Duration(milliseconds: 600));
+      // Bug Hunter is gated behind Main Quest lesson 3.
+      await tapAndSettle(
+        tester,
+        find.byKey(const ValueKey('map_label_bug_hunter')),
+      );
+      expect(find.byKey(const ValueKey('sheet_go_lesson')), findsOneWidget);
+      await tester.tapAt(const Offset(20, 40));
+      await pumpFor(tester, const Duration(milliseconds: 600));
 
-    // Open Robot Maze.
-    await tapAndSettle(tester, find.byKey(const ValueKey('map_label_robot_maze')));
-    await tapAndSettle(tester, find.byKey(const ValueKey('sheet_open')), wait: const Duration(milliseconds: 1500));
-    expect(find.byKey(const ValueKey('maze_level_1')), findsOneWidget);
+      // Open Robot Maze.
+      await tapAndSettle(
+        tester,
+        find.byKey(const ValueKey('map_label_robot_maze')),
+      );
+      await tapAndSettle(
+        tester,
+        find.byKey(const ValueKey('sheet_open')),
+        wait: const Duration(milliseconds: 1500),
+      );
+      expect(find.byKey(const ValueKey('maze_level_1')), findsOneWidget);
 
-    // Level 1 costs 2 energy.
-    await tapAndSettle(tester, find.byKey(const ValueKey('maze_level_1')), wait: const Duration(milliseconds: 1500));
-    expect(services.energy.current, 18);
+      // Level 1 costs 2 energy.
+      await tapAndSettle(
+        tester,
+        find.byKey(const ValueKey('maze_level_1')),
+        wait: const Duration(milliseconds: 1500),
+      );
+      expect(services.energy.current, 18);
 
-    for (var i = 0; i < 4; i++) {
-      await tester.tap(find.byKey(const ValueKey('palette_right')));
-      await tester.pump(const Duration(milliseconds: 80));
-    }
-    await tester.tap(find.byKey(const ValueKey('maze_run')));
-    await pumpFor(tester, const Duration(seconds: 5));
+      for (var i = 0; i < 4; i++) {
+        await tester.tap(find.byKey(const ValueKey('palette_right')));
+        await tester.pump(const Duration(milliseconds: 80));
+      }
+      await tester.tap(find.byKey(const ValueKey('maze_run')));
+      await pumpFor(tester, const Duration(seconds: 5));
 
-    // Result screen.
-    expect(find.byKey(const ValueKey('result_title')), findsOneWidget);
-    expect(find.text('Hoàn hảo!'), findsOneWidget);
-    expect(find.text('Bước Chân Đầu Tiên'), findsWidgets);
+      // Result screen.
+      expect(find.byKey(const ValueKey('result_title')), findsOneWidget);
+      expect(find.text('Hoàn hảo!'), findsOneWidget);
+      expect(find.text('Bước Chân Đầu Tiên'), findsWidgets);
 
-    await tapAndSettle(tester, find.byKey(const ValueKey('result_map')), wait: const Duration(seconds: 2));
-    expect(find.text('Mê Cung Robo'), findsWidgets);
+      await tapAndSettle(
+        tester,
+        find.byKey(const ValueKey('result_map')),
+        wait: const Duration(seconds: 2),
+      );
+      expect(find.text('Mê Cung Robo'), findsWidgets);
 
-    final record = (await tester.runAsync(() => services.progress.levelRecord('robot_maze', 'rm_01')))!;
-    expect(record.stars, 3);
-    expect(services.achievements.isUnlocked('first_steps'), isTrue);
+      final record = (await tester.runAsync(
+        () => services.progress.levelRecord('robot_maze', 'rm_01'),
+      ))!;
+      expect(record.stars, 3);
+      expect(services.achievements.isUnlocked('first_steps'), isTrue);
 
-    services.dispose();
-    await pumpFor(tester, const Duration(seconds: 4));
-  });
+      services.dispose();
+      await pumpFor(tester, const Duration(seconds: 4));
+    },
+  );
 
-  testWidgets('Main Quest lesson 1 can be completed with real code', (tester) async {
+  testWidgets('Main Quest lesson 1 can be completed with real code', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(1080, 2340);
     tester.view.devicePixelRatio = 3.0;
     addTearDown(tester.view.reset);
 
     final clock = FakeClock(DateTime(2026, 10, 15, 10));
-    final services = (await tester.runAsync(() => AppServices.create(
-          bundle: rootBundle,
-          databaseFactory: databaseFactoryFfiNoIsolate,
-          databasePath: inMemoryDatabasePath,
-          clock: clock,
-          audioEnabled: false,
-          startSessionTimer: false,
-        )))!;
+    final services = (await tester.runAsync(
+      () => AppServices.create(
+        bundle: rootBundle,
+        databaseFactory: databaseFactoryFfiNoIsolate,
+        databasePath: inMemoryDatabasePath,
+        clock: clock,
+        audioEnabled: false,
+        startSessionTimer: false,
+      ),
+    ))!;
     await tester.runAsync(() => services.settings.setIntroSeen());
 
-    await tester.pumpWidget(PyQuestApp(servicesFactory: (_) async => services, minSplash: Duration.zero));
+    // Same test-only `vi` injection as the journey above: this case asserts Vietnamese
+    // lesson and achievement copy. Authorization DESIGN-PQC020-AUTH-JOURNEY-VI-01db21a6.
+    await tester.pumpWidget(
+      PyQuestApp(
+        servicesFactory: (_) async => services,
+        systemLocalesReader: () => const <Locale>[Locale('vi')],
+        minSplash: Duration.zero,
+      ),
+    );
     await pumpFor(tester, const Duration(seconds: 2));
 
-    await tapAndSettle(tester, find.byKey(const ValueKey('map_label_main_quest')));
-    await tapAndSettle(tester, find.byKey(const ValueKey('sheet_open')), wait: const Duration(milliseconds: 1500));
-    await tapAndSettle(tester, find.byKey(const ValueKey('lesson_card_mq1_01')), wait: const Duration(milliseconds: 1500));
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('map_label_main_quest')),
+    );
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('sheet_open')),
+      wait: const Duration(milliseconds: 1500),
+    );
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('lesson_card_mq1_01')),
+      wait: const Duration(milliseconds: 1500),
+    );
     expect(services.energy.current, 19);
 
     // 1. story
-    await tapAndSettle(tester, find.byKey(const ValueKey('lesson_continue')), wait: const Duration(milliseconds: 500));
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('lesson_continue')),
+      wait: const Duration(milliseconds: 500),
+    );
     // 2. example: run it, then continue
-    await tapAndSettle(tester, find.byKey(const ValueKey('example_run')), wait: const Duration(milliseconds: 500));
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('example_run')),
+      wait: const Duration(milliseconds: 500),
+    );
     expect(find.text('Xin chào!'), findsWidgets);
-    await tapAndSettle(tester, find.byKey(const ValueKey('lesson_continue')), wait: const Duration(milliseconds: 500));
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('lesson_continue')),
+      wait: const Duration(milliseconds: 500),
+    );
     // 3. choice: answer index 0 is print("Robo")
-    await tapAndSettle(tester, find.byKey(const ValueKey('choice_0')), wait: const Duration(milliseconds: 200));
-    await tapAndSettle(tester, find.byKey(const ValueKey('lesson_check')), wait: const Duration(milliseconds: 500));
-    await tapAndSettle(tester, find.byKey(const ValueKey('lesson_continue')), wait: const Duration(milliseconds: 500));
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('choice_0')),
+      wait: const Duration(milliseconds: 200),
+    );
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('lesson_check')),
+      wait: const Duration(milliseconds: 500),
+    );
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('lesson_continue')),
+      wait: const Duration(milliseconds: 500),
+    );
     // 4. fill: pick the "PyQuest" chip
-    await tapAndSettle(tester, find.text('"PyQuest"').first, wait: const Duration(milliseconds: 200));
-    await tapAndSettle(tester, find.byKey(const ValueKey('lesson_check')), wait: const Duration(milliseconds: 500));
+    await tapAndSettle(
+      tester,
+      find.text('"PyQuest"').first,
+      wait: const Duration(milliseconds: 200),
+    );
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('lesson_check')),
+      wait: const Duration(milliseconds: 500),
+    );
     expect(find.byKey(const ValueKey('lesson_continue')), findsOneWidget);
-    await tapAndSettle(tester, find.byKey(const ValueKey('lesson_continue')), wait: const Duration(milliseconds: 500));
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('lesson_continue')),
+      wait: const Duration(milliseconds: 500),
+    );
     // 5. write: a wrong answer first, then the right one
-    await tester.enterText(find.byKey(const ValueKey('code_editor_field')), 'print("Robo")');
-    await tapAndSettle(tester, find.byKey(const ValueKey('lesson_check')), wait: const Duration(milliseconds: 500));
+    await tester.enterText(
+      find.byKey(const ValueKey('code_editor_field')),
+      'print("Robo")',
+    );
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('lesson_check')),
+      wait: const Duration(milliseconds: 500),
+    );
     expect(find.byKey(const ValueKey('lesson_continue')), findsNothing);
-    await tester.enterText(find.byKey(const ValueKey('code_editor_field')), 'print("Robo thông minh")');
-    await tapAndSettle(tester, find.byKey(const ValueKey('lesson_check')), wait: const Duration(milliseconds: 500));
-    await tapAndSettle(tester, find.byKey(const ValueKey('lesson_continue')), wait: const Duration(seconds: 2));
+    await tester.enterText(
+      find.byKey(const ValueKey('code_editor_field')),
+      'print("Robo thông minh")',
+    );
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('lesson_check')),
+      wait: const Duration(milliseconds: 500),
+    );
+    await tapAndSettle(
+      tester,
+      find.byKey(const ValueKey('lesson_continue')),
+      wait: const Duration(seconds: 2),
+    );
 
     expect(find.byKey(const ValueKey('lesson_complete_title')), findsOneWidget);
     expect(find.text('Dòng Code Đầu Tiên'), findsWidgets);
-    final done = (await tester.runAsync(() => services.progress.completedLessons()))!;
+    final done = (await tester.runAsync(
+      () => services.progress.completedLessons(),
+    ))!;
     expect(done, contains('mq1_01'));
 
     services.dispose();

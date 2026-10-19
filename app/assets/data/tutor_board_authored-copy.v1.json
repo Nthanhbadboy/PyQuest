@@ -1,0 +1,178 @@
+{
+  "contentVersion": 1,
+  "status": "Authored VI/EN design content; not a runtime TeachingPlan schema or device semantics proof",
+  "sourceFixture": "lessons.json",
+  "sourceDatasetSha256": "bead251d9f290db0b8fa4475f7413976324b00e7b0f498c633a25a5e6392f8b8",
+  "languages": [
+    "vi",
+    "en"
+  ],
+  "plans": [
+    {
+      "id": "print",
+      "lessonId": "mq1_01",
+      "sourceStep": "mq1_01_s2",
+      "beats": [
+        {
+          "beatId": "mq1_01_s2.b1",
+          "sourceBeatIndex": 0,
+          "waitForLearner": false,
+          "copy": {
+            "vi": {
+              "title": "Mình viết một lệnh",
+              "say": "Muốn máy tính gửi lời chào, mình dùng print. Nhìn phần mình vừa tô trên bảng nhé.",
+              "caption": "print → đưa nội dung ra màn hình",
+              "altText": "Lệnh print có chữ Xin chào! trong ngoặc kép. Tên lệnh print được tô nổi bật; chưa có kết quả trên màn hình."
+            },
+            "en": {
+              "title": "Let us write a command",
+              "say": "To make the computer send a greeting, we use print. Look at the part I highlighted on the board.",
+              "caption": "print → display the content",
+              "altText": "The print command contains Xin chào! in quotation marks. The command name print is highlighted; no output is shown yet."
+            }
+          }
+        },
+        {
+          "beatId": "mq1_01_s2.b2",
+          "sourceBeatIndex": 1,
+          "waitForLearner": false,
+          "copy": {
+            "vi": {
+              "title": "Đặt chữ vào trong ngoặc kép",
+              "say": "Hai dấu ngoặc kép cho Python biết đây là chữ. Chúng không phải phần của lời chào được in ra.",
+              "caption": "“ ” đánh dấu phần chữ · ( ) chứa nội dung của lệnh",
+              "altText": "Trong lệnh print, phần chữ Xin chào! cùng hai dấu ngoặc kép được tô nổi bật. Dấu ngoặc tròn bao phần nội dung của lệnh."
+            },
+            "en": {
+              "title": "Put the text inside quotation marks",
+              "say": "Quotation marks tell Python that this is text. They are not part of the greeting it prints.",
+              "caption": "“ ” marks the text · ( ) holds the command’s content",
+              "altText": "In the print command, Xin chào! and its quotation marks are highlighted. Parentheses surround the command’s contents."
+            }
+          }
+        },
+        {
+          "beatId": "mq1_01_s2.b3",
+          "sourceBeatIndex": 2,
+          "waitForLearner": false,
+          "copy": {
+            "vi": {
+              "title": "Nối code với kết quả",
+              "say": "Mũi tên chỉ từ lệnh tới màn hình. Chữ Xin chào! xuất hiện; dấu ngoặc kép không đi theo.",
+              "caption": "Code là chỉ dẫn. Ô bên dưới là điều máy tính in ra.",
+              "altText": "Một mũi tên nối lệnh print với ô kết quả. Ô kết quả hiển thị Xin chào! và không có dấu ngoặc kép."
+            },
+            "en": {
+              "title": "Connect code to its output",
+              "say": "The arrow leads from the command to the screen. Xin chào! appears; the quotation marks do not. It means Hello! in Vietnamese.",
+              "caption": "Code gives instructions. The box below shows what the computer prints.",
+              "altText": "An arrow connects the print command to its output box. The box shows Xin chào! without quotation marks."
+            }
+          }
+        },
+        {
+          "beatId": "mq1_01_s2.b4",
+          "sourceBeatIndex": 3,
+          "waitForLearner": true,
+          "copy": {
+            "vi": {
+              "title": "Bây giờ đến lượt bạn",
+              "say": "Bạn thử đổi lời chào nhé. Nếu bị vướng, khoanh chỗ đó trên bảng hoặc chọn “Giải thích cách khác”.",
+              "caption": "Mục tiêu bài tập nguồn: in ra Robo thông minh",
+              "altText": "Lệnh mẫu và kết quả vẫn còn trên bảng. Đến lượt bạn sửa lời chào trong ô code; mục tiêu nguồn là in Robo thông minh."
+            },
+            "en": {
+              "title": "Now it is your turn",
+              "say": "Try changing the greeting. If you get stuck, circle that part of the board or choose “Explain another way”.",
+              "caption": "Original exercise target: print Robo thông minh",
+              "altText": "The example command and its output stay on the board. It is your turn to edit the greeting in the code field; the original target is to print Robo thông minh."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "numbers",
+      "lessonId": "mq1_03",
+      "sourceStep": "mq1_03_s2",
+      "beats": [
+        {
+          "beatId": "mq1_03_s2.b1",
+          "sourceBeatIndex": 0,
+          "waitForLearner": false,
+          "copy": {
+            "vi": {
+              "title": "Ba viên và bốn viên",
+              "say": "Bên trái có ba viên đá, bên phải có bốn viên. Không có ngoặc kép, Python sẽ làm phép cộng.",
+              "caption": "Mình dùng vật đếm để nhìn thấy phép cộng.",
+              "altText": "Bảng có hai dòng: print(3 + 4) và print(\"3 + 4\"). Biểu thức ở dòng đầu được tô nổi bật. Ba viên đá ở bên trái, bốn viên ở bên phải."
+            },
+            "en": {
+              "title": "Three stones and four stones",
+              "say": "Three stones on the left, four on the right. Without quotation marks, Python adds the numbers.",
+              "caption": "Counting objects help us see addition.",
+              "altText": "The board has two lines: print(3 + 4) and print(\"3 + 4\"). The first line’s expression is highlighted. Three stones are on the left and four on the right."
+            }
+          }
+        },
+        {
+          "beatId": "mq1_03_s2.b2",
+          "sourceBeatIndex": 1,
+          "waitForLearner": false,
+          "copy": {
+            "vi": {
+              "title": "Gộp lại và đếm",
+              "say": "Gộp hai nhóm: một, hai, ba, bốn, năm, sáu, bảy. Dòng đầu in ra số 7.",
+              "caption": "3 + 4 = 7 · phép tính với các con số",
+              "altText": "Hai nhóm ba và bốn viên đá đã gộp thành bảy viên. Mũi tên nối phép cộng ở dòng đầu với kết quả 7; đây là bước minh họa dòng đầu."
+            },
+            "en": {
+              "title": "Join them and count",
+              "say": "Join the groups: one, two, three, four, five, six, seven. The first line prints 7.",
+              "caption": "3 + 4 = 7 · calculating with numbers",
+              "altText": "The groups of three and four stones are now one group of seven. An arrow connects the first line’s addition to the result 7; this step illustrates the first line."
+            }
+          }
+        },
+        {
+          "beatId": "mq1_03_s2.b3",
+          "sourceBeatIndex": 2,
+          "waitForLearner": false,
+          "copy": {
+            "vi": {
+              "title": "Còn khi có ngoặc kép?",
+              "say": "Dòng hai bọc 3 + 4 trong ngoặc kép. Python giữ nguyên phần chữ, không cộng hai số.",
+              "caption": "Dòng 1 tính toán. Dòng 2 in nguyên chữ.",
+              "altText": "Phần \"3 + 4\" trong ngoặc kép ở dòng hai được tô nổi bật. Ô kết quả có hai dòng: 7, rồi đến nguyên chữ 3 + 4."
+            },
+            "en": {
+              "title": "What if we add quotation marks?",
+              "say": "Line two puts 3 + 4 inside quotation marks. Python keeps the text unchanged instead of adding the numbers.",
+              "caption": "Line 1 calculates. Line 2 prints the text unchanged.",
+              "altText": "The quoted text \"3 + 4\" on the second line is highlighted. The output box has two lines: 7, followed by the literal text 3 + 4."
+            }
+          }
+        },
+        {
+          "beatId": "mq1_03_s2.b4",
+          "sourceBeatIndex": 3,
+          "waitForLearner": true,
+          "copy": {
+            "vi": {
+              "title": "Thử và so sánh",
+              "say": "Bạn thử thêm hoặc bỏ ngoặc kép trong ô code bên cạnh, rồi nhìn kết quả thay đổi nhé.",
+              "caption": "Quan sát trước khi kết luận: số và chữ không giống nhau.",
+              "altText": "Hai dòng code, bảy viên đá và hai dòng kết quả vẫn ở trên bảng. Đến lượt bạn thử thêm hoặc bỏ dấu ngoặc kép trong ô code để so sánh."
+            },
+            "en": {
+              "title": "Try it and compare",
+              "say": "Try adding or removing quotation marks in your code, then watch the output change.",
+              "caption": "Look before you decide: numbers and text are different.",
+              "altText": "The two code lines, seven stones and two output lines remain on the board. It is your turn to add or remove quotation marks in the code field and compare."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
