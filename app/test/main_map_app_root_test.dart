@@ -90,34 +90,30 @@ double scalerAt(WidgetTester tester, Finder finder) =>
 ///
 /// Scene không được dựa vào lệnh tha này: hình học thật của sáu nhãn ở 2× do case
 /// R3-GEOM trong `main_map_scene_test.dart` chứng minh (cùng 12 config, cùng gate).
-void expectOnlyDocumentedRootOverflow(
-  Object? error,
-  double scale,
-  String cfg,
-) {
+void expectOnlyDocumentedRootOverflow(Object? error, double scale, String cfg) {
   if (error == null) {
     return;
   }
   final String dump = error.toString();
   // Receipt nêu luôn file:line mà Flutter chỉ ra trong dump, để handoff có path
   // (rule của bài này: không chỉ suy từ ảnh hay từ một gate lẻ).
-  final RegExp pathPattern =
-      RegExp(r'app/(?:lib|test)/[A-Za-z0-9_./+-]+\.dart:[0-9]+:[0-9]+');
-  final List<String> hits =
-      pathPattern.allMatches(dump).map((Match m) => m.group(0)!).toList();
+  final RegExp pathPattern = RegExp(
+    r'app/(?:lib|test)/[A-Za-z0-9_./+-]+\.dart:[0-9]+:[0-9]+',
+  );
+  final List<String> hits = pathPattern
+      .allMatches(dump)
+      .map((Match m) => m.group(0)!)
+      .toList();
   // ignore: avoid_print
   print(
     'R3-ROOT-EXC $cfg first=${dump.split('\n').first} '
     'paths=${hits.take(3).toList()}',
   );
-  final RegExp headerOverflow =
-      RegExp(r'A RenderFlex overflowed by [0-9.]+ pixels on the right\.');
-  final bool documented = scale > 1.5 && headerOverflow.hasMatch(dump);
-  expect(
-    documented,
-    isTrue,
-    reason: 'layout exception mới ở $cfg:\n$dump',
+  final RegExp headerOverflow = RegExp(
+    r'A RenderFlex overflowed by [0-9.]+ pixels on the right\.',
   );
+  final bool documented = scale > 1.5 && headerOverflow.hasMatch(dump);
+  expect(documented, isTrue, reason: 'layout exception mới ở $cfg:\n$dump');
 }
 
 void main() {
@@ -154,6 +150,7 @@ void main() {
                 '$cfg/$stage',
               );
             }
+
             tester.platformDispatcher.textScaleFactorTestValue = scale;
             addTearDown(
               tester.platformDispatcher.clearTextScaleFactorTestValue,
@@ -379,7 +376,10 @@ void main() {
         const ValueKey<String>('directory_place_bug_hunter'),
       );
       await tester.ensureVisible(bugRow);
-      await tester.pump();
+      // `ensureVisible` khởi động một animation cuộn; MỘT frame thì chưa đủ, hàng vẫn
+      // còn ngoài viewport nên tap lại trượt (đúng lỗi ở `f2f820b`). Phải để animation
+      // chạy xong rồi mới đo/tap.
+      await pumpFor(tester, const Duration(milliseconds: 250));
       await tester.tap(bugRow);
       expectOnlyDocumentedRootOverflow(
         tester.takeException(),
@@ -387,6 +387,14 @@ void main() {
         'smoke 2x/row',
       );
       await pumpFor(tester, const Duration(milliseconds: 900));
+      final int sheetCount = find.byType(ActivitySheet).evaluate().length;
+      final int goCount =
+          find.byKey(const Key('sheet_go_lesson')).evaluate().length;
+      // ignore: avoid_print
+      print(
+        'R3-ROOT-SMOKE row=${tester.getRect(bugRow)} '
+        'sheet=$sheetCount go=$goCount',
+      );
       expect(
         find.byKey(const Key('sheet_go_lesson')),
         findsOneWidget,
@@ -416,7 +424,7 @@ void main() {
         const ValueKey<String>('directory_place_robot_maze'),
       );
       await tester.ensureVisible(mazeRow);
-      await tester.pump();
+      await pumpFor(tester, const Duration(milliseconds: 250));
       await tester.tap(mazeRow);
       await pumpFor(tester, const Duration(milliseconds: 900));
       await tester.tap(find.byKey(const Key('sheet_open')));
