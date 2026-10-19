@@ -435,6 +435,20 @@ jobs:
           path: pyquest-release.apk
           if-no-files-found: warn
           retention-days: 14
+      - name: Publish direct-download pre-release APK
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -s pyquest-release.apk ]; then
+            sha256sum pyquest-release.apk | tee -a apk_release.txt
+            gh release upload preview-apk-latest pyquest-release.apk --clobber || \
+              gh release create preview-apk-latest pyquest-release.apk \
+                --prerelease \
+                --target "${GITHUB_SHA}" \
+                --title "PyQuest Test Build (${GITHUB_SHA:0:7})" \
+                --notes "Keyless release APK built from commit ${GITHUB_SHA} on ${GITHUB_REF_NAME}." || true
+          fi
       - name: Publish report
         if: always()
         env:

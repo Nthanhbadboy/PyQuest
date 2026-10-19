@@ -1,16 +1,17 @@
 name: PyQuest pinned checks and owner-test APK
-run-name: "Owner test · source ${{ inputs.source_sha || 'de01a490743982356ad5240d77ea99e9dbf8c7f5' }}"
+run-name: "Owner test · source ${{ inputs.source_sha || '029f8018a190c826f2d20717099d9438f6b30027' }}"
 
 on:
   push:
     branches:
       - arena/00838eb9-pyquest
+      - arena/84456d39-pyquest
   workflow_dispatch:
     inputs:
       source_sha:
         description: 'Exact trusted PyQuest source SHA to test and package'
         required: true
-        default: de01a490743982356ad5240d77ea99e9dbf8c7f5
+        default: 029f8018a190c826f2d20717099d9438f6b30027
         type: string
       build_mode:
         description: 'Internal preview only; release mode is not public-release approval'
@@ -34,7 +35,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SOURCE_SHA: ${{ inputs.source_sha || 'de01a490743982356ad5240d77ea99e9dbf8c7f5' }}
+  SOURCE_SHA: ${{ inputs.source_sha || '029f8018a190c826f2d20717099d9438f6b30027' }}
   WORKFLOW_SHA: ${{ github.sha }}
 
 jobs:
@@ -42,7 +43,7 @@ jobs:
     permissions:
       contents: read
       checks: write
-    if: github.ref == 'refs/heads/arena/00838eb9-pyquest' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[preview-apk]'))
+    if: (github.ref == 'refs/heads/arena/00838eb9-pyquest' || github.ref == 'refs/heads/arena/84456d39-pyquest') && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[preview-apk]'))
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
