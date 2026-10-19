@@ -10,6 +10,7 @@ import '../shared/theme/app_theme.dart';
 import '../shared/theme/palette.dart';
 import '../shared/widgets/chunky_button.dart';
 import '../shared/widgets/common.dart';
+import '../shared/widgets/sprite_cache.dart';
 import 'app_scope.dart';
 
 Future<void> showSettingsSheet(BuildContext context) {
@@ -33,6 +34,23 @@ class _SettingsSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Text(l10n.settingsTitle, style: PQText.h2),
+              const SizedBox(height: 10),
+              Container(
+                key: const ValueKey<String>('settings_25d_scene'),
+                height: 120,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF5C422B),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: PQColors.ink, width: 2.4),
+                ),
+                child: CustomPaint(
+                  painter: Scene25dPainter(
+                    asset: 'assets/images/settings_room_r38.webp',
+                    alignment: const Alignment(0, -0.1),
+                  ),
+                ),
+              ),
               const SizedBox(height: 12),
               _LanguagePreferencePanel(settings: settings),
               const SizedBox(height: 12),

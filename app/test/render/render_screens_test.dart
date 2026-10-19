@@ -156,6 +156,14 @@ Future<void> precacheMap(WidgetTester tester) async {
       'assets/images/achievement_room_r39.webp',
       'assets/images/journal_recap_r36.webp',
       'assets/images/garden_kiosk_r41.webp',
+      'assets/images/tutor_classroom_r35.webp',
+      'assets/images/practice_arena_r35.webp',
+      'assets/images/achievement_cutaway_r35.webp',
+      'assets/images/interior_room_r34.webp',
+      'assets/images/rest_nook_r38.webp',
+      'assets/images/settings_room_r38.webp',
+      'assets/images/study_corner_r35.webp',
+      'assets/images/archipelago_r37.webp',
     ]) {
       await precacheImage(AssetImage(a), ctx);
     }
@@ -208,7 +216,8 @@ Future<AppServices> start(
     key: _captureKey,
     child: PyQuestApp(
       servicesFactory: (_) async => s,
-      systemLocalesReader: systemLocales == null ? null : () => systemLocales,
+      systemLocalesReader: () =>
+          systemLocales ?? const <Locale>[Locale('vi')],
       minSplash: Duration.zero,
     ),
   );
@@ -368,7 +377,9 @@ void main() {
     await tap(tester, 'choice_0', ms: 300);
     await tap(tester, 'lesson_check', ms: 500);
     await tap(tester, 'lesson_continue', ms: 500);
-    await tester.tap(find.text('"PyQuest"').first);
+    await tester.ensureVisible(find.text('"PyQuest"').first);
+    await tester.pump();
+    await tester.tap(find.text('"PyQuest"').first, warnIfMissed: false);
     await pumpFor(tester, const Duration(milliseconds: 300));
     await tap(tester, 'lesson_check', ms: 600);
     await capture(tester, 'c04_lesson_fill_correct');

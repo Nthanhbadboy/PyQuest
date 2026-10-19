@@ -738,21 +738,22 @@ class _LessonScreenState extends State<LessonScreen> {
     switch (step) {
       case StoryStep s:
         return Padding(
-          padding: const EdgeInsets.only(top: 12),
+          padding: const EdgeInsets.only(top: 6),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                height: 196,
+                height: 214,
                 width: double.infinity,
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   color: const Color(0xFF355843),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: PQColors.ink, width: 2.6),
+                  border: Border.all(color: const Color(0xFF5C3D1E), width: 3),
                   boxShadow: const [
                     BoxShadow(
                       color: Color(0xFF7B5733),
-                      offset: Offset(0, 4),
+                      offset: Offset(0, 5),
                       blurRadius: 0,
                     ),
                   ],
@@ -769,26 +770,154 @@ class _LessonScreenState extends State<LessonScreen> {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.black.withValues(alpha: 0.05),
-                            const Color(0x99FFF8E7),
+                            const Color(0x4012221B),
+                            Colors.transparent,
+                            const Color(0xCC231A12),
                           ],
-                          stops: const [0.45, 1.0],
+                          stops: const [0.0, 0.45, 1.0],
                         ),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: CharacterView(id: s.speaker, size: 156, mood: s.mood),
+                    Positioned(
+                      left: 12,
+                      right: 12,
+                      top: 10,
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xEBFFF8E7),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: const Color(0xFF6B4C2B),
+                                width: 1.8,
+                              ),
+                            ),
+                            child: Text(
+                              '🏰 Tháp Python · Bài ${widget.lesson.number}',
+                              style: PQText.small.copyWith(
+                                color: const Color(0xFF4A3219),
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: PQColors.pyYellow,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: PQColors.ink,
+                                width: 1.8,
+                              ),
+                            ),
+                            child: Text(
+                              '📖 Khám phá',
+                              style: PQText.small.copyWith(
+                                color: PQColors.ink,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      left: 12,
+                      bottom: 12,
+                      right: 150,
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xEE173B30),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: const Color(0xFFC49252),
+                            width: 2.6,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x66000000),
+                              offset: Offset(0, 3),
+                              blurRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '🖍️ CHỦ ĐỀ BÀI HỌC',
+                              style: PQText.small.copyWith(
+                                color: PQColors.pyYellow,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              widget.lesson.skill,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: PQText.code.copyWith(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              widget.lesson.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: PQText.small.copyWith(
+                                color: const Color(0xFFD6F5E3),
+                                fontSize: 12.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 6,
+                      bottom: 2,
+                      child: CharacterView(
+                        id: s.speaker,
+                        size: 148,
+                        mood: s.mood,
+                      ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 12),
-              PQPanel(
-                child: Text(
-                  s.text,
-                  key: const ValueKey('story_text'),
-                  style: PQText.bodyStrong.copyWith(fontSize: 18),
+              _StudyDeskFrame(
+                title: '💬 Lời giảng của ${s.speaker.displayName}',
+                accent: PQColors.pyBlue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      s.text,
+                      key: const ValueKey('story_text'),
+                      style: PQText.bodyStrong.copyWith(
+                        fontSize: 17.5,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _ConceptVisualStrip(lesson: widget.lesson),
+                  ],
                 ),
               ),
             ],
@@ -802,49 +931,61 @@ class _LessonScreenState extends State<LessonScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(
-              character: CharacterId.py,
+            _Lesson25dClassroomStage(
+              speaker: CharacterId.py,
+              badge: '🖍️ BÀN THỬ NGHIỆM 2.5D',
               text: e.text,
-              portraitSize: 70,
+              sceneAsset: 'assets/images/tutor_classroom_r35.webp',
             ),
             const SizedBox(height: 12),
-            if (editable)
-              CodeEditor(
-                key: ValueKey<String>('example_code_editor_${e.id}'),
-                controller: _code!,
-                focusNode: _exampleFocusNode,
-                errorLine: _run?.errorLine,
-                minLines: 2,
-              )
-            else
-              CodeView(code: e.code, errorLine: _run?.errorLine),
-            const SizedBox(height: 10),
-            ChunkyButton(
-              key: const ValueKey('example_run'),
-              label: _run == null ? 'Chạy thử' : 'Chạy lại',
-              icon: Icons.play_arrow_rounded,
-              tone: PQTone.grass,
-              size: ChunkySize.medium,
-              onPressed: _running
-                  ? null
-                  : () async {
-                      final String code = _code?.text ?? e.code;
-                      final ExecutionResult r = await _execute(code);
-                      if (!mounted) return;
-                      AppScope.of(
-                        context,
-                      ).audio.play(r.success ? Sfx.sparkle : Sfx.bonk);
-                      board
-                        ?..bumpContext()
-                        ..learnerActed();
-                      setState(() {
-                        _run = r;
-                        _canContinue = true;
-                      });
-                    },
+            _StudyDeskFrame(
+              title: '💻 Bàn chạy thử code Python',
+              accent: PQColors.grassDeep,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (editable)
+                    CodeEditor(
+                      key: ValueKey<String>('example_code_editor_${e.id}'),
+                      controller: _code!,
+                      focusNode: _exampleFocusNode,
+                      errorLine: _run?.errorLine,
+                      minLines: 2,
+                    )
+                  else
+                    CodeView(code: e.code, errorLine: _run?.errorLine),
+                  const SizedBox(height: 10),
+                  ChunkyButton(
+                    key: const ValueKey('example_run'),
+                    label: _run == null ? 'Chạy thử' : 'Chạy lại',
+                    icon: Icons.play_arrow_rounded,
+                    tone: PQTone.grass,
+                    size: ChunkySize.medium,
+                    onPressed: _running
+                        ? null
+                        : () async {
+                            final String code = _code?.text ?? e.code;
+                            final ExecutionResult r = await _execute(code);
+                            if (!mounted) return;
+                            AppScope.of(
+                              context,
+                            ).audio.play(r.success ? Sfx.sparkle : Sfx.bonk);
+                            board
+                              ?..bumpContext()
+                              ..learnerActed();
+                            setState(() {
+                              _run = r;
+                              _canContinue = true;
+                            });
+                          },
+                  ),
+                  if (_run != null) ...[
+                    const SizedBox(height: 10),
+                    OutputConsole(result: _run),
+                  ],
+                ],
+              ),
             ),
-            const SizedBox(height: 10),
-            if (_run != null) OutputConsole(result: _run),
             if (board != null) ...<Widget>[
               const SizedBox(height: 12),
               _authoredBoardSection(e, board),
@@ -855,41 +996,54 @@ class _LessonScreenState extends State<LessonScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(
-              character: CharacterId.py,
+            _Lesson25dClassroomStage(
+              speaker: CharacterId.py,
+              badge: '🎯 THỬ THÁCH DỰ ĐOÁN',
               text: c.question,
-              portraitSize: 64,
               mood: _feedback == _Feedback.wrong ? Mood.thinking : Mood.happy,
+              sceneAsset: 'assets/images/tutor_classroom_r35.webp',
             ),
-            if (c.code != null) ...[
-              const SizedBox(height: 10),
-              CodeView(code: c.code!),
-            ],
             const SizedBox(height: 12),
-            for (var i = 0; i < c.options.length; i++)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: _OptionCard(
-                  key: ValueKey('choice_$i'),
-                  text: c.options[i],
-                  code:
-                      c.options[i].contains('(') ||
-                      c.options[i].contains('"') ||
-                      c.options[i].contains('\n'),
-                  selected: _choice == i,
-                  state: _feedback == _Feedback.correct && i == c.answer
-                      ? _OptionState.correct
-                      : (_feedback == _Feedback.wrong && _choice == i
-                            ? _OptionState.wrong
-                            : _OptionState.idle),
-                  onTap: _feedback == _Feedback.correct
-                      ? null
-                      : () => setState(() {
-                          _choice = i;
-                          _feedback = _Feedback.none;
-                        }),
-                ),
+            _StudyDeskFrame(
+              title: '🔍 Chọn đáp án đúng trên bàn học',
+              accent: PQColors.pyBlue,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (c.code != null) ...[
+                    CodeView(code: c.code!),
+                    const SizedBox(height: 12),
+                  ],
+                  for (var i = 0; i < c.options.length; i++)
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom: i == c.options.length - 1 ? 0 : 10,
+                      ),
+                      child: _OptionCard(
+                        key: ValueKey('choice_$i'),
+                        index: i,
+                        text: c.options[i],
+                        code:
+                            c.options[i].contains('(') ||
+                            c.options[i].contains('"') ||
+                            c.options[i].contains('\n'),
+                        selected: _choice == i,
+                        state: _feedback == _Feedback.correct && i == c.answer
+                            ? _OptionState.correct
+                            : (_feedback == _Feedback.wrong && _choice == i
+                                  ? _OptionState.wrong
+                                  : _OptionState.idle),
+                        onTap: _feedback == _Feedback.correct
+                            ? null
+                            : () => setState(() {
+                                _choice = i;
+                                _feedback = _Feedback.none;
+                              }),
+                      ),
+                    ),
+                ],
               ),
+            ),
           ],
         );
       case FillStep f:
@@ -897,194 +1051,252 @@ class _LessonScreenState extends State<LessonScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(
-              character: CharacterId.py,
+            _Lesson25dClassroomStage(
+              speaker: CharacterId.py,
+              badge: '🧩 GHÉP MẢNH LỆNH 2.5D',
               text: f.prompt,
-              portraitSize: 64,
+              sceneAsset: 'assets/images/tutor_classroom_r35.webp',
             ),
-            const SizedBox(height: 8),
-            _ExpectedBox(expected: f.expectedOutput),
             const SizedBox(height: 10),
-            CodeView(
-              code: code.replaceAll('___', '▢▢▢'),
-              errorLine: _run?.errorLine,
-            ),
-            const SizedBox(height: 12),
-            Text('Chạm mảnh ghép để đặt vào chỗ trống:', style: PQText.small),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (var i = 0; i < _fillOptions.length; i++)
-                  _TokenChip(
-                    key: ValueKey('fill_option_$i'),
-                    text: _fillOptions[i],
-                    used: _picks.contains(_fillOptions[i]),
-                    onTap: _feedback == _Feedback.correct
-                        ? null
-                        : () => _pickToken(_fillOptions[i]),
+            _StudyDeskFrame(
+              title: '🛠️ Bàn lắp ghép mảnh lệnh Python',
+              accent: PQColors.sunDeep,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _ExpectedBox(expected: f.expectedOutput),
+                  const SizedBox(height: 10),
+                  CodeView(
+                    code: code.replaceAll('___', '▢▢▢'),
+                    errorLine: _run?.errorLine,
                   ),
-              ],
-            ),
-            if (_picks.any((p) => p != null) && _feedback != _Feedback.correct)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: () => setState(() {
-                    _picks = List.filled(_picks.length, null);
-                    _feedback = _Feedback.none;
-                  }),
-                  icon: const Icon(Icons.undo_rounded, color: PQColors.inkSoft),
-                  label: Text('Bỏ chọn', style: PQText.small),
-                ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF3E7CE),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: const Color(0xFF8B5E34),
+                        width: 2,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Chạm mảnh ghép để đặt vào chỗ trống:',
+                          style: PQText.small.copyWith(
+                            color: const Color(0xFF4A3219),
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (var i = 0; i < _fillOptions.length; i++)
+                              _TokenChip(
+                                key: ValueKey('fill_option_$i'),
+                                text: _fillOptions[i],
+                                used: _picks.contains(_fillOptions[i]),
+                                onTap: _feedback == _Feedback.correct
+                                    ? null
+                                    : () => _pickToken(_fillOptions[i]),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (_picks.any((p) => p != null) &&
+                      _feedback != _Feedback.correct)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                        onPressed: () => setState(() {
+                          _picks = List.filled(_picks.length, null);
+                          _feedback = _Feedback.none;
+                        }),
+                        icon: const Icon(
+                          Icons.undo_rounded,
+                          color: PQColors.inkSoft,
+                        ),
+                        label: Text('Bỏ chọn', style: PQText.small),
+                      ),
+                    ),
+                  if (_run != null) ...[
+                    const SizedBox(height: 8),
+                    OutputConsole(result: _run),
+                  ],
+                ],
               ),
-            if (_run != null) ...[
-              const SizedBox(height: 8),
-              OutputConsole(result: _run),
-            ],
+            ),
           ],
         );
       case OrderStep o:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(
-              character: CharacterId.py,
+            _Lesson25dClassroomStage(
+              speaker: CharacterId.py,
+              badge: '🔢 SẮP XẾP DÒNG CODE',
               text: o.prompt,
-              portraitSize: 64,
+              sceneAsset: 'assets/images/tutor_classroom_r35.webp',
             ),
-            const SizedBox(height: 8),
-            _ExpectedBox(expected: o.expectedOutput),
             const SizedBox(height: 10),
-            Text('Chương trình của bạn:', style: PQText.small),
-            const SizedBox(height: 4),
-            Container(
-              constraints: const BoxConstraints(minHeight: 60),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: PQColors.codeBg,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: PQColors.ink, width: 2.4),
-              ),
+            _StudyDeskFrame(
+              title: '📋 Bảng lắp ráp thứ tự lệnh',
+              accent: PQColors.grapeDeep,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (_orderPicked.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        'Chạm các dòng bên dưới theo thứ tự...',
-                        style: PQText.code.copyWith(
-                          color: PQColors.codeComment,
-                          fontSize: 14,
-                        ),
-                      ),
+                  _ExpectedBox(expected: o.expectedOutput),
+                  const SizedBox(height: 10),
+                  Text('Chương trình của bạn:', style: PQText.small),
+                  const SizedBox(height: 4),
+                  Container(
+                    constraints: const BoxConstraints(minHeight: 60),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: PQColors.codeBg,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: PQColors.ink, width: 2.4),
                     ),
-                  for (var k = 0; k < _orderPicked.length; k++)
-                    GestureDetector(
-                      key: ValueKey('order_placed_$k'),
-                      onTap: _feedback == _Feedback.correct
-                          ? null
-                          : () => setState(() {
-                              _orderPicked.removeAt(k);
-                              _feedback = _Feedback.none;
-                            }),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 3),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 26,
-                              child: Text(
-                                '${k + 1}',
-                                style: PQText.code.copyWith(
-                                  color: PQColors.codeLine,
-                                  fontSize: 14,
-                                ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (_orderPicked.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              'Chạm các dòng bên dưới theo thứ tự...',
+                              style: PQText.code.copyWith(
+                                color: PQColors.codeComment,
+                                fontSize: 14,
                               ),
                             ),
-                            Expanded(
-                              child: Text.rich(
-                                TextSpan(
-                                  children: highlightPython(
-                                    _orderPool[_orderPicked[k]],
-                                    PQText.code.copyWith(fontSize: 15),
+                          ),
+                        for (var k = 0; k < _orderPicked.length; k++)
+                          GestureDetector(
+                            key: ValueKey('order_placed_$k'),
+                            onTap: _feedback == _Feedback.correct
+                                ? null
+                                : () => setState(() {
+                                    _orderPicked.removeAt(k);
+                                    _feedback = _Feedback.none;
+                                  }),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 3),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 26,
+                                    child: Text(
+                                      '${k + 1}',
+                                      style: PQText.code.copyWith(
+                                        color: PQColors.codeLine,
+                                        fontSize: 14,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                style: PQText.code.copyWith(fontSize: 15),
+                                  Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: highlightPython(
+                                          _orderPool[_orderPicked[k]],
+                                          PQText.code.copyWith(fontSize: 15),
+                                        ),
+                                      ),
+                                      style: PQText.code.copyWith(fontSize: 15),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  for (var i = 0; i < _orderPool.length; i++)
+                    if (!_orderPicked.contains(i))
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: _OptionCard(
+                          key: ValueKey('order_line_$i'),
+                          index: i,
+                          text: _orderPool[i],
+                          code: true,
+                          selected: false,
+                          state: _OptionState.idle,
+                          onTap: () => setState(() {
+                            _orderPicked.add(i);
+                            _feedback = _Feedback.none;
+                            AppScope.of(context).audio.play(Sfx.pop);
+                          }),
                         ),
                       ),
-                    ),
+                  if (_run != null) ...[
+                    const SizedBox(height: 8),
+                    OutputConsole(result: _run),
+                  ],
                 ],
               ),
             ),
-            const SizedBox(height: 12),
-            for (var i = 0; i < _orderPool.length; i++)
-              if (!_orderPicked.contains(i))
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: _OptionCard(
-                    key: ValueKey('order_line_$i'),
-                    text: _orderPool[i],
-                    code: true,
-                    selected: false,
-                    state: _OptionState.idle,
-                    onTap: () => setState(() {
-                      _orderPicked.add(i);
-                      _feedback = _Feedback.none;
-                      AppScope.of(context).audio.play(Sfx.pop);
-                    }),
-                  ),
-                ),
-            if (_run != null) ...[
-              const SizedBox(height: 8),
-              OutputConsole(result: _run),
-            ],
           ],
         );
       case WriteStep w:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(
-              character: CharacterId.py,
+            _Lesson25dClassroomStage(
+              speaker: CharacterId.py,
+              badge: '⌨️ XƯỞNG VIẾT CODE 2.5D',
               text: w.prompt,
-              portraitSize: 64,
+              sceneAsset: 'assets/images/tutor_classroom_r35.webp',
             ),
             const SizedBox(height: 10),
-            if (w.expectedOutput != null) ...[
-              _ExpectedBox(expected: w.expectedOutput!),
-              const SizedBox(height: 10),
-            ],
-            CodeEditor(
-              controller: _code!,
-              errorLine: _run?.errorLine,
-              minLines: 4,
+            _StudyDeskFrame(
+              title: '💻 Bàn lập trình của bạn',
+              accent: PQColors.pyBlue,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (w.expectedOutput != null) ...[
+                    _ExpectedBox(expected: w.expectedOutput!),
+                    const SizedBox(height: 10),
+                  ],
+                  CodeEditor(
+                    controller: _code!,
+                    errorLine: _run?.errorLine,
+                    minLines: 4,
+                  ),
+                  if (_stepFails >= 2 && w.hint.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    _HintBox(text: w.hint),
+                  ],
+                  const SizedBox(height: 10),
+                  OutputConsole(result: _run),
+                ],
+              ),
             ),
-            if (_stepFails >= 2 && w.hint.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              _HintBox(text: w.hint),
-            ],
-            const SizedBox(height: 10),
-            OutputConsole(result: _run),
           ],
         );
       case RobotStep r:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SpeechBubble(
-              character: CharacterId.robo,
+            _Lesson25dClassroomStage(
+              speaker: CharacterId.robo,
+              badge: '🤖 SÂN TẬP ROBO 2.5D',
               text: r.prompt,
-              portraitSize: 64,
+              sceneAsset: 'assets/images/practice_arena_r35.webp',
             ),
             const SizedBox(height: 8),
             SizedBox(
-              height: 170,
+              height: 184,
               child: _RobotRunner(
                 key: _robotKey,
                 rows: r.rows,
@@ -1094,25 +1306,34 @@ class _LessonScreenState extends State<LessonScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            CodeEditor(
-              controller: _code!,
-              errorLine: _run?.errorLine,
-              minLines: 3,
-              extraKeys: const [
-                CodeKey('right()', 'right()'),
-                CodeKey('down()', 'down()'),
-                CodeKey('left()', 'left()'),
-                CodeKey('up()', 'up()'),
-              ],
+            _StudyDeskFrame(
+              title: '🎮 Bảng điều khiển Python cho Robo',
+              accent: PQColors.teal,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  CodeEditor(
+                    controller: _code!,
+                    errorLine: _run?.errorLine,
+                    minLines: 3,
+                    extraKeys: const [
+                      CodeKey('right()', 'right()'),
+                      CodeKey('down()', 'down()'),
+                      CodeKey('left()', 'left()'),
+                      CodeKey('up()', 'up()'),
+                    ],
+                  ),
+                  if (_stepFails >= 2 && r.hint.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    _HintBox(text: r.hint),
+                  ],
+                  if (_run != null && !_run!.success) ...[
+                    const SizedBox(height: 8),
+                    ErrorCard(result: _run!, helper: CharacterId.robo),
+                  ],
+                ],
+              ),
             ),
-            if (_stepFails >= 2 && r.hint.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              _HintBox(text: r.hint),
-            ],
-            if (_run != null && !_run!.success) ...[
-              const SizedBox(height: 8),
-              ErrorCard(result: _run!, helper: CharacterId.robo),
-            ],
           ],
         );
     }
@@ -1126,53 +1347,139 @@ class _LessonScreenState extends State<LessonScreen> {
         final BoardLabels labels = BoardLabels.of(controller.locale);
         return Container(
           key: ValueKey<String>('lesson_authored_board_${step.id}'),
-          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: PQColors.cream,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: PQColors.ink, width: 2.2),
+            color: const Color(0xFF7C512B),
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: PQColors.ink, width: 2.6),
+            boxShadow: const <BoxShadow>[
+              BoxShadow(
+                color: Color(0xFF4A2E14),
+                offset: Offset(0, 5),
+                blurRadius: 0,
+              ),
+            ],
           ),
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              // 2.5D Classroom Header Banner inside the oak chalkboard frame
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1A3C32),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+                  border: Border.all(
+                    color: const Color(0xFFC49252),
+                    width: 1.8,
+                  ),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    CharacterView(id: tutor.id, size: 48),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            '🖍️ BẢNG GIẢNG TƯƠNG TÁC 2.5D',
+                            style: PQText.small.copyWith(
+                              color: PQColors.pyYellow,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          Text(
+                            tutor.name,
+                            style: PQText.h3.copyWith(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Semantics(
+                      label: labels.authoredBadge,
+                      child: Container(
+                        key: const ValueKey<String>(
+                          'lesson_board_authored_badge',
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: PQColors.pyYellow,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: PQColors.ink, width: 1.5),
+                        ),
+                        child: Text(
+                          labels.authoredBadge,
+                          style: PQText.small.copyWith(
+                            color: PQColors.ink,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFFBF0),
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(15),
+                  ),
+                  border: Border.all(
+                    color: const Color(0xFFC49252),
+                    width: 2.0,
+                  ),
+                ),
+                child: _boardLoading
+                    ? const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: LinearProgressIndicator(
+                          key: ValueKey<String>('lesson_board_loading'),
+                        ),
+                      )
+                    : BoardView(
+                        key: ValueKey<String>('lesson_board_view_${step.id}'),
+                        controller: controller,
+                        codeText: _code?.text ?? step.code,
+                        embedded: true,
+                        showScaffold: false,
+                      ),
+              ),
+              const SizedBox(height: 6),
+              // 3D wooden chalk tray with yellow & white chalk sticks
               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  CharacterView(id: tutor.id, size: 48),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(tutor.name, style: PQText.h3)),
-                  Semantics(
-                    label: labels.authoredBadge,
-                    child: Container(
-                      key: const ValueKey<String>(
-                        'lesson_board_authored_badge',
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: PQColors.sun.withValues(alpha: 0.35),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: PQColors.ink, width: 1.5),
-                      ),
-                      child: Text(labels.authoredBadge, style: PQText.small),
+                  Container(
+                    width: 28,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFD86B),
+                      borderRadius: BorderRadius.circular(3),
                     ),
                   ),
+                  const SizedBox(width: 6),
+                  Container(
+                    width: 22,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
                 ],
               ),
-              const SizedBox(height: 8),
-              if (_boardLoading)
-                const LinearProgressIndicator(
-                  key: ValueKey<String>('lesson_board_loading'),
-                )
-              else
-                BoardView(
-                  key: ValueKey<String>('lesson_board_view_${step.id}'),
-                  controller: controller,
-                  codeText: _code?.text ?? step.code,
-                  embedded: true,
-                  showScaffold: false,
-                ),
             ],
           ),
         );
@@ -1311,12 +1618,14 @@ enum _OptionState { idle, correct, wrong }
 class _OptionCard extends StatelessWidget {
   const _OptionCard({
     super.key,
+    this.index = 0,
     required this.text,
     required this.code,
     required this.selected,
     required this.state,
     required this.onTap,
   });
+  final int index;
   final String text;
   final bool code;
   final bool selected;
@@ -1325,6 +1634,8 @@ class _OptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const List<String> letters = <String>['A', 'B', 'C', 'D', 'E', 'F'];
+    final String badgeLetter = letters[index % letters.length];
     final color = code
         ? (selected || state != _OptionState.idle
               ? PQColors.codeBgSoft
@@ -1345,7 +1656,7 @@ class _OptionCard extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16),
@@ -1355,7 +1666,7 @@ class _OptionCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: PQColors.ink.withValues(alpha: 0.15),
+              color: PQColors.ink.withValues(alpha: 0.2),
               offset: const Offset(0, 3),
               blurRadius: 0,
             ),
@@ -1363,6 +1674,24 @@ class _OptionCard extends StatelessWidget {
         ),
         child: Row(
           children: [
+            Container(
+              width: 30,
+              height: 30,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: selected ? PQColors.pyYellow : const Color(0xFFEBD9B4),
+                borderRadius: BorderRadius.circular(9),
+                border: Border.all(color: PQColors.ink, width: 1.8),
+              ),
+              child: Text(
+                badgeLetter,
+                style: PQText.small.copyWith(
+                  color: PQColors.ink,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
             Expanded(
               child: code
                   ? Text.rich(
@@ -1646,7 +1975,7 @@ class _LessonStage25dPainter extends CustomPainter {
         rect: rect,
         image: scene,
         fit: BoxFit.cover,
-        alignment: const Alignment(0, 0.25),
+        alignment: const Alignment(0, -0.25),
         filterQuality: FilterQuality.medium,
       );
     } else {
@@ -1665,4 +1994,321 @@ class _LessonStage25dPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _LessonStage25dPainter oldDelegate) => false;
 }
+
+class _Lesson25dClassroomStage extends StatelessWidget {
+  const _Lesson25dClassroomStage({
+    required this.speaker,
+    required this.badge,
+    required this.text,
+    required this.sceneAsset,
+    this.mood = Mood.happy,
+  });
+
+  final CharacterId speaker;
+  final String badge;
+  final String text;
+  final String sceneAsset;
+  final Mood mood;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: const Color(0xFF3E6151),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xFF5C3D1E), width: 2.8),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xFF7B5733),
+            offset: Offset(0, 4),
+            blurRadius: 0,
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: Scene25dPainter(
+                asset: sceneAsset,
+                alignment: const Alignment(0, -0.15),
+                fallbackTop: const Color(0xFF4A7864),
+                fallbackBottom: const Color(0xFF28473A),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    const Color(0x5514231D),
+                    const Color(0xAA1F2F28),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: PQColors.pyYellow,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: PQColors.ink, width: 1.6),
+                      ),
+                      child: Text(
+                        badge,
+                        style: PQText.small.copyWith(
+                          color: PQColors.ink,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xE6FFF8E7),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: const Color(0xFF6B4C2B),
+                          width: 1.4,
+                        ),
+                      ),
+                      child: Text(
+                        speaker.displayName,
+                        style: PQText.small.copyWith(
+                          color: const Color(0xFF4A3219),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CharacterView(id: speaker, size: 78, mood: mood),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(11),
+                        decoration: BoxDecoration(
+                          color: const Color(0xF5FFF8E7),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: const Color(0xFF6B4C2B),
+                            width: 2.2,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x55000000),
+                              offset: Offset(0, 3),
+                              blurRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          text,
+                          style: PQText.bodyStrong.copyWith(
+                            fontSize: 15.5,
+                            height: 1.35,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StudyDeskFrame extends StatelessWidget {
+  const _StudyDeskFrame({
+    required this.title,
+    required this.accent,
+    required this.child,
+  });
+
+  final String title;
+  final Color accent;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF8B5E34),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: PQColors.ink, width: 2.5),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xFF523519),
+            offset: Offset(0, 5),
+            blurRadius: 0,
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.fromLTRB(7, 7, 7, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 2, 10, 6),
+            child: Row(
+              children: [
+                Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: accent,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 1.5),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: PQText.small.copyWith(
+                      color: const Color(0xFFFFF4D6),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 12.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFFBF2),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFC49252), width: 2),
+            ),
+            child: child,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ConceptVisualStrip extends StatelessWidget {
+  const _ConceptVisualStrip({required this.lesson});
+
+  final Lesson lesson;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEEF5FF),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: PQColors.pyBlue, width: 1.8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '⚡ SƠ ĐỒ BÍ KÍP TRONG BÀI NÀY',
+            style: PQText.small.copyWith(
+              color: PQColors.pyBlue,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Expanded(
+                child: _pill(
+                  '1. Công cụ',
+                  lesson.skill,
+                  const Color(0xFFFFF3CC),
+                  const Color(0xFF9A6B16),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4),
+                child: Icon(
+                  Icons.arrow_forward_rounded,
+                  size: 18,
+                  color: PQColors.pyBlue,
+                ),
+              ),
+              Expanded(
+                child: _pill(
+                  '2. Mục tiêu',
+                  lesson.title,
+                  const Color(0xFFE3F6EC),
+                  PQColors.successDeep,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _pill(String label, String value, Color bg, Color border) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: border, width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: PQText.small.copyWith(
+              fontSize: 10.5,
+              color: border,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: PQText.bodyStrong.copyWith(fontSize: 13),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 

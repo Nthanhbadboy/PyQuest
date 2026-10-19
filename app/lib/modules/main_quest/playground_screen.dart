@@ -98,7 +98,7 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
                         ],
                       ),
                       child: Image.asset(
-                        'assets/images/journal_recap_r36.webp',
+                        'assets/images/study_corner_r35.webp',
                         fit: BoxFit.cover,
                         gaplessPlayback: true,
                       ),

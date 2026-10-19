@@ -128,16 +128,16 @@ class _RobotMazeHomeScreenState extends State<RobotMazeHomeScreen> {
                   children: [
                     Container(
                       key: const ValueKey('maze_25d_scene'),
-                      height: 164,
+                      height: 176,
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
                         color: const Color(0xFF3E6E37),
-                        borderRadius: BorderRadius.circular(22),
-                        border: Border.all(color: PQColors.ink, width: 2.6),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: const Color(0xFF5C3D1E), width: 2.8),
                         boxShadow: [
                           BoxShadow(
                             color: PQTone.grass.depth,
-                            offset: const Offset(0, 4),
+                            offset: const Offset(0, 5),
                             blurRadius: 0,
                           ),
                         ],
@@ -146,8 +146,9 @@ class _RobotMazeHomeScreenState extends State<RobotMazeHomeScreen> {
                         fit: StackFit.expand,
                         children: [
                           Image.asset(
-                            'assets/images/maze_trail_r45.webp',
+                            'assets/images/practice_arena_r35.webp',
                             fit: BoxFit.cover,
+                            alignment: const Alignment(0, -0.15),
                             gaplessPlayback: true,
                           ),
                           DecoratedBox(
@@ -156,46 +157,74 @@ class _RobotMazeHomeScreenState extends State<RobotMazeHomeScreen> {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  Colors.black.withValues(alpha: 0.08),
-                                  Colors.black.withValues(alpha: 0.54),
+                                  Colors.black.withValues(alpha: 0.15),
+                                  Colors.black.withValues(alpha: 0.68),
                                 ],
                               ),
                             ),
                           ),
                           Positioned(
-                            right: 12,
-                            bottom: 8,
+                            left: 12,
+                            top: 10,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: PQColors.pyYellow,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: PQColors.ink, width: 1.6),
+                              ),
+                              child: Text(
+                                '🌿 KHU VƯỜN MÊ CUNG 2.5D · ${levels.length} MÀN',
+                                style: PQText.small.copyWith(
+                                  color: PQColors.ink,
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            right: 8,
+                            bottom: 4,
                             child: Image.asset(
                               'assets/images/robo_token_r50.png',
-                              width: 82,
-                              height: 82,
+                              width: 96,
+                              height: 96,
                               fit: BoxFit.contain,
                               gaplessPlayback: true,
                             ),
                           ),
                           Positioned(
-                            left: 14,
-                            right: 98,
+                            left: 12,
+                            right: 106,
                             bottom: 10,
-                            child: Text(
-                              'Khu vườn mê cung 2.5D · ${levels.length} thử thách',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: PQText.small.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: const Color(0xF2FFF8E7),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: const Color(0xFF6B4C2B),
+                                  width: 2,
+                                ),
+                              ),
+                              child: Text(
+                                'Robo: Mỗi mũi tên là một lệnh. Xếp đúng thứ tự để dẫn đường qua vườn mê cung nhé!',
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: PQText.small.copyWith(
+                                  color: PQColors.ink,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    const SpeechBubble(
-                      character: CharacterId.robo,
-                      text:
-                          'Mỗi mũi tên là một lệnh. Xếp đúng thứ tự, Robo sẽ đi đúng đường. Sẵn sàng chưa?',
-                      portraitSize: 78,
                     ),
                     const SizedBox(height: 12),
                     LayoutBuilder(
@@ -332,52 +361,49 @@ class _PathPainter extends CustomPainter {
       final mid = (a.dy + b.dy) / 2;
       path.cubicTo(a.dx, mid, b.dx, mid, b.dx, b.dy);
     }
-    // 2.5D stone garden path border + shadow
-    canvas.drawPath(
-      path.shift(const Offset(0, 5)),
-      Paint()
-        ..color = PQColors.ink.withValues(alpha: 0.35)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 32
-        ..strokeCap = StrokeCap.round,
-    );
-    canvas.drawPath(
-      path,
-      Paint()
-        ..color = const Color(0xFF6B533B)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 30
-        ..strokeCap = StrokeCap.round,
-    );
-    canvas.drawPath(
-      path,
-      Paint()
-        ..color = const Color(0xFFE8D3A2)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 22
-        ..strokeCap = StrokeCap.round,
-    );
-    final dash = Paint()
-      ..color = const Color(0xFFFFF6DF).withValues(alpha: 0.90)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 5
-      ..strokeCap = StrokeCap.round;
+    // 2.5D isometric stepping stones along the garden path (instead of a solid flat road)
     for (final metric in path.computeMetrics()) {
-      for (var d = 0.0; d < metric.length; d += 22) {
-        canvas.drawPath(metric.extractPath(d, math.min(d + 9, metric.length)), dash);
+      for (var d = 16.0; d < metric.length - 16; d += 26) {
+        final pos = metric.getTangentForOffset(d)?.position;
+        if (pos == null) continue;
+        final Rect stone = Rect.fromCenter(center: pos, width: 22, height: 12);
+        canvas.drawOval(
+          stone.shift(const Offset(0, 3)),
+          Paint()..color = PQColors.ink.withValues(alpha: 0.35),
+        );
+        canvas.drawOval(
+          stone,
+          Paint()..color = const Color(0xFFEBD9B4),
+        );
+        canvas.drawOval(
+          stone,
+          Paint()
+            ..color = const Color(0xFF6B533B)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.8,
+        );
       }
     }
-    // 2.5D stone pedestal base under each level node
+    // 3D isometric stone pedestal base under each level node
     for (final pt in points) {
-      final Rect base = Rect.fromCenter(center: pt.translate(0, 24), width: 88, height: 24);
-      canvas.drawOval(base.shift(const Offset(0, 4)), Paint()..color = PQColors.ink.withValues(alpha: 0.32));
-      canvas.drawOval(base, Paint()..color = const Color(0xFFD6C39A));
+      final Rect rim = Rect.fromCenter(center: pt.translate(0, 26), width: 92, height: 28);
+      final Rect top = Rect.fromCenter(center: pt.translate(0, 22), width: 88, height: 24);
+      canvas.drawOval(rim.shift(const Offset(0, 4)), Paint()..color = PQColors.ink.withValues(alpha: 0.38));
+      canvas.drawOval(rim, Paint()..color = const Color(0xFF9C8460));
       canvas.drawOval(
-        base,
+        rim,
         Paint()
           ..color = PQColors.ink
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.2,
+      );
+      canvas.drawOval(top, Paint()..color = const Color(0xFFEADAB6));
+      canvas.drawOval(
+        top,
+        Paint()
+          ..color = PQColors.ink
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.0,
       );
     }
   }

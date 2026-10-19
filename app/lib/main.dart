@@ -12,5 +12,14 @@ Future<void> main() async {
     systemNavigationBarColor: Color(0xFFFFF5DE),
     systemNavigationBarIconBrightness: Brightness.dark,
   ));
-  runApp(const PyQuestApp());
+  runApp(
+    PyQuestApp(
+      systemLocalesReader: () {
+        final List<Locale> os =
+            WidgetsBinding.instance.platformDispatcher.locales;
+        if (os.any((Locale l) => l.languageCode == 'vi')) return os;
+        return <Locale>[const Locale('vi'), ...os];
+      },
+    ),
+  );
 }

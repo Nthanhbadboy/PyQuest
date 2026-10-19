@@ -13,6 +13,7 @@ import '../../shared/theme/palette.dart';
 import '../../shared/widgets/chunky_button.dart';
 import '../../shared/widgets/code_widgets.dart';
 import '../../shared/widgets/common.dart';
+import '../../shared/widgets/sprite_cache.dart';
 import 'gemini_live_voice.dart';
 import 'tutor_models.dart';
 import 'tutor_session.dart';
@@ -539,47 +540,73 @@ class _TutorPanelState extends State<TutorPanel> {
 
   Widget _header(TutorSession session) {
     final strings = _s;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        CharacterView(id: _speaker, size: 62, mood: _mood),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                _member.name,
-                style: const TextStyle(
-                  fontFamily: 'Baloo2',
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
-                  color: PQColors.ink,
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF7E4),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFF6B4C2B), width: 2.2),
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.25,
+              child: CustomPaint(
+                painter: Scene25dPainter(
+                  asset: 'assets/images/tutor_classroom_r35.webp',
+                  alignment: const Alignment(0, -0.2),
                 ),
               ),
-              Text(
-                _lang == PqLang.vi ? _member.roleVi : _member.roleEn,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 12.5,
-                  color: PQColors.inkSoft,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-        const SizedBox(width: 6),
-        _quotaChip(),
-        IconButton(
-          key: const ValueKey('tutor_close'),
-          tooltip: strings.close,
-          iconSize: 28,
-          onPressed: () => Navigator.of(context).maybePop(),
-          icon: const Icon(Icons.close_rounded, color: PQColors.ink),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 6, 4, 6),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CharacterView(id: _speaker, size: 62, mood: _mood),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _member.name,
+                        style: const TextStyle(
+                          fontFamily: 'Baloo2',
+                          fontWeight: FontWeight.w800,
+                          fontSize: 20,
+                          color: PQColors.ink,
+                        ),
+                      ),
+                      Text(
+                        _lang == PqLang.vi ? _member.roleVi : _member.roleEn,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: 'Nunito',
+                          fontSize: 12.5,
+                          color: PQColors.inkSoft,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 6),
+                _quotaChip(),
+                IconButton(
+                  key: const ValueKey('tutor_close'),
+                  tooltip: strings.close,
+                  iconSize: 28,
+                  onPressed: () => Navigator.of(context).maybePop(),
+                  icon: const Icon(Icons.close_rounded, color: PQColors.ink),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

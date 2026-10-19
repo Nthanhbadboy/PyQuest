@@ -43,6 +43,30 @@ Path _roundPath(double left, double top, double w, double h, double r) =>
 abstract class CastPainter2 extends CastPainter {
   CastPainter2({required super.t, required super.blink, required super.bob, required super.mood});
 
+  Color get accentColor => PQColors.sea;
+
+  @override
+  void drawOverlay(Canvas canvas) {
+    final Rect ring = Rect.fromCenter(center: const Offset(50, 91), width: 62, height: 14);
+    canvas.drawOval(
+      ring.shift(const Offset(0, 3)),
+      _fillC(PQColors.ink.withValues(alpha: 0.35)),
+    );
+    canvas.drawOval(
+      ring,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: <Color>[
+            accentColor.withValues(alpha: 0.85),
+            PQColors.woodDeep,
+          ],
+        ).createShader(ring),
+    );
+    canvas.drawOval(ring, _lineC(2.0, PQColors.ink));
+  }
+
   bool get celebrating => mood == Mood.celebrating;
   bool get confused => mood == Mood.confused;
   bool get sad => mood == Mood.sad;
@@ -106,6 +130,12 @@ abstract class CastPainter2 extends CastPainter {
 /// Nova — curious young inventor: ponytail, goggles pushed up, tool belt.
 class NovaPainter extends CastPainter2 {
   NovaPainter({required super.t, required super.blink, required super.bob, required super.mood});
+
+  @override
+  String? get spriteAsset => 'assets/images/robo_token_r50.png';
+
+  @override
+  Color get accentColor => PQColors.sea;
 
   static const _suit = PQColors.sea;
   static const _suitDeep = PQColors.seaDeep;
@@ -185,6 +215,12 @@ class NovaPainter extends CastPainter2 {
 class AdaPainter extends CastPainter2 {
   AdaPainter({required super.t, required super.blink, required super.bob, required super.mood});
 
+  @override
+  String? get spriteAsset => 'assets/images/py_token_r56.png';
+
+  @override
+  Color get accentColor => PQColors.grape;
+
   static const _cardigan = PQColors.grape;
   static const _cardiganDeep = PQColors.grapeDeep;
   static const _hair = Color(0xFFE8E6F5);
@@ -254,6 +290,12 @@ class AdaPainter extends CastPainter2 {
 /// Kai — readable young programmer silhouette: headphones, swept spikes and hoodie.
 class KaiPainter extends CastPainter2 {
   KaiPainter({required super.t, required super.blink, required super.bob, required super.mood});
+
+  @override
+  String? get spriteAsset => 'assets/images/pip_token_r54.png';
+
+  @override
+  Color get accentColor => PQColors.grass;
 
   static const _hoodie = PQColors.grass;
   static const _hoodieDeep = PQColors.grassDeep;
@@ -346,6 +388,12 @@ class KaiPainter extends CastPainter2 {
 class BytePainter extends CastPainter2 {
   BytePainter({required super.t, required super.blink, required super.bob, required super.mood});
 
+  @override
+  String? get spriteAsset => 'assets/images/bitsy_token_r56.png';
+
+  @override
+  Color get accentColor => const Color(0xFFF59029);
+
   static const _fur = Color(0xFFF59029);
   static const _furDeep = Color(0xFFC96A12);
   static const _cream = Color(0xFFFFF0D8);
@@ -437,6 +485,12 @@ class BytePainter extends CastPainter2 {
 class PixelPainter extends CastPainter2 {
   PixelPainter({required super.t, required super.blink, required super.bob, required super.mood});
 
+  @override
+  String? get spriteAsset => 'assets/images/py_token_r56.png';
+
+  @override
+  Color get accentColor => PQColors.skyDeep;
+
   static const _feather = PQColors.skyDeep;
   static const _featherLight = Color(0xFF7EC2F7);
   static const _face = Color(0xFFEAF6FF);
@@ -511,6 +565,12 @@ class PixelPainter extends CastPainter2 {
 /// Loop — green turtle with a spiral shell: repetition, patience, loops.
 class LoopPainter extends CastPainter2 {
   LoopPainter({required super.t, required super.blink, required super.bob, required super.mood});
+
+  @override
+  String? get spriteAsset => 'assets/images/pip_token_r54.png';
+
+  @override
+  Color get accentColor => PQColors.grassDeep;
 
   static const _skin = PQColors.grass;
   static const _skinDeep = PQColors.grassDeep;
@@ -588,6 +648,12 @@ class LoopPainter extends CastPainter2 {
 /// Bit — a compact robot that floats: single-screen face, chest value slot.
 class BitPainter extends CastPainter2 {
   BitPainter({required super.t, required super.blink, required super.bob, required super.mood});
+
+  @override
+  String? get spriteAsset => 'assets/images/robo_token_r50.png';
+
+  @override
+  Color get accentColor => PQColors.pyYellow;
 
   static const _shellC = PQColors.pyYellow;
   static const _shellDeep = PQColors.sunDeep;
@@ -693,6 +759,12 @@ class BitPainter extends CastPainter2 {
 /// Lumi — a tiny forest quest-spirit with unmistakable leaf ears and a charm.
 class LumiPainter extends CastPainter2 {
   LumiPainter({required super.t, required super.blink, required super.bob, required super.mood});
+
+  @override
+  String? get spriteAsset => 'assets/images/bitsy_token_r56.png';
+
+  @override
+  Color get accentColor => const Color(0xFF70DEC2);
 
   static const _mint = Color(0xFF70DEC2);
   static const _mintDeep = Color(0xFF279B88);

@@ -243,6 +243,8 @@ class BoardControls extends StatelessWidget {
   }
 
   Widget _control(String label, String key, VoidCallback? onTap) {
+    final bool isPrimary = key == 'board_next';
+    final bool enabled = onTap != null;
     return Semantics(
       button: true,
       label: label,
@@ -251,7 +253,32 @@ class BoardControls extends StatelessWidget {
         child: TextButton(
           key: ValueKey<String>(key),
           onPressed: onTap,
-          child: Text(label),
+          style: TextButton.styleFrom(
+            backgroundColor: !enabled
+                ? const Color(0xFFEAE3D2)
+                : (isPrimary
+                      ? const Color(0xFFFFD45A)
+                      : const Color(0xFFFFF8E7)),
+            foregroundColor: !enabled
+                ? const Color(0xFF8C8270)
+                : const Color(0xFF231F20),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+              side: BorderSide(
+                color: !enabled
+                    ? const Color(0xFFBDB39E)
+                    : (isPrimary
+                          ? const Color(0xFF8A5A19)
+                          : const Color(0xFF7A5C38)),
+                width: 2,
+              ),
+            ),
+          ),
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w800),
+          ),
         ),
       ),
     );
@@ -564,8 +591,9 @@ class _TutorLayer extends StatelessWidget {
         body = Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0x33000000)),
-            color: const Color(0x05000000),
+            border: Border.all(color: const Color(0xFF8B693E), width: 1.4),
+            borderRadius: BorderRadius.circular(6),
+            color: const Color(0xFFFFF3CC),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -592,12 +620,19 @@ class _TutorLayer extends StatelessWidget {
                   width: BoardLayout.chipSize,
                   height: BoardLayout.chipSize,
                   decoration: BoxDecoration(
-                    color: const Color(0x1A000000),
+                    color: const Color(0xFFFFD86B),
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: const Color(0x99000000),
-                      width: 1.5,
+                      color: const Color(0xFF7C512B),
+                      width: 1.8,
                     ),
+                    boxShadow: const <BoxShadow>[
+                      BoxShadow(
+                        color: Color(0x337C512B),
+                        offset: Offset(0, 1.5),
+                        blurRadius: 0,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -606,7 +641,8 @@ class _TutorLayer extends StatelessWidget {
       case BoardNodeKind.shape:
         body = Container(
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xCC1B2A4A), width: 2),
+            color: const Color(0x14387ADF),
+            border: Border.all(color: const Color(0xCC1B2A4A), width: 2.2),
             shape: node.shape == 'circle'
                 ? BoxShape.circle
                 : BoxShape.rectangle,
@@ -625,19 +661,15 @@ class _TutorLayer extends StatelessWidget {
         body = Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0x66000000)),
-            color: const Color(0x08000000),
+            border: Border.all(color: const Color(0xFF2E6F56), width: 1.6),
+            borderRadius: BorderRadius.circular(6),
+            color: const Color(0xFFEAF7F0),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
                 node.header,
-                // `0.85` và `height: 1.35` là cặp số mà `BoardLayout` dùng cho chiều cao nhãn
-                // (`lineHeight * 0.85`): khác nhau ở đây thì Column cao hơn hộp và RenderFlex báo
-                // overflow dù mọi con số trong layout đều "đúng".
-                // Một hàm style duy nhất cho cả đo lẫn vẽ: `outputHeaderHeightOf` ở `_buildLayer`
-                // dùng đúng thể thức này, nên hộp output không thể cao hơn/thấp hơn Column của nó.
                 style: _outputHeaderStyle(codeStyle, codeSize),
               ),
               for (final String line in node.lines)
@@ -849,12 +881,16 @@ class _Notice extends StatelessWidget {
       liveRegion: true,
       label: text,
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: const Color(0x11000000),
-          border: Border.all(color: const Color(0x22000000)),
+          color: const Color(0xFFFFF4CC),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFB38632), width: 1.6),
         ),
-        child: Text(text),
+        child: Text(
+          text,
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
       ),
     );
   }

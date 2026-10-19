@@ -57,15 +57,15 @@ class MazeBoardPainter extends CustomPainter {
   final Animation<double> time;
   final bool editorMode;
 
-  static const _grassA = Color(0xFFA4DE6F);
-  static const _grassB = Color(0xFF93D460);
+  static const _grassA = Color(0xFFEAD7B2);
+  static const _grassB = Color(0xFFDFC89D);
   static const _bushDark = Color(0xFF3E8F35);
   static const _bushLight = Color(0xFF5DB64C);
   static const _water = Color(0xFF4BC0EE);
 
   /// Board geometry for hit testing (editor) and layout.
   static ({Offset origin, double cell}) geometry(MazeLevel level, Size size) {
-    const pad = 8.0;
+    const pad = 20.0;
     final cell = math.min((size.width - pad * 2) / level.width, (size.height - pad * 2) / level.height);
     final w = cell * level.width;
     final h = cell * level.height;
@@ -80,29 +80,49 @@ class MazeBoardPainter extends CustomPainter {
     final boardRect = Rect.fromLTWH(origin.dx, origin.dy, cell * level.width, cell * level.height);
     final t = time.value;
 
-    // 2.5D Garden stage surround + wooden courtyard frame (r50)
-    final frame = RRect.fromRectAndRadius(boardRect.inflate(9), const Radius.circular(20));
-    final ui.Image? stageSprite = SpriteCache.get('assets/images/garden_stage_r50.webp');
+    // Full 2.5D Garden Stage backdrop (r50) surrounding the wooden board tray
+    final RRect stageRRect = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      const Radius.circular(22),
+    );
+    final String stageAsset = editorMode
+        ? 'assets/images/maze_workbench_r46.webp'
+        : 'assets/images/garden_stage_r50.webp';
+    final ui.Image? stageSprite =
+        SpriteCache.get(stageAsset) ??
+        SpriteCache.get('assets/images/garden_stage_r50.webp');
+    canvas.save();
+    canvas.clipRRect(stageRRect);
     if (stageSprite != null) {
-      canvas.save();
-      canvas.clipRRect(frame);
       paintImage(
         canvas: canvas,
-        rect: frame.outerRect,
+        rect: Offset.zero & size,
         image: stageSprite,
         fit: BoxFit.cover,
         filterQuality: FilterQuality.medium,
       );
-      canvas.restore();
-    }
-    canvas.drawRRect(frame.shift(const Offset(0, 6)), Paint()..color = PQColors.ink.withValues(alpha: 0.28));
-    if (stageSprite == null) {
-      canvas.drawRRect(frame, Paint()..color = PQColors.wood);
     } else {
-      canvas.drawRRect(frame, _stroke(5, const Color(0xFF8C6239)));
+      canvas.drawRect(
+        Offset.zero & size,
+        Paint()..color = const Color(0xFF5B8C4A),
+      );
     }
-    canvas.drawRRect(frame, _stroke(2.8));
-    final inner = RRect.fromRectAndRadius(boardRect, const Radius.circular(14));
+    canvas.restore();
+    canvas.drawRRect(stageRRect, _stroke(2.8, const Color(0xFF5C3D1E)));
+
+    // 3D Carved Oak Board Tray sitting inside the 2.5D garden stage
+    final frame = RRect.fromRectAndRadius(boardRect.inflate(7), const Radius.circular(18));
+    canvas.drawRRect(
+      frame.shift(const Offset(0, 6)),
+      Paint()..color = PQColors.ink.withValues(alpha: 0.38),
+    );
+    canvas.drawRRect(frame, Paint()..color = const Color(0xFF8C6239));
+    canvas.drawRRect(
+      frame.deflate(2.5),
+      Paint()..color = const Color(0xFFC49A6C),
+    );
+    canvas.drawRRect(frame, _stroke(2.6, const Color(0xFF4A3219)));
+    final inner = RRect.fromRectAndRadius(boardRect, const Radius.circular(13));
     canvas.save();
     canvas.clipRRect(inner);
 
@@ -111,12 +131,33 @@ class MazeBoardPainter extends CustomPainter {
         final r = Rect.fromLTWH(origin.dx + x * cell, origin.dy + y * cell, cell, cell);
         final tile = level.tiles[y][x];
         canvas.drawRect(r, Paint()..color = (x + y).isEven ? _grassA : _grassB);
-        // 2.5D bevel on each courtyard tile
-        canvas.drawLine(r.topLeft, r.topRight, Paint()..color = Colors.white.withValues(alpha: 0.26)..strokeWidth = 2);
-        canvas.drawLine(r.topLeft, r.bottomLeft, Paint()..color = Colors.white.withValues(alpha: 0.18)..strokeWidth = 2);
-        canvas.drawLine(r.bottomLeft, r.bottomRight, Paint()..color = const Color(0xFF4C8D32).withValues(alpha: 0.30)..strokeWidth = 2);
-        canvas.drawLine(r.topRight, r.bottomRight, Paint()..color = const Color(0xFF4C8D32).withValues(alpha: 0.24)..strokeWidth = 2);
-        if (tile == Tile.floor) _tuft(canvas, r, x * 7 + y * 13);
+        // 3D bevelled sandstone courtyard tile (r50 style)
+        final RRect tilePlate = RRect.fromRectAndRadius(
+          r.deflate(1.6),
+          Radius.circular(cell * 0.12),
+        );
+        canvas.drawRRect(
+          tilePlate.shift(const Offset(0, 2)),
+          Paint()..color = const Color(0xFFB59668),
+        );
+        canvas.drawRRect(
+          tilePlate,
+          Paint()..color = (x + y).isEven ? _grassA : _grassB,
+        );
+        canvas.drawRRect(
+          tilePlate,
+          Paint()
+            ..color = const Color(0xFF9C7A4C).withValues(alpha: 0.45)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.2,
+        );
+        canvas.drawLine(
+          Offset(r.left + 4, r.top + 3),
+          Offset(r.right - 4, r.top + 3),
+          Paint()
+            ..color = const Color(0xFFFFF8E8).withValues(alpha: 0.65)
+            ..strokeWidth = 1.8,
+        );
         if (tile == Tile.water) _waterTile(canvas, r, t, x, y);
       }
     }
@@ -222,26 +263,6 @@ class MazeBoardPainter extends CustomPainter {
     ..strokeWidth = w
     ..strokeJoin = StrokeJoin.round
     ..strokeCap = StrokeCap.round;
-
-  void _tuft(Canvas canvas, Rect r, int seed) {
-    final rnd = math.Random(seed);
-    final p = _stroke(1.6, const Color(0xFF6DB743));
-    for (var i = 0; i < 2; i++) {
-      final x = r.left + r.width * (0.2 + rnd.nextDouble() * 0.6);
-      final y = r.top + r.height * (0.25 + rnd.nextDouble() * 0.6);
-      final h = r.height * 0.08;
-      canvas.drawLine(Offset(x, y), Offset(x - h * 0.4, y - h), p);
-      canvas.drawLine(Offset(x, y), Offset(x + h * 0.4, y - h), p);
-    }
-    if (rnd.nextDouble() < 0.25) {
-      final c = Offset(r.left + r.width * (0.2 + rnd.nextDouble() * 0.6), r.top + r.height * (0.2 + rnd.nextDouble() * 0.6));
-      for (var k = 0; k < 4; k++) {
-        final a = k * math.pi / 2;
-        canvas.drawCircle(c + Offset(math.cos(a), math.sin(a)) * r.width * 0.04, r.width * 0.035, Paint()..color = Colors.white);
-      }
-      canvas.drawCircle(c, r.width * 0.03, Paint()..color = PQColors.sun);
-    }
-  }
 
   void _waterTile(Canvas canvas, Rect r, double t, int x, int y) {
     canvas.drawRect(r, Paint()..color = _water);

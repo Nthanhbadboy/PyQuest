@@ -9,6 +9,7 @@ import '../../shared/theme/palette.dart';
 import '../../shared/widgets/chunky_button.dart';
 import '../../shared/widgets/common.dart';
 import '../../shared/widgets/game_icons.dart';
+import '../../shared/widgets/sprite_cache.dart';
 import '../../shared/widgets/transitions.dart';
 import '../energy/energy_widgets.dart';
 import 'adventure_recap_screen.dart';
@@ -352,7 +353,7 @@ class _TowerSceneHeader extends StatelessWidget {
             Image.asset(
               kTowerSceneAsset,
               fit: BoxFit.cover,
-              alignment: const Alignment(0, 0.14),
+              alignment: const Alignment(0, -0.35),
               filterQuality: FilterQuality.medium,
               semanticLabel: 'Cảnh vườn tháp Python',
               gaplessPlayback: true,
@@ -362,16 +363,16 @@ class _TowerSceneHeader extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: const [Color(0x00FFF8E7), Color(0x99FFF8E7), Color(0xFFFFF8E7)],
-                  stops: const [0.55, 0.85, 1],
+                  colors: const [
+                    Color(0x3314261C),
+                    Color(0x0014261C),
+                    Color(0x99241B12),
+                  ],
+                  stops: const [0.0, 0.55, 1.0],
                 ),
               ),
               child: const SizedBox.expand(),
             ),
-            // Seal và nút Continue đi chung MỘT hàng có ràng buộc: ở 360×640 với
-            // chữ 2×, hai `Positioned` riêng (trái 12 + phải 12) sẽ chồng lên nhau;
-            // Row + Expanded làm seal wrap thay vì đè, và không cắt CTA (r43 §5:
-            // không truncate, target >=48px theo chiều cao nút của ChunkyButton).
             Positioned(
               left: 12,
               right: 12,
@@ -379,7 +380,20 @@ class _TowerSceneHeader extends StatelessWidget {
               child: _strip(),
             ),
             Positioned(
-              right: 20,
+              left: 12,
+              bottom: 10,
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: [
+                  _terraceBadge('🏰 Tầng 1 · print & biến', PQColors.pyYellow),
+                  _terraceBadge('🌿 Tầng 2 · Chuỗi & Toán', const Color(0xFFD6F5E3)),
+                  _terraceBadge('⚡ Tầng 3 · Điều kiện', const Color(0xFFE3ECFF)),
+                ],
+              ),
+            ),
+            Positioned(
+              right: 12,
               bottom: 0,
               child: Semantics(
                 image: true,
@@ -396,6 +410,25 @@ class _TowerSceneHeader extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _terraceBadge(String label, Color bg) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: bg.withValues(alpha: 0.92),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: PQColors.ink, width: 1.5),
+      ),
+      child: Text(
+        label,
+        style: PQText.small.copyWith(
+          fontSize: 10.5,
+          color: PQColors.ink,
+          fontWeight: FontWeight.w900,
         ),
       ),
     );
@@ -448,19 +481,42 @@ class _PedestalBand extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: face,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: edge, width: 2.2),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                face,
+                holdsNext ? const Color(0xFFFFE599) : const Color(0xFFE2D7C1),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: edge, width: 2.4),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0xFF6B5335),
+                offset: Offset(0, 3),
+                blurRadius: 0,
+              ),
+            ],
           ),
           child: Row(
             children: [
-              SizedBox(
+              Container(
                 width: 26,
+                height: 26,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: allDone
+                      ? PQColors.success
+                      : (holdsNext ? PQColors.sun : const Color(0xFFD5C7AD)),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: PQColors.ink, width: 1.8),
+                ),
                 child: allDone
-                    ? const Icon(Icons.check_circle_rounded, color: PQColors.successDeep, size: 22)
-                    : Text('${group + 1}', style: PQText.h3.copyWith(fontSize: 18)),
+                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 16)
+                    : Text('${group + 1}', style: PQText.h3.copyWith(fontSize: 14)),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Bệ ${lo + 1}–${hi + 1} · ${allDone ? 'đã xong' : '$doneCount/${hi - lo + 1} bài'}',
@@ -576,20 +632,49 @@ class _LessonCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: unlocked ? (current ? const Color(0xFFFFF4CC) : PQColors.cream) : const Color(0xFFEDE7DA),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: highlighted ? PQColors.berry : PQColors.ink, width: highlighted || current ? 3.2 : 2.4),
-          boxShadow: [BoxShadow(color: tone.depth.withValues(alpha: unlocked ? 1 : 0.4), offset: const Offset(0, 4), blurRadius: 0)],
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: unlocked
+                ? (current
+                      ? const [Color(0xFFFFF8DC), Color(0xFFFFECB3)]
+                      : const [Color(0xFFFFFDF7), Color(0xFFF6EBD4)])
+                : const [Color(0xFFEDE7DA), Color(0xFFE2DAC8)],
+          ),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(
+            color: highlighted ? PQColors.berry : (current ? PQColors.sunDeep : PQColors.ink),
+            width: highlighted || current ? 3.2 : 2.4,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: tone.depth.withValues(alpha: unlocked ? 1 : 0.45),
+              offset: const Offset(0, 5),
+              blurRadius: 0,
+            ),
+          ],
         ),
         child: Row(
           children: [
+            // 3D Isometric Stone Pedestal Medallion
             Container(
-              width: 54,
-              height: 54,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
-                color: tone.face,
-                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [tone.face, tone.depth],
+                ),
+                borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: PQColors.ink, width: 2.4),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x44000000),
+                    offset: Offset(0, 3),
+                    blurRadius: 0,
+                  ),
+                ],
               ),
               alignment: Alignment.center,
               child: done
@@ -605,12 +690,51 @@ class _LessonCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(lesson.isChallenge ? 'Thử thách cuối chặng' : 'Bài ${lesson.number}',
-                      style: PQText.small.copyWith(color: tone.depth, fontWeight: FontWeight.w900, fontSize: 13)),
-                  Text(lesson.title, style: PQText.h3.copyWith(fontSize: 18, color: unlocked ? PQColors.ink : PQColors.inkFaint)),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        lesson.isChallenge ? 'Thử thách cuối chặng' : 'Bài ${lesson.number}',
+                        style: PQText.small.copyWith(
+                          color: tone.depth,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 13,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: unlocked ? const Color(0xFFE8F1FF) : const Color(0xFFDCD4C4),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: PQColors.ink.withValues(alpha: 0.5), width: 1.2),
+                        ),
+                        child: Text(
+                          lesson.skill,
+                          style: PQText.code.copyWith(
+                            fontSize: 11.5,
+                            color: PQColors.ink,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
                   Text(
-                    unlocked ? '${lesson.skill} · ${lesson.steps.length} bước' : 'Hoàn thành bài trước để mở',
-                    style: PQText.small.copyWith(fontSize: 13.5),
+                    lesson.title,
+                    style: PQText.h3.copyWith(
+                      fontSize: 18,
+                      color: unlocked ? PQColors.ink : PQColors.inkFaint,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    unlocked
+                        ? '📖 Khám phá · 🖍️ Bảng giảng · ⌨️ ${lesson.steps.length} bước'
+                        : 'Hoàn thành bài trước để mở',
+                    style: PQText.small.copyWith(fontSize: 13),
                   ),
                 ],
               ),
@@ -618,12 +742,20 @@ class _LessonCard extends StatelessWidget {
             if (unlocked)
               done
                   ? const PillTag(label: 'Ôn tập', color: PQColors.success)
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('$cost', style: PQText.number.copyWith(fontSize: 18)),
-                        const GameIcon(GameIconKind.energy, size: 22),
-                      ],
+                  : Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: current ? PQColors.pyYellow : const Color(0xFFFFF3CC),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: PQColors.ink, width: 2),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('$cost', style: PQText.number.copyWith(fontSize: 17)),
+                          const GameIcon(GameIconKind.energy, size: 20),
+                        ],
+                      ),
                     ),
           ],
         ),
@@ -643,6 +775,50 @@ class _PlaygroundCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Container(
+            height: 112,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: PQColors.ink, width: 2.2),
+            ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                CustomPaint(
+                  painter: Scene25dPainter(
+                    asset: 'assets/images/study_corner_r35.webp',
+                    alignment: const Alignment(0, -0.1),
+                  ),
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.65),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 12,
+                  right: 12,
+                  bottom: 8,
+                  child: Text(
+                    '💻 Góc Sáng Chế Python 2.5D · Miễn phí',
+                    style: PQText.small.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
           Row(
             children: [
               Container(

@@ -133,16 +133,16 @@ class _AchievementHouseScreenState extends State<AchievementHouseScreen> {
                 padding: const EdgeInsets.fromLTRB(12, 4, 12, 6),
                 child: Container(
                   key: const ValueKey('achievement_25d_scene'),
-                  height: 156,
+                  height: 184,
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF7B5733),
-                    borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: PQColors.ink, width: 2.6),
+                    color: const Color(0xFF4298B5),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: const Color(0xFF5C3D1E), width: 2.8),
                     boxShadow: [
                       BoxShadow(
                         color: PQTone.sun.depth,
-                        offset: const Offset(0, 4),
+                        offset: const Offset(0, 5),
                         blurRadius: 0,
                       ),
                     ],
@@ -151,8 +151,14 @@ class _AchievementHouseScreenState extends State<AchievementHouseScreen> {
                     fit: StackFit.expand,
                     children: [
                       Image.asset(
-                        'assets/images/achievement_room_r39.webp',
+                        switch (_room) {
+                          0 => 'assets/images/achievement_cutaway_r35.webp',
+                          1 => 'assets/images/achievement_room_r39.webp',
+                          2 => 'assets/images/interior_room_r34.webp',
+                          _ => 'assets/images/study_corner_r35.webp',
+                        },
                         fit: BoxFit.cover,
+                        alignment: const Alignment(0, -0.05),
                         gaplessPlayback: true,
                       ),
                       DecoratedBox(
@@ -161,15 +167,68 @@ class _AchievementHouseScreenState extends State<AchievementHouseScreen> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.black.withValues(alpha: 0.08),
-                              Colors.black.withValues(alpha: 0.56),
+                              Colors.black.withValues(alpha: 0.05),
+                              Colors.black.withValues(alpha: 0.58),
                             ],
                           ),
                         ),
                       ),
+                      // 3D Glowing Badge Orbs sitting on the pedestals in Room 0 (r39 style)
+                      if (_room == 0) ...[
+                        Positioned(
+                          left: 112,
+                          top: 86,
+                          child: _PedestalOrb(
+                            icon: Icons.directions_walk_rounded,
+                            color: PQColors.grass,
+                          ),
+                        ),
+                        Positioned(
+                          left: 162,
+                          top: 66,
+                          child: _PedestalOrb(
+                            icon: Icons.code_rounded,
+                            color: PQColors.pyYellow,
+                          ),
+                        ),
+                        Positioned(
+                          left: 214,
+                          top: 86,
+                          child: _PedestalOrb(
+                            icon: Icons.emoji_events_rounded,
+                            color: PQColors.coral,
+                          ),
+                        ),
+                      ],
                       Positioned(
-                        right: 12,
-                        bottom: 6,
+                        left: 12,
+                        top: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xEBFFF8E7),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: const Color(0xFF6B4C2B),
+                              width: 1.6,
+                            ),
+                          ),
+                          child: Text(
+                            '🏛️ ${rooms[_room].$1} 2.5D',
+                            style: PQText.small.copyWith(
+                              color: const Color(0xFF4A3219),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 10,
+                        bottom: 4,
                         child: Image.asset(
                           'assets/images/robo_token_r50.png',
                           width: 78,
@@ -183,7 +242,7 @@ class _AchievementHouseScreenState extends State<AchievementHouseScreen> {
                         right: 96,
                         bottom: 10,
                         child: Text(
-                          'Phòng trưng bày 2.5D · Tủ huy hiệu & Kỷ niệm',
+                          'Chạm vào từng huy hiệu để xem câu chuyện và cách mở khóa nhé!',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: PQText.small.copyWith(
@@ -324,12 +383,21 @@ class _BadgeCabinet extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: got ? const Color(0xFFFFF6D6) : const Color(0xFFF1EADC),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: PQColors.ink, width: 2.2),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: got
+                      ? const [Color(0xFFFFFAEB), Color(0xFFFFE599)]
+                      : const [Color(0xFFF3ECE0), Color(0xFFE3D8C4)],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: got ? const Color(0xFF9A6B16) : const Color(0xFF7B6B53),
+                  width: got ? 2.8 : 2.2,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: got ? PQTone.sun.depth : const Color(0xFF9E8C72),
+                    color: got ? const Color(0xFF8C5A14) : const Color(0xFF8A7960),
                     offset: const Offset(0, 4),
                     blurRadius: 0,
                   ),
@@ -597,3 +665,31 @@ class _MiniMazePainter extends CustomPainter {
   @override
   bool shouldRepaint(_MiniMazePainter old) => old.rows != rows;
 }
+
+class _PedestalOrb extends StatelessWidget {
+  const _PedestalOrb({required this.icon, required this.color});
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 34,
+      height: 34,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        border: Border.all(color: PQColors.ink, width: 2.2),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.65),
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Icon(icon, size: 18, color: PQColors.ink),
+    );
+  }
+}
+
