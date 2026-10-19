@@ -130,6 +130,8 @@ cho SHA bàn giao:
 | `aec4a2f1878600e316f62c6065ff856f3ecd62c6` | focused **success** (`39271913533`); maintenance + CI failure; `Failing gate outcomes` = `ordinary suite, render suite` (analyze rớt khỏi danh sách ⇒ file của tôi sạch, `14 issues found` đều là `info` của repo); ordinary `462/1 (463)`, đỏ duy nhất `các key hợp đồng cũ còn trên màn Main Quest (lesson_card_*, open_playground)`; render vẫn `9/10`. Hai ca bản sao harness (`capture()` với `toImage(pixelRatio: 1.5)`, và cả nhóm `Render A replica`) **xanh** ⇒ giả thuyết CTA thô của case A bị bác. |
 | `f647db7f1ee4da5322c26e577589073a56b252e6` | focused **success** (`39272542843`); maintenance failure (`39272542888`) + CI failure (`39272542978`); ordinary `464/1 (465)` với ĐÚNG MỘT đỏ `key hợp đồng cũ lesson_card_mq1_01 còn trên Main Quest 2.0x` — hai ca em song sinh (cuộn tới `open_playground`, đi qua `mq1_01/04/08/12`) xanh ⇒ key tồn tại, cuộn được, không exception. In `PQC022-*` không bao giờ tới được log đã publish ⇒ phải tách ca, không đoạp đặt. |
 | `ddf53be31e5d433df057901e4b25b4ccdafcb639` | focused **success** (`39273391579`); maintenance + CI failure; ordinary `465` với 2 đỏ: `cảnh vườn tháp + ba bệ + quick continue ở 1× và 2×` và `key hợp đồng cũ lesson_card_mq1_01 … 2.0x` ⇒ chỉ đảo thứ tự là **chưa đủ**; xem mục 6 dưới. |
+| `498ecf802d466d76662170984fb8434b45917fd5` | focused **skipped**, maintenance **skipped**, CI failure — KHÔNG phải đỏ thật: `PQC-020 focused` và `PQC-011 maintenance` có `if:` bắt buộc commit có marker `[pqc020-check]` / `[pqc011-verify]`, và message của commit này thiếu nên hai workflow bỏ chạy. Đây cũng là lý do chu kỳ "bỏ artwork" không có số ordinary. |
+| `56ace8145c07aea36323b96ded849c37060cb0f7` (sync) | **XANH cả ba cổng trên nhánh CODE**: `PQC-020 focused gate evidence` success, `PQC-011 r49 exact gate counts` success với `### Failing gate outcomes / None`, ordinary `00:56 +470: All tests passed!`, `PyQuest check` success. Cây khớp `029f801` trên `arena/84456d39-pyquest` (nhánh hợp nhất của Lead) + 18 file docs/tools mà chỉ nhánh này giữ. |
 
 ## 6. Hồ sơ đỏ-xanh theo từng chu kỳ CI (không nới ngưỡng)
 
@@ -329,3 +331,42 @@ không phóng artwork":
   `lesson_card_mq1_01 … 2.0x` (deep-link `openLessonId: 'mq1_03'`) giữ nguyên.
 * Xoá const trùng ý nghĩa trong comment, sửa `kTowerLargeTextScale` doc, và sửa
   `avoid_init_to_null` (`Object? captureError;`) mà `analyze` vừa báo ở file test.
+
+## 7. Chốt nguyên nhân thật (do Lead trên `arena/84456d39-pyquest`) — và bài học quy kết
+
+`29ba169` + `029f801` trên nhánh hợp nhất đã đóng cả hai điểm đỏ cuối. Nguyên
+nhân KHÔNG phải "thiếu rule r56" như suy luận của tôi ở §6:
+
+* `lesson_card_mq1_01` ở `2.0×` / `360×640`: `find.byKey` mặc định
+  `skipOffstage: true`, nên một child của `SliverList` nằm ngoài
+  `scrollOffset .. scrollOffset + remainingPaintExtent` cho `findsNothing` **dù
+  widget vẫn được build và vẫn đúng thiết kế**. Lead sửa bằng cách làm cho nó thật
+  sự nằm trong vùng vẽ: `_ChapterHeader` co còn dải tiêu đề một dòng
+  (`CHẶNG 1 · Những dòng đầu tiên`) khi `textScale >= 1.5`, cộng
+  `cacheExtent: 1200`.
+* Render F `360×640`: cùng cơ chế offstage — `tap()` trong
+  `test/render/render_screens_test.dart` giờ lấy finder với
+  `skipOffstage: false` rồi `tester.ensureVisible(f.first)` trước khi chạm, nên
+  thẻ `lesson_card_mq1_04` ở dưới nếp gấp vẫn chạm được.
+
+Ba điều rút ra cho chu kỳ sau (tự phê bình, không phải thay đổi thiết kế):
+
+1. Trước khi quy kết "thiếu rule trong lib" cho một assertion `findsNothing` trên
+   danh sách cuộn, phải loại giả thuyết offstage-trước-cuộn (đọc
+   `Scrollable.position.pixels` + `viewportDimension`, hoặc chạy finder với
+   `skipOffstage: false`). Tôi đã dành 4 SHA đổi `main_quest_module.dart` theo
+   hướng "artwork phải trả chỗ", trong khi màn hình chỉ cần `cacheExtent`.
+2. `showArtwork: !largeText` (bỏ hẳn lớp cảnh ở ≥1.5×) trong `498ecf8` **đã bị
+   thay** bởi phương án gọn hơn của Lead: giữ nguyên dải cảnh cho mọi cỡ chữ,
+   chỉ thu panel chặng. Không cần nhân bản `_strip()`.
+3. Marker trong commit message là điều kiện chạy của hai cổng focused/maintenance
+   (`[pqc020-check]`, `[pqc011-verify]`); một commit thiếu marker cho ra
+   `skipped`, dễ đọc nhầm thành "CI không chạy được".
+
+Trạng thái bàn giao: nội dung PQC-022 đã nằm trong `arena/84456d39-pyquest@029f801`
+và `arena/4253d4f1-pyquest@56ace81` (sync, không force-push). Việc còn lại thuộc
+Lead: ACCEPTED020 trên SHA bàn giao cuối, và xác nhận 18 file docs/tools chỉ nhánh
+CODE có (`docs/implementation/coordination/{TASK_BOARD,LEAD_RUNBOOK,HANDOFF_TO_DESIGN}.md`,
+`docs/implementation/coordination/tasks/*`, `tools/coordination/*`,
+`.circleci/config.yml`, bằng chứng PQC-020 R2 và `r38-originals`) — nếu nhánh hợp
+nhất chủ đích không có chúng thì nhánh CODE sẽ xóa theo yêu cầu.
