@@ -388,8 +388,10 @@ void main() {
       );
       await pumpFor(tester, const Duration(milliseconds: 900));
       final int sheetCount = find.byType(ActivitySheet).evaluate().length;
-      final int goCount =
-          find.byKey(const Key('sheet_go_lesson')).evaluate().length;
+      final int goCount = find
+          .byKey(const Key('sheet_go_lesson'))
+          .evaluate()
+          .length;
       // ignore: avoid_print
       print(
         'R3-ROOT-SMOKE row=${tester.getRect(bugRow)} '
