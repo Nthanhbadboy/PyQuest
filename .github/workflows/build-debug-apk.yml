@@ -1,5 +1,5 @@
 name: PyQuest pinned checks and owner-test APK
-run-name: "Owner test · source ${{ inputs.source_sha || '029f8018a190c826f2d20717099d9438f6b30027' }}"
+run-name: "Owner test · source ${{ inputs.source_sha || '0680021dbba12cb36075a6e8c2c92389fea544d9' }}"
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
       source_sha:
         description: 'Exact trusted PyQuest source SHA to test and package'
         required: true
-        default: 029f8018a190c826f2d20717099d9438f6b30027
+        default: 0680021dbba12cb36075a6e8c2c92389fea544d9
         type: string
       build_mode:
         description: 'Internal preview only; release mode is not public-release approval'
@@ -35,7 +35,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SOURCE_SHA: ${{ inputs.source_sha || '029f8018a190c826f2d20717099d9438f6b30027' }}
+  SOURCE_SHA: ${{ inputs.source_sha || '0680021dbba12cb36075a6e8c2c92389fea544d9' }}
   WORKFLOW_SHA: ${{ github.sha }}
 
 jobs:
@@ -172,7 +172,16 @@ jobs:
           fd=os.open(sys.argv[1],os.O_WRONLY|os.O_CREAT|os.O_TRUNC,0o600)
           with os.fdopen(fd,'w') as f: json.dump({'GEMINI_API_KEY':key},f)
           PY
-          flutter build apk --"$BUILD_MODE" --dart-define-from-file="$RUNNER_TEMP/pyquest-internal-defines.json"
+          for attempt in 1 2 3; do
+            if flutter build apk --"$BUILD_MODE" --dart-define-from-file="$RUNNER_TEMP/pyquest-internal-defines.json"; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            sudo rm -rf /usr/local/lib/android/sdk/ndk/28.2.13676358* /usr/local/lib/android/sdk/.temp || true
+            sleep 5
+          done
       - name: Encrypt APK for workspace recipient before public artifact upload
         run: |
           package="$RUNNER_TEMP/pyquest-owner-test"
