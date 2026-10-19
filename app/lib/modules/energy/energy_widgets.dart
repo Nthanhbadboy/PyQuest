@@ -124,8 +124,10 @@ class _EnergySheet extends StatelessWidget {
           children: [
             Container(
               key: const ValueKey('energy_25d_scene'),
-              height: 104,
+              height: 118,
+              clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
+                color: const Color(0xFF2D6E7E),
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: PQColors.ink, width: 2.4),
                 boxShadow: [
@@ -135,10 +137,53 @@ class _EnergySheet extends StatelessWidget {
                     blurRadius: 0,
                   ),
                 ],
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/garden_kiosk_r41.webp'),
-                  fit: BoxFit.cover,
-                ),
+              ),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    'assets/images/rest_nook_r38.webp',
+                    fit: BoxFit.cover,
+                    gaplessPlayback: true,
+                  ),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.05),
+                          Colors.black.withValues(alpha: 0.48),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 10,
+                    bottom: 4,
+                    child: Image.asset(
+                      'assets/images/robo_token_r50.png',
+                      width: 68,
+                      height: 68,
+                      fit: BoxFit.contain,
+                      gaplessPlayback: true,
+                    ),
+                  ),
+                  Positioned(
+                    left: 12,
+                    right: 84,
+                    bottom: 8,
+                    child: Text(
+                      'Góc nghỉ ngơi 2.5D · Hồi phục năng lượng tự nhiên',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: PQText.small.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 10),

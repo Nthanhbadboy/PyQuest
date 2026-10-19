@@ -1,10 +1,12 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
 import '../../shared/characters/characters.dart';
 import '../../shared/theme/palette.dart';
 import '../../shared/widgets/game_icons.dart';
+import '../../shared/widgets/sprite_cache.dart';
 
 enum DragonPhase { ready, running, over }
 
@@ -331,7 +333,8 @@ class DragonGame extends ChangeNotifier {
 
 /// Draws the parallax world, pickups, obstacles and Pip.
 class DragonPainter extends CustomPainter {
-  DragonPainter(this.game) : super(repaint: game);
+  DragonPainter(this.game)
+      : super(repaint: Listenable.merge([game, SpriteCache.revision]));
   final DragonGame game;
 
   static final Path _mountains = _ridge(seed: 3, peaks: 6, base: 1.0);
@@ -361,37 +364,61 @@ class DragonPainter extends CustomPainter {
     canvas.save();
     canvas.translate(shakeOffset.dx, shakeOffset.dy);
 
-    // Sky
+    // Sky + 2.5D Volcano Trail backdrop (r54)
     final sky = Rect.fromLTWH(-10, 0, size.width + 20, ground);
-    canvas.drawRect(
-      sky,
-      Paint()
-        ..shader = const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF7CC8F8), Color(0xFFBDE6FF), Color(0xFFFFE5C2)],
-          stops: [0, 0.6, 1],
-        ).createShader(sky),
-    );
-    // Sun
-    final sunC = Offset(size.width * 0.78, ground * 0.22);
-    canvas.drawCircle(sunC, 60 * k, Paint()..color = const Color(0x55FFF3B0));
-    canvas.drawCircle(sunC, 38 * k, Paint()..color = const Color(0xFFFFE27A));
-    // Clouds
-    for (var i = 0; i < 4; i++) {
-      final speed = 0.08 + i * 0.03;
-      final span = size.width + 200 * k;
-      final x = (size.width + 100 * k) - ((g.distance * k * speed + i * span / 4) % span);
-      final y = ground * (0.12 + (i % 3) * 0.12);
-      _cloud(canvas, Offset(x, y), (40 + (i % 2) * 18) * k);
+    final ui.Image? bgSprite = SpriteCache.get('assets/images/volcano_trail_r54.webp');
+    if (bgSprite != null) {
+      paintImage(
+        canvas: canvas,
+        rect: Rect.fromLTWH(-10, 0, size.width + 20, ground + 22 * k),
+        image: bgSprite,
+        fit: BoxFit.cover,
+        alignment: Alignment(
+          math.sin(g.distance * 0.0018) * 0.35,
+          -0.12,
+        ),
+        filterQuality: FilterQuality.medium,
+      );
+      canvas.drawRect(
+        sky,
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black.withValues(alpha: 0.04),
+              const Color(0x28FF8547),
+            ],
+          ).createShader(sky),
+      );
+    } else {
+      canvas.drawRect(
+        sky,
+        Paint()
+          ..shader = const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF7CC8F8), Color(0xFFBDE6FF), Color(0xFFFFE5C2)],
+            stops: [0, 0.6, 1],
+          ).createShader(sky),
+      );
+      final sunC = Offset(size.width * 0.78, ground * 0.22);
+      canvas.drawCircle(sunC, 60 * k, Paint()..color = const Color(0x55FFF3B0));
+      canvas.drawCircle(sunC, 38 * k, Paint()..color = const Color(0xFFFFE27A));
+      for (var i = 0; i < 4; i++) {
+        final speed = 0.08 + i * 0.03;
+        final span = size.width + 200 * k;
+        final x = (size.width + 100 * k) - ((g.distance * k * speed + i * span / 4) % span);
+        final y = ground * (0.12 + (i % 3) * 0.12);
+        _cloud(canvas, Offset(x, y), (40 + (i % 2) * 18) * k);
+      }
+      _layer(canvas, _mountains, size, ground, 0.55, const Color(0xFFA9C7E8), g.distance * k * 0.06);
+      final vx = size.width * 1.2 - ((g.distance * k * 0.06) % (size.width * 1.6));
+      _volcano(canvas, Offset(vx, ground - ground * 0.3), 150 * k, g.time);
+      _layer(canvas, _hills, size, ground, 0.32, const Color(0xFF8ED46B), g.distance * k * 0.22);
     }
-    // Far mountains with the island volcano
-    _layer(canvas, _mountains, size, ground, 0.55, const Color(0xFFA9C7E8), g.distance * k * 0.06);
-    final vx = size.width * 1.2 - ((g.distance * k * 0.06) % (size.width * 1.6));
-    _volcano(canvas, Offset(vx, ground - ground * 0.3), 150 * k, g.time);
-    _layer(canvas, _hills, size, ground, 0.32, const Color(0xFF8ED46B), g.distance * k * 0.22);
 
-    // Ground
+    // 2.5D Isometric Basalt Cliff & Lava Runway (r54)
     final groundRect = Rect.fromLTWH(-10, ground, size.width + 20, size.height - ground);
     canvas.drawRect(
       groundRect,
@@ -399,22 +426,44 @@ class DragonPainter extends CustomPainter {
         ..shader = const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFFD39A5C), Color(0xFFA9703E)],
+          colors: [Color(0xFF5C443D), Color(0xFF3B2926), Color(0xFF231614)],
+          stops: [0.0, 0.38, 1.0],
         ).createShader(groundRect),
     );
-    canvas.drawRect(Rect.fromLTWH(-10, ground, size.width + 20, 16 * k), Paint()..color = const Color(0xFF6CC04A));
-    canvas.drawLine(Offset(-10, ground), Offset(size.width + 10, ground), _ink(3));
-    canvas.drawLine(Offset(-10, ground + 16 * k), Offset(size.width + 10, ground + 16 * k), _ink(2, const Color(0xFF4E9A2B)));
-    final stripe = 46 * k;
+    // Top isometric stone path plane
+    canvas.drawRect(
+      Rect.fromLTWH(-10, ground - 4 * k, size.width + 20, 22 * k),
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF9C7B6E), Color(0xFF72564D)],
+        ).createShader(Rect.fromLTWH(-10, ground - 4 * k, size.width + 20, 22 * k)),
+    );
+    // Stone bevel lip
+    canvas.drawRect(
+      Rect.fromLTWH(-10, ground + 18 * k, size.width + 20, 8 * k),
+      Paint()..color = const Color(0xFF47332D),
+    );
+    canvas.drawLine(Offset(-10, ground - 4 * k), Offset(size.width + 10, ground - 4 * k), _ink(3));
+    canvas.drawLine(Offset(-10, ground + 18 * k), Offset(size.width + 10, ground + 18 * k), _ink(2.4, const Color(0xFF2B1D1A)));
+    final stripe = 56 * k;
     final off = (g.distance * k) % stripe;
     for (var x = -off; x < size.width + stripe; x += stripe) {
+      // Perspective joint lines on the 2.5D stone path
+      canvas.drawLine(
+        Offset(x + 10 * k, ground - 3 * k),
+        Offset(x - 6 * k, ground + 17 * k),
+        _ink(2, const Color(0xFF523C35)),
+      );
+      // 3D basalt cliff blocks + glowing magma vein below
       canvas.drawRRect(
-        RRect.fromRectAndRadius(Rect.fromLTWH(x, ground + 30 * k, 22 * k, 7 * k), Radius.circular(4 * k)),
-        Paint()..color = const Color(0xFFB57A42),
+        RRect.fromRectAndRadius(Rect.fromLTWH(x, ground + 32 * k, 34 * k, 14 * k), Radius.circular(5 * k)),
+        Paint()..color = const Color(0xFF4E3832),
       );
       canvas.drawRRect(
-        RRect.fromRectAndRadius(Rect.fromLTWH(x + 18 * k, ground + 58 * k, 14 * k, 6 * k), Radius.circular(3 * k)),
-        Paint()..color = const Color(0xFFB57A42),
+        RRect.fromRectAndRadius(Rect.fromLTWH(x + 16 * k, ground + 56 * k, 26 * k, 10 * k), Radius.circular(4 * k)),
+        Paint()..color = const Color(0xFFFF7A33).withValues(alpha: 0.55 + 0.25 * math.sin(g.time * 4 + x * 0.05)),
       );
     }
 
@@ -445,20 +494,61 @@ class DragonPainter extends CustomPainter {
       canvas.restore();
     }
 
-    // Obstacles
+    // Obstacles (2.5D tokens from r54 with fallback vector painters)
+    final ui.Image? basaltSprite = SpriteCache.get('assets/images/basalt_token_r54.png');
+    final ui.Image? beetleSprite = SpriteCache.get('assets/images/beetle_token_r54.png');
     for (final o in g.obstacles) {
       final left = g.pipX + o.x * k;
       if (left > size.width + 60 || left + o.w * k < -60) continue;
       final r = Rect.fromLTWH(left, ground - (o.lift + o.h) * k, o.w * k, o.h * k);
       switch (o.kind) {
         case ObstacleKind.rock:
-          _rock(canvas, r);
         case ObstacleKind.bush:
-          _thorns(canvas, r);
         case ObstacleKind.pillar:
-          _pillar(canvas, r);
+          if (basaltSprite != null) {
+            canvas.drawOval(
+              Rect.fromCenter(
+                center: Offset(r.center.dx, ground + 4 * k),
+                width: r.width * 1.15,
+                height: 10 * k,
+              ),
+              Paint()..color = PQColors.ink.withValues(alpha: 0.28),
+            );
+            paintImage(
+              canvas: canvas,
+              rect: r.inflate(6 * k),
+              image: basaltSprite,
+              fit: BoxFit.fill,
+              filterQuality: FilterQuality.medium,
+            );
+          } else if (o.kind == ObstacleKind.rock) {
+            _rock(canvas, r);
+          } else if (o.kind == ObstacleKind.bush) {
+            _thorns(canvas, r);
+          } else {
+            _pillar(canvas, r);
+          }
         case ObstacleKind.beetle:
-          _beetle(canvas, r.shift(Offset(0, math.sin(g.time * 5 + o.x * 0.02) * 6 * k)), g.time);
+          final shifted = r.shift(Offset(0, math.sin(g.time * 5 + o.x * 0.02) * 6 * k));
+          if (beetleSprite != null) {
+            canvas.drawOval(
+              Rect.fromCenter(
+                center: Offset(shifted.center.dx, ground + 3 * k),
+                width: shifted.width * 0.75,
+                height: 7 * k,
+              ),
+              Paint()..color = PQColors.ink.withValues(alpha: 0.20),
+            );
+            paintImage(
+              canvas: canvas,
+              rect: shifted.inflate(8 * k),
+              image: beetleSprite,
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.medium,
+            );
+          } else {
+            _beetle(canvas, shifted, g.time);
+          }
       }
     }
 

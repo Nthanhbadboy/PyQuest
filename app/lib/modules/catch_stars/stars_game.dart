@@ -1,10 +1,12 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
 import '../../shared/characters/characters.dart';
 import '../../shared/theme/palette.dart';
 import '../../shared/widgets/game_icons.dart';
+import '../../shared/widgets/sprite_cache.dart';
 
 enum FallKind { star, golden, comet, rainbow, meteor }
 
@@ -213,7 +215,8 @@ class StarsGame extends ChangeNotifier {
 }
 
 class StarsPainter extends CustomPainter {
-  StarsPainter(this.game) : super(repaint: game);
+  StarsPainter(this.game)
+      : super(repaint: Listenable.merge([game, SpriteCache.revision]));
   final StarsGame game;
 
   static final List<Offset> _bg = () {
@@ -227,25 +230,44 @@ class StarsPainter extends CustomPainter {
     g.size = size;
     final k = g.k;
     final rect = Offset.zero & size;
-    canvas.drawRect(
-      rect,
-      Paint()
-        ..shader = const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF0F1440), Color(0xFF2A2F7A), Color(0xFF5B4B9A)],
-          stops: [0, 0.65, 1],
-        ).createShader(rect),
-    );
+    final ui.Image? skySprite = SpriteCache.get('assets/images/observatory_sky_r55.webp');
+    if (skySprite != null) {
+      paintImage(
+        canvas: canvas,
+        rect: rect,
+        image: skySprite,
+        fit: BoxFit.cover,
+        filterQuality: FilterQuality.medium,
+      );
+      canvas.drawRect(
+        rect,
+        Paint()..color = const Color(0x280D1138),
+      );
+    } else {
+      canvas.drawRect(
+        rect,
+        Paint()
+          ..shader = const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0F1440), Color(0xFF2A2F7A), Color(0xFF5B4B9A)],
+            stops: [0, 0.65, 1],
+          ).createShader(rect),
+      );
+      final moon = Offset(size.width * 0.18, size.height * 0.12);
+      canvas.drawCircle(moon, 34 * k, Paint()..color = const Color(0x33FFF6C8));
+      canvas.drawCircle(moon, 24 * k, Paint()..color = const Color(0xFFFFF3BD));
+      canvas.drawCircle(moon.translate(9 * k, -5 * k), 20 * k, Paint()..color = const Color(0xFF151A4C));
+    }
     if (g.rainbow > 0) {
       canvas.drawRect(
         rect,
         Paint()
           ..shader = LinearGradient(
             colors: [
-              PQColors.berry.withValues(alpha: 0.12),
-              PQColors.sun.withValues(alpha: 0.12),
-              PQColors.sea.withValues(alpha: 0.12),
+              PQColors.berry.withValues(alpha: 0.16),
+              PQColors.sun.withValues(alpha: 0.16),
+              PQColors.sea.withValues(alpha: 0.16),
             ],
           ).createShader(rect),
       );
@@ -255,103 +277,146 @@ class StarsPainter extends CustomPainter {
       final tw = 0.4 + 0.6 * ((math.sin(g.time * 2 + i) + 1) / 2);
       canvas.drawCircle(p, (i % 3 == 0 ? 1.8 : 1.1) * k, Paint()..color = Colors.white.withValues(alpha: tw * 0.8));
     }
-    // Moon
-    final moon = Offset(size.width * 0.18, size.height * 0.12);
-    canvas.drawCircle(moon, 34 * k, Paint()..color = const Color(0x33FFF6C8));
-    canvas.drawCircle(moon, 24 * k, Paint()..color = const Color(0xFFFFF3BD));
-    canvas.drawCircle(moon.translate(9 * k, -5 * k), 20 * k, Paint()..color = const Color(0xFF151A4C));
-    // Hills + observatory silhouette
-    final hill = Path()
-      ..moveTo(0, size.height)
-      ..lineTo(0, size.height * 0.9)
-      ..quadraticBezierTo(size.width * 0.3, size.height * 0.84, size.width * 0.6, size.height * 0.9)
-      ..quadraticBezierTo(size.width * 0.85, size.height * 0.95, size.width, size.height * 0.88)
-      ..lineTo(size.width, size.height)
-      ..close();
-    canvas.drawPath(hill, Paint()..color = const Color(0xFF1B1E4A));
-    final ob = Offset(size.width * 0.82, size.height * 0.885);
-    canvas.drawRect(Rect.fromLTWH(ob.dx - 18 * k, ob.dy - 22 * k, 36 * k, 22 * k), Paint()..color = const Color(0xFF14163A));
-    canvas.drawArc(Rect.fromCenter(center: ob.translate(0, -22 * k), width: 40 * k, height: 36 * k), math.pi, math.pi, true,
-        Paint()..color = const Color(0xFF14163A));
-    canvas.drawLine(ob.translate(4 * k, -34 * k), ob.translate(22 * k, -50 * k), Paint()
-      ..color = const Color(0xFF14163A)
-      ..strokeWidth = 7 * k);
+    // 2.5D Observatory stone terrace & balustrade at bottom
+    final double terraceTop = size.height * 0.885;
+    final Rect terraceRect = Rect.fromLTWH(0, terraceTop, size.width, size.height - terraceTop);
+    canvas.drawRect(
+      terraceRect,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF3E3B6B), Color(0xFF23214A), Color(0xFF151332)],
+        ).createShader(terraceRect),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(0, terraceTop, size.width, 8 * k),
+      Paint()..color = const Color(0xFF5D5994),
+    );
+    canvas.drawLine(Offset(0, terraceTop), Offset(size.width, terraceTop), _ink(2.6));
 
-    // Fallers
+    // Fallers (2.5D star & meteor sprites from r55 with vector glow)
+    final ui.Image? starSprite = SpriteCache.get('assets/images/star_token_r55.png');
+    final ui.Image? meteorSprite = SpriteCache.get('assets/images/meteor_token_r55.png');
     for (final f in g.fallers) {
       final c = Offset(f.x * k, f.y * k);
       switch (f.kind) {
         case FallKind.star:
-          _star(canvas, c, 15 * k, PQColors.sun, g.time + f.sway);
+          if (starSprite != null) {
+            final sRect = Rect.fromCenter(center: c, width: 34 * k, height: 34 * k);
+            paintImage(canvas: canvas, rect: sRect, image: starSprite, fit: BoxFit.contain, filterQuality: FilterQuality.medium);
+          } else {
+            _star(canvas, c, 15 * k, PQColors.sun, g.time + f.sway);
+          }
         case FallKind.golden:
-          canvas.drawCircle(c, 30 * k, Paint()..color = PQColors.sun.withValues(alpha: 0.25));
-          _star(canvas, c, 24 * k, const Color(0xFFFFB627), g.time);
+          canvas.drawCircle(c, 32 * k, Paint()..color = PQColors.sun.withValues(alpha: 0.30));
+          if (starSprite != null) {
+            final sRect = Rect.fromCenter(center: c, width: 48 * k, height: 48 * k);
+            paintImage(canvas: canvas, rect: sRect, image: starSprite, fit: BoxFit.contain, filterQuality: FilterQuality.medium);
+          } else {
+            _star(canvas, c, 24 * k, const Color(0xFFFFB627), g.time);
+          }
         case FallKind.comet:
           final tail = Path()
-            ..moveTo(c.dx - 9 * k, c.dy)
-            ..lineTo(c.dx, c.dy - 70 * k)
-            ..lineTo(c.dx + 9 * k, c.dy)
+            ..moveTo(c.dx - 10 * k, c.dy)
+            ..lineTo(c.dx, c.dy - 72 * k)
+            ..lineTo(c.dx + 10 * k, c.dy)
             ..close();
           canvas.drawPath(tail, Paint()..shader = LinearGradient(
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [PQColors.sky.withValues(alpha: 0.9), PQColors.sky.withValues(alpha: 0)],
-          ).createShader(Rect.fromLTWH(c.dx - 9 * k, c.dy - 70 * k, 18 * k, 70 * k)));
-          canvas.drawCircle(c, 11 * k, Paint()..color = const Color(0xFFD9F1FF));
-          canvas.drawCircle(c, 11 * k, _ink(2));
+          ).createShader(Rect.fromLTWH(c.dx - 10 * k, c.dy - 72 * k, 20 * k, 72 * k)));
+          if (starSprite != null) {
+            final sRect = Rect.fromCenter(center: c, width: 32 * k, height: 32 * k);
+            paintImage(canvas: canvas, rect: sRect, image: starSprite, fit: BoxFit.contain, filterQuality: FilterQuality.medium);
+          } else {
+            canvas.drawCircle(c, 11 * k, Paint()..color = const Color(0xFFD9F1FF));
+            canvas.drawCircle(c, 11 * k, _ink(2));
+          }
         case FallKind.rainbow:
           for (var i = 0; i < 3; i++) {
-            canvas.drawCircle(c, (26 - i * 6) * k, Paint()..color = [PQColors.berry, PQColors.sun, PQColors.sea][i].withValues(alpha: 0.6));
+            canvas.drawCircle(c, (28 - i * 6) * k, Paint()..color = [PQColors.berry, PQColors.sun, PQColors.sea][i].withValues(alpha: 0.65));
           }
-          _star(canvas, c, 14 * k, Colors.white, g.time * 2);
+          if (starSprite != null) {
+            final sRect = Rect.fromCenter(center: c, width: 36 * k, height: 36 * k);
+            paintImage(canvas: canvas, rect: sRect, image: starSprite, fit: BoxFit.contain, filterQuality: FilterQuality.medium);
+          } else {
+            _star(canvas, c, 14 * k, Colors.white, g.time * 2);
+          }
         case FallKind.meteor:
           final tail = Path()
-            ..moveTo(c.dx - 13 * k, c.dy)
-            ..lineTo(c.dx, c.dy - 50 * k)
-            ..lineTo(c.dx + 13 * k, c.dy)
-            ..close();
-          canvas.drawPath(tail, Paint()..color = PQColors.coral.withValues(alpha: 0.7));
-          final rock = Path()
             ..moveTo(c.dx - 14 * k, c.dy)
-            ..lineTo(c.dx - 6 * k, c.dy - 12 * k)
-            ..lineTo(c.dx + 10 * k, c.dy - 10 * k)
-            ..lineTo(c.dx + 15 * k, c.dy + 4 * k)
-            ..lineTo(c.dx + 2 * k, c.dy + 14 * k)
-            ..lineTo(c.dx - 10 * k, c.dy + 10 * k)
+            ..lineTo(c.dx, c.dy - 54 * k)
+            ..lineTo(c.dx + 14 * k, c.dy)
             ..close();
-          canvas.drawPath(rock, Paint()..color = const Color(0xFF7A5C4F));
-          canvas.drawPath(rock, _ink(2.2));
-          canvas.drawCircle(c.translate(-3 * k, 1 * k), 3 * k, Paint()..color = const Color(0xFF5A3F35));
+          canvas.drawPath(tail, Paint()..color = PQColors.coral.withValues(alpha: 0.72));
+          if (meteorSprite != null) {
+            final mRect = Rect.fromCenter(center: c, width: 42 * k, height: 42 * k);
+            paintImage(canvas: canvas, rect: mRect, image: meteorSprite, fit: BoxFit.contain, filterQuality: FilterQuality.medium);
+          } else {
+            final rock = Path()
+              ..moveTo(c.dx - 14 * k, c.dy)
+              ..lineTo(c.dx - 6 * k, c.dy - 12 * k)
+              ..lineTo(c.dx + 10 * k, c.dy - 10 * k)
+              ..lineTo(c.dx + 15 * k, c.dy + 4 * k)
+              ..lineTo(c.dx + 2 * k, c.dy + 14 * k)
+              ..lineTo(c.dx - 10 * k, c.dy + 10 * k)
+              ..close();
+            canvas.drawPath(rock, Paint()..color = const Color(0xFF7A5C4F));
+            canvas.drawPath(rock, _ink(2.2));
+            canvas.drawCircle(c.translate(-3 * k, 1 * k), 3 * k, Paint()..color = const Color(0xFF5A3F35));
+          }
       }
     }
 
-    // Jar on a little cloud
+    // 2.5D Star Jar + 2.5D Robo on the Observatory Terrace (r55)
     final bx = g.basketX * k;
     final by = g.basketY * k;
-    _cloud(canvas, Offset(bx, by + 26 * k), 60 * k);
-    final jar = RRect.fromRectAndCorners(
-      Rect.fromCenter(center: Offset(bx, by + 4 * k), width: 82 * k, height: 50 * k),
-      bottomLeft: Radius.circular(18 * k),
-      bottomRight: Radius.circular(18 * k),
-      topLeft: Radius.circular(6 * k),
-      topRight: Radius.circular(6 * k),
+    final ui.Image? jarSprite = SpriteCache.get('assets/images/jar_token_r55.png');
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(bx, by + 28 * k), width: 112 * k, height: 22 * k),
+      Paint()..color = PQColors.sun.withValues(alpha: 0.22),
     );
-    final glow = math.min(1.0, g.caught / 40);
-    canvas.drawRRect(jar, Paint()..color = Color.lerp(const Color(0x66BFE3FF), const Color(0xCCFFE27A), glow)!);
-    for (var i = 0; i < math.min(g.caught, 12); i++) {
-      final sx = bx - 28 * k + (i % 6) * 11 * k;
-      final sy = by + 18 * k - (i ~/ 6) * 11 * k;
-      _star(canvas, Offset(sx, sy), 5 * k, PQColors.sun, 0);
+    if (jarSprite != null) {
+      final Rect jarRect = Rect.fromCenter(
+        center: Offset(bx, by - 4 * k),
+        width: 96 * k,
+        height: 92 * k,
+      );
+      paintImage(
+        canvas: canvas,
+        rect: jarRect,
+        image: jarSprite,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.medium,
+      );
+    } else {
+      _cloud(canvas, Offset(bx, by + 26 * k), 60 * k);
+      final jar = RRect.fromRectAndCorners(
+        Rect.fromCenter(center: Offset(bx, by + 4 * k), width: 82 * k, height: 50 * k),
+        bottomLeft: Radius.circular(18 * k),
+        bottomRight: Radius.circular(18 * k),
+        topLeft: Radius.circular(6 * k),
+        topRight: Radius.circular(6 * k),
+      );
+      final glow = math.min(1.0, g.caught / 40);
+      canvas.drawRRect(jar, Paint()..color = Color.lerp(const Color(0x66BFE3FF), const Color(0xCCFFE27A), glow)!);
+      for (var i = 0; i < math.min(g.caught, 12); i++) {
+        final sx = bx - 28 * k + (i % 6) * 11 * k;
+        final sy = by + 18 * k - (i ~/ 6) * 11 * k;
+        _star(canvas, Offset(sx, sy), 5 * k, PQColors.sun, 0);
+      }
+      canvas.drawRRect(jar, _ink(3));
+      canvas.drawLine(Offset(bx - 30 * k, by - 12 * k), Offset(bx - 30 * k, by + 14 * k), _ink(2.4, Colors.white.withValues(alpha: 0.6)));
+      final rim = RRect.fromRectAndRadius(Rect.fromCenter(center: Offset(bx, by - 21 * k), width: 92 * k, height: 12 * k), Radius.circular(6 * k));
+      canvas.drawRRect(rim, Paint()..color = PQColors.wood);
+      canvas.drawRRect(rim, _ink(2.4));
     }
-    canvas.drawRRect(jar, _ink(3));
-    canvas.drawLine(Offset(bx - 30 * k, by - 12 * k), Offset(bx - 30 * k, by + 14 * k), _ink(2.4, Colors.white.withValues(alpha: 0.6)));
-    final rim = RRect.fromRectAndRadius(Rect.fromCenter(center: Offset(bx, by - 21 * k), width: 92 * k, height: 12 * k), Radius.circular(6 * k));
-    canvas.drawRRect(rim, Paint()..color = PQColors.wood);
-    canvas.drawRRect(rim, _ink(2.4));
-    // Robo peeks from behind the jar
+    // Robo peeks beside the jar
     canvas.save();
-    final roboSize = 52 * k;
-    canvas.translate(bx + 30 * k, by - 50 * k);
+    final roboSize = 60 * k;
+    canvas.translate(bx + 32 * k, by - 46 * k);
     RoboPainter(t: g.time / 3, blink: 0, bob: 0, mood: g.hurt > 0 ? Mood.surprised : Mood.happy).paint(canvas, Size.square(roboSize));
     canvas.restore();
     if (g.hurt > 0) {

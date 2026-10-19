@@ -11,6 +11,7 @@ import '../shared/characters/characters.dart';
 import '../shared/theme/app_theme.dart';
 import '../shared/theme/palette.dart';
 import '../shared/widgets/chunky_button.dart';
+import '../shared/widgets/sprite_cache.dart';
 import 'app_scope.dart';
 import 'app_services.dart';
 import 'locale_binding.dart';
@@ -93,6 +94,7 @@ class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
 
   Future<void> _boot() async {
     setState(() => _error = null);
+    unawaited(SpriteCache.preloadAll());
     try {
       final factory =
           widget.servicesFactory ??
@@ -201,15 +203,56 @@ class _SplashScreenState extends State<SplashScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                  Container(
+                    width: 320,
+                    height: 170,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: PQColors.ink, width: 2.8),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0xFF7B5733),
+                          offset: Offset(0, 5),
+                          blurRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: Stack(
+                      fit: StackFit.expand,
                       children: [
-                        CharacterView(id: CharacterId.robo, size: 110),
-                        CharacterView(id: CharacterId.py, size: 140),
-                        CharacterView(id: CharacterId.pip, size: 110),
+                        Image.asset(
+                          'assets/images/arrival_r56.webp',
+                          fit: BoxFit.cover,
+                          gaplessPlayback: true,
+                        ),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black.withValues(alpha: 0.05),
+                                Colors.black.withValues(alpha: 0.35),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const Align(
+                          alignment: Alignment.bottomCenter,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                CharacterView(id: CharacterId.robo, size: 110),
+                                CharacterView(id: CharacterId.py, size: 140),
+                                CharacterView(id: CharacterId.pip, size: 110),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

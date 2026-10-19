@@ -157,9 +157,10 @@ class _DragonHomeScreenState extends State<DragonHomeScreen> {
                         children: [
                           Container(
                             key: const ValueKey('dragon_25d_scene'),
-                            height: 196,
+                            height: 206,
                             clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
+                              color: const Color(0xFF47332D),
                               borderRadius: BorderRadius.circular(24),
                               border: Border.all(
                                 color: PQColors.ink,
@@ -172,40 +173,62 @@ class _DragonHomeScreenState extends State<DragonHomeScreen> {
                                   blurRadius: 0,
                                 ),
                               ],
-                              image: const DecorationImage(
-                                image: AssetImage(
-                                  'assets/images/volcano_trail_r54.webp',
-                                ),
-                                fit: BoxFit.cover,
-                              ),
                             ),
                             child: Stack(
+                              fit: StackFit.expand,
                               children: [
-                                Positioned.fill(
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.black.withValues(alpha: 0.08),
-                                          Colors.black.withValues(alpha: 0.36),
-                                        ],
-                                      ),
+                                Image.asset(
+                                  'assets/images/volcano_trail_r54.webp',
+                                  fit: BoxFit.cover,
+                                  gaplessPlayback: true,
+                                ),
+                                DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.black.withValues(alpha: 0.06),
+                                        Colors.black.withValues(alpha: 0.42),
+                                      ],
                                     ),
                                   ),
                                 ),
-                                Center(
+                                Positioned(
+                                  left: 16,
+                                  bottom: 14,
+                                  child: Image.asset(
+                                    'assets/images/basalt_token_r54.png',
+                                    width: 68,
+                                    height: 60,
+                                    fit: BoxFit.contain,
+                                    gaplessPlayback: true,
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 18,
+                                  top: 22,
+                                  child: Image.asset(
+                                    'assets/images/beetle_token_r54.png',
+                                    width: 64,
+                                    height: 46,
+                                    fit: BoxFit.contain,
+                                    gaplessPlayback: true,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: const Alignment(0, 0.25),
                                   child: l.hat != null
                                       ? CharacterView(
                                           id: CharacterId.pip,
-                                          size: 168,
+                                          size: 164,
                                           hat: l.hat,
                                         )
                                       : Image.asset(
                                           'assets/images/pip_token_r54.png',
                                           height: 156,
                                           fit: BoxFit.contain,
+                                          gaplessPlayback: true,
                                         ),
                                 ),
                               ],

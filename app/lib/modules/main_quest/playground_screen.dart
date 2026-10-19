@@ -84,7 +84,9 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
                     Container(
                       key: const ValueKey('playground_25d_scene'),
                       height: 100,
+                      clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
+                        color: const Color(0xFF7B5733),
                         borderRadius: BorderRadius.circular(18),
                         border: Border.all(color: PQColors.ink, width: 2.4),
                         boxShadow: [
@@ -94,12 +96,11 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
                             blurRadius: 0,
                           ),
                         ],
-                        image: const DecorationImage(
-                          image: AssetImage(
-                            'assets/images/journal_recap_r36.webp',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
+                      ),
+                      child: Image.asset(
+                        'assets/images/study_corner_r35.webp',
+                        fit: BoxFit.cover,
+                        gaplessPlayback: true,
                       ),
                     ),
                     const SizedBox(height: 10),

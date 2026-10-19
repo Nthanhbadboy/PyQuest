@@ -1,8 +1,10 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
 import '../theme/palette.dart';
+import '../widgets/sprite_cache.dart';
 import 'cast_painters.dart';
 
 /// The island's cast: the four original islanders (Robo, Pip, Bitsy, Thầy Py)
@@ -169,16 +171,47 @@ Shader _vertical(Rect r, Color top, Color bottom) =>
 
 /// Base class: draws in a 100×100 design space scaled to the canvas.
 abstract class CastPainter extends CustomPainter {
-  CastPainter({required this.t, required this.blink, required this.bob, required this.mood});
+  CastPainter({required this.t, required this.blink, required this.bob, required this.mood})
+      : super(repaint: SpriteCache.revision);
 
   final double t;
   final double blink;
   final double bob;
   final Mood mood;
 
+  /// Optional 2.5D rendered sprite asset for the main island cast.
+  String? get spriteAsset => null;
+
+  /// Optional cosmetic overlay painted after [spriteAsset] in the 100×100 space.
+  void drawOverlay(Canvas canvas) {}
+
   @override
   void paint(Canvas canvas, Size size) {
     final s = math.min(size.width, size.height) / 100;
+    final String? asset = spriteAsset;
+    if (asset != null) {
+      final ui.Image? sprite = SpriteCache.get(asset);
+      if (sprite != null) {
+        canvas.save();
+        canvas.translate((size.width - 100 * s) / 2, (size.height - 100 * s) / 2);
+        canvas.scale(s);
+        canvas.drawOval(
+          Rect.fromCenter(center: const Offset(50, 95), width: 56 - bob * 120, height: 9),
+          _fill(PQColors.ink.withValues(alpha: 0.20)),
+        );
+        canvas.translate(0, bob * 100);
+        paintImage(
+          canvas: canvas,
+          rect: const Rect.fromLTWH(2, 2, 96, 94),
+          image: sprite,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.medium,
+        );
+        drawOverlay(canvas);
+        canvas.restore();
+        return;
+      }
+    }
     canvas.save();
     canvas.translate((size.width - 100 * s) / 2, (size.height - 100 * s) / 2);
     canvas.scale(s);
@@ -218,6 +251,9 @@ abstract class CastPainter extends CustomPainter {
 
 class RoboPainter extends CastPainter {
   RoboPainter({required super.t, required super.blink, required super.bob, required super.mood});
+
+  @override
+  String? get spriteAsset => 'assets/images/robo_token_r50.png';
 
   static const _body = PQColors.teal;
   static const _bodyDark = PQColors.tealDeep;
@@ -376,6 +412,12 @@ class RoboPainter extends CastPainter {
 
 class PipPainter extends CastPainter {
   PipPainter({required super.t, required super.blink, required super.bob, required super.mood, this.hat, this.run = 0, this.flap});
+
+  @override
+  String? get spriteAsset => 'assets/images/pip_token_r54.png';
+
+  @override
+  void drawOverlay(Canvas canvas) => _drawHat(canvas);
 
   final String? hat;
 
@@ -568,6 +610,9 @@ class PipPainter extends CastPainter {
 class BitsyPainter extends CastPainter {
   BitsyPainter({required super.t, required super.blink, required super.bob, required super.mood});
 
+  @override
+  String? get spriteAsset => 'assets/images/bitsy_token_r56.png';
+
   static const _fur = Color(0xFFA98BF5);
   static const _furDark = PQColors.grapeDeep;
   static const _muzzle = Color(0xFFFFF6FF);
@@ -675,6 +720,9 @@ class BitsyPainter extends CastPainter {
 
 class PyPainter extends CastPainter {
   PyPainter({required super.t, required super.blink, required super.bob, required super.mood});
+
+  @override
+  String? get spriteAsset => 'assets/images/py_token_r56.png';
 
   static const _blue = PQColors.pyBlue;
   static const _blueLight = Color(0xFF6FA3E6);

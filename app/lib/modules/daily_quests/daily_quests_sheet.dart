@@ -33,8 +33,10 @@ class _DailyQuestsSheet extends StatelessWidget {
             children: [
               Container(
                 key: const ValueKey('daily_quests_25d_scene'),
-                height: 108,
+                height: 116,
+                clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
+                  color: const Color(0xFF3E6E37),
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(color: PQColors.ink, width: 2.4),
                   boxShadow: [
@@ -44,10 +46,11 @@ class _DailyQuestsSheet extends StatelessWidget {
                       blurRadius: 0,
                     ),
                   ],
-                  image: const DecorationImage(
-                    image: AssetImage('assets/images/garden_kiosk_r41.webp'),
-                    fit: BoxFit.cover,
-                  ),
+                ),
+                child: Image.asset(
+                  'assets/images/daily_board_r37.webp',
+                  fit: BoxFit.cover,
+                  gaplessPlayback: true,
                 ),
               ),
               const SizedBox(height: 10),

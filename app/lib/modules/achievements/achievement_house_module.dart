@@ -112,10 +112,9 @@ class _AchievementHouseScreenState extends State<AchievementHouseScreen> {
     final d = _data;
     final rooms = [
       ('Tủ huy hiệu', Icons.military_tech_rounded, true, ''),
-      ('Tường chiến tích', Icons.emoji_events_rounded, (d?.totalLevels ?? 0) >= 5, 'Mở khi vượt qua 5 màn chơi'),
-      ('Bộ sưu tập', Icons.collections_rounded, (d?.dragonOwned.isNotEmpty ?? false) || (d?.starsTotal ?? 0) >= constellations.first.threshold,
-          'Mở khi có vật phẩm đầu tiên (mũ cho Pip hoặc chòm sao)'),
-      ('Góc sáng tạo', Icons.construction_rounded, (d?.creations.isNotEmpty ?? false), 'Mở khi bạn tự tạo một mê cung giải được'),
+      ('Tường chiến tích', Icons.emoji_events_rounded, true, ''),
+      ('Bộ sưu tập', Icons.collections_rounded, true, ''),
+      ('Góc sáng tạo', Icons.construction_rounded, true, ''),
     ];
     return Scaffold(
       body: PQBackground(
@@ -131,51 +130,61 @@ class _AchievementHouseScreenState extends State<AchievementHouseScreen> {
                 tone: PQTone.sun,
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+                padding: const EdgeInsets.fromLTRB(12, 4, 12, 6),
                 child: Container(
                   key: const ValueKey('achievement_25d_scene'),
-                  height: 88,
+                  height: 156,
+                  clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: PQColors.ink, width: 2.4),
+                    color: const Color(0xFF7B5733),
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(color: PQColors.ink, width: 2.6),
                     boxShadow: [
                       BoxShadow(
                         color: PQTone.sun.depth,
-                        offset: const Offset(0, 3),
+                        offset: const Offset(0, 4),
                         blurRadius: 0,
                       ),
                     ],
-                    image: const DecorationImage(
-                      image: AssetImage(
-                        'assets/images/achievement_room_r39.webp',
-                      ),
-                      fit: BoxFit.cover,
-                    ),
                   ),
                   child: Stack(
+                    fit: StackFit.expand,
                     children: [
-                      Positioned.fill(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.black.withValues(alpha: 0.10),
-                                Colors.black.withValues(alpha: 0.56),
-                              ],
-                            ),
+                      Image.asset(
+                        'assets/images/achievement_room_r39.webp',
+                        fit: BoxFit.cover,
+                        gaplessPlayback: true,
+                      ),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withValues(alpha: 0.08),
+                              Colors.black.withValues(alpha: 0.56),
+                            ],
                           ),
                         ),
                       ),
                       Positioned(
-                        left: 12,
                         right: 12,
-                        bottom: 8,
+                        bottom: 6,
+                        child: Image.asset(
+                          'assets/images/robo_token_r50.png',
+                          width: 78,
+                          height: 78,
+                          fit: BoxFit.contain,
+                          gaplessPlayback: true,
+                        ),
+                      ),
+                      Positioned(
+                        left: 14,
+                        right: 96,
+                        bottom: 10,
                         child: Text(
                           'Phòng trưng bày 2.5D · Tủ huy hiệu & Kỷ niệm',
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: PQText.small.copyWith(
                             color: Colors.white,
@@ -316,8 +325,15 @@ class _BadgeCabinet extends StatelessWidget {
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: got ? const Color(0xFFFFF6D6) : const Color(0xFFF1EADC),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: PQColors.ink, width: 2),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: PQColors.ink, width: 2.2),
+                boxShadow: [
+                  BoxShadow(
+                    color: got ? PQTone.sun.depth : const Color(0xFF9E8C72),
+                    offset: const Offset(0, 4),
+                    blurRadius: 0,
+                  ),
+                ],
               ),
               child: Column(
                 children: [

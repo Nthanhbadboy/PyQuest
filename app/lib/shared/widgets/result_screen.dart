@@ -145,7 +145,9 @@ class _LevelResultScreenState extends State<LevelResultScreen> {
                       Container(
                         key: const ValueKey('result_25d_scene'),
                         height: 112,
+                        clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
+                          color: const Color(0xFF3E6E37),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: PQColors.ink, width: 2.4),
                           boxShadow: [
@@ -155,12 +157,11 @@ class _LevelResultScreenState extends State<LevelResultScreen> {
                               blurRadius: 0,
                             ),
                           ],
-                          image: const DecorationImage(
-                            image: AssetImage(
-                              'assets/images/robo_celebration_r52.webp',
-                            ),
-                            fit: BoxFit.cover,
-                          ),
+                        ),
+                        child: Image.asset(
+                          'assets/images/robo_celebration_r52.webp',
+                          fit: BoxFit.cover,
+                          gaplessPlayback: true,
                         ),
                       ),
                       const SizedBox(height: 10),

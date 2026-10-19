@@ -19,6 +19,7 @@ import 'package:pyquest/modules/main_map/main_map_screen.dart';
 import 'package:pyquest/modules/main_quest/main_quest_module.dart';
 import 'package:pyquest/shared/characters/cast.dart';
 import 'package:pyquest/shared/characters/characters.dart';
+import 'package:pyquest/shared/widgets/sprite_cache.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../test_helpers.dart';
@@ -124,6 +125,7 @@ Future<AppServices> seeded(
 Future<void> precacheMap(WidgetTester tester) async {
   final ctx = tester.element(find.byType(Scaffold).first);
   await tester.runAsync(() async {
+    await SpriteCache.preloadAll();
     for (final a in [
       'assets/images/village_r53.webp',
       'assets/images/thumb_maze.webp',
@@ -132,12 +134,31 @@ Future<void> precacheMap(WidgetTester tester) async {
       'assets/images/thumb_observatory.webp',
       'assets/images/thumb_workshop.webp',
       'assets/images/thumb_house.webp',
-      // PQC-022: scene 2,5D của sheet/welcome và Main Quest phải có trong cache
-      // trước khi capture, nếu không ảnh chụp chỉ thấy nền trống.
       'assets/images/arrival_r56.webp',
       'assets/images/main_quest_r56.webp',
       'assets/images/py_token_r56.png',
       'assets/images/bitsy_token_r56.png',
+      'assets/images/maze_trail_r45.webp',
+      'assets/images/maze_workbench_r46.webp',
+      'assets/images/garden_stage_r50.webp',
+      'assets/images/hedge_token_r50.png',
+      'assets/images/robo_token_r50.png',
+      'assets/images/robo_celebration_r52.webp',
+      'assets/images/volcano_trail_r54.webp',
+      'assets/images/pip_token_r54.png',
+      'assets/images/basalt_token_r54.png',
+      'assets/images/beetle_token_r54.png',
+      'assets/images/observatory_sky_r55.webp',
+      'assets/images/jar_token_r55.png',
+      'assets/images/star_token_r55.png',
+      'assets/images/meteor_token_r55.png',
+      'assets/images/bug_workshop_r36.webp',
+      'assets/images/achievement_room_r39.webp',
+      'assets/images/daily_board_r37.webp',
+      'assets/images/rest_nook_r38.webp',
+      'assets/images/study_corner_r35.webp',
+      'assets/images/journal_recap_r36.webp',
+      'assets/images/garden_kiosk_r41.webp',
     ]) {
       await precacheImage(AssetImage(a), ctx);
     }

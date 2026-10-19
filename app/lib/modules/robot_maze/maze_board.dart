@@ -1,10 +1,12 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
 import '../../shared/characters/characters.dart';
 import '../../shared/theme/palette.dart';
 import '../../shared/widgets/game_icons.dart';
+import '../../shared/widgets/sprite_cache.dart';
 import 'maze_models.dart';
 
 /// Mutable visual state of a maze run (robot position, effects, hints).
@@ -48,7 +50,7 @@ class MazeBoardPainter extends CustomPainter {
     required this.playback,
     required this.time,
     this.editorMode = false,
-  }) : super(repaint: Listenable.merge([playback, time]));
+  }) : super(repaint: Listenable.merge([playback, time, SpriteCache.revision]));
 
   final MazeLevel level;
   final MazePlayback playback;
@@ -78,12 +80,29 @@ class MazeBoardPainter extends CustomPainter {
     final boardRect = Rect.fromLTWH(origin.dx, origin.dy, cell * level.width, cell * level.height);
     final t = time.value;
 
-    // Wooden frame
-    final frame = RRect.fromRectAndRadius(boardRect.inflate(7), const Radius.circular(18));
-    canvas.drawRRect(frame.shift(const Offset(0, 5)), Paint()..color = PQColors.ink.withValues(alpha: 0.25));
-    canvas.drawRRect(frame, Paint()..color = PQColors.wood);
-    canvas.drawRRect(frame, _stroke(2.6));
-    final inner = RRect.fromRectAndRadius(boardRect, const Radius.circular(12));
+    // 2.5D Garden stage surround + wooden courtyard frame (r50)
+    final frame = RRect.fromRectAndRadius(boardRect.inflate(9), const Radius.circular(20));
+    final ui.Image? stageSprite = SpriteCache.get('assets/images/garden_stage_r50.webp');
+    if (stageSprite != null) {
+      canvas.save();
+      canvas.clipRRect(frame);
+      paintImage(
+        canvas: canvas,
+        rect: frame.outerRect,
+        image: stageSprite,
+        fit: BoxFit.cover,
+        filterQuality: FilterQuality.medium,
+      );
+      canvas.restore();
+    }
+    canvas.drawRRect(frame.shift(const Offset(0, 6)), Paint()..color = PQColors.ink.withValues(alpha: 0.28));
+    if (stageSprite == null) {
+      canvas.drawRRect(frame, Paint()..color = PQColors.wood);
+    } else {
+      canvas.drawRRect(frame, _stroke(5, const Color(0xFF8C6239)));
+    }
+    canvas.drawRRect(frame, _stroke(2.8));
+    final inner = RRect.fromRectAndRadius(boardRect, const Radius.circular(14));
     canvas.save();
     canvas.clipRRect(inner);
 
@@ -92,6 +111,11 @@ class MazeBoardPainter extends CustomPainter {
         final r = Rect.fromLTWH(origin.dx + x * cell, origin.dy + y * cell, cell, cell);
         final tile = level.tiles[y][x];
         canvas.drawRect(r, Paint()..color = (x + y).isEven ? _grassA : _grassB);
+        // 2.5D bevel on each courtyard tile
+        canvas.drawLine(r.topLeft, r.topRight, Paint()..color = Colors.white.withValues(alpha: 0.26)..strokeWidth = 2);
+        canvas.drawLine(r.topLeft, r.bottomLeft, Paint()..color = Colors.white.withValues(alpha: 0.18)..strokeWidth = 2);
+        canvas.drawLine(r.bottomLeft, r.bottomRight, Paint()..color = const Color(0xFF4C8D32).withValues(alpha: 0.30)..strokeWidth = 2);
+        canvas.drawLine(r.topRight, r.bottomRight, Paint()..color = const Color(0xFF4C8D32).withValues(alpha: 0.24)..strokeWidth = 2);
         if (tile == Tile.floor) _tuft(canvas, r, x * 7 + y * 13);
         if (tile == Tile.water) _waterTile(canvas, r, t, x, y);
       }
@@ -113,10 +137,32 @@ class MazeBoardPainter extends CustomPainter {
       final r = _cellRect(origin, cell, playback.highlightCell!).deflate(3);
       canvas.drawRRect(RRect.fromRectAndRadius(r, Radius.circular(cell * 0.18)), _stroke(3.4, PQColors.sun));
     }
-    // Walls (hedges) are drawn row by row so the bush tops overlap nicely.
+    // Walls (2.5D isometric boxwood hedges from r50, row by row so tops overlap nicely)
+    final ui.Image? hedgeSprite = SpriteCache.get('assets/images/hedge_token_r50.png');
     for (var y = 0; y < level.height; y++) {
       for (var x = 0; x < level.width; x++) {
-        if (level.tiles[y][x] == Tile.wall) _bush(canvas, _cellRect(origin, cell, Cell(x, y)), x + y * 3);
+        if (level.tiles[y][x] == Tile.wall) {
+          final Rect cellRect = _cellRect(origin, cell, Cell(x, y));
+          if (hedgeSprite != null) {
+            canvas.drawOval(
+              Rect.fromCenter(
+                center: Offset(cellRect.center.dx, cellRect.bottom - cell * 0.08),
+                width: cell * 0.90,
+                height: cell * 0.24,
+              ),
+              Paint()..color = PQColors.ink.withValues(alpha: 0.22),
+            );
+            paintImage(
+              canvas: canvas,
+              rect: cellRect.inflate(cell * 0.06).shift(Offset(0, -cell * 0.04)),
+              image: hedgeSprite,
+              fit: BoxFit.fill,
+              filterQuality: FilterQuality.medium,
+            );
+          } else {
+            _bush(canvas, cellRect, x + y * 3);
+          }
+        }
       }
     }
     if (playback.crashCell != null && level.inside(playback.crashCell!)) {

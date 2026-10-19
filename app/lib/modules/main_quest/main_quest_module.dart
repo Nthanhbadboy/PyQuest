@@ -507,24 +507,41 @@ class _ChapterHeader extends StatelessWidget {
     }
     return PQPanel(
       color: const Color(0xFFE8F1FF),
-      child: Row(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CharacterView(id: CharacterId.py, size: 96),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('CHẶNG ${content.chapterNumber}', style: PQText.small.copyWith(color: PQColors.pyBlue, fontWeight: FontWeight.w900)),
-                Text(content.chapterTitle, style: PQText.h2),
-                Text(content.chapterSubtitle, style: PQText.small),
-                const SizedBox(height: 6),
-                ChunkyProgress(value: done / content.lessons.length, color: PQColors.pyBlue),
-                const SizedBox(height: 4),
-                Text(content.chapterDescription, style: PQText.body.copyWith(fontSize: 14.5)),
-              ],
-            ),
+          Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: PQColors.pyBlue,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: PQColors.ink, width: 2.2),
+                  boxShadow: const [
+                    BoxShadow(color: Color(0xFF1F4B8E), offset: Offset(0, 3)),
+                  ],
+                ),
+                child: const Icon(Icons.auto_fix_high_rounded, color: PQColors.pyYellow, size: 26),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('CHẶNG ${content.chapterNumber} · ${content.chapterSubtitle}', style: PQText.small.copyWith(color: PQColors.pyBlue, fontWeight: FontWeight.w900)),
+                    Text(content.chapterTitle, style: PQText.h2),
+                  ],
+                ),
+              ),
+            ],
           ),
+          const SizedBox(height: 6),
+          ChunkyProgress(value: done / content.lessons.length, color: PQColors.pyBlue),
+          const SizedBox(height: 4),
+          Text(content.chapterDescription, style: PQText.body.copyWith(fontSize: 14.5)),
         ],
       ),
     );

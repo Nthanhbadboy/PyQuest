@@ -128,8 +128,10 @@ class _RobotMazeHomeScreenState extends State<RobotMazeHomeScreen> {
                   children: [
                     Container(
                       key: const ValueKey('maze_25d_scene'),
-                      height: 148,
+                      height: 164,
+                      clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
+                        color: const Color(0xFF3E6E37),
                         borderRadius: BorderRadius.circular(22),
                         border: Border.all(color: PQColors.ink, width: 2.6),
                         boxShadow: [
@@ -139,27 +141,24 @@ class _RobotMazeHomeScreenState extends State<RobotMazeHomeScreen> {
                             blurRadius: 0,
                           ),
                         ],
-                        image: const DecorationImage(
-                          image: AssetImage(
-                            'assets/images/maze_trail_r45.webp',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
                       ),
                       child: Stack(
+                        fit: StackFit.expand,
                         children: [
-                          Positioned.fill(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(19),
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.black.withValues(alpha: 0.08),
-                                    Colors.black.withValues(alpha: 0.58),
-                                  ],
-                                ),
+                          Image.asset(
+                            'assets/images/maze_trail_r45.webp',
+                            fit: BoxFit.cover,
+                            gaplessPlayback: true,
+                          ),
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withValues(alpha: 0.08),
+                                  Colors.black.withValues(alpha: 0.54),
+                                ],
                               ),
                             ),
                           ),
@@ -168,14 +167,15 @@ class _RobotMazeHomeScreenState extends State<RobotMazeHomeScreen> {
                             bottom: 8,
                             child: Image.asset(
                               'assets/images/robo_token_r50.png',
-                              width: 72,
-                              height: 72,
+                              width: 82,
+                              height: 82,
                               fit: BoxFit.contain,
+                              gaplessPlayback: true,
                             ),
                           ),
                           Positioned(
                             left: 14,
-                            right: 92,
+                            right: 98,
                             bottom: 10,
                             child: Text(
                               'Khu vườn mê cung 2.5D · ${levels.length} thử thách',
@@ -251,13 +251,52 @@ class _LevelPath extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = _pos(levels.length - 1).dy + 90;
-    return SizedBox(
+    final height = _pos(levels.length - 1).dy + 98;
+    return Container(
       height: height,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: const Color(0xFF4B7F42),
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(color: PQColors.ink, width: 2.8),
+        boxShadow: [
+          BoxShadow(
+            color: PQTone.grass.depth,
+            offset: const Offset(0, 5),
+            blurRadius: 0,
+          ),
+        ],
+      ),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Positioned.fill(child: CustomPaint(painter: _PathPainter([for (var i = 0; i < levels.length; i++) _pos(i)]))),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/maze_trail_r45.webp',
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+              gaplessPlayback: true,
+            ),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    const Color(0xFF284D23).withValues(alpha: 0.22),
+                    const Color(0xFF1D3B19).withValues(alpha: 0.34),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _PathPainter([for (var i = 0; i < levels.length; i++) _pos(i)]),
+            ),
+          ),
           for (var i = 0; i < levels.length; i++)
             Positioned(
               left: _pos(i).dx - 70,
@@ -293,22 +332,53 @@ class _PathPainter extends CustomPainter {
       final mid = (a.dy + b.dy) / 2;
       path.cubicTo(a.dx, mid, b.dx, mid, b.dx, b.dy);
     }
+    // 2.5D stone garden path border + shadow
     canvas.drawPath(
-        path,
-        Paint()
-          ..color = const Color(0xFFE8D3A2)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 22
-          ..strokeCap = StrokeCap.round);
+      path.shift(const Offset(0, 5)),
+      Paint()
+        ..color = PQColors.ink.withValues(alpha: 0.35)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 32
+        ..strokeCap = StrokeCap.round,
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = const Color(0xFF6B533B)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 30
+        ..strokeCap = StrokeCap.round,
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = const Color(0xFFE8D3A2)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 22
+        ..strokeCap = StrokeCap.round,
+    );
     final dash = Paint()
-      ..color = Colors.white.withValues(alpha: 0.85)
+      ..color = const Color(0xFFFFF6DF).withValues(alpha: 0.90)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4
+      ..strokeWidth = 5
       ..strokeCap = StrokeCap.round;
     for (final metric in path.computeMetrics()) {
       for (var d = 0.0; d < metric.length; d += 22) {
         canvas.drawPath(metric.extractPath(d, math.min(d + 9, metric.length)), dash);
       }
+    }
+    // 2.5D stone pedestal base under each level node
+    for (final pt in points) {
+      final Rect base = Rect.fromCenter(center: pt.translate(0, 24), width: 88, height: 24);
+      canvas.drawOval(base.shift(const Offset(0, 4)), Paint()..color = PQColors.ink.withValues(alpha: 0.32));
+      canvas.drawOval(base, Paint()..color = const Color(0xFFD6C39A));
+      canvas.drawOval(
+        base,
+        Paint()
+          ..color = PQColors.ink
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.2,
+      );
     }
   }
 
@@ -352,11 +422,21 @@ class _LevelNode extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         if (done) StarRow(stars: record!.stars, size: 20) else const SizedBox(height: 20),
-        Text(level.title,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            color: unlocked ? const Color(0xF2FFF8E7) : const Color(0xD8EDE4D7),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: PQColors.ink, width: 1.6),
+          ),
+          child: Text(
+            level.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: PQText.small.copyWith(fontSize: 13, color: unlocked ? PQColors.ink : PQColors.inkFaint)),
+            style: PQText.small.copyWith(fontSize: 12.5, color: unlocked ? PQColors.ink : PQColors.inkFaint),
+          ),
+        ),
       ],
     );
     return current ? _Bounce(child: node) : node;
@@ -407,13 +487,16 @@ class _WorkshopCard extends StatelessWidget {
           Container(
             key: const ValueKey('maze_workshop_25d_banner'),
             height: 112,
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
+              color: const Color(0xFF5D468E),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: PQColors.ink, width: 2.2),
-              image: const DecorationImage(
-                image: AssetImage('assets/images/maze_workbench_r46.webp'),
-                fit: BoxFit.cover,
-              ),
+            ),
+            child: Image.asset(
+              'assets/images/maze_workbench_r46.webp',
+              fit: BoxFit.cover,
+              gaplessPlayback: true,
             ),
           ),
           const SizedBox(height: 10),

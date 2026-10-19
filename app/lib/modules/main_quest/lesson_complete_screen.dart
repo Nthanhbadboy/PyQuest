@@ -104,7 +104,9 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                     Container(
                       key: const ValueKey('lesson_complete_25d_scene'),
                       height: 108,
+                      clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
+                        color: const Color(0xFF355843),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: PQColors.ink, width: 2.4),
                         boxShadow: [
@@ -114,12 +116,11 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                             blurRadius: 0,
                           ),
                         ],
-                        image: const DecorationImage(
-                          image: AssetImage(
-                            'assets/images/journal_recap_r36.webp',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
+                      ),
+                      child: Image.asset(
+                        'assets/images/journal_recap_r36.webp',
+                        fit: BoxFit.cover,
+                        gaplessPlayback: true,
                       ),
                     ),
                     const SizedBox(height: 10),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ import '../../shared/theme/palette.dart';
 import '../../shared/widgets/chunky_button.dart';
 import '../../shared/widgets/code_widgets.dart';
 import '../../shared/widgets/common.dart';
+import '../../shared/widgets/sprite_cache.dart';
 import '../robot_maze/maze_board.dart';
 import '../robot_maze/maze_models.dart';
 import '../tutor/board/authored_board_repository.dart';
@@ -736,11 +738,52 @@ class _LessonScreenState extends State<LessonScreen> {
     switch (step) {
       case StoryStep s:
         return Padding(
-          padding: const EdgeInsets.only(top: 24),
+          padding: const EdgeInsets.only(top: 12),
           child: Column(
             children: [
-              CharacterView(id: s.speaker, size: 150, mood: s.mood),
-              const SizedBox(height: 10),
+              Container(
+                height: 196,
+                width: double.infinity,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF355843),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: PQColors.ink, width: 2.6),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0xFF7B5733),
+                      offset: Offset(0, 4),
+                      blurRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CustomPaint(
+                      painter: _LessonStage25dPainter(),
+                    ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withValues(alpha: 0.05),
+                            const Color(0x99FFF8E7),
+                          ],
+                          stops: const [0.45, 1.0],
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: CharacterView(id: s.speaker, size: 156, mood: s.mood),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
               PQPanel(
                 child: Text(
                   s.text,
@@ -1589,3 +1632,37 @@ class _RobotRunnerState extends State<_RobotRunner>
     );
   }
 }
+
+class _LessonStage25dPainter extends CustomPainter {
+  _LessonStage25dPainter() : super(repaint: SpriteCache.revision);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Rect rect = Offset.zero & size;
+    final ui.Image? scene = SpriteCache.get('assets/images/main_quest_r56.webp');
+    if (scene != null) {
+      paintImage(
+        canvas: canvas,
+        rect: rect,
+        image: scene,
+        fit: BoxFit.cover,
+        alignment: const Alignment(0, 0.25),
+        filterQuality: FilterQuality.medium,
+      );
+    } else {
+      canvas.drawRect(
+        rect,
+        Paint()
+          ..shader = const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF4C7F5D), Color(0xFF2E543B)],
+          ).createShader(rect),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _LessonStage25dPainter oldDelegate) => false;
+}
+

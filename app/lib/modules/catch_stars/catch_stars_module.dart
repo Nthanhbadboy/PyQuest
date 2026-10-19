@@ -113,9 +113,10 @@ class _CatchStarsHomeScreenState extends State<CatchStarsHomeScreen> {
                   children: [
                     Container(
                       key: const ValueKey('stars_25d_scene'),
-                      height: 184,
+                      height: 196,
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
+                        color: const Color(0xFF151A4C),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(color: PQColors.ink, width: 2.6),
                         boxShadow: const [
@@ -125,34 +126,67 @@ class _CatchStarsHomeScreenState extends State<CatchStarsHomeScreen> {
                             blurRadius: 0,
                           ),
                         ],
-                        image: const DecorationImage(
-                          image: AssetImage(
-                            'assets/images/observatory_sky_r55.webp',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
                       ),
                       child: Stack(
+                        fit: StackFit.expand,
                         children: [
-                          Positioned.fill(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.black.withValues(alpha: 0.08),
-                                    Colors.black.withValues(alpha: 0.42),
-                                  ],
-                                ),
+                          Image.asset(
+                            'assets/images/observatory_sky_r55.webp',
+                            fit: BoxFit.cover,
+                            gaplessPlayback: true,
+                          ),
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withValues(alpha: 0.06),
+                                  Colors.black.withValues(alpha: 0.42),
+                                ],
                               ),
                             ),
                           ),
-                          Center(
+                          Positioned(
+                            left: 22,
+                            top: 20,
+                            child: Image.asset(
+                              'assets/images/star_token_r55.png',
+                              width: 54,
+                              height: 54,
+                              fit: BoxFit.contain,
+                              gaplessPlayback: true,
+                            ),
+                          ),
+                          Positioned(
+                            right: 22,
+                            top: 18,
+                            child: Image.asset(
+                              'assets/images/meteor_token_r55.png',
+                              width: 52,
+                              height: 52,
+                              fit: BoxFit.contain,
+                              gaplessPlayback: true,
+                            ),
+                          ),
+                          Positioned(
+                            right: 34,
+                            bottom: 8,
+                            child: Image.asset(
+                              'assets/images/robo_token_r50.png',
+                              width: 78,
+                              height: 78,
+                              fit: BoxFit.contain,
+                              gaplessPlayback: true,
+                            ),
+                          ),
+                          Align(
+                            alignment: const Alignment(-0.1, 0.25),
                             child: Image.asset(
                               'assets/images/jar_token_r55.png',
                               height: 140,
                               fit: BoxFit.contain,
+                              gaplessPlayback: true,
                             ),
                           ),
                         ],

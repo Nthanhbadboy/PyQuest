@@ -151,8 +151,10 @@ class _BugHunterHomeScreenState extends State<BugHunterHomeScreen> {
                   children: [
                     Container(
                       key: const ValueKey('bug_hunter_25d_scene'),
-                      height: 140,
+                      height: 158,
+                      clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
+                        color: const Color(0xFF4A357A),
                         borderRadius: BorderRadius.circular(22),
                         border: Border.all(color: PQColors.ink, width: 2.6),
                         boxShadow: [
@@ -162,33 +164,41 @@ class _BugHunterHomeScreenState extends State<BugHunterHomeScreen> {
                             blurRadius: 0,
                           ),
                         ],
-                        image: const DecorationImage(
-                          image: AssetImage(
-                            'assets/images/bug_workshop_r36.webp',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
                       ),
                       child: Stack(
+                        fit: StackFit.expand,
                         children: [
-                          Positioned.fill(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(19),
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.black.withValues(alpha: 0.08),
-                                    Colors.black.withValues(alpha: 0.58),
-                                  ],
-                                ),
+                          Image.asset(
+                            'assets/images/bug_workshop_r36.webp',
+                            fit: BoxFit.cover,
+                            gaplessPlayback: true,
+                          ),
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withValues(alpha: 0.08),
+                                  Colors.black.withValues(alpha: 0.56),
+                                ],
                               ),
                             ),
                           ),
                           Positioned(
+                            right: 12,
+                            bottom: 4,
+                            child: Image.asset(
+                              'assets/images/bitsy_token_r56.png',
+                              width: 82,
+                              height: 82,
+                              fit: BoxFit.contain,
+                              gaplessPlayback: true,
+                            ),
+                          ),
+                          Positioned(
                             left: 14,
-                            right: 14,
+                            right: 98,
                             bottom: 10,
                             child: Text(
                               'Xưởng thám tử 2.5D · Sửa $_bugs/${c.totalBugs} con bọ lỗi',
@@ -540,6 +550,50 @@ class _BugPuzzleScreenState extends State<BugPuzzleScreen> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(14, 6, 14, 20),
                   children: [
+                    Container(
+                      height: 92,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4A357A),
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: PQColors.ink, width: 2.2),
+                      ),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.asset(
+                            'assets/images/bug_workshop_r36.webp',
+                            fit: BoxFit.cover,
+                            alignment: const Alignment(0, -0.2),
+                            gaplessPlayback: true,
+                          ),
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withValues(alpha: 0.05),
+                                  Colors.black.withValues(alpha: 0.45),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left: 12,
+                            bottom: 8,
+                            child: Text(
+                              'Bàn kính lúp 2.5D · Truy tìm dòng code lỗi',
+                              style: PQText.small.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     SpeechBubble(character: CharacterId.bitsy, text: _message ?? '', mood: _mood, portraitSize: 66),
                     const SizedBox(height: 10),
                     Container(

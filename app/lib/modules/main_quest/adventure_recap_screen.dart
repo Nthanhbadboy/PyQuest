@@ -101,7 +101,9 @@ class _AdventureRecapScreenState extends State<AdventureRecapScreen> {
                           Container(
                             key: const ValueKey('recap_25d_scene'),
                             height: 120,
+                            clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
+                              color: const Color(0xFF7B5733),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: PQColors.ink,
@@ -114,12 +116,11 @@ class _AdventureRecapScreenState extends State<AdventureRecapScreen> {
                                   blurRadius: 0,
                                 ),
                               ],
-                              image: const DecorationImage(
-                                image: AssetImage(
-                                  'assets/images/journal_recap_r36.webp',
-                                ),
-                                fit: BoxFit.cover,
-                              ),
+                            ),
+                            child: Image.asset(
+                              'assets/images/journal_recap_r36.webp',
+                              fit: BoxFit.cover,
+                              gaplessPlayback: true,
                             ),
                           ),
                           const SizedBox(height: 10),

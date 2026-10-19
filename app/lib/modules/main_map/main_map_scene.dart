@@ -72,28 +72,10 @@ class MainMapScene extends StatelessWidget {
     return SingleChildScrollView(
       key: const PageStorageKey<String>('main_map_village_scroll'),
       controller: villageScrollController,
-      padding: const EdgeInsets.only(top: 12, bottom: 24),
+      padding: const EdgeInsets.only(top: 4, bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          if (recommendation != null) ...<Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _RecommendationCard(
-                title: l10n.hubRecommendationTitle,
-                placeName: placeName(l10n, recommendation.def.id),
-                onPressed: () => onOpen(recommendation),
-              ),
-            ),
-            const SizedBox(height: 12),
-          ],
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Text(
-              l10n.hubSceneScrollHint,
-              style: PQText.small.copyWith(color: PQColors.inkSoft),
-            ),
-          ),
           LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               final double width = constraints.maxWidth;
@@ -142,6 +124,23 @@ class MainMapScene extends StatelessWidget {
               );
             },
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: Text(
+              l10n.hubSceneScrollHint,
+              style: PQText.small.copyWith(color: PQColors.inkSoft),
+            ),
+          ),
+          if (recommendation != null) ...<Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _RecommendationCard(
+                title: l10n.hubRecommendationTitle,
+                placeName: placeName(l10n, recommendation.def.id),
+                onPressed: () => onOpen(recommendation),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -413,7 +412,7 @@ class _PlaceButton extends StatelessWidget {
         : locked
         ? l10n.hubLocked
         : l10n.hubExplore;
-    final Color face = locked ? const Color(0xFFEDE4D7) : PQColors.cream;
+    final Color face = locked ? const Color(0xD4EDE4D7) : const Color(0xDCFFF8E7);
     return Focus(
       skipTraversal: true,
       canRequestFocus: false,
@@ -435,11 +434,13 @@ class _PlaceButton extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               backgroundColor: face,
               foregroundColor: PQColors.ink,
+              elevation: 3,
+              shadowColor: PQColors.ink,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
                 side: const BorderSide(
-                  color: PQColors.parchmentEdge,
-                  width: 1.5,
+                  color: Color(0xFF8B5E34),
+                  width: 2.0,
                 ),
               ),
             ),
