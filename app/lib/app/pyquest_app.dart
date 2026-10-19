@@ -146,9 +146,10 @@ class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
           locale: binding.locale,
           supportedLocales: supportedLocales,
           localizationsDelegates: _delegates,
-          // Respect the system text size, but cap it so game layouts stay intact.
-          builder: (context, child) =>
-              MediaQuery.withClampedTextScaling(maxScaleFactor: 1.2, child: child!),
+          // PQC-020 R3 finding B: bỏ blanket cap 1.2. Người dùng chọn cỡ chữ hệ
+          // thống bao nhiêu thì app nhận bấy nhiêu; MaterialApp/View cung cấp scaler,
+          // không còn cap ở root và cũng không có cap mới chuyển xuống hub/Navigator/
+          // sheet. Layout phải chịu được 2x thay vì bị bịt bằng một con số.
           home: const MainMapScreen(),
         ),
       ),

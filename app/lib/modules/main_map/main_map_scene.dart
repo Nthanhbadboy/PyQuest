@@ -119,13 +119,22 @@ class MainMapScene extends StatelessWidget {
                           gaplessPlayback: true,
                         ),
                       ),
-                      for (int i = 0; i < modules.length; i++)
-                        _positionedMarker(
-                          l10n,
-                          modules[i],
-                          sceneSize,
-                          order: i + 1,
+                      // Va chạm là quan hệ giữa hai hộp nên không thể giải quyết
+                      // trong từng child riêng lẻ: cả sáu nhãn đi qua MỘT layout,
+                      // dùng hợp đồng chung `villageMarkerPlacements`.
+                      CustomMultiChildLayout(
+                        delegate: _VillageMarkerLayout(
+                          sceneSize: sceneSize,
+                          markerWidth: width * kVillageMarkerWidthFraction,
+                          ids: <String>[
+                            for (final ActivityModule m in modules) m.def.id,
+                          ],
                         ),
+                        children: <Widget>[
+                          for (int i = 0; i < modules.length; i++)
+                            _villageMarker(l10n, modules[i], order: i + 1),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -137,38 +146,32 @@ class MainMapScene extends StatelessWidget {
     );
   }
 
-  Widget _positionedMarker(
+  /// Một nhãn trong scene. `LayoutId` là cách `CustomMultiChildLayout` định danh
+  /// child; key `map_label_*` vẫn nằm trên `_PlaceButton` nên `getRect`,
+  /// `getSemantics` và các cú tap theo key của tests giữ nguyên như trước.
+  Widget _villageMarker(
     AppLocalizations l10n,
-    ActivityModule module,
-    Size sceneSize, {
+    ActivityModule module, {
     required int order,
   }) {
     final String id = module.def.id;
-    final Offset center = villageMarkerCenter(id, sceneSize);
-    final double width = sceneSize.width * kVillageMarkerWidthFraction;
-    return Align(
-      alignment: Alignment(
-        2 * center.dx / sceneSize.width - 1,
-        2 * center.dy / sceneSize.height - 1,
-      ),
-      child: SizedBox(
-        width: width,
-        child: FocusTraversalOrder(
-          order: NumericFocusOrder(order.toDouble()),
-          child: _PlaceButton(
-            key: ValueKey<String>('map_label_$id'),
-            activityId: id,
-            name: placeName(l10n, id),
-            state: places[id] ?? const MainMapPlaceState.loading(),
-            focusNode: focusNodeFor(id),
-            onFocused: (BuildContext buttonContext) {
-              if (!suppressFocusAutoScroll) {
-                _ensureVisibleIfNeeded(buttonContext, alignment: 0.45);
-              }
-            },
-            onPressed: () => _activate(module),
-            l10n: l10n,
-          ),
+    return LayoutId(
+      id: id,
+      child: FocusTraversalOrder(
+        order: NumericFocusOrder(order.toDouble()),
+        child: _PlaceButton(
+          key: ValueKey<String>('map_label_$id'),
+          activityId: id,
+          name: placeName(l10n, id),
+          state: places[id] ?? const MainMapPlaceState.loading(),
+          focusNode: focusNodeFor(id),
+          onFocused: (BuildContext buttonContext) {
+            if (!suppressFocusAutoScroll) {
+              _ensureVisibleIfNeeded(buttonContext, alignment: 0.45);
+            }
+          },
+          onPressed: () => _activate(module),
+          l10n: l10n,
         ),
       ),
     );
@@ -327,6 +330,54 @@ class _RecommendationCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// Places the six village labels using their REAL content boxes, then keeps them from
+/// covering each other. All the geometry lives in `villageMarkerPlacements`, shared with
+/// the tests, so a model test can no longer pass while the painted boxes overlap.
+class _VillageMarkerLayout extends MultiChildLayoutDelegate {
+  _VillageMarkerLayout({
+    required this.sceneSize,
+    required this.markerWidth,
+    required this.ids,
+  });
+
+  final Size sceneSize;
+  final double markerWidth;
+  final List<String> ids;
+
+  @override
+  void performLayout(Size size) {
+    // Rộng đúng bằng fraction của scene (giữ nguyên như hộp cũ để không thu nhỏ
+    // target); chiều cao để ngỏ vì nội dung thật — tên + status, wrap — quyết định.
+    final BoxConstraints childConstraints = BoxConstraints.loose(
+      size,
+    ).copyWith(minWidth: markerWidth, maxWidth: markerWidth);
+    final Map<String, Size> measured = <String, Size>{};
+    for (final String id in ids) {
+      if (!hasChild(id)) {
+        continue;
+      }
+      measured[id] = layoutChild(id, childConstraints);
+    }
+    final Map<String, VillageMarkerPlacement> placed =
+        villageMarkerPlacements(
+          sceneSize: size,
+          childSizes: measured,
+          order: measured.keys.toList(growable: false),
+        );
+    for (final MapEntry<String, VillageMarkerPlacement> entry
+        in placed.entries) {
+      positionChild(entry.key, entry.value.rect.topLeft);
+    }
+  }
+
+  @override
+  bool shouldRelayout(covariant _VillageMarkerLayout oldDelegate) {
+    return oldDelegate.sceneSize != sceneSize ||
+        oldDelegate.markerWidth != markerWidth ||
+        !listEquals(oldDelegate.ids, ids);
   }
 }
 

@@ -198,31 +198,64 @@ void main() {
             );
             expect(scene, findsOneWidget, reason: 'scene thiếu ở $cfg');
 
-            // Giai đoan 1: đo cả sáu hộp ở CÙNG một offset cuộn. So sánh hình học
-            // chỉ hợp lệ khi các số đo nằm trong cùng một hệ tọa độ.
+            // Giai đoạn 1: đo cả sáu hộp ở CÙNG một offset cuộn. So sánh hình học chỉ
+            // hợp lệ khi các số đo nằm trong cùng một hệ tọa độ.
+            final Rect sceneRect = tester.getRect(scene);
             final Map<String, Rect> boxes = <String, Rect>{};
-            double worstDelta = 0;
+            final Map<String, Size> sizes = <String, Size>{};
             for (final ActivityModule module in activityRegistry) {
               final String id = module.def.id;
               final Finder marker = find.byKey(
                 ValueKey<String>('map_label_$id'),
               );
               expect(marker, findsOneWidget, reason: 'thiếu $id ở $cfg');
-              // Đọc lại scene cho từng nút: một layout pass có thể đổi offset.
-              final Rect sceneRect = tester.getRect(scene);
-              final Rect box = tester.getRect(marker);
-              boxes[id] = box;
+              boxes[id] = tester.getRect(marker);
+              sizes[id] = tester.getSize(marker);
+            }
+            // Hợp đồng chung mà production vừa dùng. So với hợp đồng là cần nhưng chưa
+            // đủ, nên ba kiểm chứng ĐỘC LẬP vẫn chạy: khớp projection gốc khi layout
+            // không phải khai báo offset, không chồng nhau, và nằm trong scene.
+            final Map<String, VillageMarkerPlacement> placed =
+                villageMarkerPlacements(
+                  sceneSize: sceneRect.size,
+                  childSizes: sizes,
+                  order: boxes.keys.toList(growable: false),
+                );
+            double worstDelta = 0;
+            double declaredShifts = 0;
+            for (final String id in boxes.keys) {
+              final Rect box = boxes[id]!;
+              final VillageMarkerPlacement placement = placed[id]!;
+              expect(
+                box.left,
+                closeTo(sceneRect.left + placement.rect.left, 0.5),
+                reason: '$id không nằm ở ô mà layout đã quyết ở $cfg',
+              );
+              expect(
+                box.top,
+                closeTo(sceneRect.top + placement.rect.top, 0.5),
+                reason: '$id không nằm ở ô mà layout đã quyết ở $cfg',
+              );
+              expect(
+                placement.declaredOffset.dx,
+                0,
+                reason: 'va chạm chỉ được sửa theo trục Y, $id lệch ngang ở $cfg',
+              );
               final Offset projected = villageMarkerCenter(id, sceneRect.size);
-              expect(
-                box.center.dx,
-                closeTo(sceneRect.left + projected.dx, 0.5),
-                reason: '$id tâm X phải khớp projection ở $cfg',
-              );
-              expect(
-                box.center.dy,
-                closeTo(sceneRect.top + projected.dy, 0.5),
-                reason: '$id tâm Y phải khớp projection ở $cfg',
-              );
+              if (placement.declaredOffset == Offset.zero) {
+                expect(
+                  box.center.dx,
+                  closeTo(sceneRect.left + projected.dx, 0.5),
+                  reason: '$id phải có tâm X trùng projection ở $cfg',
+                );
+                expect(
+                  box.center.dy,
+                  closeTo(sceneRect.top + projected.dy, 0.5),
+                  reason: '$id phải có tâm Y trùng projection ở $cfg',
+                );
+              } else {
+                declaredShifts += 1;
+              }
               worstDelta = math.max(
                 worstDelta,
                 (box.center - sceneRect.topLeft - projected).distance,
@@ -237,9 +270,12 @@ void main() {
                 greaterThanOrEqualTo(kVillageMinimumTargetSize),
                 reason: '$id cao < 48 ở $cfg (nội dung thật, không giả định)',
               );
+              // Rect.contains loại trừ cạnh phải/đáy: nhãn áp sát mép vẫn hợp lệ.
               expect(
-                sceneRect.contains(box.topLeft) &&
-                    sceneRect.contains(box.bottomRight),
+                box.left >= sceneRect.left - 1e-6 &&
+                    box.top >= sceneRect.top - 1e-6 &&
+                    box.right <= sceneRect.right + 1e-6 &&
+                    box.bottom <= sceneRect.bottom + 1e-6,
                 isTrue,
                 reason: '$id tràn ra ngoài scene ở $cfg',
               );
@@ -292,6 +328,7 @@ void main() {
             print(
               'R3-GEOM $cfg maxCenterDelta=${worstDelta.toStringAsFixed(2)}px '
               'maxOverlapArea=${worstOverlap.toStringAsFixed(1)}px2 '
+              'declaredOffsets=${declaredShifts.toInt()} '
               'heights=${boxes.values.map((Rect r) => r.height.toStringAsFixed(1)).join(',')}',
             );
             expect(
