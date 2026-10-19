@@ -125,6 +125,11 @@ cho SHA bàn giao:
 | SHA bàn giao | Kết quả |
 |---|---|
 | `354a33837539c24136d831ec0a16cdde14b95311` | focused **success** (`39268386183`); maintenance failure (`39268386125`): ordinary `443/1` (file test của tôi không compile), render `9/10`, Settings/isolated/sequence/integration xanh; CI failure (`39268386136`) vì `flutter analyze` 1 error. Đã sửa ở commit kế. |
+| `238bebb…` / `014c078…` | focused **success** (`39269333289` / `39270079751`); ordinary `459/2` rồi `460/1`; render `9/10`; `014c078` còn lại 1 đỏ `openLessonId vẫn highlight + các key cũ còn nguyên` + CI 13 issues (toàn bộ là `info` `curly_braces` có sẵn của repo, không phải file của tôi). |
+| `9940e6bbc367e875903600cc1e4f75ffc23a999b` | focused **success** (`39271407446`); maintenance failure (`39271407419`) = `analyze, ordinary suite, render suite`; ordinary `443/1 (444)` với `Failing tests:` là `loading r1b_and_chapter_25d_test.dart` — `return_of_invalid_type_from_closure` ở `tester.runAsync(() async {…})` (suy ra `T = Object` từ nhánh `catch`, đóng băng cả file). Đã sửa ở commit kế. |
+| `aec4a2f1878600e316f62c6065ff856f3ecd62c6` | focused **success** (`39271913533`); maintenance + CI failure; `Failing gate outcomes` = `ordinary suite, render suite` (analyze rớt khỏi danh sách ⇒ file của tôi sạch, `14 issues found` đều là `info` của repo); ordinary `462/1 (463)`, đỏ duy nhất `các key hợp đồng cũ còn trên màn Main Quest (lesson_card_*, open_playground)`; render vẫn `9/10`. Hai ca bản sao harness (`capture()` với `toImage(pixelRatio: 1.5)`, và cả nhóm `Render A replica`) **xanh** ⇒ giả thuyết CTA thô của case A bị bác. |
+| `f647db7f1ee4da5322c26e577589073a56b252e6` | focused **success** (`39272542843`); maintenance failure (`39272542888`) + CI failure (`39272542978`); ordinary `464/1 (465)` với ĐÚNG MỘT đỏ `key hợp đồng cũ lesson_card_mq1_01 còn trên Main Quest 2.0x` — hai ca em song sinh (cuộn tới `open_playground`, đi qua `mq1_01/04/08/12`) xanh ⇒ key tồn tại, cuộn được, không exception. In `PQC022-*` không bao giờ tới được log đã publish ⇒ phải tách ca, không đoạp đặt. |
+| `ddf53be31e5d433df057901e4b25b4ccdafcb639` | focused **success** (`39273391579`); maintenance + CI failure; ordinary `465` với 2 đỏ: `cảnh vườn tháp + ba bệ + quick continue ở 1× và 2×` và `key hợp đồng cũ lesson_card_mq1_01 … 2.0x` ⇒ chỉ đảo thứ tự là **chưa đủ**; xem mục 6 dưới. |
 
 ## 6. Hồ sơ đỏ-xanh theo từng chu kỳ CI (không nới ngưỡng)
 
@@ -293,3 +298,34 @@ theo test:
   `unused_element`).
 * Test khóa lại bằng `PQC022-MQ ${scale}x chapterTop=… sceneTop=…` + hai nhánh
   `expect`: `chapterTop < sceneTop` ở 2.0×, ngược lại ở 1.0×.
+
+### `ddf53be` → đảo thứ tự chưa đủ; ở ≥1.5× phải **bỏ** lớp artwork
+
+`ddf53be31e5d433df057901e4b25b4ccdafcb639` đưa panel chặng lên trước dải cảnh ở
+≥1.5×. Kết quả ordinary: còn **hai** đỏ, tức là sửa một phần và lộ ra phần còn lại:
+
+* `lesson_card_mq1_01 … 2.0x` vẫn đỏ ⇒ ngay cả khi chữ đứng trước, dải 180px
+  (cộng panel chặng ~450px ở 2×) vẫn lớn hơn chỗ mà 640px dành cho nội dung.
+  Ở 2.0×, "trả chỗ" không thể đạt bằng cách xếp lại — phải **giảm** artwork.
+* `cảnh vườn tháp + ba bệ + quick continue` **bật đỏ mới** ⇒ đúng như dự đoán
+  khi dải cảnh bị đẩy xuống dưới: `getSize(tower_25d_scene)` không còn tìm thấy
+  RenderBox vì dải cảnh nằm ngoài viewport. Đây là bằng chứng ngược, xác nhận
+  vấn đề là *chiếm chỗ*, không phải *thứ tự*.
+
+Cách sửa cuối (commit này), vẫn đúng tinh thần r56 "content before artwork,
+không phóng artwork":
+
+* `_TowerSceneHeader` thêm `showArtwork`; `false` thì widget chỉ còn dải seal +
+  `quest_quick_continue` (`Row` cũ được tách thành `_strip()` để hai chế độ dùng
+  chung một định nghĩa, không sao chép hành vi) và **không** mang key
+  `tower_25d_scene`.
+* `_MainQuestHomeScreenState.build` luôn đặt dải này ở đỉnh (r43: "quick continue
+  ở góc trên cảnh, không bắt trẻ tìm CTA cuối trang") rồi tới panel chặng + danh
+  sách bài; `showArtwork: !largeText`.
+* Test chuyển từ "đo thứ tự bằng geometry" (giòn, phụ thuộc viewport) sang
+  **hành vi có thể quan sát được**: 1.0× còn `tower_25d_scene` cao 180 và đứng
+  trước `CHẶNG 1`; ≥1.5× thì `tower_25d_scene` *biến mất*, không còn `Image.asset`
+  của scene, và `lesson_card_mq1_01` phải thấy được ngay khi mở màn. Ca cô lập
+  `lesson_card_mq1_01 … 2.0x` (deep-link `openLessonId: 'mq1_03'`) giữ nguyên.
+* Xoá const trùng ý nghĩa trong comment, sửa `kTowerLargeTextScale` doc, và sửa
+  `avoid_init_to_null` (`Object? captureError;`) mà `analyze` vừa báo ở file test.

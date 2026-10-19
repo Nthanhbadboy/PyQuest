@@ -666,65 +666,79 @@ void main() {
         );
         await pumpFor(tester, const Duration(milliseconds: 500));
 
-        // Đỉnh màn hình: đo TRƯỚC khi cuộn xuống, vì cuộn xong thì scene có thể
-        // bị thải khỏi cacheExtent và không còn build.
-        expect(
-          keyOf('tower_25d_scene'),
-          findsOneWidget,
-          reason: 'thiếu dải cảnh 2,5D ở $scale×',
-        );
-        expect(
-          keyOf('tower_guide'),
-          findsOneWidget,
-          reason: 'thiếu guide Py trên dải cảnh ở $scale×',
-        );
+        // Đỉnh màn hình: đo TRƯỚC khi cuộn xuống, vì cuộn xong thì dải cảnh có
+        // thể bị thải khỏi cacheExtent và không còn build.
         expect(
           keyOf('quest_quick_continue'),
           findsOneWidget,
           reason: 'thiếu quick continue ở $scale×',
         );
         expect(
-          imageOfAsset(kTowerSceneAsset),
+          keyOf('lesson_card_mq1_01'),
           findsOneWidget,
-          reason: 'scene vườn tháp phải là Image.asset thật, không phải BoxDecoration',
+          reason:
+              '$scale×: thẻ bài đầu tiên phải nằm trong khung nhìn khi vừa mở màn',
         );
-        expect(
-          imageOfAsset(kPyHostTokenAsset),
-          findsOneWidget,
-          reason: 'guide Py dùng token r56, không phải painter',
-        );
-        final Size sceneSize = tester.getSize(keyOf('tower_25d_scene'));
         final double ctaHeight = tester
             .getSize(keyOf('quest_quick_continue'))
             .height;
-        expect(
-          sceneSize.height,
-          kTowerSceneHeight,
-          reason: 'r43 §1: dải cảnh là lớp không gian, cao 180px ở mọi cỡ chữ',
-        );
         expect(
           ctaHeight,
           greaterThanOrEqualTo(36),
           reason: 'CTA nhanh không được teo dưới 36px cao ở $scale×',
         );
-
-        // Rule r56 "content before artwork" cho chữ lớn: 1.0× thì artwork
-        // đứng trước, từ 1.5× panel chữ phải lên trước dải cảnh.
-        final double chapterTop = topOf(tester, find.textContaining('CHẶNG 1'));
-        final double sceneTop = topOf(tester, keyOf('tower_25d_scene'));
-        // ignore: avoid_print
-        print('PQC022-MQ ${scale}x chapterTop=$chapterTop sceneTop=$sceneTop');
-        if (scale >= kR56LargeTextScale) {
+        Size sceneSize = Size.zero;
+        if (scale < kTowerLargeTextScale) {
+          // Cỡ chữ thường: artwork là lớp không gian, đứng đầu danh sách.
           expect(
-            chapterTop,
-            lessThan(sceneTop),
-            reason: '$scale×: chữ phải đứng TRƯỚC artwork (rule panel khổ chữ lớn)',
+            keyOf('tower_25d_scene'),
+            findsOneWidget,
+            reason: 'thiếu dải cảnh 2,5D ở $scale×',
+          );
+          expect(
+            keyOf('tower_guide'),
+            findsOneWidget,
+            reason: 'thiếu guide Py trên dải cảnh ở $scale×',
+          );
+          expect(
+            imageOfAsset(kTowerSceneAsset),
+            findsOneWidget,
+            reason:
+                'scene vườn tháp phải là Image.asset thật, không phải BoxDecoration',
+          );
+          expect(
+            imageOfAsset(kPyHostTokenAsset),
+            findsOneWidget,
+            reason: 'guide Py dùng token r56, không phải painter',
+          );
+          sceneSize = tester.getSize(keyOf('tower_25d_scene'));
+          expect(
+            sceneSize.height,
+            kTowerSceneHeight,
+            reason: 'r43 §1: ở cỡ chữ thường, dải cảnh là lớp không gian 180px',
+          );
+          expect(
+            topOf(tester, keyOf('tower_25d_scene')),
+            lessThan(topOf(tester, find.textContaining('CHẶNG 1'))),
+            reason: '$scale×: artwork đứng đầu danh sách, chữ theo sau',
           );
         } else {
+          // Từ 1.5x: "content before artwork" — dải cảnh không còn là artwork
+          // 2,5D (key tower_25d_scene biến mất), chỉ còn seal + Continue gọn.
           expect(
-            sceneTop,
-            lessThan(chapterTop),
-            reason: '$scale×: dải cảnh là lớp không gian, đứng đầu danh sách',
+            keyOf('tower_25d_scene'),
+            findsNothing,
+            reason: '$scale×: artwork vẫn chiếm 180px thay vì trả chỗ cho chữ',
+          );
+          expect(
+            imageOfAsset(kTowerSceneAsset),
+            findsNothing,
+            reason: '$scale×: không phóng artwork nên không còn Image của scene',
+          );
+          expect(
+            find.textContaining('CHẶNG 1'),
+            findsOneWidget,
+            reason: '$scale×: panel chặng phải thấy được ngay khi mở màn',
           );
         }
 
@@ -968,7 +982,7 @@ void main() {
         // `runAsync<Object?>` sẽ suy ra T = Object từ nhánh `catch` rồi báo
         // `return_of_invalid_type_from_closure` (chính là error đã làm đỏ
         // 9940e6b). Nên đóng gói lỗi vào biến cục bộ, closure trả `void`.
-        Object? captureError = null;
+        Object? captureError;
         await tester.runAsync<void>(() async {
           try {
             final RenderRepaintBoundary boundary = captureKey

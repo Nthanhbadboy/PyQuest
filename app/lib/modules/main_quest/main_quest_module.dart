@@ -28,12 +28,14 @@ const String kTowerSceneAsset = 'assets/images/main_quest_r56.webp';
 const double kTowerSceneHeight = 180;
 const Size kTowerGuideSize = Size(115, 140);
 
-/// Ba bệ của r43 §1 là visual grouping, không phải分级 hay khoá chapter mới:
-/// mỗi bệ nhóm 4 bài liên tiếp, nhãn dùng en dash.
+/// Ba bệ của r43 §1 là grouping trực quan, không phải phân cấp hay khoá
+/// chapter mới: mỗi bệ nhóm 4 bài liên tiếp, nhãn dùng en dash.
 const int kPedestalSize = 4;
 
-/// Ngưỡng chữ lớn của r56: từ 1.5×, chữ phải đứng TRƯỚC artwork (rule
-/// "content before artwork" đã áp dụng cho ActivitySheet ở cùng commit).
+/// Ngưỡng chữ lớn của r56: từ 1.5×, chữ phải đứng TRƯỚC artwork. Ở ActivitySheet
+/// (cùng commit) panel chữ được chuyển lên trước; ở màn Main Quest thì dải cảnh
+/// co lại và bỏ hẳn lớp ảnh, vì 180px trình bày trên khung nhìn 360×640 ở 2×
+/// không còn chỗ cho thẻ bài đầu tiên.
 const double kTowerLargeTextScale = 1.5;
 const int kPedestalCount = 3;
 
@@ -155,6 +157,7 @@ class _MainQuestHomeScreenState extends State<MainQuestHomeScreen> {
       done: count,
       quickTarget: quickTarget,
       onContinue: () => _open(quickTarget),
+      showArtwork: !largeText,
     );
     return Scaffold(
       body: PQBackground(
@@ -174,14 +177,18 @@ class _MainQuestHomeScreenState extends State<MainQuestHomeScreen> {
                   controller: _scroll,
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                   children: [
-                    // Cỡ chữ thường: artwork trước (dải cảnh là lớp không gian của
-                    // r43), panel chặng ngay dưới. Từ 1.5×: ĐẢO LẠI — panel chặng +
-                    // danh sách bài đứng trước, dải cảnh xuống sau, vì dải 180px
-                    // từng đẩy thẻ bài đầu tiên ra khỏi khung nhìn 360×640
-                    // (bằng chứng: ca `lesson_card_mq1_01` đỏ ở f647db7).
-                    if (!largeText) ...[sceneHeader, const SizedBox(height: 12)],
+                    // Dải trên đầu: ở cỡ chữ thường nó là artwork 2,5D của r43
+                    // (scene + guide + Continue); từ 1.5× nó tự co thành dải seal
+                    // + Continue không artwork, vì rule r56 "content before
+                    // artwork" không cho phép một lớp trình bày chiếm 180px của
+                    // khung nhìn 360×640 khi chữ đã to gấp đôi. Dải này vẫn nằm
+                    // ở đỉnh vì r43 đòi "quick continue ở góc trên cảnh, không
+                    // bắt trẻ tìm CTA cuối trang"; phần chữ (panel chặng + danh
+                    // sách bài) theo ngay sau nên thẻ đầu tiên tới được không
+                    // phải cuộn.
+                    sceneHeader,
+                    const SizedBox(height: 12),
                     _ChapterHeader(content: content, done: count),
-                    if (largeText) ...[const SizedBox(height: 12), sceneHeader],
                     const SizedBox(height: 12),
                     for (var i = 0; i < lessons.length; i++) ...[
                       if (i % kPedestalSize == 0 && i ~/ kPedestalSize < pedestals)
@@ -273,6 +280,7 @@ class _TowerSceneHeader extends StatelessWidget {
     required this.done,
     required this.quickTarget,
     required this.onContinue,
+    this.showArtwork = true,
   });
 
   final MainQuestContent content;
@@ -280,8 +288,58 @@ class _TowerSceneHeader extends StatelessWidget {
   final Lesson quickTarget;
   final VoidCallback onContinue;
 
+  /// `false` ở cỡ chữ >= `kTowerLargeTextScale`: bỏ lớp artwork (scene + guide),
+  /// chỉ giữ dải seal + Continue. r56 bắt buộc "chữ trước artwork, không phóng
+  /// artwork"; trên 360x640 ở 2.0x thì chính dải 180px đó đẩy thẻ bài đầu tiên
+  /// ra khỏi khung nhìn (bằng chứng: `lesson_card_mq1_01` đỏ qua 4 SHA).
+  final bool showArtwork;
+
+  /// Seal + CTA dùng chung cho cả hai chế độ, để compact không nhân bản hành vi.
+  Widget _strip() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xE6FFF6DF),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFB39C72), width: 1),
+            ),
+            child: Text(
+              'Chặng ${content.chapterNumber} · $done/${content.lessons.length} bài',
+              style: PQText.small.copyWith(color: const Color(0xFF355843)),
+              maxLines: 2,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        ChunkyButton(
+          key: const ValueKey('quest_quick_continue'),
+          label: 'Tiếp tục bài ${quickTarget.number}',
+          icon: Icons.play_arrow_rounded,
+          tone: PQTone.sun,
+          size: ChunkySize.small,
+          onPressed: onContinue,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!showArtwork) {
+      return Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: const Color(0xE6FFF6DF),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFB39C72), width: 1),
+        ),
+        child: _strip(),
+      );
+    }
     return SizedBox(
       key: const ValueKey('tower_25d_scene'),
       height: kTowerSceneHeight,
@@ -317,35 +375,7 @@ class _TowerSceneHeader extends StatelessWidget {
               left: 12,
               right: 12,
               top: 10,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xE6FFF6DF),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFB39C72), width: 1),
-                      ),
-                      child: Text(
-                        'Chặng ${content.chapterNumber} · $done/${content.lessons.length} bài',
-                        style: PQText.small.copyWith(color: const Color(0xFF355843)),
-                        maxLines: 2,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  ChunkyButton(
-                    key: const ValueKey('quest_quick_continue'),
-                    label: 'Tiếp tục bài ${quickTarget.number}',
-                    icon: Icons.play_arrow_rounded,
-                    tone: PQTone.sun,
-                    size: ChunkySize.small,
-                    onPressed: onContinue,
-                  ),
-                ],
-              ),
+              child: _strip(),
             ),
             Positioned(
               right: 20,
