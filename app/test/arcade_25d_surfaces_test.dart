@@ -64,13 +64,17 @@ void main() {
       find.byKey(const ValueKey<String>('dragon_25d_scene')),
       findsOneWidget,
     );
-    expect(find.byKey(const ValueKey<String>('dragon_play')), findsOneWidget);
+    final Finder dragonPlay = find.byKey(const ValueKey<String>('dragon_play'));
+    await tester.scrollUntilVisible(
+      dragonPlay,
+      160,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    expect(dragonPlay, findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    await tapAndSettle(
-      tester,
-      find.byKey(const ValueKey<String>('dragon_play')),
-    );
+    await tapAndSettle(tester, dragonPlay);
     expect(
       find.byKey(const ValueKey<String>('dragon_jump_btn')),
       findsOneWidget,
@@ -78,6 +82,8 @@ void main() {
     await tester.tap(find.byKey(const ValueKey<String>('dragon_jump_btn')));
     await pumpFor(tester, const Duration(milliseconds: 300));
     expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await pumpFor(tester, const Duration(milliseconds: 1100));
   });
 
   testWidgets('Catch Stars r55 2.5D home and play surfaces work at 1x and 2x', (
@@ -95,13 +101,17 @@ void main() {
       find.byKey(const ValueKey<String>('stars_25d_scene')),
       findsOneWidget,
     );
-    expect(find.byKey(const ValueKey<String>('stars_play')), findsOneWidget);
+    final Finder starsPlay = find.byKey(const ValueKey<String>('stars_play'));
+    await tester.scrollUntilVisible(
+      starsPlay,
+      160,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    expect(starsPlay, findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    await tapAndSettle(
-      tester,
-      find.byKey(const ValueKey<String>('stars_play')),
-    );
+    await tapAndSettle(tester, starsPlay);
     expect(
       find.byKey(const ValueKey<String>('stars_move_left')),
       findsOneWidget,
