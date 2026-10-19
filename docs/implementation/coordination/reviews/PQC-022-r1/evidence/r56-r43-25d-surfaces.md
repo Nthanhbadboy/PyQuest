@@ -124,7 +124,7 @@ cho SHA bàn giao:
 
 | SHA bàn giao | Kết quả |
 |---|---|
-| (điền sau chu kỳ CI của commit kế tiếp) | |
+| `354a33837539c24136d831ec0a16cdde14b95311` | focused **success** (`39268386183`); maintenance failure (`39268386125`): ordinary `443/1` (file test của tôi không compile), render `9/10`, Settings/isolated/sequence/integration xanh; CI failure (`39268386136`) vì `flutter analyze` 1 error. Đã sửa ở commit kế. |
 
 ## 6. Hồ sơ đỏ-xanh theo từng chu kỳ CI (không nới ngưỡng)
 
@@ -159,3 +159,16 @@ Mọi con số dưới đây lấy từ `check-run` của chính SHA được n�
 
 Không có ngưỡng, timeout, tolerance, regex hay danh sách gate nào được nới ở mọi
 commit trên; số ca render vẫn **đúng 10** và ordinary chỉ tăng do file test mới.
+
+### `354a338` — một error phân tích làm cả file test không compile
+
+| Gate | Kết quả thật (đọc từ check-run của `354a338`) | Nguyên nhân | Cách sửa (commit này) |
+|---|---|---|---|
+| `PyQuest check` → `flutter analyze` | FAIL — `error • A value of type 'BoxBorder?' can't be assigned to a variable of type 'Border?' • test/r1b_and_chapter_25d_test.dart:250:26 • invalid_assignment`; `14 issues found` (13 info `curly_braces` có trước + 1 error này) | `BoxDecoration.border` có kiểu tĩnh là `BoxBorder?`, không phải `Border?`. Cảnh báo đỏ: `flutter analyze` **error** làm mất luôn 12 ca test của file | `final BoxDecoration decoration = card.decoration! as BoxDecoration; final Border border = decoration.border! as Border;` — cast tường minh, không `!` thừa, không `// ignore` |
+| `pqc011` ordinary | `443 passed, 1 failed (444 total)` và ca fail là `r1b_and_chapter_25d_test.dart: loading ...` | Đây là **lỗi biên dịch**, không phải lỗi assert: file không load được nên ordinary TỤT từ 460 xuống 444 (12 ca của tôi không chạy). Kết luận quan trọng: đỏ ở `863d20a` (3 ca) và đỏ ở `354a338` (1 ca) là hai chuyện khác nhau | sửa error + thay `anyKey()` (đang thừa) bằng cuộn tường minh |
+| `pqc011` render | `9 passed, 1 failed / 10` — **không đổi qua ba SHA** | GIẢ THUYẾT "seal/CTA chồng nhau ở 2×" của mục trên đã bị **bác bỏ**: `354a338` mang bản `Positioned(left:12,right:12)` + `Row`/`Expanded` mà render vẫn 9/10. Hai `Positioned` trong `Stack` cũng không sinh `RenderFlex overflowed`, nên nó không phải nguồn exception. `render_screens_test.dart` ghi rõ "Not a golden test: nothing is compared" ⇒ ca render chỉ có thể đỏ vì exception. CI KHÔNG công bố log render (`.output.text` in `(missing: render.txt)`, tương tự `test.txt`) nên **không có bằng chứng** để kết luận | Không đoán tiếp. Thêm ca `cấu hình render 390×844 dpr3 ở 1.0× và 2.0×` vào `r1b_and_chapter_25d_test.dart`: tái hiện đúng số đo của harness (390×844, dpr 3.0, `textScaleFactorTestValue` 1.0/2.0) cho MainQuest + sheet mở khóa + sheet khóa (`a02_sheet_locked`) + welcome (`a00_welcome`, tap `welcome_next` 3×), assert `takeException()` isNull và in receipt `PQC022-RENDER …` — ordinary log là kênh duy nhất CI công bố, nên red (nếu còn) sẽ tự nêu tên surface + cỡ chữ thay vì để người review đoán |
+
+### Trạng thái suy luận — ghi rõ để không nhầm với bằng chứng
+
+* **Đã chứng minh bằng CI:** formatter `Formatted 13 files (0 changed)`; focused `success` ở `863d20a`/`354a338`; Settings 12, isolated 1, sequence 2, integration 7; ordinary 457 (khi 12 ca của tôi chạy) / 443 (khi file không compile); render 9/10 ở `f97c8df`, `863d20a`, `354a338`; `PyQuest localization generation evidence` success.
+* **Chỉ là suy luận từ source (chưa có bằng chứng CI):** nguyên nhân ca render đỏ. Đã loại được: golden (harness không so ảnh), overlay seal/CTA. Chưa loại được: tương tác của harness với `sheet_open`/`map_label_*` sau khi layout Main Quest đổi chiều cao, hoặc exception ở một màn không thuộc PQC-022 nhưng bị dịch chuyển cuộn.

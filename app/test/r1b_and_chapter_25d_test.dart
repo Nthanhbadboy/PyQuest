@@ -190,14 +190,6 @@ double topOf(WidgetTester tester, Finder finder) =>
     tester.getTopLeft(finder.first).dy;
 
 Finder keyOf(String name) => find.byKey(ValueKey<String>(name));
-
-/// Tìm theo key CẢ khi widget nằm ngoài khung nhìn. `ListView` của Main Quest
-/// là lazy: child chưa build thì chưa đo được `getSize`, nhưng sự TỒN TẠI của
-/// key vẫn kiểm được — và đó là cách tránh đỏ giả (bài học từ 863d20a:
-/// `findsOneWidget` mặc định bỏ offstage nên 'Bệ 9–12'/'open_playground' bị
-/// báo thiếu dù widget có thật).
-Finder anyKey(String name) => find.byKey(ValueKey<String>(name), skipOffstage: false);
-
 /// Nút mở sheet qua `showPQSheet` thật; future pop được đưa ngược ra test để
 /// kiểm kết quả điều hướng chứ không chỉ kiểm widget tồn tại.
 class _SheetLauncher extends StatelessWidget {
@@ -242,13 +234,21 @@ Color cardBorderColorFor(WidgetTester tester, String lessonId) {
   final Container card = tester.widget<Container>(
     find
         .descendant(
-          of: find.byKey(ValueKey<String>('lesson_card_$lessonId')),
-          matching: find.byType(Container),
+          of: find.byKey(
+            ValueKey<String>('lesson_card_$lessonId'),
+            skipOffstage: false,
+          ),
+          matching: find.byType(Container, skipOffstage: false),
         )
         .first,
   );
-  final Border? border = (card.decoration! as BoxDecoration).border;
-  return border!.top.color;
+  // `BoxDecoration.border` có kiểu tĩnh là `BoxBorder?` (KHÔNG phải `Border?`) —
+  // viết `final Border? border = ...` là `invalid_assignment`, và error phân tích
+  // làm cả file không compile => 12 ca của file này không chạy, ordinary tụt từ
+  // 460 xuống 444 (bằng chứng ở 354a338). Cast tường minh rồi mới đọc `.top`.
+  final BoxDecoration decoration = card.decoration! as BoxDecoration;
+  final Border border = decoration.border! as Border;
+  return border.top.color;
 }
 
 
@@ -632,6 +632,19 @@ void main() {
   });
 
   group('Main Quest journey r43', () {
+    // `ListView` của màn này lười: child ngoài cacheExtent CHƯA được build, nên
+    // mọi phép kiểm ở nửa dưới danh sách (kể cả kiểm tồn tại key) phải cuộn tới
+    // trước. Đây là bài học từ đỏ 863d20a: `skipOffstage: false` không cứu được
+    // vì element chưa tồn tại trong tree.
+    Future<void> scrollTo(WidgetTester tester, Finder finder) async {
+      await tester.scrollUntilVisible(
+        finder,
+        160,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await pumpFor(tester, const Duration(milliseconds: 250));
+    }
+
     testWidgets('cảnh vườn tháp + ba bệ + quick continue ở 1× và 2×', (
       WidgetTester tester,
     ) async {
@@ -648,76 +661,71 @@ void main() {
         );
         await pumpFor(tester, const Duration(milliseconds: 500));
 
-        // Existence: đọc cả offstage vì ListView lazy-build phần cuối danh sách.
-        for (final String key in <String>[
-          'tower_25d_scene',
-          'tower_guide',
-          'quest_quick_continue',
-          'quest_pedestal_0',
-          'quest_pedestal_1',
-          'quest_pedestal_2',
-        ]) {
-          expect(
-            anyKey(key),
-            findsOneWidget,
-            reason: 'thiếu $key trong màn Main Quest ở $scale×',
-          );
-        }
-        for (final String label in <String>['Bệ 1–4', 'Bệ 5–8', 'Bệ 9–12']) {
-          expect(
-            find.textContaining(label, skipOffstage: false),
-            findsOneWidget,
-            reason: 'thiếu dải bệ "$label" ở $scale× (r43 §1: ba bệ là nhóm 4 bài)',
-          );
-        }
+        // Đỉnh màn hình: đo TRƯỚC khi cuộn xuống, vì cuộn xong thì scene có thể
+        // bị thải khỏi cacheExtent và không còn build.
         expect(
-          find.textContaining('đã xong', skipOffstage: false),
-          findsNothing,
-          reason: 'người mới chưa xong bài nào thì không bệ nào được đánh dấu xong',
+          keyOf('tower_25d_scene'),
+          findsOneWidget,
+          reason: 'thiếu dải cảnh 2,5D ở $scale×',
+        );
+        expect(
+          keyOf('tower_guide'),
+          findsOneWidget,
+          reason: 'thiếu guide Py trên dải cảnh ở $scale×',
+        );
+        expect(
+          keyOf('quest_quick_continue'),
+          findsOneWidget,
+          reason: 'thiếu quick continue ở $scale×',
         );
         expect(
           imageOfAsset(kTowerSceneAsset),
           findsOneWidget,
-          reason: 'scene vườn tháp phải là Image.asset thật, không phải Decoration',
+          reason: 'scene vườn tháp phải là Image.asset thật, không phải BoxDecoration',
         );
         expect(
           imageOfAsset(kPyHostTokenAsset),
           findsOneWidget,
-          reason: 'guide Py dùng token r56',
+          reason: 'guide Py dùng token r56, không phải painter',
         );
-
-        // Số đo thì bắt buộc phải ở trong khung nhìn: cuộn tới từng chỗ.
-        for (final String key in <String>[
-          'quest_quick_continue',
-          'tower_guide',
-          'tower_25d_scene',
-        ]) {
-          await tester.scrollUntilVisible(
-            keyOf(key),
-            120,
-            scrollable: find.byType(Scrollable).first,
-          );
-          await pumpFor(tester, const Duration(milliseconds: 250));
-          expect(keyOf(key), findsOneWidget, reason: '$key không cuộn tới được ở $scale×');
-        }
-        final double ctaHeight = tester.getSize(keyOf('quest_quick_continue')).height;
         final Size sceneSize = tester.getSize(keyOf('tower_25d_scene'));
-        final Object? pending = tester.takeException();
-        // Receipt để red kế tiếp tự giải thích trong log tail (không cần đoán).
-        // ignore: avoid_print
-        print(
-          'PQC022-MQ ${scale}x ctaH=$ctaHeight scene=${sceneSize.width}x'
-          '${sceneSize.height} exc=$pending',
+        final double ctaHeight = tester
+            .getSize(keyOf('quest_quick_continue'))
+            .height;
+        expect(
+          sceneSize.height,
+          kTowerSceneHeight,
+          reason: 'r43 §1: dải cảnh là lớp không gian, cao 180px ở mọi cỡ chữ',
         );
         expect(
           ctaHeight,
           greaterThanOrEqualTo(36),
           reason: 'CTA nhanh không được teo dưới 36px cao ở $scale×',
         );
+
+        // 12 bài một chương (main_quest_ch1.json) -> ba bệ, mỗi bệ 4 bài; khoảng
+        // bài ghi bằng en dash, số bài luôn đi kèm nên màu không phải tín hiệu duy nhất.
+        const List<String> bandLabels = <String>['Bệ 1–4', 'Bệ 5–8', 'Bệ 9–12'];
+        for (var g = 0; g < 3; g++) {
+          final Finder band = keyOf('quest_pedestal_$g');
+          await scrollTo(tester, band);
+          expect(band, findsOneWidget, reason: 'thiếu dải bệ $g ở $scale×');
+          expect(
+            find.textContaining(bandLabels[g]),
+            findsOneWidget,
+            reason: 'thiếu nhãn "${bandLabels[g]}" ở $scale×',
+          );
+        }
         expect(
-          sceneSize.height,
-          kTowerSceneHeight,
-          reason: 'r43 §1: dải cảnh là lớp không gian, cao 180px ở mọi cỡ chữ',
+          find.textContaining('đã xong'),
+          findsNothing,
+          reason: 'người mới chưa xong bài nào thì không bệ nào được đánh dấu xong',
+        );
+        final Object? pending = tester.takeException();
+        // ignore: avoid_print
+        print(
+          'PQC022-MQ ${scale}x ctaH=$ctaHeight scene=${sceneSize.width}x'
+          '${sceneSize.height} exc=$pending',
         );
         expect(pending, isNull, reason: 'layout exception ở Main Quest $scale×');
         await tester.pumpWidget(const SizedBox.shrink());
@@ -737,48 +745,42 @@ void main() {
       final int energyBefore = services.energy.current;
       expect(find.byType(LessonScreen), findsNothing);
       final Finder band2 = keyOf('quest_pedestal_2');
-      // `ensureVisible` KHỞI ĐỘNG animation cuộn; một `pump()` thì tap vẫn đo
-      // rect cũ và hụt (chính cái bẫy đã làm đỏ smoke 2× của PQC-020 R3).
-      await tester.scrollUntilVisible(
-        band2,
-        160,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await pumpFor(tester, const Duration(milliseconds: 250));
-      expect(band2, findsOneWidget);
-      // Nhóm 4 bài thứ ba = lessons[8..11], id `mq1_09` (danh sách 12 bài một
-      // chương trong `main_quest_ch1.json`). Trước khi chạm, KHÔNG thẻ nào có
-      // viền berry; sau khi chạm, đúng thẻ dẫn nhóm có viền đó.
       final Finder leadCard = keyOf('lesson_card_mq1_09');
-      await tester.scrollUntilVisible(
-        leadCard,
-        160,
-        scrollable: find.byType(Scrollable).first,
+      // Bệ nhóm ba đứng ngay TRÊN lessons[8], nên cuộn tới thẻ đó vẫn còn thấy
+      // bệ. `ensureVisible` + một `pump()` thì không đủ (chính cái bẫy đã làm đỏ
+      // smoke 2× của PQC-020 R3) -> scrollUntilVisible rồi bơm 250ms.
+      await scrollTo(tester, leadCard);
+      expect(
+        band2,
+        findsOneWidget,
+        reason: 'bệ 3 phải còn trong khung nhìn sau khi cuộn',
       );
-      await pumpFor(tester, const Duration(milliseconds: 250));
       expect(
         cardBorderColorFor(tester, 'mq1_09'),
         isNot(kBerryBorder),
-        reason: 'highlight chưa được đặt trước khi chạm bệ',
+        reason: 'chưa chạm bệ thì chưa có highlight',
       );
       await tester.tap(band2);
       await pumpFor(tester, const Duration(milliseconds: 400));
-      expect(find.byType(LessonScreen), findsNothing);
-      await tester.scrollUntilVisible(
-        leadCard,
-        160,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await pumpFor(tester, const Duration(milliseconds: 250));
       expect(
-        cardBorderColorFor(tester, 'mq1_09'),
-        kBerryBorder,
-        reason: 'chạm bệ 3 phải đặt highlight lên bài đầu nhóm (r43: không mở bài)',
+        find.byType(LessonScreen),
+        findsNothing,
+        reason: 'chạm bệ là thao tác xem, không được mở bài',
       );
       expect(
         services.energy.current,
         energyBefore,
-        reason: 'chọn bệ là thao tác xem, không được trừ năng lượng',
+        reason: 'chọn bệ không được trừ năng lượng',
+      );
+      expect(
+        cardBorderColorFor(tester, 'mq1_09'),
+        kBerryBorder,
+        reason: 'chạm bệ 3 phải đặt highlight lên bài đầu nhóm (r43)',
+      );
+      expect(
+        cardBorderColorFor(tester, 'mq1_10'),
+        isNot(kBerryBorder),
+        reason: 'highlight chỉ đứng trên bài dẫn, không lan cả nhóm',
       );
       expect(tester.takeException(), isNull);
     });
@@ -803,36 +805,110 @@ void main() {
         'lesson_card_mq1_03',
         'open_playground',
       ]) {
-        expect(anyKey(key), findsOneWidget, reason: 'mất key hợp đồng cũ $key');
+        final Finder f = keyOf(key);
+        await scrollTo(tester, f);
+        expect(f, findsOneWidget, reason: 'mất key hợp đồng cũ $key');
       }
       final Finder deepLink = keyOf('lesson_card_mq1_03');
-      await tester.scrollUntilVisible(
-        deepLink,
-        140,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await pumpFor(tester, const Duration(milliseconds: 250));
-      expect(deepLink, findsOneWidget);
-      // Viền đỏ là bằng chứng `openLessonId` đã tới screen (cùng oracle với
-      // `lesson_route_regression_test.dart`), không phải suy từ label.
-      // Viền berry là bằng chứng `openLessonId` đã tới screen; thẻ khác phải
+      await scrollTo(tester, deepLink);
+      // Viền berry là bằng chứng `openLessonId` đã tới screen; thẻ bên cạnh phải
       // KHÔNG có viền đó, nếu không phép kiểm này chỉ là trang trí.
       final Color edge = cardBorderColorFor(tester, 'mq1_03');
       final Color neighbour = cardBorderColorFor(tester, 'mq1_02');
       // ignore: avoid_print
       print('PQC022-MQ deep-link edge=$edge neighbour=$neighbour');
-      expect(
-        edge,
-        const Color(0xFFEC5C93),
-        reason: 'mq1_03 phải được highlight bằng viền berry',
-      );
+      expect(edge, kBerryBorder, reason: 'mq1_03 phải được highlight bằng viền berry');
       expect(
         neighbour,
-        isNot(const Color(0xFFEC5C93)),
+        isNot(kBerryBorder),
         reason: 'viền berry chỉ xuất hiện trên bài được deep-link',
       );
       expect(find.byType(LessonScreen), findsNothing);
       expect(tester.takeException(), isNull);
+    });
+
+    // Cấu hình GIỐNG harness render (`render_screens_test.dart`: 390x844,
+    // dpr 3.0, textScale 1.0 rồi 2.0) vì render là gate "đúng 10 ca" và log
+    // render KHÔNG được CI công bố (`.output.text` in `(missing: render.txt)`).
+    // Không có kênh bằng chứng nào khác cho ca render đỏ, nên mình tái hiện đúng
+    // số đo ở đây và in receipt để red kế tiếp tự giải thích trong ordinary log.
+    testWidgets('cấu hình render 390×844 dpr3 ở 1.0× và 2.0×: không exception', (
+      WidgetTester tester,
+    ) async {
+      for (final double scale in <double>[1.0, 2.0]) {
+        usePhone(tester, logical: const Size(390, 844), dpr: 3.0);
+        final AppServices services = (await tester.runAsync(createServices))!;
+        addTearDown(services.dispose);
+
+        await tester.pumpWidget(
+          appHome(services, const MainQuestHomeScreen(), textScale: scale),
+        );
+        await pumpFor(tester, const Duration(milliseconds: 600));
+        final Object? mqPending = tester.takeException();
+        // ignore: avoid_print
+        print('PQC022-RENDER mq ${scale}x exc=$mqPending');
+        expect(mqPending, isNull, reason: 'Main QuestException ở $scale× (cấu hình render)');
+
+        await tester.pumpWidget(const SizedBox.shrink());
+        await pumpFor(tester, const Duration(milliseconds: 200));
+
+        await tester.pumpWidget(
+          sheetHost(
+            ActivitySheet(module: moduleById('main_quest'), status: kUnlocked),
+            textScale: scale,
+          ),
+        );
+        await pumpFor(tester, const Duration(milliseconds: 400));
+        final Object? sheetPending = tester.takeException();
+        // ignore: avoid_print
+        print('PQC022-RENDER sheet-unlocked ${scale}x exc=$sheetPending');
+        expect(
+          sheetPending,
+          isNull,
+          reason: 'ActivitySheet mở ở $scale× (cấu hình render) có exception',
+        );
+
+        await tester.pumpWidget(const SizedBox.shrink());
+        await pumpFor(tester, const Duration(milliseconds: 200));
+
+        await tester.pumpWidget(
+          sheetHost(
+            ActivitySheet(module: moduleById('bug_hunter'), status: kLocked),
+            textScale: scale,
+          ),
+        );
+        await pumpFor(tester, const Duration(milliseconds: 400));
+        final Object? lockedPending = tester.takeException();
+        // ignore: avoid_print
+        print('PQC022-RENDER sheet-locked ${scale}x exc=$lockedPending');
+        expect(
+          lockedPending,
+          isNull,
+          reason: 'ActivitySheet khóa (a02_sheet_locked) ở $scale× có exception',
+        );
+
+        await tester.pumpWidget(const SizedBox.shrink());
+        await pumpFor(tester, const Duration(milliseconds: 200));
+
+        await pumpRoot(tester, services, scale: scale);
+        final Object? welcomePending = tester.takeException();
+        // ignore: avoid_print
+        print('PQC022-RENDER welcome ${scale}x exc=$welcomePending');
+        expect(
+          welcomePending,
+          isNull,
+          reason: 'a00_welcome ở $scale× có exception',
+        );
+        for (var i = 0; i < 3; i++) {
+          final Finder next = keyOf('welcome_next');
+          expect(next, findsOneWidget, reason: 'mất welcome_next lần $i ở $scale×');
+          await tester.tap(next);
+          await pumpFor(tester, const Duration(milliseconds: 400));
+        }
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox.shrink());
+        await pumpFor(tester, const Duration(milliseconds: 400));
+      }
     });
   });
 }
