@@ -652,21 +652,38 @@ void main() {
               reason: 'place $id phải còn key map_label_* trên hub',
             );
             final String name = placeName(l10n, id);
-            final List<dynamic> buttons = semanticsProps(
-              tester,
-              place,
-            ).where((dynamic p) => p.button == true).toList();
+            // `_PlaceButton` bọc nhãn nhìn thấy trong `ExcludeSemantics`
+            // (main_map_scene.dart:372-380), nên `TextButton` con vẫn để lại một
+            // node `button: true` không tên trong cây widget và node đó bị loại ở
+            // tầng render. Node hub thật là node mang tên place — đếm cơ học mọi
+            // node button sẽ đỏ vì wrapper, không phải vì semantics sai.
+            final List<dynamic> props = semanticsProps(tester, place);
+            final List<dynamic> named = <dynamic>[];
+            for (final dynamic p in props) {
+              final bool isButton = p.button == true;
+              final bool hasName = p.label != null && p.label.contains(name);
+              if (isButton && hasName) {
+                named.add(p);
+              }
+            }
             expect(
-              buttons,
+              named,
               hasLength(1),
-              reason:
-                  'map_label_$id phải có đúng MỘT node button: không thiếu, không nhân đôi bởi wrapper',
+              reason: 'map_label_$id phải có đúng MỘT node button mang tên place',
             );
-            final dynamic marker = buttons.single;
+            final dynamic marker = named.single;
+            expect(
+              find.descendant(
+                of: place,
+                matching: find.byType(ExcludeSemantics),
+              ),
+              findsOneWidget,
+              reason: 'node button kia của $id phải nằm sau ExcludeSemantics',
+            );
             expect(
               marker.label,
-              contains(name),
-              reason: 'node button của $id phải đọc được tên localized của hub',
+              startsWith('$name, '),
+              reason: 'node button của $id phải đọc "tên, status" của hub',
             );
             expect(
               marker.onTap,
