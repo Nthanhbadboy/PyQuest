@@ -5,6 +5,7 @@ on:
     branches:
       - arena/0d4fcb38-pyquest
       - arena/4253d4f1-pyquest
+      - arena/84456d39-pyquest
   workflow_dispatch:
     inputs:
       phase:
@@ -29,7 +30,7 @@ jobs:
     name: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[pqc011-diag]') && 'PQC-011 diagnostic-only') || 'maintenance' }}
     # OLD_MAINTENANCE_CONDITION: clause của nhánh CODE cũ, bọc trong ngoặc, giữ nguyên
     # từng ký tự (workflow_dispatch/normalize/diagnose vẫn chỉ thuộc nhánh cũ).
-    # NEW_VERIFY: nhánh CODE hiện tại chỉ được chạy verify, tức push có đủ cả hai marker
+    # NEW_VERIFY: nhánh CODE / CO-DEV hiện tại chỉ được chạy verify, tức push có đủ cả hai marker
     # [pqc020-check] + [pqc011-verify] và không lẫn marker ngoại lệ nào.
     if: >-
       (
@@ -46,7 +47,8 @@ jobs:
           (contains(github.event.head_commit.message, '[pqc011-normalize]') ||
            contains(github.event.head_commit.message, '[pqc011-verify]'))))
       ) || (
-        github.ref == 'refs/heads/arena/4253d4f1-pyquest' &&
+        (github.ref == 'refs/heads/arena/4253d4f1-pyquest' ||
+         github.ref == 'refs/heads/arena/84456d39-pyquest') &&
         github.event_name == 'push' &&
         contains(github.event.head_commit.message, '[pqc020-check]') &&
         contains(github.event.head_commit.message, '[pqc011-verify]') &&

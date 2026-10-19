@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -375,8 +375,6 @@ class _VillageMarkerLayout extends MultiChildLayoutDelegate {
 
   @override
   bool shouldRelayout(covariant _VillageMarkerLayout oldDelegate) {
-    // `listEquals` đến từ foundation: material/rendering chỉ re-export một handful
-    // tên nên thiếu nó ở commit 9bb5531 (analyze `undefined_function`).
     return oldDelegate.sceneSize != sceneSize ||
         oldDelegate.markerWidth != markerWidth ||
         !listEquals(oldDelegate.ids, ids);

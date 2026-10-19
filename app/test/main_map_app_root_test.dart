@@ -77,45 +77,6 @@ Future<void> pumpRoot(
 double scalerAt(WidgetTester tester, Finder finder) =>
     MediaQuery.textScalerOf(tester.element(finder)).scale(16);
 
-/// Oracle cho điều kiện "không có Flutter layout exception" ở root thật.
-///
-/// Finding B bỏ cap 1.2 nên cỡ chữ 2× thật tới được mọi route. Ở 2×, phần shell của
-/// hub (`app/lib/main_map/main_map_screen.dart` — KHÔNG nằm trong allowlist R3, mục
-/// "Không sửa ... ngoài list, báo finding cụ thể trước") vẫn tràn ngang một Row chứa
-/// tiêu đề: nội dung ~495 px, viewport 360 → 135 px, 390 → 105 px, khớp chính xác hai
-/// con số CI in ra. §B bắt buộc BÁO path+trace, không được sửa lan man màn khác và
-/// không được khôi phục cap để che lỗi. Vì vậy 2× được phép có ĐÚNG một lỗi
-/// "RenderFlex overflowed ... on the right"; 1×/1.3× vẫn phải sạch tuyệt đối; bất kỳ
-/// exception nào khác làm đỏ test với nguyên văn dump.
-///
-/// Scene không được dựa vào lệnh tha này: hình học thật của sáu nhãn ở 2× do case
-/// R3-GEOM trong `main_map_scene_test.dart` chứng minh (cùng 12 config, cùng gate).
-void expectOnlyDocumentedRootOverflow(Object? error, double scale, String cfg) {
-  if (error == null) {
-    return;
-  }
-  final String dump = error.toString();
-  // Receipt nêu luôn file:line mà Flutter chỉ ra trong dump, để handoff có path
-  // (rule của bài này: không chỉ suy từ ảnh hay từ một gate lẻ).
-  final RegExp pathPattern = RegExp(
-    r'app/(?:lib|test)/[A-Za-z0-9_./+-]+\.dart:[0-9]+:[0-9]+',
-  );
-  final List<String> hits = pathPattern
-      .allMatches(dump)
-      .map((Match m) => m.group(0)!)
-      .toList();
-  // ignore: avoid_print
-  print(
-    'R3-ROOT-EXC $cfg first=${dump.split('\n').first} '
-    'paths=${hits.take(3).toList()}',
-  );
-  final RegExp headerOverflow = RegExp(
-    r'A RenderFlex overflowed by [0-9.]+ pixels on the right\.',
-  );
-  final bool documented = scale > 1.5 && headerOverflow.hasMatch(dump);
-  expect(documented, isTrue, reason: 'layout exception mới ở $cfg:\n$dump');
-}
-
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
@@ -141,23 +102,12 @@ void main() {
             final String cfg =
                 '${viewport.width.toInt()}x${viewport.height.toInt()}'
                 '/${locale.languageCode}/${scale}x';
-            // Mỗi giai đoạn được kiểm ngay sau khi pump để exception không dồn thành
-            // "Multiple exceptions" và để receipt chỉ đúng nơi phát sinh.
-            void checkPending(String stage) {
-              expectOnlyDocumentedRootOverflow(
-                tester.takeException(),
-                scale,
-                '$cfg/$stage',
-              );
-            }
-
             tester.platformDispatcher.textScaleFactorTestValue = scale;
             addTearDown(
               tester.platformDispatcher.clearTextScaleFactorTestValue,
             );
 
             await pumpRoot(tester, services, locale: locale);
-            checkPending('hub');
 
             // 1) Scaler ở hub PHẢI là mức hệ thống, không phải mức cap của app.
             final double hubScaled = scalerAt(
@@ -235,7 +185,6 @@ void main() {
               findsOneWidget,
               reason: 'sheet không mở ở $cfg',
             );
-            checkPending('sheet');
             final double sheetScaled = scalerAt(
               tester,
               find.byType(ActivitySheet),
@@ -252,9 +201,12 @@ void main() {
               findsNothing,
               reason: 'sheet không đóng ở $cfg',
             );
-            checkPending('closed');
 
-            checkPending('final');
+            expect(
+              tester.takeException(),
+              isNull,
+              reason: 'layout exception ở $cfg',
+            );
             // Receipt cho handoff: một dòng/config, đọc được từ log focused.
             // ignore: avoid_print
             print(
@@ -320,9 +272,12 @@ void main() {
       );
 
       // Mở sheet rồi đóng: focus/scroll trả về, energy và tiến trình không đổi.
-      await tester.tap(
-        find.byKey(const ValueKey<String>('map_label_main_quest')),
+      final Finder questMarker = find.byKey(
+        const ValueKey<String>('map_label_main_quest'),
       );
+      await tester.ensureVisible(questMarker);
+      await tester.pump();
+      await tester.tap(questMarker);
       await pumpFor(tester, const Duration(milliseconds: 900));
       expect(find.byType(ActivitySheet), findsOneWidget);
       await tester.binding.handlePopRoute();
@@ -370,39 +325,22 @@ void main() {
 
       await pumpRoot(tester, services, locale: const Locale('vi'));
       // 2× → directory; người mới thì Bug Hunter còn khóa nên CTA là bài học.
-      // Ở 2× directory, hàng cuối danh sách nằm ngoài viewport: phải cuộn thật rồi
-      // mới tap (nếu không, tap trượt và sheet không mở — dấu vết là warnIfMissed).
-      final Finder bugRow = find.byKey(
+      final Finder bugPlace = find.byKey(
         const ValueKey<String>('directory_place_bug_hunter'),
       );
-      await tester.ensureVisible(bugRow);
-      // `ensureVisible` khởi động một animation cuộn; MỘT frame thì chưa đủ, hàng vẫn
-      // còn ngoài viewport nên tap lại trượt (đúng lỗi ở `f2f820b`). Phải để animation
-      // chạy xong rồi mới đo/tap.
-      await pumpFor(tester, const Duration(milliseconds: 250));
-      await tester.tap(bugRow);
-      expectOnlyDocumentedRootOverflow(
-        tester.takeException(),
-        2,
-        'smoke 2x/row',
-      );
+      await tester.ensureVisible(bugPlace);
+      await tester.pump();
+      await tester.tap(bugPlace);
       await pumpFor(tester, const Duration(milliseconds: 900));
-      final int sheetCount = find.byType(ActivitySheet).evaluate().length;
-      final int goCount = find
-          .byKey(const Key('sheet_go_lesson'))
-          .evaluate()
-          .length;
-      // ignore: avoid_print
-      print(
-        'R3-ROOT-SMOKE row=${tester.getRect(bugRow)} '
-        'sheet=$sheetCount go=$goCount',
-      );
+      final Finder goLesson = find.byKey(const Key('sheet_go_lesson'));
       expect(
-        find.byKey(const Key('sheet_go_lesson')),
+        goLesson,
         findsOneWidget,
         reason: 'prerequisite CTA phải hiện ở 2× directory',
       );
-      await tester.tap(find.byKey(const Key('sheet_go_lesson')));
+      await tester.ensureVisible(goLesson);
+      await tester.pump();
+      await tester.tap(goLesson);
       await pumpFor(tester, const Duration(milliseconds: 1400));
       expect(find.byType(MainQuestHomeScreen), findsOneWidget);
       final double questScaled = scalerAt(
@@ -422,14 +360,17 @@ void main() {
         reason: 'Back từ MainQuest phải về hub',
       );
 
-      final Finder mazeRow = find.byKey(
+      final Finder mazePlace = find.byKey(
         const ValueKey<String>('directory_place_robot_maze'),
       );
-      await tester.ensureVisible(mazeRow);
-      await pumpFor(tester, const Duration(milliseconds: 250));
-      await tester.tap(mazeRow);
+      await tester.ensureVisible(mazePlace);
+      await tester.pump();
+      await tester.tap(mazePlace);
       await pumpFor(tester, const Duration(milliseconds: 900));
-      await tester.tap(find.byKey(const Key('sheet_open')));
+      final Finder openSheet = find.byKey(const Key('sheet_open'));
+      await tester.ensureVisible(openSheet);
+      await tester.pump();
+      await tester.tap(openSheet);
       await pumpFor(tester, const Duration(milliseconds: 1500));
       expect(find.byType(RobotMazeHomeScreen), findsOneWidget);
       final double mazeScaled = scalerAt(
@@ -444,7 +385,7 @@ void main() {
       await tester.binding.handlePopRoute();
       await pumpFor(tester, const Duration(milliseconds: 700));
       expect(find.byType(MainMapScreen), findsOneWidget);
-      expectOnlyDocumentedRootOverflow(tester.takeException(), 2, 'smoke 2x');
+      expect(tester.takeException(), isNull);
       // ignore: avoid_print
       print('R3-ROOT 2x-routes mainQuest=$questScaled maze=$mazeScaled');
       await tester.pumpWidget(const SizedBox.shrink());

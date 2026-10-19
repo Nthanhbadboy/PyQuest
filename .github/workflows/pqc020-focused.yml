@@ -5,6 +5,7 @@ on:
     branches:
       - arena/0d4fcb38-pyquest
       - arena/4253d4f1-pyquest
+      - arena/84456d39-pyquest
 
 permissions:
   contents: read
@@ -17,13 +18,14 @@ concurrency:
 jobs:
   focused:
     # OLD_FOCUSED_CONDITION (clause của nhánh CODE cũ, giữ nguyên) OR NEW_VERIFY
-    # (nhánh CODE hiện tại: chỉ push, bắt buộc cả hai marker, không marker ngoại lệ).
+    # (nhánh CODE / CO-DEV hiện tại: chỉ push, bắt buộc cả hai marker, không marker ngoại lệ).
     if: >-
       (
         github.ref == 'refs/heads/arena/0d4fcb38-pyquest' &&
         contains(github.event.head_commit.message, '[pqc020-check]')
       ) || (
-        github.ref == 'refs/heads/arena/4253d4f1-pyquest' &&
+        (github.ref == 'refs/heads/arena/4253d4f1-pyquest' ||
+         github.ref == 'refs/heads/arena/84456d39-pyquest') &&
         github.event_name == 'push' &&
         contains(github.event.head_commit.message, '[pqc020-check]') &&
         contains(github.event.head_commit.message, '[pqc011-verify]') &&
@@ -90,11 +92,11 @@ jobs:
         run: |
           set -euo pipefail
           dart format --output=none --set-exit-if-changed \
-            lib/app/pyquest_app.dart \
             lib/modules/main_map/main_map_screen.dart \
             lib/modules/main_map/main_map_scene.dart \
             lib/modules/main_map/main_map_scene_geometry.dart \
             lib/modules/main_map/main_map_scene_state.dart \
+            test/main_map_app_root_test.dart \
             test/main_map_scene_test.dart \
             test/main_map_scene_geometry_test.dart \
             test/main_map_scene_route_test.dart \
@@ -102,22 +104,24 @@ jobs:
             test/render/render_screens_test.dart \
             test/journey_widget_test.dart \
             test/lesson_route_regression_test.dart \
-            test/main_map_app_root_test.dart \
+            test/arcade_25d_surfaces_test.dart \
             2>&1 | tee "$RUNNER_TEMP/pqc020-format-check.log"
 
       - name: Run focused R1-A and existing map-geometry tests
         id: focused_tests
+        if: success() || steps.format.outcome == 'failure'
         working-directory: app
         run: |
           set -euo pipefail
           flutter test --timeout 45s --reporter expanded \
             test/journey_widget_test.dart \
+            test/main_map_app_root_test.dart \
             test/main_map_scene_geometry_test.dart \
             test/main_map_scene_test.dart \
             test/main_map_scene_route_test.dart \
             test/activity_sheet_thumbnails_test.dart \
             test/lesson_route_regression_test.dart \
-            test/main_map_app_root_test.dart \
+            test/arcade_25d_surfaces_test.dart \
             2>&1 | tee "$RUNNER_TEMP/pqc020-focused-tests.log"
 
       - name: Verify final source cleanliness
@@ -201,6 +205,7 @@ jobs:
               'app/lib/l10n/generated/app_localizations.dart',
               'app/lib/l10n/generated/app_localizations_en.dart',
               'app/lib/l10n/generated/app_localizations_vi.dart',
+              'app/test/main_map_app_root_test.dart',
               'app/test/main_map_scene_test.dart',
               'app/test/main_map_scene_geometry_test.dart',
               'app/test/main_map_scene_route_test.dart',
@@ -208,7 +213,6 @@ jobs:
               'app/test/render/render_screens_test.dart',
               'app/test/journey_widget_test.dart',
               'app/test/lesson_route_regression_test.dart',
-              'app/test/main_map_app_root_test.dart',
           ]
           archive = io.BytesIO()
           with tempfile.TemporaryDirectory(prefix='pqc020-format-preview-') as temporary:

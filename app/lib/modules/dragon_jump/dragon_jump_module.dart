@@ -155,7 +155,63 @@ class _DragonHomeScreenState extends State<DragonHomeScreen> {
                     : ListView(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                         children: [
-                          Center(child: CharacterView(id: CharacterId.pip, size: 190, hat: l.hat)),
+                          Container(
+                            key: const ValueKey('dragon_25d_scene'),
+                            height: 196,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: PQColors.ink,
+                                width: 2.6,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: PQTone.coral.depth,
+                                  offset: const Offset(0, 5),
+                                  blurRadius: 0,
+                                ),
+                              ],
+                              image: const DecorationImage(
+                                image: AssetImage(
+                                  'assets/images/volcano_trail_r54.webp',
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.black.withValues(alpha: 0.08),
+                                          Colors.black.withValues(alpha: 0.36),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Center(
+                                  child: l.hat != null
+                                      ? CharacterView(
+                                          id: CharacterId.pip,
+                                          size: 168,
+                                          hat: l.hat,
+                                        )
+                                      : Image.asset(
+                                          'assets/images/pip_token_r54.png',
+                                          height: 156,
+                                          fit: BoxFit.contain,
+                                        ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12),
                           const SpeechBubble(
                             character: CharacterId.pip,
                             text: 'Chạm màn hình để nhảy, chạm thêm lần nữa khi đang bay để vỗ cánh! Né đá, bụi gai và bọ cánh cứng nhé.',
@@ -240,8 +296,12 @@ class _InfoTile extends StatelessWidget {
       child: Column(
         children: [
           icon,
-          Text(value, style: PQText.number),
-          Text(label, style: PQText.small.copyWith(fontSize: 13)),
+          Text(value, textAlign: TextAlign.center, style: PQText.number),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: PQText.small.copyWith(fontSize: 13),
+          ),
         ],
       ),
     );
@@ -625,6 +685,27 @@ class _DragonPlayScreenState extends State<DragonPlayScreen> with SingleTickerPr
                   : const SizedBox.shrink(),
             ),
             ),
+            if (!_paused)
+              Positioned(
+                right: 16,
+                bottom: 16,
+                child: SafeArea(
+                  top: false,
+                  child: AnimatedBuilder(
+                    animation: g,
+                    builder: (context, _) => g.phase == DragonPhase.over
+                        ? const SizedBox.shrink()
+                        : ChunkyButton(
+                            key: const ValueKey('dragon_jump_btn'),
+                            label: g.onGround ? 'Nhảy' : 'Vỗ cánh',
+                            icon: Icons.keyboard_double_arrow_up_rounded,
+                            tone: PQTone.coral,
+                            size: ChunkySize.medium,
+                            onPressed: g.jump,
+                          ),
+                  ),
+                ),
+              ),
             if (_paused)
               Positioned.fill(
                 child: ColoredBox(

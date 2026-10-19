@@ -196,87 +196,96 @@ class _SplashScreenState extends State<SplashScreen>
         ),
         child: SafeArea(
           child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    CharacterView(id: CharacterId.robo, size: 110),
-                    CharacterView(id: CharacterId.py, size: 140),
-                    CharacterView(id: CharacterId.pip, size: 110),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const PyQuestLogo(size: 64),
-                const SizedBox(height: 4),
-                Text(
-                  'Build Your Game. Rule Your World.',
-                  style: PQText.bodyStrong.copyWith(color: PQColors.inkSoft),
-                ),
-                const SizedBox(height: 28),
-                if (widget.error == null)
-                  AnimatedBuilder(
-                    animation: _c,
-                    builder: (context, _) => Row(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        for (var i = 0; i < 3; i++)
-                          Transform.translate(
-                            offset: Offset(
-                              0,
-                              -8 *
-                                  math.max(
-                                    0,
-                                    math.sin(
-                                      (_c.value - i * 0.15) * 2 * math.pi,
-                                    ),
-                                  ),
-                            ),
-                            child: Container(
-                              width: 14,
-                              height: 14,
-                              margin: const EdgeInsets.symmetric(horizontal: 5),
-                              decoration: BoxDecoration(
-                                color: [
-                                  PQColors.pyBlue,
-                                  PQColors.sun,
-                                  PQColors.coral,
-                                ][i],
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: PQColors.ink,
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  )
-                else
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Column(
-                      children: [
-                        Text('Ối! Đảo chưa mở được.', style: PQText.h3),
-                        const SizedBox(height: 6),
-                        Text(
-                          'Hãy thử lại nhé. Nếu vẫn lỗi, hãy khởi động lại ứng dụng.',
-                          textAlign: TextAlign.center,
-                          style: PQText.body,
-                        ),
-                        const SizedBox(height: 12),
-                        ChunkyButton(
-                          label: 'Thử lại',
-                          tone: PQTone.sun,
-                          onPressed: widget.onRetry,
-                        ),
+                        CharacterView(id: CharacterId.robo, size: 110),
+                        CharacterView(id: CharacterId.py, size: 140),
+                        CharacterView(id: CharacterId.pip, size: 110),
                       ],
                     ),
                   ),
-              ],
+                  const SizedBox(height: 8),
+                  const PyQuestLogo(size: 64),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Build Your Game. Rule Your World.',
+                    textAlign: TextAlign.center,
+                    style: PQText.bodyStrong.copyWith(color: PQColors.inkSoft),
+                  ),
+                  const SizedBox(height: 28),
+                  if (widget.error == null)
+                    AnimatedBuilder(
+                      animation: _c,
+                      builder: (context, _) => Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (var i = 0; i < 3; i++)
+                            Transform.translate(
+                              offset: Offset(
+                                0,
+                                -8 *
+                                    math.max(
+                                      0,
+                                      math.sin(
+                                        (_c.value - i * 0.15) * 2 * math.pi,
+                                      ),
+                                    ),
+                              ),
+                              child: Container(
+                                width: 14,
+                                height: 14,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: [
+                                    PQColors.pyBlue,
+                                    PQColors.sun,
+                                    PQColors.coral,
+                                  ][i],
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: PQColors.ink,
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Column(
+                        children: [
+                          Text('Ối! Đảo chưa mở được.', style: PQText.h3),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Hãy thử lại nhé. Nếu vẫn lỗi, hãy khởi động lại ứng dụng.',
+                            textAlign: TextAlign.center,
+                            style: PQText.body,
+                          ),
+                          const SizedBox(height: 12),
+                          ChunkyButton(
+                            label: 'Thử lại',
+                            tone: PQTone.sun,
+                            onPressed: widget.onRetry,
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -318,11 +327,14 @@ class PyQuestLogo extends StatelessWidget {
         Text(text, style: base(fill)),
       ],
     );
-    return Transform.rotate(
-      angle: -0.03,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [word('Py', PQColors.pyBlue), word('Quest', PQColors.sun)],
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Transform.rotate(
+        angle: -0.03,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [word('Py', PQColors.pyBlue), word('Quest', PQColors.sun)],
+        ),
       ),
     );
   }

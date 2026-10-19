@@ -21,6 +21,7 @@ library;
 // ignore_for_file: avoid_dynamic_calls
 
 import 'dart:async';
+import 'dart:ui' show Tristate;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
@@ -664,12 +665,12 @@ void main() {
               final SemanticsData data = marker.getSemanticsData();
               final String name = placeName(l10n, id);
               expect(
-                data.hasFlag(SemanticsFlag.isButton),
+                data.flagsCollection.isButton,
                 isTrue,
                 reason: '$id phải là button trong cây semantics đã render',
               );
               expect(
-                data.hasFlag(SemanticsFlag.isEnabled),
+                data.flagsCollection.isEnabled == Tristate.isTrue,
                 isTrue,
                 reason: 'hub đã nạp xong nên $id phải ở trạng thái enabled',
               );
@@ -691,13 +692,12 @@ void main() {
               int named = 0;
               marker.visitChildren((SemanticsNode child) {
                 final SemanticsData inner = child.getSemanticsData();
-                if (inner.hasFlag(SemanticsFlag.isButton)) {
+                if (inner.flagsCollection.isButton) {
                   innerButtons++;
                 }
                 return true;
               });
-              if (data.hasFlag(SemanticsFlag.isButton) &&
-                  data.label.contains(name)) {
+              if (data.flagsCollection.isButton && data.label.contains(name)) {
                 named++;
               }
               expect(

@@ -111,6 +111,54 @@ class _CatchStarsHomeScreenState extends State<CatchStarsHomeScreen> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                   children: [
+                    Container(
+                      key: const ValueKey('stars_25d_scene'),
+                      height: 184,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: PQColors.ink, width: 2.6),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0xFF151A4C),
+                            offset: Offset(0, 5),
+                            blurRadius: 0,
+                          ),
+                        ],
+                        image: const DecorationImage(
+                          image: AssetImage(
+                            'assets/images/observatory_sky_r55.webp',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black.withValues(alpha: 0.08),
+                                    Colors.black.withValues(alpha: 0.42),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Image.asset(
+                              'assets/images/jar_token_r55.png',
+                              height: 140,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     const SpeechBubble(
                       character: CharacterId.robo,
                       text: 'Kéo chiếc bình sang trái, sang phải để hứng sao. Sao vàng to +5, sao chổi +3, sao cầu vồng nhân đôi điểm. Né thiên thạch nhé!',
@@ -220,7 +268,16 @@ class _Tile extends StatelessWidget {
   Widget build(BuildContext context) {
     return PQPanel(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-      child: Column(children: [Text(value, style: PQText.number), Text(label, style: PQText.small.copyWith(fontSize: 13))]),
+      child: Column(
+        children: [
+          Text(value, textAlign: TextAlign.center, style: PQText.number),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: PQText.small.copyWith(fontSize: 13),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -565,6 +622,39 @@ class _StarsPlayScreenState extends State<StarsPlayScreen> with SingleTickerProv
                   : const SizedBox.shrink(),
             ),
             ),
+            if (!_paused)
+              Positioned(
+                left: 16,
+                right: 16,
+                bottom: 16,
+                child: SafeArea(
+                  top: false,
+                  child: AnimatedBuilder(
+                    animation: g,
+                    builder: (context, _) => g.over
+                        ? const SizedBox.shrink()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RoundIconButton(
+                                key: const ValueKey('stars_move_left'),
+                                icon: Icons.chevron_left_rounded,
+                                size: 48,
+                                tooltip: 'Sang trái',
+                                onPressed: () => g.nudge(-44),
+                              ),
+                              RoundIconButton(
+                                key: const ValueKey('stars_move_right'),
+                                icon: Icons.chevron_right_rounded,
+                                size: 48,
+                                tooltip: 'Sang phải',
+                                onPressed: () => g.nudge(44),
+                              ),
+                            ],
+                          ),
+                  ),
+                ),
+              ),
             if (_paused)
               Positioned.fill(
                 child: ColoredBox(
