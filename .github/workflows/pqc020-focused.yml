@@ -123,6 +123,7 @@ jobs:
             test/lesson_route_regression_test.dart \
             test/arcade_25d_surfaces_test.dart \
             test/pqc023_25d_surfaces_test.dart \
+            test/r1b_and_chapter_25d_test.dart \
             2>&1 | tee "$RUNNER_TEMP/pqc020-focused-tests.log"
 
       - name: Verify final source cleanliness

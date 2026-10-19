@@ -455,6 +455,27 @@ Future<void> openActivity(
   if (context.mounted) s.audio.music(MusicTrack.island);
 }
 
+/// Cỡ scene của panel chào, theo ASSET_PLAN r56: 300px bình thường, 250px khi
+/// chữ >=1.5x (chỉ scene đổi cỡ, portrait 152×175 giữ nguyên).
+const double kWelcomeSceneHeight = 300;
+const double kWelcomeSceneLargeHeight = 250;
+const Size kWelcomeGuideSize = Size(152, 175);
+
+/// Viền gỗ và nền panel theo `.panel` của r56 (`border:5px #9e754c`,
+/// `border-radius:26px`, nền `#fff8e7`). Ở chữ >=1.5x panel full-bleed
+/// (`.phone.large .panel{border:0;border-radius:0}`) nên bỏ cả hai.
+const Color kWelcomeEdge = Color(0xFF9E754C);
+const Color kWelcomePanelFill = Color(0xFFFFF8E7);
+const BorderRadius kWelcomePanelRadius = BorderRadius.all(Radius.circular(26));
+
+/// Host nào có portrait study mới thì hiện ảnh đó, các host khác giữ painter.
+const Map<CharacterId, String> kWelcomeHostToken = <CharacterId, String>{
+  CharacterId.py: 'assets/images/py_token_r56.png',
+};
+
+/// Chào mừng ba bước, khung panel gỗ 2,5D theo r56. `welcome_next` giữ nguyên
+/// tên (hợp đồng với `journey_widget_test.dart` và harness render); scene chỉ là
+/// không gian giới thiệu, mọi chữ vẫn là widget Flutter thật.
 class _WelcomeDialog extends StatefulWidget {
   const _WelcomeDialog();
 
@@ -465,65 +486,101 @@ class _WelcomeDialog extends StatefulWidget {
 class _WelcomeDialogState extends State<_WelcomeDialog> {
   int _page = 0;
 
-  static const _pages = [
+  /// (host, title, body, sceneAsset, sceneFocusY). Scene lấy từ bộ export r56:
+  /// `arrival` cho Robo và Pip, `main_quest` (tower-garden của r43) cho bước của
+  /// Py. `sceneFocusY` mô phỏng `background-position: center NN%` trong study.
+  /// Copy giữ nguyên văn bản đang có: đổi lời chào là việc của đơn localize riêng
+  /// (D56-P1), không làm chui trong đợt 2,5D này.
+  static const List<(CharacterId, String, String, String, double)> _pages = [
     (
       CharacterId.robo,
       'Chào mừng tới Đảo Khởi Đầu!',
       'Mình là Robo. Mỗi địa điểm trên đảo là một trò chơi hoặc một chặng phiêu lưu riêng. Chạm vào một nơi để khám phá nhé!',
+      'assets/images/arrival_r56.webp',
+      0.53,
     ),
     (
       CharacterId.py,
       'Học Python ở Tháp Python',
       'Tớ là thầy Py. Ở Tháp Python bạn sẽ học viết code thật từng bước. Nhiều trò chơi khác trên đảo không cần biết Python đâu!',
+      'assets/images/main_quest_r56.webp',
+      0.60,
     ),
     (
       CharacterId.pip,
       'Năng lượng và nghỉ ngơi',
       'Chơi màn mới và học bài mới dùng một chút năng lượng. Năng lượng tự hồi theo thời gian. Không có quảng cáo, không có mua bán!',
+      'assets/images/arrival_r56.webp',
+      0.70,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final (character, title, body) = _pages[_page];
-    final last = _page == _pages.length - 1;
+    final (host, title, body, scene, focus) = _pages[_page];
+    final bool last = _page == _pages.length - 1;
+    final double scale = MediaQuery.textScalerOf(context).scale(16) / 16;
+    final bool largeText = scale >= kR56LargeTextScale;
+
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.all(20),
-      child: PQPanel(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+      insetPadding: EdgeInsets.fromLTRB(10, largeText ? 10 : 18, 10, 10),
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: kWelcomePanelFill,
+          borderRadius: largeText ? BorderRadius.zero : kWelcomePanelRadius,
+          border: largeText ? null : Border.all(color: kWelcomeEdge, width: 5),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CharacterView(key: ValueKey(character), id: character, size: 130),
-            const SizedBox(height: 6),
-            Text(title, textAlign: TextAlign.center, style: PQText.h2),
-            const SizedBox(height: 8),
-            Text(body, textAlign: TextAlign.center, style: PQText.body),
-            const SizedBox(height: 14),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (var i = 0; i < _pages.length; i++)
-                  Container(
-                    width: i == _page ? 22 : 10,
-                    height: 10,
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    decoration: BoxDecoration(
-                      color: i == _page ? PQColors.sun : PQColors.parchmentDeep,
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: PQColors.ink, width: 1.6),
-                    ),
-                  ),
-              ],
+            _WelcomeBar(page: _page, host: host, pages: _pages.length),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // SPEC r56 §4: font lớn thì chữ đứng trước, artwork cuộn sau.
+                    if (largeText) ...[
+                      _WelcomeCopy(
+                        title: title,
+                        body: body,
+                        page: _page,
+                        pages: _pages.length,
+                        host: host,
+                      ),
+                      _WelcomeScene(
+                        asset: scene,
+                        host: host,
+                        focus: focus,
+                        largeText: largeText,
+                      ),
+                    ] else ...[
+                      _WelcomeScene(
+                        asset: scene,
+                        host: host,
+                        focus: focus,
+                        largeText: largeText,
+                      ),
+                      _WelcomeCopy(
+                        title: title,
+                        body: body,
+                        page: _page,
+                        pages: _pages.length,
+                        host: host,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 14),
-            ChunkyButton(
-              key: const ValueKey('welcome_next'),
-              label: last ? 'Bắt đầu khám phá!' : 'Tiếp tục',
-              tone: last ? PQTone.grass : PQTone.sun,
-              expand: true,
-              onPressed: () {
+            _WelcomeFooter(
+              page: _page,
+              last: last,
+              onPrevious: () => setState(() => _page--),
+              onNext: () {
                 if (last) {
                   Navigator.of(context).pop();
                 } else {
@@ -533,6 +590,243 @@ class _WelcomeDialogState extends State<_WelcomeDialog> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _WelcomeBar extends StatelessWidget {
+  const _WelcomeBar({
+    required this.page,
+    required this.host,
+    required this.pages,
+  });
+
+  final int page;
+  final CharacterId host;
+  final int pages;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 8, 8, 6),
+      decoration: const BoxDecoration(
+        color: Color(0xFFF7EDCF),
+        border: Border(bottom: BorderSide(color: Color(0xFFDFC9A6), width: 1)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'Lời chào từ đảo · ${page + 1}/$pages · ${host.displayName}',
+              style: PQText.small.copyWith(color: const Color(0xFF536553)),
+              maxLines: 2,
+            ),
+          ),
+          ChunkyButton(
+            key: const ValueKey('welcome_close'),
+            label: 'Đóng',
+            size: ChunkySize.small,
+            tone: PQTone.parchment,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Scene 2,5D: ảnh cover + dải fade về màu panel, seal caption góc trái trên,
+/// chân dung host giữa mép dưới (`.scene.welcome-scene .guide` của r56).
+class _WelcomeScene extends StatelessWidget {
+  const _WelcomeScene({
+    required this.asset,
+    required this.host,
+    required this.focus,
+    required this.largeText,
+  });
+
+  final String asset;
+  final CharacterId host;
+  final double focus;
+  final bool largeText;
+
+  @override
+  Widget build(BuildContext context) {
+    final double height = largeText
+        ? kWelcomeSceneLargeHeight
+        : kWelcomeSceneHeight;
+    final String? token = kWelcomeHostToken[host];
+    const Key guideKey = ValueKey<String>('welcome_guide');
+    final Widget guide;
+    if (token == null) {
+      guide = CharacterView(
+        key: guideKey,
+        id: host,
+        size: kWelcomeGuideSize.height,
+        animate: false,
+      );
+    } else {
+      guide = Image.asset(
+        token,
+        key: guideKey,
+        width: kWelcomeGuideSize.width,
+        height: kWelcomeGuideSize.height,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.medium,
+        semanticLabel: 'Chân dung ${host.displayName}',
+        gaplessPlayback: true,
+      );
+    }
+    return SizedBox(
+      key: const ValueKey<String>('welcome_scene'),
+      height: height,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            asset,
+            fit: BoxFit.cover,
+            alignment: Alignment(0, focus * 2 - 1),
+            filterQuality: FilterQuality.medium,
+            semanticLabel: 'Cảnh 2,5D của Đảo Khởi Đầu',
+            gaplessPlayback: true,
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: const [
+                  Color(0x00FFF8E7),
+                  Color(0x80FFF8E7),
+                  Color(0xFFFFF8E7),
+                ],
+                stops: const [0.60, 0.86, 1],
+              ),
+            ),
+            child: const SizedBox.expand(),
+          ),
+          Align(alignment: Alignment.bottomCenter, child: guide),
+        ],
+      ),
+    );
+  }
+}
+
+/// `.panel-copy`: thanh bước (segments 5px), caption, then title + lời nhân vật.
+class _WelcomeCopy extends StatelessWidget {
+  const _WelcomeCopy({
+    required this.title,
+    required this.body,
+    required this.page,
+    required this.pages,
+    required this.host,
+  });
+
+  final String title;
+  final String body;
+  final int page;
+  final int pages;
+  final CharacterId host;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Bước ${page + 1}/$pages · ${host.displayName}',
+            style: PQText.small.copyWith(
+              fontSize: 11.5,
+              color: const Color(0xFF5E7765),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              for (var i = 0; i < pages; i++)
+                Expanded(
+                  child: Container(
+                    height: 5,
+                    margin: EdgeInsets.only(right: i == pages - 1 ? 0 : 7),
+                    decoration: BoxDecoration(
+                      color: i == page
+                          ? const Color(0xFF3B7D77)
+                          : const Color(0xFFD8D9B9),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: PQText.h2.copyWith(fontSize: 28, height: 1.12),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            body,
+            textAlign: TextAlign.center,
+            style: PQText.body.copyWith(fontSize: 14, height: 1.5),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// `.footer` của r56: nút ngoài vùng cuộn, `previous` để đọc lại bước đã xem
+/// (D56-P2), CTA cuối vẫn là `welcome_next` với cùng hành động pop.
+class _WelcomeFooter extends StatelessWidget {
+  const _WelcomeFooter({
+    required this.page,
+    required this.last,
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  final int page;
+  final bool last;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(18, 12, 18, 16),
+      decoration: const BoxDecoration(
+        color: Color(0xFFF7EFD8),
+        border: Border(top: BorderSide(color: Color(0xFFD5C6A4), width: 1)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (page > 0)
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: ChunkyButton(
+                key: const ValueKey('welcome_previous'),
+                label: 'Lùi',
+                icon: Icons.arrow_back_rounded,
+                tone: PQTone.parchment,
+                onPressed: onPrevious,
+              ),
+            ),
+          Expanded(
+            child: ChunkyButton(
+              key: const ValueKey('welcome_next'),
+              label: last ? 'Bắt đầu khám phá!' : 'Tiếp tục',
+              tone: last ? PQTone.grass : PQTone.sun,
+              expand: true,
+              onPressed: onNext,
+            ),
+          ),
+        ],
       ),
     );
   }
