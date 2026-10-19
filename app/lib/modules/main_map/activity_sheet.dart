@@ -60,12 +60,12 @@ class ActivitySheet extends StatelessWidget {
               children: [
                 // Reorder theo r56: ở font lớn, chữ đọc trước, artwork cuộn tới sau.
                 if (largeText) ...[
-                  _SheetBar(def: def),
+                  const _SheetBar(),
                   Padding(padding: _kSheetCopyPadding, child: body),
                   const SizedBox(height: 18),
                   scene,
                 ] else ...[
-                  _SheetBar(def: def),
+                  const _SheetBar(),
                   scene,
                   Padding(padding: _kSheetCopyPadding, child: body),
                 ],
@@ -83,8 +83,7 @@ const EdgeInsets _kSheetCopyPadding = EdgeInsets.fromLTRB(20, 14, 20, 2);
 
 /// `.panel-bar` của r56: nhãn + nút đóng luôn thấy mà không cần vuốt để thoát.
 class _SheetBar extends StatelessWidget {
-  const _SheetBar({required this.def});
-  final ActivityDef def;
+  const _SheetBar();
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +99,8 @@ class _SheetBar extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              def.name,
-              style: PQText.bodyStrong.copyWith(fontSize: 14.5),
+              'Giới thiệu địa điểm',
+              style: PQText.small,
               maxLines: 2,
             ),
           ),
@@ -160,7 +159,7 @@ class _SheetSceneHeader extends StatelessWidget {
             Positioned(
               left: 16,
               top: 14,
-              child: _SceneSeal(def: def, locked: status.locked),
+              child: _SceneSeal(locked: status.locked),
             ),
             Positioned(
               right: 20,
@@ -174,11 +173,14 @@ class _SheetSceneHeader extends StatelessWidget {
   }
 }
 
-/// `#fff6dfeb` + viền `#b39c72`, bán kính 16 — con dấu ghi tên canonical và
-/// trạng thái bằng chữ thật (không dùng màu làm tín hiệu duy nhất).
+/// `.scene-seal` của r56 (`#fff6dfeb` + viền `#b39c72`, radius 16, 11px): chip nhỏ
+/// trả lời "địa điểm này đang mở hay khóa" bằng CHỮ, không bằng màu — tên canonical
+/// vẫn nằm ở `panel-copy h2` (một chỗ duy nhất, như `findsOneWidget` mà
+/// `main_map_scene_route_test.dart` và oracle semantics của R3 đang bắt buộc), còn
+/// tên nhân vật do `SpeechBubble` lo.
 class _SceneSeal extends StatelessWidget {
-  const _SceneSeal({required this.def, required this.locked});
-  final ActivityDef def;
+  const _SceneSeal({required this.locked});
+
   final bool locked;
 
   @override
@@ -191,16 +193,9 @@ class _SceneSeal extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0xFFB39C72), width: 1),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(def.name, style: PQText.bodyStrong.copyWith(fontSize: 15.5)),
-          Text(
-            locked ? 'Đang khóa' : 'Cùng ${def.host.displayName}',
-            style: PQText.small.copyWith(fontSize: 11.5),
-          ),
-        ],
+      child: Text(
+        locked ? 'Đang khóa' : 'Đã mở',
+        style: PQText.bodyStrong.copyWith(fontSize: 13.5),
       ),
     );
   }

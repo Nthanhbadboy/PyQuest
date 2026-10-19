@@ -168,6 +168,10 @@ class _MainQuestHomeScreenState extends State<MainQuestHomeScreen> {
                       quickTarget: quickTarget,
                       onContinue: () => _open(quickTarget),
                     ),
+                    // Panel chặng (tiêu đề, phụ đề, progress) vẫn ở dưới scene:
+                    // r43 §1 nói rõ "Không cố nhét cả 12 bài và mọi thông báo lên
+                    // 640px", nên scene không thay thế block chữ này.
+                    _ChapterHeader(content: content, done: count),
                     const SizedBox(height: 12),
                     for (var i = 0; i < lessons.length; i++) ...[
                       if (i % kPedestalSize == 0 && i ~/ kPedestalSize < pedestals)
