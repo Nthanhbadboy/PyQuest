@@ -707,10 +707,7 @@ class _WelcomeScene extends StatelessWidget {
             ),
             child: const SizedBox.expand(),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: guide,
-          ),
+          Align(alignment: Alignment.bottomCenter, child: guide),
         ],
       ),
     );

@@ -92,7 +92,7 @@ Finder imageOfAsset(String asset) => find.byWidgetPredicate(
   (Widget w) =>
       w is Image &&
       w.image is AssetImage &&
-      (w.image! as AssetImage).assetName == asset,
+      (w.image as AssetImage).assetName == asset,
 );
 
 /// Slot thumbnail mà `activity_sheet_thumbnails_test.dart` đếm: ĐÚNG một
@@ -195,7 +195,6 @@ Finder keyOf(String name) => find.byKey(ValueKey<String>(name));
 /// kiểm kết quả điều hướng chứ không chỉ kiểm widget tồn tại.
 class _SheetLauncher extends StatelessWidget {
   const _SheetLauncher({
-    super.key,
     required this.module,
     required this.status,
     required this.onPopped,
@@ -254,7 +253,7 @@ void main() {
       expect(
         bytes,
         lessThanOrEqualTo(kMaxR56AssetBytes),
-        reason: '${entry.key} = $bytes B vượt ${kMaxR56AssetBytes} B',
+        reason: '${entry.key} = $bytes B vượt $kMaxR56AssetBytes B',
       );
       total += bytes;
       // ignore: avoid_print
@@ -294,7 +293,7 @@ void main() {
         final Container box = tester.widget<Container>(thumbSlot);
         final BoxDecoration decoration = box.decoration! as BoxDecoration;
         expect(
-          (decoration.image!.image! as AssetImage).assetName,
+          (decoration.image!.image as AssetImage).assetName,
           module.def.thumbnail,
           reason: '${module.def.id} phải nạp đúng thumbnail đã pin',
         );

@@ -222,25 +222,32 @@ class _SheetGuide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget portrait = token == null
-        ? CharacterView(
-            key: const ValueKey('sheet_guide'),
-            id: def.host,
-            size: kSheetGuideSize.height,
-            mood: status.locked ? Mood.thinking : Mood.happy,
-            animate: false,
-          )
-        : Image.asset(
-            token,
-            key: const ValueKey('sheet_guide'),
-            width: kSheetGuideSize.width,
-            height: kSheetGuideSize.height,
-            fit: BoxFit.contain,
-            filterQuality: FilterQuality.medium,
-            semanticLabel: 'Chân dung ${def.host.displayName}',
-            gaplessPlayback: true,
-          );
-    return Semantics(image: true, label: 'Chân dung ${def.host.displayName}', child: portrait);
+    // `token` là field public nên KHÔNG được flow-promotion (CFE báo
+    // `String? -> String` ở run 6b74744): đọc ra local rồi mới rẻ nhánh.
+    final String? asset = token;
+    final String label = 'Chân dung ${def.host.displayName}';
+    final Widget portrait;
+    if (asset == null) {
+      portrait = CharacterView(
+        key: const ValueKey('sheet_guide'),
+        id: def.host,
+        size: kSheetGuideSize.height,
+        mood: status.locked ? Mood.thinking : Mood.happy,
+        animate: false,
+      );
+    } else {
+      portrait = Image.asset(
+        asset,
+        key: const ValueKey('sheet_guide'),
+        width: kSheetGuideSize.width,
+        height: kSheetGuideSize.height,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.medium,
+        semanticLabel: label,
+        gaplessPlayback: true,
+      );
+    }
+    return Semantics(image: true, label: label, child: portrait);
   }
 }
 
