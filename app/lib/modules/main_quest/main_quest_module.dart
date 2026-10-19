@@ -188,9 +188,9 @@ class _MainQuestHomeScreenState extends State<MainQuestHomeScreen> {
                     // sách bài) theo ngay sau nên thẻ đầu tiên tới được không
                     // phải cuộn.
                     sceneHeader,
-                    const SizedBox(height: 12),
+                    SizedBox(height: largeText ? 6 : 12),
                     _ChapterHeader(content: content, done: count),
-                    const SizedBox(height: 12),
+                    SizedBox(height: largeText ? 6 : 12),
                     for (var i = 0; i < lessons.length; i++) ...[
                       if (i % kPedestalSize == 0 && i ~/ kPedestalSize < pedestals)
                         _PedestalBand(
@@ -486,14 +486,31 @@ class _ChapterHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool largeText =
         MediaQuery.textScalerOf(context).scale(1) >= kTowerLargeTextScale;
+    if (largeText) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color(0xFFE8F1FF),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: PQColors.ink, width: 2),
+        ),
+        child: Text(
+          'CHẶNG ${content.chapterNumber} · ${content.chapterTitle}',
+          style: PQText.small.copyWith(
+            color: PQColors.pyBlue,
+            fontWeight: FontWeight.w900,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
+    }
     return PQPanel(
       color: const Color(0xFFE8F1FF),
       child: Row(
         children: [
-          if (!largeText) ...[
-            const CharacterView(id: CharacterId.py, size: 96),
-            const SizedBox(width: 10),
-          ],
+          const CharacterView(id: CharacterId.py, size: 96),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
