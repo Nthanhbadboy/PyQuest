@@ -36,12 +36,13 @@ class PyQuestApp extends StatefulWidget {
 class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
   /// Framework + generated delegates, shared by the splash and the loaded app so a
   /// framework string never silently falls back while the preference is still unknown.
-  static const List<LocalizationsDelegate<dynamic>> _delegates = <LocalizationsDelegate<dynamic>>[
-    AppLocalizations.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> _delegates =
+      <LocalizationsDelegate<dynamic>>[
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ];
 
   AppServices? _services;
   AppLocaleBinding? _localeBinding;
@@ -49,7 +50,8 @@ class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
   List<Locale> _systemLocales = const <Locale>[];
 
   List<Locale> get _readSystemLocales =>
-      widget.systemLocalesReader?.call() ?? WidgetsBinding.instance.platformDispatcher.locales;
+      widget.systemLocalesReader?.call() ??
+      WidgetsBinding.instance.platformDispatcher.locales;
 
   @override
   void initState() {
@@ -92,7 +94,9 @@ class _PyQuestAppState extends State<PyQuestApp> with WidgetsBindingObserver {
   Future<void> _boot() async {
     setState(() => _error = null);
     try {
-      final factory = widget.servicesFactory ?? (bundle) => AppServices.create(bundle: bundle);
+      final factory =
+          widget.servicesFactory ??
+          (bundle) => AppServices.create(bundle: bundle);
       final results = await Future.wait([
         factory(rootBundle),
         Future<void>.delayed(widget.minSplash),
@@ -166,8 +170,12 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))..repeat();
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1200),
+  )..repeat();
 
   @override
   void dispose() {
@@ -203,7 +211,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 const SizedBox(height: 8),
                 const PyQuestLogo(size: 64),
                 const SizedBox(height: 4),
-                Text('Build Your Game. Rule Your World.', style: PQText.bodyStrong.copyWith(color: PQColors.inkSoft)),
+                Text(
+                  'Build Your Game. Rule Your World.',
+                  style: PQText.bodyStrong.copyWith(color: PQColors.inkSoft),
+                ),
                 const SizedBox(height: 28),
                 if (widget.error == null)
                   AnimatedBuilder(
@@ -213,15 +224,31 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       children: [
                         for (var i = 0; i < 3; i++)
                           Transform.translate(
-                            offset: Offset(0, -8 * math.max(0, math.sin((_c.value - i * 0.15) * 2 * math.pi))),
+                            offset: Offset(
+                              0,
+                              -8 *
+                                  math.max(
+                                    0,
+                                    math.sin(
+                                      (_c.value - i * 0.15) * 2 * math.pi,
+                                    ),
+                                  ),
+                            ),
                             child: Container(
                               width: 14,
                               height: 14,
                               margin: const EdgeInsets.symmetric(horizontal: 5),
                               decoration: BoxDecoration(
-                                color: [PQColors.pyBlue, PQColors.sun, PQColors.coral][i],
+                                color: [
+                                  PQColors.pyBlue,
+                                  PQColors.sun,
+                                  PQColors.coral,
+                                ][i],
                                 shape: BoxShape.circle,
-                                border: Border.all(color: PQColors.ink, width: 2),
+                                border: Border.all(
+                                  color: PQColors.ink,
+                                  width: 2,
+                                ),
                               ),
                             ),
                           ),
@@ -235,9 +262,17 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       children: [
                         Text('Ối! Đảo chưa mở được.', style: PQText.h3),
                         const SizedBox(height: 6),
-                        Text('Hãy thử lại nhé. Nếu vẫn lỗi, hãy khởi động lại ứng dụng.', textAlign: TextAlign.center, style: PQText.body),
+                        Text(
+                          'Hãy thử lại nhé. Nếu vẫn lỗi, hãy khởi động lại ứng dụng.',
+                          textAlign: TextAlign.center,
+                          style: PQText.body,
+                        ),
                         const SizedBox(height: 12),
-                        ChunkyButton(label: 'Thử lại', tone: PQTone.sun, onPressed: widget.onRetry),
+                        ChunkyButton(
+                          label: 'Thử lại',
+                          tone: PQTone.sun,
+                          onPressed: widget.onRetry,
+                        ),
                       ],
                     ),
                   ),
@@ -257,24 +292,32 @@ class PyQuestLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle base(Color c) => TextStyle(fontFamily: PQFonts.display, fontWeight: FontWeight.w800, fontSize: size, height: 1.0, color: c);
+    TextStyle base(Color c) => TextStyle(
+      fontFamily: PQFonts.display,
+      fontWeight: FontWeight.w800,
+      fontSize: size,
+      height: 1.0,
+      color: c,
+    );
     Widget word(String text, Color fill) => Stack(
-          children: [
-            Text(text,
-                style: TextStyle(
-                  fontFamily: PQFonts.display,
-                  fontWeight: FontWeight.w800,
-                  fontSize: size,
-                  height: 1.0,
-                  foreground: Paint()
-                    ..style = PaintingStyle.stroke
-                    ..strokeWidth = size * 0.14
-                    ..strokeJoin = StrokeJoin.round
-                    ..color = PQColors.ink,
-                )),
-            Text(text, style: base(fill)),
-          ],
-        );
+      children: [
+        Text(
+          text,
+          style: TextStyle(
+            fontFamily: PQFonts.display,
+            fontWeight: FontWeight.w800,
+            fontSize: size,
+            height: 1.0,
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = size * 0.14
+              ..strokeJoin = StrokeJoin.round
+              ..color = PQColors.ink,
+          ),
+        ),
+        Text(text, style: base(fill)),
+      ],
+    );
     return Transform.rotate(
       angle: -0.03,
       child: Row(
