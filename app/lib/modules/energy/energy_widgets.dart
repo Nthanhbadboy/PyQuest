@@ -142,7 +142,7 @@ class _EnergySheet extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   Image.asset(
-                    'assets/images/rest_nook_r38.webp',
+                    'assets/images/garden_kiosk_r41.webp',
                     fit: BoxFit.cover,
                     gaplessPlayback: true,
                   ),

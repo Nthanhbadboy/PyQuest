@@ -48,7 +48,7 @@ class _DailyQuestsSheet extends StatelessWidget {
                   ],
                 ),
                 child: Image.asset(
-                  'assets/images/daily_board_r37.webp',
+                  'assets/images/garden_kiosk_r41.webp',
                   fit: BoxFit.cover,
                   gaplessPlayback: true,
                 ),

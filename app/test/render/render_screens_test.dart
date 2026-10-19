@@ -154,9 +154,6 @@ Future<void> precacheMap(WidgetTester tester) async {
       'assets/images/meteor_token_r55.png',
       'assets/images/bug_workshop_r36.webp',
       'assets/images/achievement_room_r39.webp',
-      'assets/images/daily_board_r37.webp',
-      'assets/images/rest_nook_r38.webp',
-      'assets/images/study_corner_r35.webp',
       'assets/images/journal_recap_r36.webp',
       'assets/images/garden_kiosk_r41.webp',
     ]) {
