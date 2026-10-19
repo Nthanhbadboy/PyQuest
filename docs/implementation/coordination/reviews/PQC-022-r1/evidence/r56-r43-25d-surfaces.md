@@ -211,3 +211,46 @@ Nguyên nhân hai ca đỏ còn lại — đều là **lỗi viết test**, sử
    `lesson_card_mq1_01` (đỉnh) → deep link → `open_playground` (đáy) để mỗi key
    được kiểm lúc còn được build. Không thêm `ensureVisible` giả, không
    `pumpAndSettle` (hub có controller vô hạn), không nới timeout.
+
+### `014c078` — ordinary còn MỘT ca, render vẫn `9/10`; thêm kênh chẩn đoán
+
+Bằng chứng từ check-run của `014c078638d3a747df08df79d53886e29209fc38`:
+
+* `PQC-020 focused gate evidence`: **success**, `Formatted 13 files (0 changed)`.
+* ordinary: `460 passed, 1 failed (461 total)`; `Failing tests:` nêu đúng MỘT ca
+  `Main Quest journey r43 openLessonId vẫn highlight + các key cũ còn nguyên`
+  ⇒ hai lần sửa trước (seal/bar không lặp tên, `_ChapterHeader` dùng lại, cuộn
+  đúng thứ tự) đã ăn: 12/13 ca của file tôi xanh, gồm cả ca
+  `cấu hình render 390×844 dpr3 ở 1.0× và 2.0×`.
+* `PyQuest check | failure` chỉ vì `flutter test` của chính nó gặp cùng ca đỏ đó;
+  `### analyze.txt` của nó ghi `13 issues found` và **không còn dòng nào thuộc
+  file PQC-022** ⇒ không còn warning/error do tôi.
+* Attribution của ca render: tại `561d0f6e5f4f63c9cf38ce35928b8cb481fc1f8a`
+  (tip ngay trước PQC-022) `PQC-011 r49 exact gate counts` fail vì
+  `ordinary suite, Ordinary suite test output: FAIL: 440 passed, 1 failed (441 total)`
+  và **render không nằm trong danh sách fail** ⇒ render 10/10 ở đó, nên ca render
+  đỏ hiện tại do thay đổi của PQC-022 gây ra, không phải có trước. Đây là kết luận
+  từ SỐ LIỆU gate của hai SHA, không phải suy từ nội dung diff.
+* Không có đường nào khác để đọc log render: artifact `pqc011-r49-…-diagnostics`
+  (38 KB) tồn tại nhưng host blob của GitHub Actions không nằm trong danh sách
+  mạng được phép ⇒ `gh run download` trả EOF; các check-run `preview|…` là của
+  PQC-023 (board), không liên quan; `PQC-011 r49 exact gate counts` chỉ công bố
+  4 log tail (isolated / sequence / integration / ordinary), **không có render**.
+
+Để chu kỳ sau có bằng chứng thay vì đoán, commit này thêm hai kênh chẩn đoán:
+
+1. `cấu hình render …` gọi lại đúng `capture()` của harness: bọc cây trong
+   `RepaintBoundary` + `boundary.toImage(pixelRatio: 1.5)` +
+   `image.toByteData(png)` trong `tester.runAsync`, assert không lỗi. Đây là
+   khác biệt cuối cùng còn lại giữa ca thường và ca render.
+2. Group mới `Render A replica` dựng LẠI TRÌNH TỰ của `render A: first launch`
+   trên app thật (`intro_seen='0'`, `pumpRoot` 2.0×, 3× `welcome_next`,
+   `directory_place_main_quest` + `hubTextScale ≈ 32`, đổi `main_map_mode_village`,
+   về 1.0×, `map_label_bug_hunter`, đọc `getRect(sheet_go_lesson)` so với chiều
+   cao viewport rồi `tap` **trực tiếp không `ensureVisible`** như harness,
+   `expect(MainQuestHomeScreen, findsOneWidget)`). Nếu ca này đỏ thì đó chính là
+   ca render đỏ, và tên ca trong `Failing tests:` đủ để chỉ ra bước nào.
+
+Hồ sơ cũng ghi lại một lỗi nhỏ không ảnh hưởng code: message của commit
+`014c078` có lẫn hai ký tự CJK (`步进`) do tôi gõ sai; không sửa lại lịch sử vì
+không force-push.

@@ -19,6 +19,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/app/activity.dart';
@@ -251,6 +252,10 @@ Color cardBorderColorFor(WidgetTester tester, String lessonId) {
   return border.top.color;
 }
 
+
+/// Key của `RepaintBoundary` mô phỏng `_captureKey` trong `render_screens_test
+/// .dart` để gọi `toImage` trên đúng loại layer mà harness dùng.
+final GlobalKey captureKey = GlobalKey();
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -782,7 +787,10 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('openLessonId vẫn highlight + các key cũ còn nguyên', (
+    // Tách LÀM HAI CA để `Failing tests:` trong log maintenance chỉ đúng nửa nào
+    // đỏ: CI không công bố trace của ca này (bị cắt khỏi 18000 ký tự cuối), nên
+    // tên ca chính là kênh bằng chứng duy nhất còn lại.
+    testWidgets('openLessonId đặt highlight đúng thẻ, không lan sang thẻ bên', (
       WidgetTester tester,
     ) async {
       usePhone(tester, logical: const Size(360, 640), dpr: 2.0);
@@ -797,9 +805,6 @@ void main() {
       );
       await pumpFor(tester, const Duration(milliseconds: 800));
 
-      // Thứ tự có ý nghĩa: thẻ ở đỉnh còn build thì mới kiểm được, rồi mới cuộn
-      // xuống dần; kiểm `open_playground` cuối cùng vì lúc đó thẻ trên đã bị thải.
-      expect(keyOf('lesson_card_mq1_01'), findsOneWidget, reason: 'mất key hợp đồng cũ lesson_card_mq1_01');
       final Finder deepLink = keyOf('lesson_card_mq1_03');
       await scrollTo(tester, deepLink);
       expect(deepLink, findsOneWidget, reason: 'mất key hợp đồng cũ lesson_card_mq1_03');
@@ -819,10 +824,41 @@ void main() {
         isNot(kBerryBorder),
         reason: 'viền berry chỉ xuất hiện trên bài được deep-link',
       );
-      expect(find.byType(LessonScreen), findsNothing);
+      expect(
+        find.byType(LessonScreen),
+        findsNothing,
+        reason: 'r43: openLessonId chỉ highlight, KHÔNG tự mở bài',
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('các key hợp đồng cũ còn trên màn Main Quest (lesson_card_*, open_playground)', (
+      WidgetTester tester,
+    ) async {
+      usePhone(tester, logical: const Size(360, 640), dpr: 2.0);
+      final AppServices services = (await tester.runAsync(createServices))!;
+      addTearDown(services.dispose);
+      await tester.pumpWidget(
+        appHome(
+          services,
+          const MainQuestHomeScreen(openLessonId: 'mq1_03'),
+          textScale: 2.0,
+        ),
+      );
+      await pumpFor(tester, const Duration(milliseconds: 800));
+
+      expect(
+        keyOf('lesson_card_mq1_01'),
+        findsOneWidget,
+        reason: 'mất key hợp đồng cũ lesson_card_mq1_01',
+      );
       final Finder playground = keyOf('open_playground');
       await scrollTo(tester, playground);
-      expect(playground, findsOneWidget, reason: 'mất key hợp đồng cũ open_playground');
+      expect(
+        playground,
+        findsOneWidget,
+        reason: 'mất key hợp đồng cũ open_playground',
+      );
       expect(tester.takeException(), isNull);
     });
 
@@ -841,9 +877,42 @@ void main() {
         addTearDown(services.dispose);
 
         await tester.pumpWidget(
-          appHome(services, const MainQuestHomeScreen(), textScale: scale),
+          RepaintBoundary(
+            key: captureKey,
+            child: appHome(
+              services,
+              const MainQuestHomeScreen(),
+              textScale: scale,
+            ),
+          ),
         );
         await pumpFor(tester, const Duration(milliseconds: 600));
+        // `capture()` của harness render gọi toImage(pixelRatio: 1.5) trên
+        // RepaintBoundary gốc. Đó là khác biệt còn lại giữa ca render và các ca
+        // thường của tôi, nên phải gọi lại đúng lệnh đó; nếu chỗ này xanh mà
+        // render vẫn 9/10 thì ca đỏ nằm ở bước điều hướng của harness, không
+        // phải ở surface của PQC-022.
+        final Object? captureError = await tester.runAsync(() async {
+          try {
+            final RenderRepaintBoundary boundary = captureKey
+                .currentContext!
+                .findRenderObject()! as RenderRepaintBoundary;
+            final ui.Image image = await boundary.toImage(pixelRatio: 1.5);
+            final ByteData? bytes = await image.toByteData(
+              format: ui.ImageByteFormat.png,
+            );
+            return bytes == null ? 'null png bytes' : null;
+          } catch (err) {
+            return err;
+          }
+        });
+        // ignore: avoid_print
+        print('PQC022-RENDER capture ${scale}x err=$captureError');
+        expect(
+          captureError,
+          isNull,
+          reason: 'capture() kiểu harness render lỗi ở $scale×',
+        );
         final Object? mqPending = tester.takeException();
         // ignore: avoid_print
         print('PQC022-RENDER mq ${scale}x exc=$mqPending');
@@ -907,5 +976,75 @@ void main() {
         await pumpFor(tester, const Duration(milliseconds: 400));
       }
     });
+  });
+
+  // Chuỗi thao tác của `render A: first launch` — ca render duy nhất chạm cả
+  // welcome + hub + sheet khóa, cũng là ca bị nghi của `9 passed, 1 failed`.
+  // Làm lại đúng trình tự đó trong ordinary suite là kênh bằng chứng duy nhất
+  // còn mở, vì CI không công bố log render.
+  group('Render A replica', () {
+    testWidgets(
+      'hub 2.0x tu bat directory, ve 1.0x roi sheet khoa van vao duoc bai hoc',
+      (WidgetTester tester) async {
+        usePhone(tester, logical: const Size(390, 844), dpr: 3.0);
+        final AppServices services = (await tester.runAsync(createServices))!;
+        addTearDown(services.dispose);
+        await tester.runAsync(
+          () => services.settings.setRaw('intro_seen', '0'),
+        );
+
+        await pumpRoot(tester, services, scale: 2.0);
+        for (var i = 0; i < 3; i++) {
+          await tester.tap(keyOf('welcome_next'));
+          await pumpFor(tester, const Duration(milliseconds: 500));
+        }
+        expect(find.byType(MainMapScreen), findsOneWidget);
+        expect(
+          keyOf('directory_place_main_quest'),
+          findsOneWidget,
+          reason: '2x hệ thống phải tự bật directory ở root thật (như render A)',
+        );
+        final double hubScale = MediaQuery.textScalerOf(
+          tester.element(find.byType(MainMapScreen)),
+        ).scale(16);
+        // ignore: avoid_print
+        print('PQC022-RENDER-A hubScale=$hubScale');
+        expect(
+          hubScale,
+          closeTo(32, 0.01),
+          reason: 'hub phải nhận scaler 32px trên 16px ở 2.0×',
+        );
+
+        await tester.tap(keyOf('main_map_mode_village'));
+        await pumpFor(tester, const Duration(milliseconds: 500));
+        await pumpRoot(tester, services, scale: 1.0);
+        expect(find.byType(MainMapScreen), findsOneWidget);
+
+        await tester.ensureVisible(keyOf('map_label_bug_hunter').first);
+        await pumpFor(tester, const Duration(milliseconds: 400));
+        await tester.tap(keyOf('map_label_bug_hunter'), warnIfMissed: false);
+        await pumpFor(tester, const Duration(milliseconds: 900));
+        expect(find.byType(ActivitySheet), findsOneWidget);
+        final Rect cta = tester.getRect(keyOf('sheet_go_lesson'));
+        final double vpHeight =
+            tester.view.physicalSize.height / tester.view.devicePixelRatio;
+        // ignore: avoid_print
+        print('PQC022-RENDER-A cta=${cta.top}..${cta.bottom} vp=$vpHeight');
+        expect(
+          cta.bottom <= vpHeight,
+          isTrue,
+          reason: 'sheet_go_lesson phải trong khung nhìn, nếu không tap() của harness hụt',
+        );
+        // Giống harness: tap TRỰC TIẾP, không ensureVisible, warnIfMissed mặc định.
+        await tester.tap(keyOf('sheet_go_lesson'));
+        await pumpFor(tester, const Duration(milliseconds: 1400));
+        expect(
+          find.byType(MainQuestHomeScreen),
+          findsOneWidget,
+          reason: 'sheet khóa của bug_hunter phải dẫn tới bài học prerequisite',
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }
