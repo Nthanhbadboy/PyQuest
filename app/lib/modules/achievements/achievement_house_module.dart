@@ -126,14 +126,75 @@ class _AchievementHouseScreenState extends State<AchievementHouseScreen> {
             children: [
               PQTopBar(
                 title: 'Nhà Thành Tích',
-                subtitle: '${AppScope.of(context).achievements.unlocked.length}/${achievementCatalog.length} huy hiệu',
+                subtitle:
+                    '${AppScope.of(context).achievements.unlocked.length}/${achievementCatalog.length} huy hiệu',
                 tone: PQTone.sun,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+                child: Container(
+                  key: const ValueKey('achievement_25d_scene'),
+                  height: 88,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: PQColors.ink, width: 2.4),
+                    boxShadow: [
+                      BoxShadow(
+                        color: PQTone.sun.depth,
+                        offset: const Offset(0, 3),
+                        blurRadius: 0,
+                      ),
+                    ],
+                    image: const DecorationImage(
+                      image: AssetImage(
+                        'assets/images/achievement_room_r39.webp',
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black.withValues(alpha: 0.10),
+                                Colors.black.withValues(alpha: 0.56),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 12,
+                        right: 12,
+                        bottom: 8,
+                        child: Text(
+                          'Phòng trưng bày 2.5D · Tủ huy hiệu & Kỷ niệm',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: PQText.small.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(
                 height: 54,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                   children: [
                     for (var i = 0; i < rooms.length; i++)
                       Padding(
@@ -147,14 +208,29 @@ class _AchievementHouseScreenState extends State<AchievementHouseScreen> {
                             decoration: BoxDecoration(
                               color: _room == i ? PQColors.sun : PQColors.cream,
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: PQColors.ink, width: _room == i ? 2.8 : 2),
+                              border: Border.all(
+                                color: PQColors.ink,
+                                width: _room == i ? 2.8 : 2,
+                              ),
                             ),
-                            child: Row(
-                              children: [
-                                Icon(rooms[i].$3 ? rooms[i].$2 : Icons.lock_rounded, size: 20, color: PQColors.ink),
-                                const SizedBox(width: 6),
-                                Text(rooms[i].$1, style: PQText.label.copyWith(fontSize: 15)),
-                              ],
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    rooms[i].$3
+                                        ? rooms[i].$2
+                                        : Icons.lock_rounded,
+                                    size: 20,
+                                    color: PQColors.ink,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    rooms[i].$1,
+                                    style: PQText.label.copyWith(fontSize: 15),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -213,17 +289,19 @@ class _BadgeCabinet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final unlocked = AppScope.of(context).achievements.unlocked;
-    return LayoutBuilder(builder: (context, c) {
-      final cols = c.maxWidth > 520 ? 4 : 3;
-      return GridView.builder(
-        padding: const EdgeInsets.fromLTRB(14, 8, 14, 24),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: cols,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 0.68,
-        ),
-        itemCount: achievementCatalog.length,
+    final bigText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+    return LayoutBuilder(
+      builder: (context, c) {
+        final cols = c.maxWidth > 520 ? 4 : (bigText ? 2 : 3);
+        return GridView.builder(
+          padding: const EdgeInsets.fromLTRB(14, 8, 14, 24),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: cols,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            childAspectRatio: bigText ? 0.56 : 0.68,
+          ),
+          itemCount: achievementCatalog.length,
         itemBuilder: (context, i) {
           final a = achievementCatalog[i];
           final got = unlocked.containsKey(a.id);

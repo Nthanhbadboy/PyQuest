@@ -126,9 +126,75 @@ class _RobotMazeHomeScreenState extends State<RobotMazeHomeScreen> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                   children: [
+                    Container(
+                      key: const ValueKey('maze_25d_scene'),
+                      height: 148,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(color: PQColors.ink, width: 2.6),
+                        boxShadow: [
+                          BoxShadow(
+                            color: PQTone.grass.depth,
+                            offset: const Offset(0, 4),
+                            blurRadius: 0,
+                          ),
+                        ],
+                        image: const DecorationImage(
+                          image: AssetImage(
+                            'assets/images/maze_trail_r45.webp',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(19),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black.withValues(alpha: 0.08),
+                                    Colors.black.withValues(alpha: 0.58),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            right: 12,
+                            bottom: 8,
+                            child: Image.asset(
+                              'assets/images/robo_token_r50.png',
+                              width: 72,
+                              height: 72,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          Positioned(
+                            left: 14,
+                            right: 92,
+                            bottom: 10,
+                            child: Text(
+                              'Khu vườn mê cung 2.5D · ${levels.length} thử thách',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: PQText.small.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     const SpeechBubble(
                       character: CharacterId.robo,
-                      text: 'Mỗi mũi tên là một lệnh. Xếp đúng thứ tự, Robo sẽ đi đúng đường. Sẵn sàng chưa?',
+                      text:
+                          'Mỗi mũi tên là một lệnh. Xếp đúng thứ tự, Robo sẽ đi đúng đường. Sẵn sàng chưa?',
                       portraitSize: 78,
                     ),
                     const SizedBox(height: 12),
@@ -338,17 +404,39 @@ class _WorkshopCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Container(
+            key: const ValueKey('maze_workshop_25d_banner'),
+            height: 112,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: PQColors.ink, width: 2.2),
+              image: const DecorationImage(
+                image: AssetImage('assets/images/maze_workbench_r46.webp'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
           Row(
             children: [
-              const CharacterView(id: CharacterId.robo, size: 70, mood: Mood.thinking),
+              const CharacterView(
+                id: CharacterId.robo,
+                size: 70,
+                mood: Mood.thinking,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Xưởng Mê Cung', style: PQText.h2.copyWith(color: PQColors.grapeDeep)),
-                    Text('Chế độ sáng tạo: tự vẽ mê cung, đặt luật chơi, rồi điều khiển Robo bằng khối lệnh hoặc code Python.',
-                        style: PQText.body.copyWith(fontSize: 15)),
+                    Text(
+                      'Xưởng Mê Cung',
+                      style: PQText.h2.copyWith(color: PQColors.grapeDeep),
+                    ),
+                    Text(
+                      'Chế độ sáng tạo: tự vẽ mê cung, đặt luật chơi, rồi điều khiển Robo bằng khối lệnh hoặc code Python.',
+                      style: PQText.body.copyWith(fontSize: 15),
+                    ),
                   ],
                 ),
               ),

@@ -65,9 +65,14 @@ Chỉ đạo trực tiếp của người dùng: *"Đổi chiến thuật mới 
    - Viết test kiểm chứng ở `app/test/r1b_and_chapter_25d_test.dart`, push với
      `[pqc020-check] [pqc011-verify]` trên `arena/4253d4f1-pyquest`.
 
-### Nhiệm vụ song song của Lead / Co-Dev (`arena/84456d39-pyquest`) — Gói `PQC-023`
-- Trong khi CODE làm `PQC-022` (`activity_sheet.dart`, `main_map_screen.dart`,
-  `main_quest_module.dart`), Lead / Co-Dev sẽ code song song **Gói `PQC-023`**:
-  - **Robot Maze 2,5D (`app/lib/modules/robot_maze/**` — `r45`/`r46`/`r50`/`r51`/`r52`)**
-  - **Achievement House 2,5D (`app/lib/modules/achievements/**` — `r39`) & Bug Hunter 2,5D (`app/lib/modules/bug_hunter/**`)**
-- Hai bên hoàn toàn không chạm chung file runtime trong `PQC-022` và `PQC-023`.
+### Nhiệm vụ song song của Lead / Co-Dev (`arena/84456d39-pyquest`) — Gói `PQC-023` (ĐÃ HOÀN THÀNH)
+- Lead / Co-Dev đã code xong và kiểm chứng CI xanh cho **Gói `PQC-023`** trên `arena/84456d39-pyquest`:
+  - **Robot Maze 2,5D (`app/lib/modules/robot_maze/robot_maze_module.dart`, `maze_workshop_screen.dart` — `r45`/`r46`/`r50`):**
+    - Tích hợp cảnh `assets/images/maze_trail_r45.webp` + `robo_token_r50.png` (`ValueKey('maze_25d_scene')`) và banner xưởng `assets/images/maze_workbench_r46.webp` (`ValueKey('maze_workshop_25d_banner')`).
+    - Nâng cấp `MazeWorkshopScreen` với `ValueKey('workshop_25d_badge')` và bố cục `Wrap` / `FittedBox` chống tràn ở `2.0×` textScale.
+  - **Achievement House 2,5D (`app/lib/modules/achievements/achievement_house_module.dart` — `r39`):**
+    - Tích hợp cảnh phòng trưng bày `assets/images/achievement_room_r39.webp` (`ValueKey('achievement_25d_scene')`) và lưới huy hiệu thích ứng `2.0×` textScale.
+  - **Bug Hunter 2,5D (`app/lib/modules/bug_hunter/bug_hunter_module.dart` — `r36`):**
+    - Tích hợp cảnh xưởng thám tử `assets/images/bug_workshop_r36.webp` (`ValueKey('bug_hunter_25d_scene')`) và header gói câu đố `Wrap` chống tràn ở `2.0×` textScale.
+  - **Widget test (`app/test/pqc023_25d_surfaces_test.dart`):** kiểm chứng cả 3 cụm màn hình ở `360×640` `2.0×` textScale.
+- Gói tiếp theo của Lead / Co-Dev (`PQC-024`): nâng cấp **Daily Quests & Energy 2,5D (`r41`)** + **Result Screen / Adventure Recap 2,5D (`r52`)** (`app/lib/modules/daily_quests/**`, `app/lib/modules/energy/**`, `app/lib/shared/widgets/result_screen.dart`).

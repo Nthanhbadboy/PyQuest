@@ -149,23 +149,88 @@ class _BugHunterHomeScreenState extends State<BugHunterHomeScreen> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                   children: [
+                    Container(
+                      key: const ValueKey('bug_hunter_25d_scene'),
+                      height: 140,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(color: PQColors.ink, width: 2.6),
+                        boxShadow: [
+                          BoxShadow(
+                            color: PQTone.grape.depth,
+                            offset: const Offset(0, 4),
+                            blurRadius: 0,
+                          ),
+                        ],
+                        image: const DecorationImage(
+                          image: AssetImage(
+                            'assets/images/bug_workshop_r36.webp',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(19),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black.withValues(alpha: 0.08),
+                                    Colors.black.withValues(alpha: 0.58),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left: 14,
+                            right: 14,
+                            bottom: 10,
+                            child: Text(
+                              'Xưởng thám tử 2.5D · Sửa $_bugs/${c.totalBugs} con bọ lỗi',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: PQText.small.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     const SpeechBubble(
                       character: CharacterId.bitsy,
-                      text: 'Meo! Mỗi câu đố là một chương trình có bọ lỗi. Bấm Chạy thử để xem chuyện gì xảy ra, chạm vào dòng có bọ rồi chọn cách sửa nhé!',
+                      text:
+                          'Meo! Mỗi câu đố là một chương trình có bọ lỗi. Bấm Chạy thử để xem chuyện gì xảy ra, chạm vào dòng có bọ rồi chọn cách sửa nhé!',
                       portraitSize: 74,
                     ),
                     const SizedBox(height: 10),
-                    ChunkyProgress(value: _bugs / c.totalBugs, color: PQColors.grape, height: 18),
+                    ChunkyProgress(
+                      value: _bugs / c.totalBugs,
+                      color: PQColors.grape,
+                      height: 18,
+                    ),
                     const SizedBox(height: 12),
                     for (final pack in c.packs) ...[
                       Padding(
                         padding: const EdgeInsets.only(top: 6, bottom: 8),
-                        child: Row(
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 6,
+                          alignment: WrapAlignment.spaceBetween,
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            Expanded(child: Text(pack.title, style: PQText.h3)),
+                            Text(pack.title, style: PQText.h3),
                             if (!_lessons.contains(pack.requiresLesson))
                               PillTag(
-                                label: 'Cần Bài ${s.mainQuest.byId(pack.requiresLesson)?.number ?? ''}',
+                                label:
+                                    'Cần Bài ${s.mainQuest.byId(pack.requiresLesson)?.number ?? ''}',
                                 color: PQColors.inkFaint,
                                 icon: Icons.lock_rounded,
                               ),
