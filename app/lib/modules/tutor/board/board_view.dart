@@ -591,7 +591,7 @@ class _TutorLayer extends StatelessWidget {
         body = Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFF8B693E), width: 1.4),
+            border: Border.all(color: const Color(0xFF8B693E)),
             borderRadius: BorderRadius.circular(6),
             color: const Color(0xFFFFF3CC),
           ),
@@ -661,7 +661,7 @@ class _TutorLayer extends StatelessWidget {
         body = Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFF2E6F56), width: 1.6),
+            border: Border.all(color: const Color(0xFF2E6F56)),
             borderRadius: BorderRadius.circular(6),
             color: const Color(0xFFEAF7F0),
           ),
