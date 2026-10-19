@@ -90,6 +90,7 @@ jobs:
         run: |
           set -euo pipefail
           dart format --output=none --set-exit-if-changed \
+            lib/app/pyquest_app.dart \
             lib/modules/main_map/main_map_screen.dart \
             lib/modules/main_map/main_map_scene.dart \
             lib/modules/main_map/main_map_scene_geometry.dart \
@@ -101,6 +102,7 @@ jobs:
             test/render/render_screens_test.dart \
             test/journey_widget_test.dart \
             test/lesson_route_regression_test.dart \
+            test/main_map_app_root_test.dart \
             2>&1 | tee "$RUNNER_TEMP/pqc020-format-check.log"
 
       - name: Run focused R1-A and existing map-geometry tests
@@ -115,6 +117,7 @@ jobs:
             test/main_map_scene_route_test.dart \
             test/activity_sheet_thumbnails_test.dart \
             test/lesson_route_regression_test.dart \
+            test/main_map_app_root_test.dart \
             2>&1 | tee "$RUNNER_TEMP/pqc020-focused-tests.log"
 
       - name: Verify final source cleanliness
@@ -190,6 +193,7 @@ jobs:
           successful = all(value == 'success' for value in outcomes.values()) and test_count > 0 and failed_count == 0
 
           source_files = [
+              'app/lib/app/pyquest_app.dart',
               'app/lib/modules/main_map/main_map_screen.dart',
               'app/lib/modules/main_map/main_map_scene.dart',
               'app/lib/modules/main_map/main_map_scene_geometry.dart',
@@ -204,6 +208,7 @@ jobs:
               'app/test/render/render_screens_test.dart',
               'app/test/journey_widget_test.dart',
               'app/test/lesson_route_regression_test.dart',
+              'app/test/main_map_app_root_test.dart',
           ]
           archive = io.BytesIO()
           with tempfile.TemporaryDirectory(prefix='pqc020-format-preview-') as temporary:
