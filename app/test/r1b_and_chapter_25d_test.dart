@@ -491,7 +491,7 @@ void main() {
         await tester.scrollUntilVisible(
           cta,
           120,
-          scrollable: find.byType(Scrollable).last,
+          scrollable: find.byType(Scrollable).first,
         );
         await pumpFor(tester, const Duration(milliseconds: 200));
         await tester.tap(cta);
@@ -832,9 +832,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('các key hợp đồng cũ còn trên màn Main Quest (lesson_card_*, open_playground)', (
-      WidgetTester tester,
-    ) async {
+    // Ba ca tách rời (tên ca trong `Failing tests:` là kênh duy nhất còn lại để
+    // chỉ ra bước đỏ, vì CI cắt trace của file này khỏi log tail).
+    Future<AppServices> bootMq2x(WidgetTester tester) async {
       usePhone(tester, logical: const Size(360, 640), dpr: 2.0);
       final AppServices services = (await tester.runAsync(createServices))!;
       addTearDown(services.dispose);
@@ -846,19 +846,72 @@ void main() {
         ),
       );
       await pumpFor(tester, const Duration(milliseconds: 800));
+      return services;
+    }
 
+    testWidgets('key hợp đồng cũ lesson_card_mq1_01 còn trên Main Quest 2.0x', (
+      WidgetTester tester,
+    ) async {
+      await bootMq2x(tester);
       expect(
         keyOf('lesson_card_mq1_01'),
         findsOneWidget,
         reason: 'mất key hợp đồng cũ lesson_card_mq1_01',
       );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('cuộn tới đáy Main Quest 2.0x thì open_playground tới được', (
+      WidgetTester tester,
+    ) async {
+      await bootMq2x(tester);
+      // Đếm Scrollable TRƯỚC khi assert: nếu hub/nested list có hơn một
+      // `Scrollable` thì `Scrollable.first` trong `scrollTo` là sai chỗ.
+      final int scrollables = find.byType(Scrollable).evaluate().length;
+      // ignore: avoid_print
+      print(
+        'PQC022-KEYS scrollables=$scrollables '
+        'top=${keyOf('lesson_card_mq1_01').evaluate().length} '
+        'pg=${keyOf('open_playground').evaluate().length}',
+      );
       final Finder playground = keyOf('open_playground');
-      await scrollTo(tester, playground);
+      await tester.scrollUntilVisible(
+        playground,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await pumpFor(tester, const Duration(milliseconds: 250));
       expect(
         playground,
         findsOneWidget,
         reason: 'mất key hợp đồng cũ open_playground',
       );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Main Quest 2.0x không để lại exception sau khi dựng 12 thẻ', (
+      WidgetTester tester,
+    ) async {
+      await bootMq2x(tester);
+      for (final String id in <String>[
+        'mq1_01',
+        'mq1_04',
+        'mq1_08',
+        'mq1_12',
+      ]) {
+        final Finder card = keyOf('lesson_card_$id');
+        await tester.scrollUntilVisible(
+          card,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await pumpFor(tester, const Duration(milliseconds: 250));
+        expect(
+          card,
+          findsOneWidget,
+          reason: 'thẻ $id không tới được ở 2.0× (360×640)',
+        );
+      }
       expect(tester.takeException(), isNull);
     });
 
