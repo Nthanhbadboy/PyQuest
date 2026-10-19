@@ -47,7 +47,7 @@ void main() {
     expect(find.text('Chào mừng tới Đảo Khởi Đầu!'), findsNothing);
 
     // The map shows every place.
-    for (final name in ['Tháp Python', 'Mê Cung Robo', 'Núi Lửa Pip', 'Đài Thiên Văn', 'Xưởng Bitsy', 'Nhà Thành Tích']) {
+    for (final name in ['Tháp Python', 'Mê Cung Robo', 'Núi Lửa', 'Đài Thiên Văn', 'Xưởng Bitsy', 'Nhà Thành Tích']) {
       expect(find.text(name), findsWidgets, reason: name);
     }
 

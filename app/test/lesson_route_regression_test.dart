@@ -10,8 +10,9 @@
 // LessonScreen bằng chính mã nguồn app, với hai fixture người chơi khác nhau.
 //
 // Phạm vi: chỉ app/test/**. Không sửa app/lib, không asset mới, không emulator.
-// PQC-008 (Semantics/focus + thiết bị) vẫn còn nguyên; nhóm "characterization"
-// cuối file ghi đúng những gì code hiện có/thiếu, không suy ra hành vi thiết bị.
+// PQC-008 (Semantics/focus + thiết bị) vẫn còn nguyên: nhóm cuối file từ PQC-020 r2
+// kiểm hành vi bàn phím/semantics THẬT của hub R1-A ở mức cây widget, và ghi rõ ở tên
+// test rằng thiết bị thật (TalkBack, thứ tự focus của ROM) chưa phải kết luận ở đây.
 library;
 
 // `avoid_dynamic_calls`: `SemanticsProperties` không được export từ material.dart của
@@ -24,9 +25,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pyquest/app/activity_registry.dart';
 import 'package:pyquest/app/app_services.dart';
 import 'package:pyquest/app/pyquest_app.dart';
 import 'package:pyquest/core/events.dart';
+import 'package:pyquest/l10n/generated/app_localizations.dart';
+import 'package:pyquest/modules/main_map/activity_sheet.dart';
+import 'package:pyquest/modules/main_map/main_map_scene.dart';
 import 'package:pyquest/modules/main_quest/lesson_screen.dart';
 import 'package:pyquest/modules/main_quest/main_quest_module.dart';
 import 'package:pyquest/shared/theme/palette.dart';
@@ -46,8 +51,13 @@ const double kRouteDpr = 3.0;
 /// `EventTypes.lessonCompleted` cho hub — giống cách `lesson_complete_screen` làm
 /// khi trẻ học xong — không INSERT tay, không fake `completedLessons()`.
 ///
-/// Không dùng `pumpAndSettle` trên Main Map: `_ambient` là
-/// `AnimationController..repeat()` (main_map_screen.dart:38) nên cây không bao giờ
+/// Hub R1-A lấy tên place từ `placeName(l10n, id)`, nên test nào so tên đọc được
+/// trên marker phải biết app đang ở locale nào. Widget-test host báo `en-US`;
+/// `systemLocalesReader` dưới đây pin `vi` để mọi case trong file này xác định,
+/// cùng kiểu inject đã duyệt cho journey ở PQC-020 r1.
+///
+/// Không dùng `pumpAndSettle` trên Main Map: app còn các controller chạy vô hạn
+/// (logo splash `pyquest_app.dart:169`, `characters.dart:96`) nên cây không bao giờ
 /// "settle"; bơm số khung cố định như harness render.
 Future<AppServices> boot(WidgetTester tester, {List<String> lessonsDone = const <String>[]}) async {
   final FakeClock clock = FakeClock(DateTime(2026, 10, 16, 9));
@@ -72,10 +82,14 @@ Future<AppServices> boot(WidgetTester tester, {List<String> lessonsDone = const 
   tester.view.devicePixelRatio = kRouteDpr;
   tester.view.physicalSize = Size(kRouteViewport.width * kRouteDpr, kRouteViewport.height * kRouteDpr);
   addTearDown(tester.view.reset);
-  await tester.pumpWidget(PyQuestApp(servicesFactory: (_) async => s, minSplash: Duration.zero));
+  await tester.pumpWidget(PyQuestApp(
+    servicesFactory: (_) async => s,
+    systemLocalesReader: () => const <Locale>[Locale('vi')],
+    minSplash: Duration.zero,
+  ));
   await pumpFor(tester, const Duration(seconds: 2));
-  // Nạp nền đảo + thumbnail thật: landmark được đặt theo khung ảnh, nếu ảnh chưa
-  // nạp thì hình học tap không còn giống trên thiết bị.
+  // Nạp đúng nền hub mà R1-A đang hiển thị + thumbnail thật: landmark được đặt theo
+  // khung ảnh, nếu ảnh chưa nạp thì hình học tap không còn giống trên thiết bị.
   await tester.runAsync(() async {
     final BuildContext context = tester.element(find.byType(Scaffold).first);
     for (final String asset in kMapAssets) {
@@ -87,7 +101,7 @@ Future<AppServices> boot(WidgetTester tester, {List<String> lessonsDone = const 
 }
 
 const List<String> kMapAssets = <String>[
-  'assets/images/island_map.webp',
+  'assets/images/village_r53.webp',
   'assets/images/thumb_maze.webp',
   'assets/images/thumb_tower.webp',
   'assets/images/thumb_volcano.webp',
@@ -300,65 +314,107 @@ void main() {
     });
   });
 
-  group('characterization những gì code đang có/không có (chưa phải kết luận thiết bị)', () {
-    testWidgets('characterization keyboard: TỪNG lần Tab đều không đổi focus (rev 4 §V1)',
+  group('bàn phím + semantics của hub R1-A (mức cây widget; thiết bị vẫn thuộc PQC-008)', () {
+    testWidgets('keyboard: Tab/Shift+Tab đi qua sáu marker theo registry, Enter/Space mở đúng sheet, Back trả focus',
         (WidgetTester tester) async {
       final AppServices s = await boot(tester);
-      // rev 4 §V1 sửa đúng một lỗi phương pháp của tôi: bản cũ chỉ đối chiếu focus **sau**
-      // vòng 6 lần, nên một chuỗi 6 điểm đi qua 6 node rồi quay về node ban đầu vẫn "xanh".
-      // Từ giờ assertion nằm ở **mỗi** lần Tab (cả lúc giữ phím lẫn sau khi nhả), và có
-      // trace in ra log để đọc được trong CI mà không phải đoán.
-      final FocusNode? baseline = FocusManager.instance.primaryFocus;
-      final List<String> trace = <String>[];
-      for (var i = 0; i < 6; i++) {
-        // Chữ ký thật của SDK (3 vòng CI đỏ đã dạy, EV-ID-018): `sendKeyDownEvent` nhận
-        // một positional `LogicalKeyboardKey`; `usbHidUsage` thuộc PhysicalKeyboardKey.
-        await tester.sendKeyDownEvent(LogicalKeyboardKey.tab);
-        expect(HardwareKeyboard.instance.isLogicalKeyPressed(LogicalKeyboardKey.tab), isTrue,
-            reason: 'Tab #${i + 1}: sự kiện không được ghi nhận là Tab -> mọi kết luận keyboard bên dưới vô nghĩa');
-        final FocusNode? afterDown = FocusManager.instance.primaryFocus;
-        await tester.sendKeyUpEvent(LogicalKeyboardKey.tab);
-        await tester.pump();
-        final FocusNode? afterUp = FocusManager.instance.primaryFocus;
-        expect(afterDown, same(baseline),
-            reason: 'Tab #${i + 1} lúc giữ phím đã đổi focus node: baseline lệch ngay từ lần đầu');
-        expect(afterUp, same(baseline),
-            reason: 'Tab #${i + 1} đã đổi focus node -> landmark đã có target bàn phím, phải cập nhật tài liệu + PQC-008');
-        trace.add('#${i + 1} down=${identical(afterDown, baseline) ? 'giu-nguyen' : 'DOI'}'
-            ' up=${identical(afterUp, baseline) ? 'giu-nguyen' : 'DOI'}');
+      final List<String> events = recordEvents(s);
+      final int energyBefore = s.energy.current;
+      expect(energyBefore, greaterThan(0), reason: 'fixture phải còn năng lượng thì phép thử mới có nghĩa');
+
+      // FocusNode lấy từ CHÍNH nút map app đã tạo: `_placeFocus` của screen
+      // (main_map_screen.dart:48-51) được đưa vào `_PlaceButton` và gán cho
+      // TextButton của nó. Test không dựng node riêng và không tự bấm hộ.
+      FocusNode placeNode(String id) {
+        final Finder button = find.descendant(
+          of: find.byKey(ValueKey<String>('map_label_$id')),
+          matching: find.byType(TextButton),
+        );
+        return tester.widget<TextButton>(button).focusNode!;
       }
-      expect(tester.takeException(), isNull);
-      // Tab là **traversal**, không phải activation: sheet không mở sau 6 lần Tab KHÔNG
-      // chứng minh activation hỏng. Phần Enter dưới đây cũng chỉ chứng minh một việc ở mức
-      // cây widget: không có focus target nào để kích hoạt. Đo thật (TalkBack, thứ tự focus,
-      // activation trên landmark) thuộc PQC-008 và cần thiết bị — gate vẫn đóng.
-      expect(find.byKey(const Key('sheet_go_lesson')), findsNothing);
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.enter);
-      expect(tester.takeException(), isNull, reason: 'Enter không được ném exception khi primaryFocus là scope');
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.enter);
+
+      final List<String> ids = activityRegistry.map((module) => module.def.id).toList();
+      expect(ids, hasLength(6), reason: 'hub đi theo đúng thứ tự activityRegistry');
+      final List<FocusNode> nodes = ids.map(placeNode).toList();
+      expect(nodes.toSet(), hasLength(6), reason: 'sáu place là sáu focus node khác nhau');
+
+      // CHỈ đặt focus khởi đầu MỘT lần; từ đây mọi bước dịch chuyển là phím thật.
+      nodes.first.requestFocus();
       await tester.pump();
-      expect(find.byKey(const Key('sheet_go_lesson')), findsNothing,
-          reason: 'Enter không mở sheet vì landmark chưa có Focus target, không phải vì Enter bị vô hiệu');
-      // Rev 4 §V1 xin "ghi sequence/baseline rõ". In ra log **không** đủ: `test.txt` trong
-      // báo cáo check-run bị cắt giữa (run 38897292836 xác nhận dòng print này không tồn tại
-      // trong report, dù test xanh). Nên sequence phải thành **assertion**, để CI `+N` và tên
-      // test là bằng chứng đọc được, không phụ thuộc vận may cắt log.
-      expect(trace, hasLength(6));
-      expect(trace, everyElement(contains('giu-nguyen')),
-          reason: 'mọi lần Tab phải để nguyên focus; nếu hàng nào DOI thì PQC-008 đã có target bàn phím ở landmark');
+      expect(FocusManager.instance.primaryFocus, same(nodes.first), reason: 'khởi đầu phải ở ${ids.first}');
+
+      // Tab là traversal, không phải activation: assert TỪNG bước một theo registry,
+      // không chỉ so đầu/cuối vòng (bài học phương pháp rev 4 §V1 vẫn giữ nguyên).
+      for (int i = 0; i + 1 < nodes.length; i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        expect(FocusManager.instance.primaryFocus, same(nodes[i + 1]),
+            reason: 'Tab #${i + 1} phải sang ${ids[i + 1]}, không phải theo tọa độ ảnh trên map');
+      }
+      for (int i = nodes.length - 1; i > 0; i--) {
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+        await tester.pump();
+        expect(FocusManager.instance.primaryFocus, same(nodes[i - 1]),
+            reason: 'Shift+Tab ở ${ids[i]} phải lùi về ${ids[i - 1]}');
+      }
+      // Không giả định "đủ sáu Tab là wrap": hub còn header controls, nên bước cuối
+      // chỉ được kết luận là "tiến thêm đúng một node" — ở đây là robot_maze.
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      expect(FocusManager.instance.primaryFocus, same(nodes[1]), reason: 'Tab phải tiến thêm đúng một node: ${ids[1]}');
+
+      // Enter trên node đang focus mở sheet của CHÍNH place đó.
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await pumpFor(tester, const Duration(milliseconds: 700));
+      expect(find.byType(ActivitySheet), findsOneWidget, reason: 'Enter kích hoạt place đang focus');
+      expect(
+        find.descendant(of: find.byType(ActivitySheet), matching: find.text(activityRegistry[1].def.name)),
+        findsOneWidget,
+        reason: 'sheet mở ra phải là sheet của ${ids[1]}, không phải một sheet bất kỳ',
+      );
+
+      // Back đóng sheet; hub phải trả focus về đúng nút đã mở nó.
+      await tester.binding.handlePopRoute();
+      await pumpFor(tester, const Duration(milliseconds: 700));
+      expect(find.byType(ActivitySheet), findsNothing, reason: 'Back đóng activity sheet hiện hành');
+      expect(FocusManager.instance.primaryFocus, same(nodes[1]), reason: 'đóng sheet phải trả focus về ${ids[1]}');
+
+      // Space cùng hành vi. Mở rồi đóng sheet không được trừ năng lượng, không được
+      // phát activityOpened (event đó chỉ thuộc `openActivity`).
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await pumpFor(tester, const Duration(milliseconds: 700));
+      expect(find.byType(ActivitySheet), findsOneWidget, reason: 'Space kích hoạt place đang focus');
+      expect(
+        find.descendant(of: find.byType(ActivitySheet), matching: find.text(activityRegistry[1].def.name)),
+        findsOneWidget,
+        reason: 'Space cũng phải mở sheet của ${ids[1]}',
+      );
+      await tester.binding.handlePopRoute();
+      await pumpFor(tester, const Duration(milliseconds: 700));
+      expect(find.byType(ActivitySheet), findsNothing);
+      expect(FocusManager.instance.primaryFocus, same(nodes[1]));
+      expect(s.energy.current, energyBefore, reason: 'chỉ mở rồi đóng sheet thì năng lượng giữ nguyên');
+      expect(events, isNot(contains(EventTypes.activityOpened)),
+          reason: 'sheet không phải activityOpened; event đó chỉ do openActivity phát');
+      expect(tester.takeException(), isNull);
 
       await finishTest(tester, s);
     });
 
-    testWidgets('CTA của sheet khai báo button semantics; landmark trên map thì không', (WidgetTester tester) async {
+    testWidgets('semantics: CTA của sheet và sáu marker hub đều có button + tên localized (đo hub sau khi đóng sheet)',
+        (WidgetTester tester) async {
       final AppServices s = await boot(tester);
       await tapKey(tester, 'map_hit_bug_hunter');
 
       // ChunkyButton tự bọc Semantics(button:true, label:..., excludeSemantics:true)
       // → CTA trong sheet đã có role + tên. Ghi lại thành regression.
-      expect(semanticsProps(tester, find.byKey(const Key('sheet_go_lesson'))).where((dynamic p) => p.button == true),
-          isNotEmpty,
-          reason: 'CTA chính phải còn khai báo là nút trong semantics');
+      expect(
+        semanticsProps(tester, find.byKey(const Key('sheet_go_lesson'))).where((dynamic p) => p.button == true),
+        isNotEmpty,
+        reason: 'CTA chính phải còn khai báo là nút trong semantics',
+      );
       // Tên đọc được lấy từ chính nhãn nhìn thấy (Semantics của ChunkyButton dùng
       // lại widget.label), nên kiểm cả hai phía thay vì đoán API cây semantics.
       expect(
@@ -366,22 +422,36 @@ void main() {
         findsOneWidget,
       );
 
-      // `map_hit_*` là GestureDetector trần (main_map_screen.dart:161–168), không
-      // khai báo Semantics nào. Đây là khoảng trống ở MỨC CODE — review PQC-007
-      // nói đúng: chưa được suy thành "TalkBack không tới được", vì GestureDetector
-      // không tự loại semantics và `_MapLabel` (map:347–400) còn chứa Text.
-      // Cây semantics thật, duplicate node, Tab/Enter/Space và thiết bị vẫn là
-      // việc của PQC-008 (runtime=no, chưa được authorize).
-      for (final String id in <String>['bug_hunter', 'robot_maze', 'main_quest', 'catch_stars']) {
-        final Finder hit = find.byKey(ValueKey<String>('map_hit_$id'));
-        expect(hit, findsOneWidget, reason: 'landmark $id phải còn trên map');
-        expect(semanticsProps(tester, hit).where((dynamic p) => p.button == true), isEmpty,
-            reason: 'map_hit_$id bất ngờ khai báo button — PQC-008 đã được làm, phải cập nhật tài liệu');
-        // Nhãn nổi trên map vẫn là Text thường (map:347–400) nên vẫn có khả năng
-        // được đọc; đó là lý do KHÔNG được kết luận "TalkBack không tới được".
-        expect(find.descendant(of: find.byKey(ValueKey<String>('map_label_$id')), matching: find.byType(Text)),
-            findsWidgets, reason: 'landmark $id phải còn nhãn chữ để screen reader còn dữ liệu');
+      // Đóng sheet TRƯỚC khi đo hub: nền bị modal che không phải những gì người dùng
+      // đọc được trên map, nên đó không phải bằng chứng về semantics của hub.
+      await tester.binding.handlePopRoute();
+      await pumpFor(tester, const Duration(milliseconds: 700));
+      expect(find.byType(ActivitySheet), findsNothing, reason: 'phải đo hub khi không còn sheet che');
+
+      final AppLocalizations l10n =
+          AppLocalizations.of(tester.element(find.byKey(const ValueKey<String>('map_label_main_quest'))))!;
+      // `_PlaceButton` cố ý bỏ action khi còn loading (main_map_scene.dart:366-380),
+      // nên đo ở pha đó sẽ cho "bằng chứng" sai; chờ hub thật sự có dữ liệu đã.
+      expect(find.text(l10n.hubLoading), findsNothing, reason: 'sáu status phải về trước khi đo action');
+
+      // Cây semantics THẬT của `map_label_*` (thay cho suy luận từ wrapper `map_hit_*`):
+      // đúng một node button, mang tên localized mà R1-A đang hiển thị, có tap action,
+      // và nhãn nhìn thấy trùng tên đó.
+      for (final module in activityRegistry) {
+        final String id = module.def.id;
+        final Finder place = find.byKey(ValueKey<String>('map_label_$id'));
+        expect(place, findsOneWidget, reason: 'place $id phải còn key map_label_* trên hub');
+        final String name = placeName(l10n, id);
+        final List<dynamic> buttons = semanticsProps(tester, place).where((dynamic p) => p.button == true).toList();
+        expect(buttons, hasLength(1),
+            reason: 'map_label_$id phải có đúng MỘT node button: không thiếu, không nhân đôi bởi wrapper');
+        final dynamic marker = buttons.single;
+        expect(marker.label, contains(name), reason: 'node button của $id phải đọc được tên localized của hub');
+        expect(marker.onTap, isNotNull, reason: 'tap action phải gắn trên node semantics, không chỉ trên GestureDetector');
+        expect(find.descendant(of: place, matching: find.text(name)), findsWidgets,
+            reason: 'nhãn nhìn thấy và nhãn đọc được của $id phải cùng một tên');
       }
+      expect(tester.takeException(), isNull);
 
       await finishTest(tester, s);
     });
