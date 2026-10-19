@@ -892,7 +892,11 @@ void main() {
         // thường của tôi, nên phải gọi lại đúng lệnh đó; nếu chỗ này xanh mà
         // render vẫn 9/10 thì ca đỏ nằm ở bước điều hướng của harness, không
         // phải ở surface của PQC-022.
-        final Object? captureError = await tester.runAsync(() async {
+        // `runAsync<Object?>` sẽ suy ra T = Object từ nhánh `catch` rồi báo
+        // `return_of_invalid_type_from_closure` (chính là error đã làm đỏ
+        // 9940e6b). Nên đóng gói lỗi vào biến cục bộ, closure trả `void`.
+        Object? captureError = null;
+        await tester.runAsync<void>(() async {
           try {
             final RenderRepaintBoundary boundary = captureKey
                 .currentContext!
@@ -901,9 +905,9 @@ void main() {
             final ByteData? bytes = await image.toByteData(
               format: ui.ImageByteFormat.png,
             );
-            return bytes == null ? 'null png bytes' : null;
+            if (bytes == null) captureError = 'null png bytes';
           } catch (err) {
-            return err;
+            captureError = err;
           }
         });
         // ignore: avoid_print

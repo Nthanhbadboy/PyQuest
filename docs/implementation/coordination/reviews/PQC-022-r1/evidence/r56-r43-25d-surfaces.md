@@ -254,3 +254,17 @@ Bằng chứng từ check-run của `014c078638d3a747df08df79d53886e29209fc38`:
 Hồ sơ cũng ghi lại một lỗi nhỏ không ảnh hưởng code: message của commit
 `014c078` có lẫn hai ký tự CJK (`步进`) do tôi gõ sai; không sửa lại lịch sử vì
 không force-push.
+
+### `9940e6b` — một error `runAsync` nữa, và vì sao nó đắt
+
+`9940e6bbc367e875903600cc1e4f75ffc23a999b`: analyze báo
+`error • The returned type 'String?' isn't returnable from a 'Future<Object>'
+function, as required by the closure's context •
+test/r1b_and_chapter_25d_test.dart:904:20 • return_of_invalid_type_from_closure`
+⇒ file không compile ⇒ ordinary `443 passed, 1 failed (444 total)` với ca fail là
+`r1b_and_chapter_25d_test.dart: loading …`, tức 15 ca của tôi chạy 0 assert (kể
+cả hai ca chẩn đoán mới). Hệ quả cần nhớ: **mỗi error biên dịch trong file test
+nuốt luôn 16 dòng gate**, nên phải tự kiểm tra kiểu trả về của closure khi dùng
+`tester.runAsync` — ở đây suy ra `T = Object` từ nhánh `catch`, nên `return null`
+bị từ chối. Sửa: closure trả `void` (`runAsync<void>`) và ghi lỗi vào biến cục bộ
+`Object? captureError = null;`.
