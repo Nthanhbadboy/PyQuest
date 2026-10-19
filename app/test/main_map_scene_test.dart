@@ -239,7 +239,8 @@ void main() {
               expect(
                 placement.declaredOffset.dx,
                 0,
-                reason: 'va chạm chỉ được sửa theo trục Y, $id lệch ngang ở $cfg',
+                reason:
+                    'va chạm chỉ được sửa theo trục Y, $id lệch ngang ở $cfg',
               );
               final Offset projected = villageMarkerCenter(id, sceneRect.size);
               if (placement.declaredOffset == Offset.zero) {

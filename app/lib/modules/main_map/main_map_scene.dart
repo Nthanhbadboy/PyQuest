@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -361,12 +362,11 @@ class _VillageMarkerLayout extends MultiChildLayoutDelegate {
       }
       measured[id] = layoutChild(id, childConstraints);
     }
-    final Map<String, VillageMarkerPlacement> placed =
-        villageMarkerPlacements(
-          sceneSize: size,
-          childSizes: measured,
-          order: measured.keys.toList(growable: false),
-        );
+    final Map<String, VillageMarkerPlacement> placed = villageMarkerPlacements(
+      sceneSize: size,
+      childSizes: measured,
+      order: measured.keys.toList(growable: false),
+    );
     for (final MapEntry<String, VillageMarkerPlacement> entry
         in placed.entries) {
       positionChild(entry.key, entry.value.rect.topLeft);
@@ -375,6 +375,8 @@ class _VillageMarkerLayout extends MultiChildLayoutDelegate {
 
   @override
   bool shouldRelayout(covariant _VillageMarkerLayout oldDelegate) {
+    // `listEquals` đến từ foundation: material/rendering chỉ re-export một handful
+    // tên nên thiếu nó ở commit 9bb5531 (analyze `undefined_function`).
     return oldDelegate.sceneSize != sceneSize ||
         oldDelegate.markerWidth != markerWidth ||
         !listEquals(oldDelegate.ids, ids);

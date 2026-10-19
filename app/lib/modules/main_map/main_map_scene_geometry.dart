@@ -58,9 +58,7 @@ Map<String, VillageMarkerPlacement> villageMarkerPlacements({
   double gap = 4,
 }) {
   double clampStart(double start, double maxStart) =>
-      maxStart <= 0
-      ? maxStart / 2
-      : start.clamp(0.0, maxStart).toDouble();
+      maxStart <= 0 ? maxStart / 2 : start.clamp(0.0, maxStart).toDouble();
   Size sizeOf(String id) => childSizes[id]!;
 
   final Map<String, double> left = <String, double>{};
@@ -96,8 +94,7 @@ Map<String, VillageMarkerPlacement> villageMarkerPlacements({
       final String current = descending[i];
       for (final String previous in descending.take(i)) {
         if (!sharesX(previous, current)) continue;
-        final double need =
-            top[previous]! + sizeOf(previous).height + gap;
+        final double need = top[previous]! + sizeOf(previous).height + gap;
         if (top[current]! < need) {
           top[current] = need;
           moved = true;
@@ -114,10 +111,9 @@ Map<String, VillageMarkerPlacement> villageMarkerPlacements({
     if (overflow > 0) {
       final List<String> fromBottom = order.toList()
         ..sort((String a, String b) {
-          final int byBottom =
-              (top[b]! + sizeOf(b).height).compareTo(
-                top[a]! + sizeOf(a).height,
-              );
+          final int byBottom = (top[b]! + sizeOf(b).height).compareTo(
+            top[a]! + sizeOf(a).height,
+          );
           return byBottom != 0
               ? byBottom
               : order.indexOf(b).compareTo(order.indexOf(a));
@@ -133,8 +129,7 @@ Map<String, VillageMarkerPlacement> villageMarkerPlacements({
         }
         for (final String below in fromBottom.take(i)) {
           if (!sharesX(current, below)) continue;
-          final double need =
-              top[below]! - sizeOf(current).height - gap;
+          final double need = top[below]! - sizeOf(current).height - gap;
           if (top[current]! > need) {
             top[current] = math.max(0.0, need);
             moved = true;
