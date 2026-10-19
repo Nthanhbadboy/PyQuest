@@ -265,14 +265,18 @@ class _LockedRoom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const GameIcon(GameIconKind.lock, size: 72),
             const SizedBox(height: 10),
-            Text('Căn phòng này đang khoá', style: PQText.h2),
+            Text(
+              'Căn phòng này đang khoá',
+              textAlign: TextAlign.center,
+              style: PQText.h2,
+            ),
             const SizedBox(height: 6),
             Text(text, textAlign: TextAlign.center, style: PQText.body),
           ],
