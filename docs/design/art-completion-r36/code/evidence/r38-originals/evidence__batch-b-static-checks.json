@@ -1,0 +1,406 @@
+{
+  "task": "PQC-018 Batch B",
+  "review_pin": "68f2590b5883ca8aa746ffde0814d60a32dacb3c",
+  "checks": [
+    {
+      "check": "r36 design pin",
+      "status": "PASS",
+      "detail": "68f2590b5883ca8aa746ffde0814d60a32dacb3c"
+    },
+    {
+      "check": "canonical input catalog pin",
+      "status": "PASS",
+      "detail": "02ee503fa5c4ba34676719610f4831a67313e6c42ddbb653df0dca9d9eaa7ad6"
+    },
+    {
+      "check": "b01-w09-friends-invites: manifest identity",
+      "status": "PASS",
+      "detail": "valid JSON, batch B and matching scene id"
+    },
+    {
+      "check": "b01-w09-friends-invites: review pin",
+      "status": "PASS",
+      "detail": "68f2590b5883ca8aa746ffde0814d60a32dacb3c"
+    },
+    {
+      "check": "b01-w09-friends-invites: design review not self-accepted",
+      "status": "PASS",
+      "detail": "DESIGN review pending; not self-accepted"
+    },
+    {
+      "check": "b01-w09-friends-invites: image hash",
+      "status": "PASS",
+      "detail": "769336b24efdbc7561427030fa636e8301a3eee15431d1882554ec069f6b0ece"
+    },
+    {
+      "check": "b01-w09-friends-invites: image dimensions",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "b01-w09-friends-invites: prompt hash",
+      "status": "PASS",
+      "detail": "c70bdb7df9a895435f021b95ea610ec03162a27dc25657cbff34821059de8f69"
+    },
+    {
+      "check": "b01-w09-friends-invites: layout hash",
+      "status": "PASS",
+      "detail": "4fe3256b918dd33cabaf0616d712075b1b766e1bdd652c023a83237e10632524"
+    },
+    {
+      "check": "b01-w09-friends-invites: shared css/js hash",
+      "status": "PASS",
+      "detail": "shared base CSS/JS hashes match"
+    },
+    {
+      "check": "b01-w09-friends-invites: batch css/js hash",
+      "status": "PASS",
+      "detail": "batch-specific CSS/JS hashes match"
+    },
+    {
+      "check": "b01-w09-friends-invites: references",
+      "status": "PASS",
+      "detail": "w01-village, w09-visit, w12b-friends-gifts"
+    },
+    {
+      "check": "b01-w09-friends-invites: review reference decision",
+      "status": "PASS",
+      "detail": "reviewed-inputs reference paths and hashes match manifest"
+    },
+    {
+      "check": "b01-w09-friends-invites: excluded reference provenance",
+      "status": "PASS",
+      "detail": "no excluded references declared"
+    },
+    {
+      "check": "b01-w09-friends-invites: generation inputs",
+      "status": "PASS",
+      "detail": "w09-visit, w12b-friends-gifts"
+    },
+    {
+      "check": "b01-w09-friends-invites: study DOM markers",
+      "status": "PASS",
+      "detail": "all required markers present"
+    },
+    {
+      "check": "b01-w09-friends-invites: separation markup",
+      "status": "PASS",
+      "detail": "reviewer controls and notes are outside product viewport"
+    },
+    {
+      "check": "b01-w09-friends-invites: runtime boundary",
+      "status": "PASS",
+      "detail": "runtime, production and animation flags remain false"
+    },
+    {
+      "check": "b01-w09-friends-invites: browser report",
+      "status": "PASS",
+      "detail": "shared Batch B report PASS: 192 cases, zero overflow"
+    },
+    {
+      "check": "b02-w12-creator-editor: manifest identity",
+      "status": "PASS",
+      "detail": "valid JSON, batch B and matching scene id"
+    },
+    {
+      "check": "b02-w12-creator-editor: review pin",
+      "status": "PASS",
+      "detail": "68f2590b5883ca8aa746ffde0814d60a32dacb3c"
+    },
+    {
+      "check": "b02-w12-creator-editor: design review not self-accepted",
+      "status": "PASS",
+      "detail": "DESIGN review pending; not self-accepted"
+    },
+    {
+      "check": "b02-w12-creator-editor: image hash",
+      "status": "PASS",
+      "detail": "d37ff8e6e729400df919a0e7b94abb7800f2754ed481facea53eecc78955442e"
+    },
+    {
+      "check": "b02-w12-creator-editor: image dimensions",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "b02-w12-creator-editor: prompt hash",
+      "status": "PASS",
+      "detail": "e515cee6522931be8793ec6fd06b33bc88e471b4dd775e95d74c281fb074010b"
+    },
+    {
+      "check": "b02-w12-creator-editor: layout hash",
+      "status": "PASS",
+      "detail": "5960994cc9dfd66219c5c5404d4bdad4c00a0c0abe3535ef1bfd458ecebfd055"
+    },
+    {
+      "check": "b02-w12-creator-editor: shared css/js hash",
+      "status": "PASS",
+      "detail": "shared base CSS/JS hashes match"
+    },
+    {
+      "check": "b02-w12-creator-editor: batch css/js hash",
+      "status": "PASS",
+      "detail": "batch-specific CSS/JS hashes match"
+    },
+    {
+      "check": "b02-w12-creator-editor: references",
+      "status": "PASS",
+      "detail": "w01-village, w12-creator, w12b-friends-gifts, w13-tutor"
+    },
+    {
+      "check": "b02-w12-creator-editor: review reference decision",
+      "status": "PASS",
+      "detail": "reviewed-inputs reference paths and hashes match manifest"
+    },
+    {
+      "check": "b02-w12-creator-editor: excluded reference provenance",
+      "status": "PASS",
+      "detail": "no excluded references declared"
+    },
+    {
+      "check": "b02-w12-creator-editor: generation inputs",
+      "status": "PASS",
+      "detail": "w12-creator, w13-tutor"
+    },
+    {
+      "check": "b02-w12-creator-editor: study DOM markers",
+      "status": "PASS",
+      "detail": "all required markers present"
+    },
+    {
+      "check": "b02-w12-creator-editor: separation markup",
+      "status": "PASS",
+      "detail": "reviewer controls and notes are outside product viewport"
+    },
+    {
+      "check": "b02-w12-creator-editor: runtime boundary",
+      "status": "PASS",
+      "detail": "runtime, production and animation flags remain false"
+    },
+    {
+      "check": "b02-w12-creator-editor: browser report",
+      "status": "PASS",
+      "detail": "shared Batch B report PASS: 192 cases, zero overflow"
+    },
+    {
+      "check": "b03-w07-built-room: manifest identity",
+      "status": "PASS",
+      "detail": "valid JSON, batch B and matching scene id"
+    },
+    {
+      "check": "b03-w07-built-room: review pin",
+      "status": "PASS",
+      "detail": "68f2590b5883ca8aa746ffde0814d60a32dacb3c"
+    },
+    {
+      "check": "b03-w07-built-room: design review not self-accepted",
+      "status": "PASS",
+      "detail": "DESIGN review pending; not self-accepted"
+    },
+    {
+      "check": "b03-w07-built-room: image hash",
+      "status": "PASS",
+      "detail": "88f1e9c4ec20c070a35a00f0430b61837ce13a49f8fd2f3b430ef8ee4df3b63d"
+    },
+    {
+      "check": "b03-w07-built-room: image dimensions",
+      "status": "PASS",
+      "detail": "[928, 1152]"
+    },
+    {
+      "check": "b03-w07-built-room: prompt hash",
+      "status": "PASS",
+      "detail": "f3ed70e726096859d1c45863f34a973c702fde13b0f139530d530f504daafd3c"
+    },
+    {
+      "check": "b03-w07-built-room: layout hash",
+      "status": "PASS",
+      "detail": "50559da38e77c87f9f2f2401ff26413a3b3ba86f03ec847343a22095d3f3c401"
+    },
+    {
+      "check": "b03-w07-built-room: shared css/js hash",
+      "status": "PASS",
+      "detail": "shared base CSS/JS hashes match"
+    },
+    {
+      "check": "b03-w07-built-room: batch css/js hash",
+      "status": "PASS",
+      "detail": "batch-specific CSS/JS hashes match"
+    },
+    {
+      "check": "b03-w07-built-room: references",
+      "status": "PASS",
+      "detail": "w01-village, w03-project, w07-interior"
+    },
+    {
+      "check": "b03-w07-built-room: review reference decision",
+      "status": "PASS",
+      "detail": "reviewed-inputs reference paths and hashes match manifest"
+    },
+    {
+      "check": "b03-w07-built-room: excluded reference provenance",
+      "status": "PASS",
+      "detail": "no excluded references declared"
+    },
+    {
+      "check": "b03-w07-built-room: generation inputs",
+      "status": "PASS",
+      "detail": "w03-project, w01-village"
+    },
+    {
+      "check": "b03-w07-built-room: study DOM markers",
+      "status": "PASS",
+      "detail": "all required markers present"
+    },
+    {
+      "check": "b03-w07-built-room: separation markup",
+      "status": "PASS",
+      "detail": "reviewer controls and notes are outside product viewport"
+    },
+    {
+      "check": "b03-w07-built-room: runtime boundary",
+      "status": "PASS",
+      "detail": "runtime, production and animation flags remain false"
+    },
+    {
+      "check": "b03-w07-built-room: browser report",
+      "status": "PASS",
+      "detail": "shared Batch B report PASS: 192 cases, zero overflow"
+    },
+    {
+      "check": "b04-w10-pet-rest: manifest identity",
+      "status": "PASS",
+      "detail": "valid JSON, batch B and matching scene id"
+    },
+    {
+      "check": "b04-w10-pet-rest: review pin",
+      "status": "PASS",
+      "detail": "68f2590b5883ca8aa746ffde0814d60a32dacb3c"
+    },
+    {
+      "check": "b04-w10-pet-rest: design review not self-accepted",
+      "status": "PASS",
+      "detail": "DESIGN review pending; not self-accepted"
+    },
+    {
+      "check": "b04-w10-pet-rest: image hash",
+      "status": "PASS",
+      "detail": "f0a7e8896ef8ba6298e79d4579f7c463bb7b57e109dcbcf24aa4e0e6c8a62317"
+    },
+    {
+      "check": "b04-w10-pet-rest: image dimensions",
+      "status": "PASS",
+      "detail": "[848, 1264]"
+    },
+    {
+      "check": "b04-w10-pet-rest: prompt hash",
+      "status": "PASS",
+      "detail": "97612f13d113e271b0f29e56d7cf231be3fc85ac1b40ad842d1b53c2158d55c4"
+    },
+    {
+      "check": "b04-w10-pet-rest: layout hash",
+      "status": "PASS",
+      "detail": "88b11eb4ce300ea61a2810d8188bc15e1ca7fa50eac6caa3605fbf0d4ea982b4"
+    },
+    {
+      "check": "b04-w10-pet-rest: shared css/js hash",
+      "status": "PASS",
+      "detail": "shared base CSS/JS hashes match"
+    },
+    {
+      "check": "b04-w10-pet-rest: batch css/js hash",
+      "status": "PASS",
+      "detail": "batch-specific CSS/JS hashes match"
+    },
+    {
+      "check": "b04-w10-pet-rest: references",
+      "status": "PASS",
+      "detail": "w01-village, w10-pet"
+    },
+    {
+      "check": "b04-w10-pet-rest: review reference decision",
+      "status": "PASS",
+      "detail": "reviewed-inputs reference paths and hashes match manifest"
+    },
+    {
+      "check": "b04-w10-pet-rest: excluded reference provenance",
+      "status": "PASS",
+      "detail": "w10b-pet-shop"
+    },
+    {
+      "check": "b04-w10-pet-rest: generation inputs",
+      "status": "PASS",
+      "detail": "w10-pet"
+    },
+    {
+      "check": "b04-w10-pet-rest: study DOM markers",
+      "status": "PASS",
+      "detail": "all required markers present"
+    },
+    {
+      "check": "b04-w10-pet-rest: separation markup",
+      "status": "PASS",
+      "detail": "reviewer controls and notes are outside product viewport"
+    },
+    {
+      "check": "b04-w10-pet-rest: runtime boundary",
+      "status": "PASS",
+      "detail": "runtime, production and animation flags remain false"
+    },
+    {
+      "check": "b04-w10-pet-rest: browser report",
+      "status": "PASS",
+      "detail": "shared Batch B report PASS: 192 cases, zero overflow"
+    },
+    {
+      "check": "b01-w09-friends-invites: state coverage",
+      "status": "PASS",
+      "detail": "empty, invite_pending, invite_expired, host_away, blocked, report_confirmation"
+    },
+    {
+      "check": "b02-w12-creator-editor: state coverage",
+      "status": "PASS",
+      "detail": "draft_unsaved, test_error, saved_private, moderation_pending"
+    },
+    {
+      "check": "b03-w07-built-room: state coverage",
+      "status": "PASS",
+      "detail": "completed_enter, use_workbench, arrangement_blocked"
+    },
+    {
+      "check": "b04-w10-pet-rest: state coverage",
+      "status": "PASS",
+      "detail": "rest, ai_unsupported, model_removed_baseline"
+    },
+    {
+      "check": "Friends empty/pending/expired/away/blocked/report states",
+      "status": "PASS",
+      "detail": "six explicit privacy-aware states"
+    },
+    {
+      "check": "Creator editor states",
+      "status": "PASS",
+      "detail": "four states; editor, preview and version tray fixtures"
+    },
+    {
+      "check": "Built-room states",
+      "status": "PASS",
+      "detail": "continuous floor/door context without inferred geometry rules"
+    },
+    {
+      "check": "Miu rest states",
+      "status": "PASS",
+      "detail": "same orange Miu, static fallback states only"
+    },
+    {
+      "check": "Primary CTAs disabled by markup",
+      "status": "PASS",
+      "detail": "one disabled primary CTA per scene"
+    }
+  ],
+  "check_count": 79,
+  "passed": 79,
+  "failed": 0,
+  "status": "PASS",
+  "limits": "Dependency-free file/hash/structure validation only; browser evidence is separate. No design self-acceptance or runtime/device validation."
+}

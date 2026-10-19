@@ -76,3 +76,15 @@ Chỉ đạo trực tiếp của người dùng: *"Đổi chiến thuật mới 
     - Tích hợp cảnh xưởng thám tử `assets/images/bug_workshop_r36.webp` (`ValueKey('bug_hunter_25d_scene')`) và header gói câu đố `Wrap` chống tràn ở `2.0×` textScale.
   - **Widget test (`app/test/pqc023_25d_surfaces_test.dart`):** kiểm chứng cả 3 cụm màn hình ở `360×640` `2.0×` textScale.
 - Gói tiếp theo của Lead / Co-Dev (`PQC-024`): nâng cấp **Daily Quests & Energy 2,5D (`r41`)** + **Result Screen / Adventure Recap 2,5D (`r52`)** (`app/lib/modules/daily_quests/**`, `app/lib/modules/energy/**`, `app/lib/shared/widgets/result_screen.dart`).
+
+## 4. Nghiệm thu hợp nhất toàn bộ 6 gói (`PQC-020 R3` .. `PQC-025`) & Build Release APK (2026-10-19)
+
+- **Quyết định của Lead:** **ACCEPTED** cho toàn bộ **6 gói (`PQC-020 R3`, `PQC-021`, `PQC-022`, `PQC-023`, `PQC-024`, `PQC-025`)** tại source SHA `029f8018a190c826f2d20717099d9438f6b30027` (đồng bộ sang nhánh CODE tại `56ace81` / `aae58ec` và nhánh Lead tại `f42952e`).
+- **Kết quả cổng kiểm định CI:**
+  - `PQC-020 focused gate evidence`: **`93 passed, 0 failed (93 total)`**, `Formatter: success`.
+  - `PQC-011 r49 exact gate counts` & `PQC-011 pinned source verification` (`39280511842`): **`Ordinary: 470 passed, 0 failed`**, **`Render: 10 passed, 0 failed`**, **`Settings: 12/12`**, **`Integration: 7/7`**, `Analyze: success`, `Formatter: success`.
+  - `PyQuest check` (`PyQuest CI`): **`success`** toàn bộ các pha.
+- **Biên nhận Build APK Release (`f42952e`):**
+  - **Keyless Release APK (`pyquest-release.apk`)**: Run `39280511863`, Artifact ID `12198943531`, Pre-release tag `preview-apk-latest` (`https://github.com/Nthanhbadboy/PyQuest/releases/download/preview-apk-latest/pyquest-release.apk`), `62,938,780 bytes`, SHA-256 `10fef8166ecd23d5a450e19a6cd1d2f2a039eabec50884100d5383fdd5f41cf2`.
+  - **Owner-Test Release APK (`pyquest-owner-test-029f8018a190c826f2d20717099d9438f6b30027`)**: Run `39280511842`, Artifact ID `12201855389` (`30,325,937 bytes`).
+- **18 file hồ sơ lịch sử (`TASK_BOARD.md`, `LEAD_RUNBOOK.md`, `HANDOFF_TO_DESIGN.md`, `PQC-001..005.md`, `PQD-001.md`, `PQD-003.md`, `tools/coordination/*`, `r38-originals/*`) + `aae58ec`:** đã được giữ lại và đồng bộ đầy đủ sang `arena/84456d39-pyquest`.
