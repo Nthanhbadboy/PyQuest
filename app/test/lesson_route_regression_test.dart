@@ -669,7 +669,8 @@ void main() {
             expect(
               named,
               hasLength(1),
-              reason: 'map_label_$id phải có đúng MỘT node button mang tên place',
+              reason:
+                  'map_label_$id phải có đúng MỘT node button mang tên place',
             );
             final dynamic marker = named.single;
             expect(
