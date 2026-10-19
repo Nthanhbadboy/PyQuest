@@ -708,6 +708,26 @@ void main() {
           reason: 'CTA nhanh không được teo dưới 36px cao ở $scale×',
         );
 
+        // Rule r56 "content before artwork" cho chữ lớn: 1.0× thì artwork
+        // đứng trước, từ 1.5× panel chữ phải lên trước dải cảnh.
+        final double chapterTop = topOf(tester, find.textContaining('CHẶNG 1'));
+        final double sceneTop = topOf(tester, keyOf('tower_25d_scene'));
+        // ignore: avoid_print
+        print('PQC022-MQ ${scale}x chapterTop=$chapterTop sceneTop=$sceneTop');
+        if (scale >= kR56LargeTextScale) {
+          expect(
+            chapterTop,
+            lessThan(sceneTop),
+            reason: '$scale×: chữ phải đứng TRƯỚC artwork (rule panel khổ chữ lớn)',
+          );
+        } else {
+          expect(
+            sceneTop,
+            lessThan(chapterTop),
+            reason: '$scale×: dải cảnh là lớp không gian, đứng đầu danh sách',
+          );
+        }
+
         // 12 bài một chương (main_quest_ch1.json) -> ba bệ, mỗi bệ 4 bài; khoảng
         // bài ghi bằng en dash, số bài luôn đi kèm nên màu không phải tín hiệu duy nhất.
         const List<String> bandLabels = <String>['Bệ 1–4', 'Bệ 5–8', 'Bệ 9–12'];

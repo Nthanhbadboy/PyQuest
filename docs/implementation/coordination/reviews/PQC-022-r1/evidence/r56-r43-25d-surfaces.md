@@ -268,3 +268,28 @@ nuốt luôn 16 dòng gate**, nên phải tự kiểm tra kiểu trả về củ
 `tester.runAsync` — ở đây suy ra `T = Object` từ nhánh `catch`, nên `return null`
 bị từ chối. Sửa: closure trả `void` (`runAsync<void>`) và ghi lỗi vào biến cục bộ
 `Object? captureError = null;`.
+
+### `f647db7` → commit này: isolating đỏ = bằng chứng cho MỘT rule thiết kế bị thiếu
+
+`f647db7f1ee4da5322c26e577589073a56b252e6`: ordinary `464 passed, 1 failed
+(465)`, `Failing tests:` còn ĐÚNG MỘT ca
+`Main Quest journey r43 key hợp đồng cũ lesson_card_mq1_01 còn trên Main Quest 2.0x`.
+Hai ca em-vừa-tách (cuộn tới `open_playground`, và đi qua 4 thẻ `mq1_01/04/08/12`)
+xanh ⇒ không có exception, không có Scrollable lồng gây sai, các key đều tồn tại
+và tới được. Vậy thẻ bài **đầu tiên** không ở trong khung nhìn ngay khi mở màn ở
+2.0× trên 360×640: dải cảnh 180px + panel chặng 2.0× đã đẩy `lesson_card_mq1_01`
+xuống dưới nếp gấp.
+
+Đây không phải "test sai" mà là **rule r56 chưa áp dụng cho Main Quest**:
+*"từ 1.5×, content đứng trước artwork, không phóng to artwork"*. Sheet đã làm
+đúng (`kR56LargeTextScale`), màn Main Quest thì chưa. Sửa theo rule, không sửa
+theo test:
+
+* `kTowerLargeTextScale = 1.5` + `largeText` trong `_MainQuestHomeScreenState.build`.
+* 1.0×: `[sceneHeader, 12, _ChapterHeader, …]` (artwork trước, đúng ý r43).
+* ≥1.5×: `[ _ChapterHeader, 12, sceneHeader, … ]` (chữ trước, artwork sau).
+* `_TowerSceneHeader` được dựng MỘT lần vào biến `sceneHeader` để hai nhánh không
+  sao chép tham số (và `_ChapterHeader` vẫn được tham chiếu ⇒ không còn
+  `unused_element`).
+* Test khóa lại bằng `PQC022-MQ ${scale}x chapterTop=… sceneTop=…` + hai nhánh
+  `expect`: `chapterTop < sceneTop` ở 2.0×, ngược lại ở 1.0×.

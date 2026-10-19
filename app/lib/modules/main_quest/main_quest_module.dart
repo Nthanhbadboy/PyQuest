@@ -31,6 +31,10 @@ const Size kTowerGuideSize = Size(115, 140);
 /// Ba bệ của r43 §1 là visual grouping, không phải分级 hay khoá chapter mới:
 /// mỗi bệ nhóm 4 bài liên tiếp, nhãn dùng en dash.
 const int kPedestalSize = 4;
+
+/// Ngưỡng chữ lớn của r56: từ 1.5×, chữ phải đứng TRƯỚC artwork (rule
+/// "content before artwork" đã áp dụng cho ActivitySheet ở cùng commit).
+const double kTowerLargeTextScale = 1.5;
 const int kPedestalCount = 3;
 
 class MainQuestModule extends ActivityModule {
@@ -144,6 +148,14 @@ class _MainQuestHomeScreenState extends State<MainQuestHomeScreen> {
     final Lesson quickTarget = firstOpen >= 0 ? lessons[firstOpen] : lessons.first;
     int pedestals = (lessons.length + kPedestalSize - 1) ~/ kPedestalSize;
     if (pedestals > kPedestalCount) pedestals = kPedestalCount;
+    final double textScale = MediaQuery.textScalerOf(context).scale(1);
+    final bool largeText = textScale >= kTowerLargeTextScale;
+    final Widget sceneHeader = _TowerSceneHeader(
+      content: content,
+      done: count,
+      quickTarget: quickTarget,
+      onContinue: () => _open(quickTarget),
+    );
     return Scaffold(
       body: PQBackground(
         top: const Color(0xFFC7DEFF),
@@ -162,16 +174,14 @@ class _MainQuestHomeScreenState extends State<MainQuestHomeScreen> {
                   controller: _scroll,
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                   children: [
-                    _TowerSceneHeader(
-                      content: content,
-                      done: count,
-                      quickTarget: quickTarget,
-                      onContinue: () => _open(quickTarget),
-                    ),
-                    // Panel chặng (tiêu đề, phụ đề, progress) vẫn ở dưới scene:
-                    // r43 §1 nói rõ "Không cố nhét cả 12 bài và mọi thông báo lên
-                    // 640px", nên scene không thay thế block chữ này.
+                    // Cỡ chữ thường: artwork trước (dải cảnh là lớp không gian của
+                    // r43), panel chặng ngay dưới. Từ 1.5×: ĐẢO LẠI — panel chặng +
+                    // danh sách bài đứng trước, dải cảnh xuống sau, vì dải 180px
+                    // từng đẩy thẻ bài đầu tiên ra khỏi khung nhìn 360×640
+                    // (bằng chứng: ca `lesson_card_mq1_01` đỏ ở f647db7).
+                    if (!largeText) ...[sceneHeader, const SizedBox(height: 12)],
                     _ChapterHeader(content: content, done: count),
+                    if (largeText) ...[const SizedBox(height: 12), sceneHeader],
                     const SizedBox(height: 12),
                     for (var i = 0; i < lessons.length; i++) ...[
                       if (i % kPedestalSize == 0 && i ~/ kPedestalSize < pedestals)
