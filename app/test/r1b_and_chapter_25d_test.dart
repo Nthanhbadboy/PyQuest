@@ -191,6 +191,13 @@ double topOf(WidgetTester tester, Finder finder) =>
 
 Finder keyOf(String name) => find.byKey(ValueKey<String>(name));
 
+/// Tìm theo key CẢ khi widget nằm ngoài khung nhìn. `ListView` của Main Quest
+/// là lazy: child chưa build thì chưa đo được `getSize`, nhưng sự TỒN TẠI của
+/// key vẫn kiểm được — và đó là cách tránh đỏ giả (bài học từ 863d20a:
+/// `findsOneWidget` mặc định bỏ offstage nên 'Bệ 9–12'/'open_playground' bị
+/// báo thiếu dù widget có thật).
+Finder anyKey(String name) => find.byKey(ValueKey<String>(name), skipOffstage: false);
+
 /// Nút mở sheet qua `showPQSheet` thật; future pop được đưa ngược ra test để
 /// kiểm kết quả điều hướng chứ không chỉ kiểm widget tồn tại.
 class _SheetLauncher extends StatelessWidget {
@@ -223,6 +230,27 @@ class _SheetLauncher extends StatelessWidget {
     );
   }
 }
+
+/// `PQColors.berry` — viền mà `_LessonCard` vẽ khi `highlighted` (0xFFEC5C93,
+/// KHÔNG phải `PQColors.accent` 0xFFFF2E63: nhầm hai constant này là một trong
+/// hai lỗi làm đỏ 863d20a, và nó chỉ lộ ra khi đọc code thật, không đọc label).
+const Color kBerryBorder = Color(0xFFEC5C93);
+
+/// Màu VIỀN của hộp lesson, đọc từ widget thật (cùng kiểu đọc Container đầu tiên
+/// bên trong key mà `main_map_scene_route_test.dart` đã dùng), không suy từ label.
+Color cardBorderColorFor(WidgetTester tester, String lessonId) {
+  final Container card = tester.widget<Container>(
+    find
+        .descendant(
+          of: find.byKey(ValueKey<String>('lesson_card_$lessonId')),
+          matching: find.byType(Container),
+        )
+        .first,
+  );
+  final Border? border = (card.decoration! as BoxDecoration).border;
+  return border!.top.color;
+}
+
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -616,34 +644,82 @@ void main() {
         final AppServices services = (await tester.runAsync(createServices))!;
         addTearDown(services.dispose);
         await tester.pumpWidget(
-          appHome(
-            services,
-            const MainQuestHomeScreen(),
-            textScale: scale,
-          ),
+          appHome(services, const MainQuestHomeScreen(), textScale: scale),
         );
         await pumpFor(tester, const Duration(milliseconds: 500));
 
-        expect(keyOf('tower_25d_scene'), findsOneWidget);
-        expect(imageOfAsset(kTowerSceneAsset), findsOneWidget);
-        expect(keyOf('tower_guide'), findsOneWidget);
-        expect(keyOf('quest_quick_continue'), findsOneWidget);
-        for (var g = 0; g < 3; g++) {
+        // Existence: đọc cả offstage vì ListView lazy-build phần cuối danh sách.
+        for (final String key in <String>[
+          'tower_25d_scene',
+          'tower_guide',
+          'quest_quick_continue',
+          'quest_pedestal_0',
+          'quest_pedestal_1',
+          'quest_pedestal_2',
+        ]) {
           expect(
-            keyOf('quest_pedestal_$g'),
+            anyKey(key),
             findsOneWidget,
-            reason: 'thiếu dải bệ $g (nhóm 4 bài) ở $scale×',
+            reason: 'thiếu $key trong màn Main Quest ở $scale×',
           );
         }
-        expect(find.textContaining('Bệ 1–4'), findsOneWidget);
-        expect(find.textContaining('Bệ 9–12'), findsOneWidget);
-        expect(find.text('Bài 1', skipOffstage: false), findsWidgets);
+        for (final String label in <String>['Bệ 1–4', 'Bệ 5–8', 'Bệ 9–12']) {
+          expect(
+            find.textContaining(label, skipOffstage: false),
+            findsOneWidget,
+            reason: 'thiếu dải bệ "$label" ở $scale× (r43 §1: ba bệ là nhóm 4 bài)',
+          );
+        }
         expect(
-          tester.getSize(keyOf('quest_quick_continue')).height,
+          find.textContaining('đã xong', skipOffstage: false),
+          findsNothing,
+          reason: 'người mới chưa xong bài nào thì không bệ nào được đánh dấu xong',
+        );
+        expect(
+          imageOfAsset(kTowerSceneAsset),
+          findsOneWidget,
+          reason: 'scene vườn tháp phải là Image.asset thật, không phải Decoration',
+        );
+        expect(
+          imageOfAsset(kPyHostTokenAsset),
+          findsOneWidget,
+          reason: 'guide Py dùng token r56',
+        );
+
+        // Số đo thì bắt buộc phải ở trong khung nhìn: cuộn tới từng chỗ.
+        for (final String key in <String>[
+          'quest_quick_continue',
+          'tower_guide',
+          'tower_25d_scene',
+        ]) {
+          await tester.scrollUntilVisible(
+            keyOf(key),
+            120,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await pumpFor(tester, const Duration(milliseconds: 250));
+          expect(keyOf(key), findsOneWidget, reason: '$key không cuộn tới được ở $scale×');
+        }
+        final double ctaHeight = tester.getSize(keyOf('quest_quick_continue')).height;
+        final Size sceneSize = tester.getSize(keyOf('tower_25d_scene'));
+        final Object? pending = tester.takeException();
+        // Receipt để red kế tiếp tự giải thích trong log tail (không cần đoán).
+        // ignore: avoid_print
+        print(
+          'PQC022-MQ ${scale}x ctaH=$ctaHeight scene=${sceneSize.width}x'
+          '${sceneSize.height} exc=$pending',
+        );
+        expect(
+          ctaHeight,
           greaterThanOrEqualTo(36),
           reason: 'CTA nhanh không được teo dưới 36px cao ở $scale×',
         );
-        expect(tester.takeException(), isNull);
+        expect(
+          sceneSize.height,
+          kTowerSceneHeight,
+          reason: 'r43 §1: dải cảnh là lớp không gian, cao 180px ở mọi cỡ chữ',
+        );
+        expect(pending, isNull, reason: 'layout exception ở Main Quest $scale×');
         await tester.pumpWidget(const SizedBox.shrink());
         await pumpFor(tester, const Duration(milliseconds: 400));
       }
@@ -660,14 +736,45 @@ void main() {
 
       final int energyBefore = services.energy.current;
       expect(find.byType(LessonScreen), findsNothing);
-      // Bệ 3 nằm sâu trong danh sách: phải cuộn tới thật rồi mới chạm, cùng
-      // bài học `ensureVisible` mà root test của PQC-020 R3 đã trả giá.
-      await tapAndSettle(
-        tester,
-        keyOf('quest_pedestal_2'),
-        wait: const Duration(milliseconds: 300),
+      final Finder band2 = keyOf('quest_pedestal_2');
+      // `ensureVisible` KHỞI ĐỘNG animation cuộn; một `pump()` thì tap vẫn đo
+      // rect cũ và hụt (chính cái bẫy đã làm đỏ smoke 2× của PQC-020 R3).
+      await tester.scrollUntilVisible(
+        band2,
+        160,
+        scrollable: find.byType(Scrollable).first,
       );
+      await pumpFor(tester, const Duration(milliseconds: 250));
+      expect(band2, findsOneWidget);
+      // Nhóm 4 bài thứ ba = lessons[8..11], id `mq1_09` (danh sách 12 bài một
+      // chương trong `main_quest_ch1.json`). Trước khi chạm, KHÔNG thẻ nào có
+      // viền berry; sau khi chạm, đúng thẻ dẫn nhóm có viền đó.
+      final Finder leadCard = keyOf('lesson_card_mq1_09');
+      await tester.scrollUntilVisible(
+        leadCard,
+        160,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await pumpFor(tester, const Duration(milliseconds: 250));
+      expect(
+        cardBorderColorFor(tester, 'mq1_09'),
+        isNot(kBerryBorder),
+        reason: 'highlight chưa được đặt trước khi chạm bệ',
+      );
+      await tester.tap(band2);
+      await pumpFor(tester, const Duration(milliseconds: 400));
       expect(find.byType(LessonScreen), findsNothing);
+      await tester.scrollUntilVisible(
+        leadCard,
+        160,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await pumpFor(tester, const Duration(milliseconds: 250));
+      expect(
+        cardBorderColorFor(tester, 'mq1_09'),
+        kBerryBorder,
+        reason: 'chạm bệ 3 phải đặt highlight lên bài đầu nhóm (r43: không mở bài)',
+      );
       expect(
         services.energy.current,
         energyBefore,
@@ -691,17 +798,39 @@ void main() {
       );
       await pumpFor(tester, const Duration(milliseconds: 800));
 
-      expect(keyOf('lesson_card_mq1_01'), findsOneWidget);
-      expect(keyOf('lesson_card_mq1_03'), findsOneWidget);
-      expect(keyOf('open_playground'), findsOneWidget);
+      for (final String key in <String>[
+        'lesson_card_mq1_01',
+        'lesson_card_mq1_03',
+        'open_playground',
+      ]) {
+        expect(anyKey(key), findsOneWidget, reason: 'mất key hợp đồng cũ $key');
+      }
       final Finder deepLink = keyOf('lesson_card_mq1_03');
       await tester.scrollUntilVisible(
         deepLink,
         140,
-        scrollable: find.byType(Scrollable).last,
+        scrollable: find.byType(Scrollable).first,
       );
-      await pumpFor(tester, const Duration(milliseconds: 200));
+      await pumpFor(tester, const Duration(milliseconds: 250));
       expect(deepLink, findsOneWidget);
+      // Viền đỏ là bằng chứng `openLessonId` đã tới screen (cùng oracle với
+      // `lesson_route_regression_test.dart`), không phải suy từ label.
+      // Viền berry là bằng chứng `openLessonId` đã tới screen; thẻ khác phải
+      // KHÔNG có viền đó, nếu không phép kiểm này chỉ là trang trí.
+      final Color edge = cardBorderColorFor(tester, 'mq1_03');
+      final Color neighbour = cardBorderColorFor(tester, 'mq1_02');
+      // ignore: avoid_print
+      print('PQC022-MQ deep-link edge=$edge neighbour=$neighbour');
+      expect(
+        edge,
+        const Color(0xFFEC5C93),
+        reason: 'mq1_03 phải được highlight bằng viền berry',
+      );
+      expect(
+        neighbour,
+        isNot(const Color(0xFFEC5C93)),
+        reason: 'viền berry chỉ xuất hiện trên bài được deep-link',
+      );
       expect(find.byType(LessonScreen), findsNothing);
       expect(tester.takeException(), isNull);
     });

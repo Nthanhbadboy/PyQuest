@@ -112,8 +112,50 @@ không resize, không upscale):
 
 Đọc từ check-run của **chính SHA bàn giao** (không suy từ SHA trước):
 
-| Workflow | Trạng thái | Số liệu |
+| Workflow | Trên `863d20a` (run đang có bằng chứng) | Ghi chú |
 |---|---|---|
-| `PQC-020 R1-A focused verification` | (điền sau khi CI chạy trên SHA này) | |
-| `PQC-011 r49 maintenance verification` | | ordinary / render / Settings / isolated / sequence / integration |
-| `PyQuest CI` | | analyze / formatter / l10n / pub get |
+| `PQC-020 R1-A focused verification` | **success** (run `39266717225`) | formatter `Formatted 13 files (0 changed)` + 6 file focused xanh |
+| `PQC-011 r49 maintenance verification` | failure (run `39266717154`) | ordinary `+457 -3` (460, cần ≥422 **và zero fail**), render `9/10` (cần đúng 10), Settings `12` ✓, isolated `1` ✓, sequence `2` ✓, integration `7` ✓ — 3 đỏ đều ở `r1b_and_chapter_25d_test.dart`, đã phân tích ở §6 |
+| `PyQuest check` (CI) | failure (`39266717140`) | `PyQuest localization generation evidence` = success, `flutter analyze` còn warning `_ChapterHeader` (đã sửa ở mục 6), `android` = skipped |
+
+Bảng này **cố ý** ghi theo SHA đã chạy. SHA bàn giao cuối sẽ được điền vào dòng
+dưới sau chu kỳ CI của commit này — không copy kết quả của SHA khác làm bằng chứng
+cho SHA bàn giao:
+
+| SHA bàn giao | Kết quả |
+|---|---|
+| (điền sau chu kỳ CI của commit kế tiếp) | |
+
+## 6. Hồ sơ đỏ-xanh theo từng chu kỳ CI (không nới ngưỡng)
+
+Mọi con số dưới đây lấy từ `check-run` của chính SHA được nêu, đọc bằng
+`gh api repos/Nthanhbadboy/PyQuest/commits/<sha>/check-runs?page=1..4` và
+`.output.text`; không có suy luận từ source.
+
+### `6b74744` — ba đỏ, ba nguyên nhân khác nhau
+
+| Gate | Kết quả | Nguyên nhân thật | Cách sửa (ở `f97c8df`) |
+|---|---|---|---|
+| `pqc020` formatter | FAIL — `Formatted 13 files (1 changed)`, `Changed lib/modules/main_map/main_map_screen.dart` | Tôi viết tay một `Align(...)` khác output `dart format` | Giải nhất: lấy đúng snapshot `PQC-020 formatted source snapshot` (check-run `118103352926` + `118103359203`, giải mã base64 → tar) và copy **byte-for-byte**; 15/16 file còn lại đã khớp sẵn |
+| ordinary / focused / Settings / Render | FAIL — ordinary `+354 -10`, focused `+8 -6`, Settings 0 passed, Render 0 passed | `activity_sheet.dart:234:13: Error: The argument type 'String?' can't be assigned to the parameter type 'String'` (CFE). Field **public của class private không được flow-promote**, nên `token == null ? … Image.asset(token …)` chỉ hỏng ở CFE chứ analyzer không báo — vì vậy `flutter analyze` vẫn xanh mà 7 file test không compile | Đọc field ra local `final String? asset = token;` rồi rẻ nhánh trên local. Không dùng `!`, không `// ignore`, không cast |
+| `flutter analyze` | FAIL — 19 issues, 4 thuộc file tôi | `unnecessary_non_null_assertion` ×2 (`w.image!`, `decoration.image!.image!` — hai chỗ đó **non-nullable**), `unused_element_parameter` (`super.key` cho widget private không ai truyền key), `unnecessary_brace_in_string_interps` (`'${constVar} B'`) | Xoá noise thật, không thêm `// ignore` |
+
+### `f97c8df` — còn hai đỏ, đều là hợp đồng thật của repo
+
+| Gate | Kết quả | Nguyên nhân thật | Cách sửa (ở `863d20a`) |
+|---|---|---|---|
+| formatter | **PASS** — `Formatted 13 files (0 changed)` | (đã hội tụ theo snapshot) | giữ nguyên |
+| `flutter analyze` | FAIL — `warning • The declaration '_ChapterHeader' isn't referenced • lib/modules/main_quest/main_quest_module.dart:427:7 • unused_element` (warning duy nhất; 13 dòng còn lại là info `curly_braces` có trước) | Tôi thay panel chặng bằng dải cảnh 2,5D và bỏ luôn widget cũ | Dựng **cả hai**: scene band rồi tới `_ChapterHeader(content:, done:)` (đúng ý r43 §1 "không nhét 12 bài + mọi thông báo lên 640px", nhưng không xoá nội dung chữ) |
+| ordinary + focused | FAIL — `Found 3 widgets with text "Núi Lửa Pip" / "Mê Cung Robo" descending from widgets with type "ActivitySheet" … Which: is too many` (2 file: `main_map_scene_route_test.dart`, oracle semantics R3 trong `lesson_route_regression_test.dart`) | Hợp đồng repo: **đúng một** `Text(def.name)` bên trong `ActivitySheet`. Bản 2,5D của tôi lặp tên ở `_SheetBar` (14.5) và `_SceneSeal` (15.5) ngoài `PQText.h2` ở body | Đọc study trước khi sửa: `docs/design/arrival-entrance-r56/app.mjs` dựng `.scene-seal = t('host') + ' · ' + hosts[lang][a.host]` (caption **nhân vật**, 11px), tên địa điểm nằm ở `panel-copy h2`, còn tên nhân vật đã do `SpeechBubble` render (`common.dart:116`, ngoài nhánh `showPortrait`) → seal thành chip trạng thái `Đang khóa`/`Đã mở`, bar thành nhãn tĩnh `Giới thiệu địa điểm`. Test mới của tôi chốt hợp đồng bằng `findsOneWidget` (trước: `findsWidgets`) |
+
+### `863d20a` — focused **XANH**, ordinary còn 3 đỏ ở đúng màn tôi mới sửa
+
+| Gate | Kết quả | Nguyên nhân thật | Cách sửa (commit này) |
+|---|---|---|---|
+| `PQC-020 R1-A focused verification` | **success** (formatter `0 changed` + focused tests xanh) | 6 file map/sheet/route đã chấp nhận 2,5D: sheet Welcome mới, `_SheetSceneHeader`, seal đổi nội dung | giữ |
+| `pqc011` ordinary | `+457 -3` (460) — 3 ca trong `r1b_and_chapter_25d_test.dart`, nhóm `Main Quest journey r43` | Cả ba là **lỗi test của tôi**, không phải lỗi màn chơi: (1) `ListView` main quest là lazy + `findsOneWidget` mặc định bỏ offstage → `'Bệ 9–12'`, `open_playground`, `lesson_card_mq1_03` bị báo thiếu dù widget có thật; (2) `getSize` trên widget offstage → `RenderBox was not laid out`; (3) `tapAndSettle` = `ensureVisible` + **một** `pump()` → tap đo rect lúc cuộn còn animation (đúng cái bẫy đã làm đỏ smoke 2× ở PQC-020 R3) → `warnIfMissed` dựng thành failure; (4) tôi so viền deep-link với `0xFFFF2E63` trong khi `_LessonCard:502` vẽ `PQColors.berry = 0xFFEC5C93` (`0xFFFF2E63` là `PQColors.accent`, không phải màu highlight của card); (5) helper `cardBorderColorFor` **không được ghi vào file** vì `str.replace` không khớp (no-op im lặng) → undefined function | (1) tách `anyKey()` = `skipOffstage:false` cho kiểm TỒN TẠI, `keyOf()` cho kiểm hình học; (2) `scrollUntilVisible` + `pumpFor(250ms)` trước mọi phép đo/tap; (3) bỏ `tapAndSettle` ở chỗ này, dùng chính idiom repo (`scrollUntilVisible` → pump → `tap`); (4) so với `kBerryBorder = Color(0xFFEC5C93)` và **thêm ca phụ** chứng minh thẻ bên cạnh KHÔNG có viền đó (nếu không, phép kiểm chỉ là trang trí); (5) thêm ca "trước khi chạm bệ chưa có highlight" để chứng minh phép kiểm phân biệt được. Test in receipt `PQC022-MQ …` để đỏ kế tiếp tự giải thích ngay trong log tail, khỏi đoán |
+| `pqc011` render | `9 passed, 1 failed / 10` | **Chưa có bằng chứng:** check-run chỉ in `Render suite test output: FAIL: 9 passed, 1 failed (10 total)` và file `render.txt` được đánh dấu `(missing: render.txt)` → không có tên ca, không có trace. GIẢ THUYẾT (suy từ source, chưa được CI xác nhận): `_TowerSceneHeader` đặt seal (`Positioned left:12`, `maxWidth:190`) và CTA (`Positioned right:12`) ở hai lớp positioned riêng nên ở 360×640 chữ 2× chúng chồng nhau. Chu kỳ kế sẽ phân biệt: nếu render xanh sau thay đổi dưới đây thì giả thuyết đúng, nếu vẫn đỏ thì phải đọc trace từ ca render chứ không đoán tiếp | Gộp seal + CTA vào **một** `Positioned(left:12,right:12,top:10)` dạng `Row` với `Expanded` quanh seal → seal wrap (2 dòng, không ellipsis, không FittedBox), CTA không bị cắt; không đổi số đo 180px của scene |
+| Settings / isolated / sequence / integration | `12`, `1`, `2`, `7` ✓ | — | không đụng |
+
+Không có ngưỡng, timeout, tolerance, regex hay danh sách gate nào được nới ở mọi
+commit trên; số ca render vẫn **đúng 10** và ordinary chỉ tăng do file test mới.

@@ -299,34 +299,42 @@ class _TowerSceneHeader extends StatelessWidget {
               ),
               child: const SizedBox.expand(),
             ),
+            // Seal và nút Continue đi chung MỘT hàng có ràng buộc: ở 360×640 với
+            // chữ 2×, hai `Positioned` riêng (trái 12 + phải 12) sẽ chồng lên nhau;
+            // Row + Expanded làm seal wrap thay vì đè, và không cắt CTA (r43 §5:
+            // không truncate, target >=48px theo chiều cao nút của ChunkyButton).
             Positioned(
               left: 12,
-              top: 10,
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 190),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: const Color(0xE6FFF6DF),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFB39C72), width: 1),
-                ),
-                child: Text(
-                  'Chặng ${content.chapterNumber} · $done/${content.lessons.length} bài',
-                  style: PQText.small.copyWith(color: const Color(0xFF355843)),
-                  maxLines: 2,
-                ),
-              ),
-            ),
-            Positioned(
               right: 12,
               top: 10,
-              child: ChunkyButton(
-                key: const ValueKey('quest_quick_continue'),
-                label: 'Tiếp tục bài ${quickTarget.number}',
-                icon: Icons.play_arrow_rounded,
-                tone: PQTone.sun,
-                size: ChunkySize.small,
-                onPressed: onContinue,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xE6FFF6DF),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFFB39C72), width: 1),
+                      ),
+                      child: Text(
+                        'Chặng ${content.chapterNumber} · $done/${content.lessons.length} bài',
+                        style: PQText.small.copyWith(color: const Color(0xFF355843)),
+                        maxLines: 2,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ChunkyButton(
+                    key: const ValueKey('quest_quick_continue'),
+                    label: 'Tiếp tục bài ${quickTarget.number}',
+                    icon: Icons.play_arrow_rounded,
+                    tone: PQTone.sun,
+                    size: ChunkySize.small,
+                    onPressed: onContinue,
+                  ),
+                ],
               ),
             ),
             Positioned(
