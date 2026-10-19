@@ -1,51 +1,211 @@
-name: Build PyQuest APK (keyless preview)
+name: PyQuest pinned checks and owner-test APK
+run-name: "Owner test · source ${{ inputs.source_sha || 'de01a490743982356ad5240d77ea99e9dbf8c7f5' }}"
 
 on:
   push:
     branches:
-      - debug/remove-ai-transcript-add-voice-logs
+      - arena/00838eb9-pyquest
   workflow_dispatch:
+    inputs:
+      source_sha:
+        description: 'Exact trusted PyQuest source SHA to test and package'
+        required: true
+        default: de01a490743982356ad5240d77ea99e9dbf8c7f5
+        type: string
+      build_mode:
+        description: 'Internal preview only; release mode is not public-release approval'
+        required: true
+        default: release
+        type: choice
+        options:
+          - release
+          - debug
+      internal_voice:
+        description: 'OWNER TEST ONLY: embed repository Gemini key in APK (extractable, not for public sharing)'
+        required: true
+        default: true
+        type: boolean
 
 permissions:
   contents: read
 
+concurrency:
+  group: owner-test-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  SOURCE_SHA: ${{ inputs.source_sha || 'de01a490743982356ad5240d77ea99e9dbf8c7f5' }}
+  WORKFLOW_SHA: ${{ github.sha }}
+
 jobs:
-  build-android:
+  verify-source:
+    permissions:
+      contents: read
+      checks: write
+    if: github.ref == 'refs/heads/arena/00838eb9-pyquest' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[preview-apk]'))
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
+    steps:
+      - name: Validate immutable source request
+        shell: bash
+        run: '[[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]'
+      - name: Checkout exact application source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_SHA }}
+          path: source
+          persist-credentials: false
+      - name: Checkout workflow-owned test harness
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: control
+          persist-credentials: false
+          sparse-checkout: |
+            ci/internal_preview_checks.sh
+            ci/publish_internal_verification.py
+          sparse-checkout-cone-mode: false
+      - name: Install pinned Flutter SDK on Actions runner
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+          cache: true
+      - name: Run PQC-011 pinned-source verification gates
+        id: verification
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECK_PUBLISHER: ${{ github.workspace }}/control/ci/publish_internal_verification.py
+          EVIDENCE_DIR: ${{ runner.temp }}/pqc011-evidence
+        working-directory: source/app
+        shell: bash
+        run: bash "$GITHUB_WORKSPACE/control/ci/internal_preview_checks.sh"
+      - name: Publish non-secret evidence on exact CODE commit
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVIDENCE_DIR: ${{ runner.temp }}/pqc011-evidence
+          VERIFY_OUTCOME: ${{ steps.verification.outcome }}
+        run: python3 control/ci/publish_internal_verification.py
+      - name: Upload exact-source verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pqc011-verification-${{ env.SOURCE_SHA }}
+          path: ${{ runner.temp }}/pqc011-evidence/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Report verification provenance
+        env:
+          EVIDENCE_DIR: ${{ runner.temp }}/pqc011-evidence
+        if: always()
+        shell: bash
+        run: |
+          {
+            printf '## Source verification\n\nSource: `%s`\n\nWorkflow: `%s`\n\n' "$SOURCE_SHA" "$WORKFLOW_SHA"
+            echo 'These are SDK/test results, not device or voice acceptance.'
+            if [[ -f "$EVIDENCE_DIR/status.txt" ]]; then cat "$EVIDENCE_DIR/status.txt"; fi
+            if [[ -f "$EVIDENCE_DIR/test-counts.json" ]]; then cat "$EVIDENCE_DIR/test-counts.json"; fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  build-android:
+    # Even on a public repository, only recipient-encrypted APK bytes are uploaded.
+    needs: verify-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      BUILD_MODE: ${{ inputs.build_mode || 'release' }}
+      INTERNAL_VOICE: ${{ (github.event_name == 'push' || inputs.internal_voice) && 'true' || 'false' }}
     defaults:
       run:
-        working-directory: app
+        working-directory: source/app
+        shell: bash
     steps:
-      - name: Checkout
+      - name: Checkout exact verified source
         uses: actions/checkout@v4
-
+        with:
+          ref: ${{ env.SOURCE_SHA }}
+          path: source
+          persist-credentials: false
+      - name: Checkout workflow-pinned public encryption certificate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: control
+          persist-credentials: false
+          sparse-checkout: ci/owner-test-recipient.pem
+          sparse-checkout-cone-mode: false
+      - name: Verify source and mode
+        run: |
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          [[ "$BUILD_MODE" == release || "$BUILD_MODE" == debug ]]
+          [[ "$INTERNAL_VOICE" == true || "$INTERNAL_VOICE" == false ]]
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Set up Flutter
+      - name: Set up pinned Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.47.7'
           cache: true
-
-      - name: Flutter version
-        run: flutter --version
-
       - name: Resolve dependencies
         run: flutter pub get
-
-      # Keyless preview policy r47: never compile a provider secret into CI artifacts.
-      - name: Build debug APK (keyless preview)
-        run: flutter build apk --debug --dart-define=GEMINI_API_KEY=
-
-      - name: Upload debug APK
+      # User explicitly authorized embedded-key owner testing after r48.
+      # Secret is unavailable to verify-source, never printed or included in evidence.
+      - name: Build owner-only APK with requested voice policy
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set +x
+          defines="$RUNNER_TEMP/pyquest-internal-defines.json"
+          trap 'rm -f "$defines"' EXIT
+          python3 - "$defines" <<'PY'
+          import json,os,sys
+          enabled=os.environ['INTERNAL_VOICE']=='true'
+          key=os.environ.get('GEMINI_API_KEY','') if enabled else ''
+          if enabled and not key.strip():
+              raise SystemExit('Missing repository GEMINI_API_KEY: cannot deliver a voice-enabled owner test APK')
+          fd=os.open(sys.argv[1],os.O_WRONLY|os.O_CREAT|os.O_TRUNC,0o600)
+          with os.fdopen(fd,'w') as f: json.dump({'GEMINI_API_KEY':key},f)
+          PY
+          flutter build apk --"$BUILD_MODE" --dart-define-from-file="$RUNNER_TEMP/pyquest-internal-defines.json"
+      - name: Encrypt APK for workspace recipient before public artifact upload
+        run: |
+          package="$RUNNER_TEMP/pyquest-owner-test"
+          mkdir -p "$package" "$GITHUB_WORKSPACE/apk-delivery"
+          trap 'rm -rf "$package"; rm -f "$RUNNER_TEMP/pyquest-owner-test.zip"' EXIT
+          cp "build/app/outputs/flutter-apk/app-$BUILD_MODE.apk" "$package/pyquest-owner-test-$BUILD_MODE.apk"
+          {
+            printf 'source_sha=%s\nworkflow_sha=%s\nrun_id=%s\nmode=%s\n' "$SOURCE_SHA" "$WORKFLOW_SHA" "$GITHUB_RUN_ID" "$BUILD_MODE"
+            printf 'distribution=OWNER_TEST_ONLY_NOT_PUBLIC\nembedded_gemini_key=%s\n' "$INTERNAL_VOICE"
+            echo 'Artifact transport: AES-256-GCM / RSA-OAEP SHA256 CMS. Private recipient key is not in GitHub.'
+            echo 'The decrypted APK contains an extractable key. No public/device/voice acceptance.'
+            flutter --version
+          } > "$package/build-info.txt"
+          cd "$package"
+          sha256sum "pyquest-owner-test-$BUILD_MODE.apk" > SHA256SUMS
+          zip -q "$RUNNER_TEMP/pyquest-owner-test.zip" ./*.apk build-info.txt SHA256SUMS
+          openssl cms -encrypt -binary -aes-256-gcm \
+            -in "$RUNNER_TEMP/pyquest-owner-test.zip" \
+            -out "$GITHUB_WORKSPACE/apk-delivery/pyquest-owner-test.cms" -outform DER \
+            -recip "$GITHUB_WORKSPACE/control/ci/owner-test-recipient.pem" \
+            -keyopt rsa_padding_mode:oaep -keyopt rsa_oaep_md:sha256
+          cp build-info.txt SHA256SUMS "$GITHUB_WORKSPACE/apk-delivery/"
+          cd "$GITHUB_WORKSPACE/apk-delivery"
+          # Explicit allowlist: never upload plaintext APK, ZIP, private key or define file.
+          test "$(find . -type f | wc -l)" = 3
+          test -s pyquest-owner-test.cms
+          cat build-info.txt SHA256SUMS >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload owner-only test APK
         uses: actions/upload-artifact@v4
         with:
-          name: pyquest-debug-keyless-preview
-          path: app/build/app/outputs/flutter-apk/app-debug.apk
+          name: pyquest-owner-test-${{ env.SOURCE_SHA }}
+          path: |
+            apk-delivery/pyquest-owner-test.cms
+            apk-delivery/build-info.txt
+            apk-delivery/SHA256SUMS
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 3

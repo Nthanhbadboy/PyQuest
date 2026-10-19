@@ -1,0 +1,26 @@
+{
+  "browser": "153.0.8010.0",
+  "reviewGalleryOnly": true,
+  "decoded": 21,
+  "filterCounts": [
+    5,
+    21,
+    16,
+    5
+  ],
+  "checkedLinks": 31,
+  "geometry": [
+    {
+      "width": 390,
+      "overflow": false,
+      "controls": true
+    },
+    {
+      "width": 360,
+      "overflow": false,
+      "controls": true
+    }
+  ],
+  "errors": [],
+  "sourcePackageAcceptance": false
+}

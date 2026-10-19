@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "source_commit": "c8b20296c7c6e0d9a5ff661dae2f10a816310944",
+  "policy": "Immutable before-art snapshot. Never refresh from current app assets; create a separately reviewed kit version for a new baseline.",
+  "assets": [
+    {
+      "id": "python_academy",
+      "path": "baseline/python_academy.webp",
+      "source_path": "app/assets/images/thumb_tower.webp",
+      "sha256": "c17e971f866f5cb28bf7f7d749273ae204ec49fc94c4692d773e485869e8365d"
+    },
+    {
+      "id": "robo_maze",
+      "path": "baseline/robo_maze.webp",
+      "source_path": "app/assets/images/thumb_maze.webp",
+      "sha256": "e963cd3aab8c6cf47f28a2265705d56ccdff0e669758eca97d7bdde81abaddef"
+    },
+    {
+      "id": "pip_volcano",
+      "path": "baseline/pip_volcano.webp",
+      "source_path": "app/assets/images/thumb_volcano.webp",
+      "sha256": "4d2847d6d8a955da23f128e651e8412838076030b2f469ce27407a25496f4f52"
+    },
+    {
+      "id": "star_observatory",
+      "path": "baseline/star_observatory.webp",
+      "source_path": "app/assets/images/thumb_observatory.webp",
+      "sha256": "620d6e9ea279582a347df1f9659923db6ad8eb6b1ae4446a11b0e9e04d444031"
+    },
+    {
+      "id": "bitsy_workshop",
+      "path": "baseline/bitsy_workshop.webp",
+      "source_path": "app/assets/images/thumb_workshop.webp",
+      "sha256": "e3cf18513c7ba327106b437ecebcf88826258c1b9c91a0939d2dbdfe002faf14"
+    },
+    {
+      "id": "achievement_house",
+      "path": "baseline/achievement_house.webp",
+      "source_path": "app/assets/images/thumb_house.webp",
+      "sha256": "e6ac23380ae4087ec536a87251998132ff0347c25e021755004899a7ce1ca93e"
+    }
+  ]
+}

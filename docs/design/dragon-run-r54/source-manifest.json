@@ -1,0 +1,45 @@
+{
+  "code_pin": "6dc8ca8feeed54cc0fa6a82109e3a59d24a16153",
+  "files": [
+    {
+      "path": "app/lib/modules/dragon_jump/dragon_game.dart",
+      "sha256": "6c192db602af29448c65ae79b2bca972b046d09549d0a84930c3a46d2d8263a1"
+    },
+    {
+      "path": "app/lib/modules/dragon_jump/dragon_jump_module.dart",
+      "sha256": "121d3dbf9dc0f096d2e11f57324926df111b75ec4898aab89245fd3c178d79ef"
+    },
+    {
+      "path": "app/assets/config/game_config.json",
+      "sha256": "f7b9d1a80be65a49ad2bf7c68de46bbf33243b0a27cd5eb5e80d77467b5f15c5"
+    },
+    {
+      "path": "app/lib/core/config/game_config.dart",
+      "sha256": "ab994c1ab579e7e28795dd26293aea7d2c901d928e32dc2bd6dc34312c383c66"
+    },
+    {
+      "path": "app/lib/modules/energy/energy_widgets.dart",
+      "sha256": "969cd3298f778ecf63bca02cffbf8d9f683d26df42c4e2f24fc3ab7100e9b840"
+    },
+    {
+      "path": "app/lib/data/repositories/progress_repository.dart",
+      "sha256": "cb7960c854f7270f4e61e6082a47cb1e1ab90c88980cba5f178a952f4cf2765b"
+    },
+    {
+      "path": "app/lib/core/events.dart",
+      "sha256": "0f6cc29fca74e65d585126e052e5b11332ccb9b09a45162206ae9a328dcb2686"
+    },
+    {
+      "path": "app/lib/shared/widgets/result_screen.dart",
+      "sha256": "d84eb7ebdfa1b4761323e42fe5e3582d763ed7758762f463b18703cb4543bf21"
+    },
+    {
+      "path": "app/lib/shared/characters/cast.dart",
+      "sha256": "b8115b14be89858802199ff8b824e4ce72c92c7ffd2948a7abbd7bdd87e53c0c"
+    },
+    {
+      "path": "app/lib/shared/characters/characters.dart",
+      "sha256": "09ce8c0e00a61133dac64c72704c7896f07c0002b65b96cf5bb343cd35bcfc6b"
+    }
+  ]
+}

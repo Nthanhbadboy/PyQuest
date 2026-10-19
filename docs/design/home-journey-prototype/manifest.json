@@ -1,0 +1,121 @@
+{
+  "prototype": "P06C — Main screen and linked room-unlock journey",
+  "date": "2026-10-16",
+  "design_parent": "f44ef5d",
+  "code_branch_observed": "6936796",
+  "implementation_authorization": false,
+  "sources": [
+    {
+      "path": "docs/PRODUCT_VISION.md",
+      "bytes": 90848,
+      "sha256": "5a51d94efd09f5b4a18a9bdc343d4a7ad0fead553688e7568c9d98d04ddeeeda"
+    },
+    {
+      "path": "app/assets/data/robot_maze_levels.json",
+      "bytes": 4975,
+      "sha256": "0c0d728a067b99d47fe85c18ed5c80cecd36c026284b3a3d15a246a6f5747f39"
+    },
+    {
+      "path": "docs/design/first-play-prototype/engine.mjs",
+      "bytes": 1419,
+      "sha256": "6417236b953e636910154144e07d409771d8e3b96bbfee2a9d8c362b7d3c1825"
+    },
+    {
+      "path": "docs/design/shared-l10n/locale-core.mjs",
+      "bytes": 1554,
+      "sha256": "05b2feb083aedb25980dce3366512ada11f30306070d3d1e06143e76ca27fea7"
+    },
+    {
+      "path": "docs/design/friends-showcase-prototype/style.css",
+      "bytes": 29942,
+      "sha256": "e3a5545ce5893bd89b9d6b457bce7dad85233c69a19df9fa6b5c417507640965"
+    },
+    {
+      "path": "docs/design/home-journey-prototype/journey-spec.json",
+      "bytes": 1977,
+      "sha256": "2d045b0e1123679b8564806eb5934c447a3a434811a0837ea5fae6a7fc31cfbe",
+      "role": "Proposed acyclic task graph; unit-checked against model, not a production registry"
+    }
+  ],
+  "assets": [
+    {
+      "path": "docs/design/home-journey-prototype/art/home-island.png",
+      "bytes": 2076937,
+      "sha256": "d0ca8a1689b603d78ecfcfeab9e815f4e73ba648045272032c6bec2204a1c334",
+      "origin": "Arena-generated original illustration",
+      "usage": "Design only; decorative, not hit-test geometry",
+      "dimensions": "1376x768"
+    },
+    {
+      "path": "docs/design/home-journey-prototype/art/home-island.webp",
+      "bytes": 135752,
+      "sha256": "8f11b3298cf4747f46de4fd4e32677869319832a86ecc4a815cd8392d0bd97e9",
+      "origin": "Arena-generated original illustration",
+      "usage": "Design only; decorative, not hit-test geometry",
+      "dimensions": "1376x768"
+    },
+    {
+      "path": "docs/design/home-journey-prototype/art/loft.svg",
+      "bytes": 2809,
+      "sha256": "471962ef61829ede94aa0426234aefaa0d1e031b9a92a72a0392b99cac18eb60",
+      "origin": "Original authored cutaway-room SVG",
+      "usage": "Design only; decorative, not hit-test geometry",
+      "dimensions": "viewBox 0 0 800 540"
+    },
+    {
+      "path": "docs/design/result-adventure-prototype/art/arrival-island.svg",
+      "bytes": 3445,
+      "sha256": "55c25daf855db6a02faf6db74acba3af78fac2fe15ed8badf9ee14ceeab1b706",
+      "origin": "Original authored P05 art from 981ea85"
+    },
+    {
+      "path": "docs/design/result-adventure-prototype/art/first-steps.svg",
+      "bytes": 1336,
+      "sha256": "75be4894a7e100cc1591e72bbc3d5f5fd0cf01b0a2b09ba4c66978186d8b1b4a",
+      "origin": "Original authored P05 art from 981ea85"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/Nunito-Medium.ttf",
+      "bytes": 80904,
+      "sha256": "c5ac621e788f8acf1ae43518f45f5eb3b3dc1eede0cddbcabb67e468595bb687",
+      "license": "SIL Open Font License 1.1; reused font pack"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/Nunito-ExtraBold.ttf",
+      "bytes": 80784,
+      "sha256": "6aeac28bd008e77fe752c2c2c2ace44bf81c296534bfeb6bac582bb2d44b6347",
+      "license": "SIL Open Font License 1.1; reused font pack"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/OFL-Nunito.txt",
+      "bytes": 4385,
+      "sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
+      "license": "SIL Open Font License 1.1; reused font pack"
+    }
+  ],
+  "proposal_rules": {
+    "room_cost": {
+      "wood": 3,
+      "cloth": 2
+    },
+    "required_badge": "first_steps",
+    "maze_project_reward": {
+      "wood": 2,
+      "cloth": 0
+    },
+    "bridge_project_reward": {
+      "wood": 1,
+      "cloth": 2
+    },
+    "reward_scope": "once per project job in this memory-only simulation; not app economy",
+    "badge_rule": "first sample mini-game win acknowledged; badge retained after building"
+  },
+  "limitations": [
+    "No real account, persistent ledger, transactions, energy, room builder or live-world changes",
+    "Bridge is a new three-plank design mini-game, not an existing Flutter game",
+    "Room cat reactions are authored, not local AI",
+    "Cross-prototype links open new tabs and do not transfer progress"
+  ],
+  "code_branch_observed_at_close": "4a2a5826a3d9717190aa7147fe78287b472cac7d",
+  "code_review_note": "Observed 4a2a582 independently; not reviewed or accepted as part of this design package."
+}

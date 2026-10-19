@@ -1,0 +1,22 @@
+{
+  "name": "pyquest-art-review-checks",
+  "private": true,
+  "scripts": {
+    "test": "node smoke_gallery.cjs",
+    "test:prototype:unit": "node --test test_first_play.mjs",
+    "test:prototype:browser": "node smoke_first_play.cjs",
+    "test:tutor:unit": "node --test test_tutor_board.mjs",
+    "test:tutor:browser": "node smoke_tutor_board.cjs",
+    "test:world:unit": "node --test test_living_world.mjs",
+    "test:world:browser": "node smoke_living_world.cjs",
+    "test:locale:unit": "node --test test_locale.mjs",
+    "test:locale:browser": "node smoke_locale.cjs",
+    "test:board-copy:unit": "node --test test_board_copy.mjs",
+    "test:results:unit": "node --test test_results.mjs",
+    "test:results:browser": "node smoke_results.cjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.64.1",
+    "@sparticuz/chromium": "153.0.0"
+  }
+}

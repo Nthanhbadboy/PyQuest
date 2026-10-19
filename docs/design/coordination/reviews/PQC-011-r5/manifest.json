@@ -1,0 +1,27 @@
+{
+  "review_date": "2026-10-18 Asia/Saigon",
+  "checked_at_utc": "2026-10-17T21:39:29.273499+00:00",
+  "code_pin": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+  "parent": "2ea5e5004e98df4aec8c1132a56b8d60bf4ddf5e",
+  "design_base": "60840a5702a557e94b09816e1d853ca2f818ab9e",
+  "files": [
+    {
+      "path": "app/test/lesson_board_integration_test.dart",
+      "blob": "959917c5b22978fc8e752cba1e3f8a4b9652e3cf",
+      "sha256": "be3fd0558c10e42824f096b2098cc170ddd247fbcf8786c274dcc44e6ee6e47e"
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-011.md",
+      "blob": "68c1e752a69aac2c2d3640b76414ca04656d879b",
+      "sha256": "e099b6ca3de3bae96bd2d619aeddd984cbdfa1c8e03231623ffa663e96d5ed4e"
+    }
+  ],
+  "unchanged_default_scale_layout_matrix": true,
+  "unchanged_root_bundle_repository_test": true,
+  "executables": {
+    "flutter": null,
+    "dart": null
+  },
+  "sdk_source_inspected": "abaf9c523780a608bd46686fd5e53740a07077f8; binding pump/runAsync/runTest interplay; source read only",
+  "execution": "NOT_RUN; no SDK install or CI trigger"
+}

@@ -1,0 +1,39 @@
+{
+  "review_date": "2026-10-18 Asia/Saigon",
+  "checked_at_utc": "2026-10-17T21:12:13.070511+00:00",
+  "code_pin": "2ea5e5004e98df4aec8c1132a56b8d60bf4ddf5e",
+  "parent": "4fe3b7d0a1bf5f6dface1b04cbc4e2d7ee9d451f",
+  "files": [
+    {
+      "path": "app/lib/modules/main_quest/lesson_screen.dart",
+      "blob": "d7d7274cc21627d2b449ec6f279c99c47b07a175",
+      "sha256": "59cc1ee310cf836258736561ea65a309f3eb88df90839c843198d0b1f948c9a5"
+    },
+    {
+      "path": "app/lib/modules/tutor/board/authored_board_repository.dart",
+      "blob": "bc2dfd789d164b07f880370ef882c6ebc625ea05",
+      "sha256": "58c95899c2559bccb11bad5283e65a86217513e2522ecf34e9cad7231c73b104"
+    },
+    {
+      "path": "app/test/board/authored_board_repository_test.dart",
+      "blob": "08a1606e01e0e34343896d657baafa43d55d0784",
+      "sha256": "ab21b628abd6bf497a86693990839a0d9f99d0c0f3ef005e094e5177c9eeacc0"
+    },
+    {
+      "path": "app/test/lesson_board_integration_test.dart",
+      "blob": "b5ac533f2cc8dc4aabba9c33ea1a44cf04555c99",
+      "sha256": "70f88dabd14eedf83605a2f2eee1edadc95a7e3dd89933bb08eed005141034df"
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-011.md",
+      "blob": "39702044efe712bd736a6c7837cdd07583308bff",
+      "sha256": "ad32a98cd8ef6b929c5f80e0ae1e0adfdea11f6603e36c5799742f581c7d3828"
+    }
+  ],
+  "executables": {
+    "flutter": null,
+    "dart": null
+  },
+  "execution": "NOT_RUN; source review only; GitHub reads only; no CI dispatch/rerun",
+  "design_base": "efc83dcb19af40d068cd2b79a9efcf1b2039502b"
+}

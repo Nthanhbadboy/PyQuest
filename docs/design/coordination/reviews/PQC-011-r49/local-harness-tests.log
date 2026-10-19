@@ -1,0 +1,10 @@
+test_all_gates_and_real_count_extraction (__main__.HarnessTests.test_all_gates_and_real_count_extraction) ... ok
+test_analyzer_failure_is_not_masked_by_passing_tests (__main__.HarnessTests.test_analyzer_failure_is_not_masked_by_passing_tests) ... ok
+test_failed_suite_keeps_actual_pass_and_fail_counts (__main__.HarnessTests.test_failed_suite_keeps_actual_pass_and_fail_counts) ... ok
+test_format_failure_does_not_skip_other_diagnostics_or_pass (__main__.HarnessTests.test_format_failure_does_not_skip_other_diagnostics_or_pass) ... ok
+test_wrong_sdk_stops_before_dependencies_and_tests (__main__.HarnessTests.test_wrong_sdk_stops_before_dependencies_and_tests) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.211s
+
+OK

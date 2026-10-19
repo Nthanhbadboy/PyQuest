@@ -42,3 +42,7 @@ __pycache__/
 # APKs copied out of the Flutter build for upload.
 /pyquest-debug.apk
 /pyquest-release.apk
+
+# Local art-export / gallery-test tooling (not application assets).
+.venv/
+node_modules/

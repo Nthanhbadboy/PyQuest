@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-18",
+  "browser": "153.0.8010.0",
+  "activeImagesDecoded": 16,
+  "layoutTargets": 13,
+  "codeFilterCount": 3,
+  "allFilterCount": 16,
+  "nextPrevious": "pass",
+  "mobileHost360NoHorizontalOverflow": true,
+  "trueEmptyState": "pass",
+  "smallENScale2FooterCases": 8,
+  "errors": [],
+  "limits": [
+    "HTML design only",
+    "Disabled mocks, not working app controls",
+    "No device/contrast/screenreader audit",
+    "No production geometry/layer approval"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "code_sha": "4fe3b7d0a1bf5f6dface1b04cbc4e2d7ee9d451f",
+  "sources": [
+    {
+      "path": "app/lib/modules/daily_quests/daily_quest_service.dart",
+      "blob": "8e581589517f161197662b878f457308f379d8cf",
+      "sha256": "06ec535dc64495759ef7c2dd16843464476bef10ad0d4ffa5458f21567d6ecdd"
+    },
+    {
+      "path": "app/lib/modules/daily_quests/daily_quests_sheet.dart",
+      "blob": "6dd7b77c63e45dde173d85d12e6c54ea506b7adc",
+      "sha256": "9540f8962ffc31c48d81b7bc774ec894ccf3018238f299b1ffd06777b5bd9bb3"
+    },
+    {
+      "path": "app/lib/modules/energy/energy_service.dart",
+      "blob": "599170e5d0976a94ad59e482b33c106ff2b2246d",
+      "sha256": "7a0df71ea04d67551b4aa9331d78b6537183d9cebae3d6624dcb7a610673ceb8"
+    },
+    {
+      "path": "app/lib/modules/energy/energy_widgets.dart",
+      "blob": "867fb6aa792c2d1d796e9147cc524a7b34e1dcb8",
+      "sha256": "969cd3298f778ecf63bca02cffbf8d9f683d26df42c4e2f24fc3ab7100e9b840"
+    },
+    {
+      "path": "app/lib/core/config/game_config.dart",
+      "blob": "4df976b5391c8703fbcfbd3844650b16d87a7826",
+      "sha256": "ab994c1ab579e7e28795dd26293aea7d2c901d928e32dc2bd6dc34312c383c66"
+    },
+    {
+      "path": "app/assets/config/game_config.json",
+      "blob": "1fbb4fbd75f3afb3a59456c01c6d547730b3b81d",
+      "sha256": "f7b9d1a80be65a49ad2bf7c68de46bbf33243b0a27cd5eb5e80d77467b5f15c5"
+    },
+    {
+      "path": "app/lib/data/repositories/state_repositories.dart",
+      "blob": "f39abeb59569a7b1e2bac435c5c6521c735eb691",
+      "sha256": "cecea6a6bb7bb2726004e58b85ddf2be20f4952f0fcde89f64eaa798bc1f6eea"
+    }
+  ],
+  "source_quests": 8,
+  "scope": "Read-only extracted definitions/config, not runtime evaluated events or player data"
+}

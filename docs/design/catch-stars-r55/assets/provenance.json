@@ -1,0 +1,138 @@
+{
+  "revision": 55,
+  "runtime_ready": false,
+  "origin": "Four separate Arena AI-generated study assets. Background + three edge-matted object studies; golden/rainbow/comet use procedural overlays. No native translucent glass or animation claim. Jar generated taller than requested; rendered as a shallow 92x62 study proxy, needs production redraw.",
+  "references": [
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+    },
+    {
+      "path": "docs/design/art-review-r40/code-snapshot/a04-w05-catch-stars/concept.png",
+      "sha256": "1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718"
+    },
+    {
+      "path": "docs/design/dragon-run-r54/assets/basalt-source.png",
+      "sha256": "bea2b7598f68aafe98baae35a0783b84ab2b6dd592761e82697eac744e586b80"
+    },
+    {
+      "path": "docs/design/maze-play-r50/assets/robo-token.png",
+      "sha256": "c2f58b4eda7303e252474694c73e05b48d85563effda1035e0dc4fad8d747f05"
+    }
+  ],
+  "cutouts": {
+    "jar": {
+      "crop": [
+        71,
+        246,
+        857,
+        1005
+      ],
+      "size": [
+        512,
+        494
+      ],
+      "method": "edge-connected white flood fill, minRGB232/chroma26; 1px erode +0.35 blur; study matte, not native alpha"
+    },
+    "star": {
+      "crop": [
+        58,
+        158,
+        870,
+        948
+      ],
+      "size": [
+        512,
+        498
+      ],
+      "method": "edge-connected white flood fill, minRGB232/chroma26; 1px erode +0.35 blur; study matte, not native alpha"
+    },
+    "meteor": {
+      "crop": [
+        154,
+        281,
+        782,
+        880
+      ],
+      "size": [
+        512,
+        488
+      ],
+      "method": "edge-connected white flood fill, minRGB232/chroma26; 1px erode +0.35 blur; study matte, not native alpha"
+    }
+  },
+  "files": [
+    {
+      "path": "assets/jar-source.png",
+      "size": [
+        928,
+        1152
+      ],
+      "bytes": 1194127,
+      "sha256": "d131352f9659b32b7dd8af9c1b52599dd7c40564e50f2ff553c4d16743c6c5e5"
+    },
+    {
+      "path": "assets/jar-token.png",
+      "size": [
+        512,
+        494
+      ],
+      "bytes": 353148,
+      "sha256": "0584bc0a9a30cf94596c9ba83f27ad33be30f965f474807c0ac2826db5b1155f"
+    },
+    {
+      "path": "assets/meteor-source.png",
+      "size": [
+        928,
+        1152
+      ],
+      "bytes": 754000,
+      "sha256": "808e710bcc6936b5b1669df7e637aa8b42606bd76e2ad722c22e17b524c1e0e1"
+    },
+    {
+      "path": "assets/meteor-token.png",
+      "size": [
+        512,
+        488
+      ],
+      "bytes": 281742,
+      "sha256": "859eaf0be3a299bba61cae44cbb96e7087a04bb72ba5785f30ec5629ef53feb0"
+    },
+    {
+      "path": "assets/observatory-sky.png",
+      "size": [
+        848,
+        1264
+      ],
+      "bytes": 1443599,
+      "sha256": "b983422eca10e5fb3c67f965ab630fb0e5e596b95309848d658ddd9780e5686a"
+    },
+    {
+      "path": "assets/observatory-sky.webp",
+      "size": [
+        848,
+        1264
+      ],
+      "bytes": 42442,
+      "sha256": "fa48e14cc378d99e0d219dbcc6ec00679b852c80fa4e5fff5ff217300cec9298"
+    },
+    {
+      "path": "assets/star-source.png",
+      "size": [
+        928,
+        1152
+      ],
+      "bytes": 1019149,
+      "sha256": "896d774bd3ad3bad8b2ee9ae035b55fdff0766f8160dcbecbbcf6ee00614aaab"
+    },
+    {
+      "path": "assets/star-token.png",
+      "size": [
+        512,
+        498
+      ],
+      "bytes": 249021,
+      "sha256": "162984bce87fe894c34d8deada701d25b9efc26b06b6bef2d51cd7cc698e7699"
+    }
+  ]
+}

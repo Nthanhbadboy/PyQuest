@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#286d73">
+  <title>PQC-018 · Cài đặt chung</title>
+  <link rel="stylesheet" href="../shared.css">
+  <script defer src="../shared.js"></script>
+</head>
+<body>
+  <div class="page-shell">
+    <main class="study" data-scene="a02-shared-settings" data-initial-state="system_active">
+      <div class="review-banner" data-common="reviewer"></div>
+      <header class="review-header"><div class="review-head-row"><a class="back-link" href="../index.html" aria-label="" data-common-aria="back">←</a><div class="review-heading"><h1 data-title></h1><p data-subtitle></p></div></div></header>
+      <section class="reviewer-controls">
+        <h2 data-common="controls"></h2>
+        <div class="controls-grid">
+          <div class="tool-group"><span class="tool-label" data-common="language"></span><div class="segmented"><button type="button" data-lang="vi" aria-pressed="true">VI</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div></div>
+          <div class="tool-group"><span class="tool-label" data-common="textSize"></span><div class="segmented"><button type="button" data-scale="1" aria-pressed="true">1×</button><button type="button" data-scale="1.3" aria-pressed="false">1.3×</button><button type="button" data-scale="2" aria-pressed="false">2×</button></div></div>
+        </div>
+        <div class="state-picker"><label for="fixture-state" data-common="state"></label><select id="fixture-state" data-state-select></select></div>
+      </section>
+      <section class="product-screen settings-product" aria-label="Settings product viewport">
+        <div class="product-bar"><span data-common="settingsBar"></span><span class="product-pill" data-tag></span></div>
+        <div class="settings-alcove"><img data-scene-image src="concept.png" alt=""></div>
+        <div class="settings-board"><div class="settings-board-inner">
+          <div class="product-copy"><h2 data-state-title></h2><p data-body></p><ul class="facts" data-facts></ul><button class="mock-cta" type="button" disabled data-cta></button></div>
+          <section class="setting-samples" aria-label="" data-common-aria="preferences">
+            <h3 data-common="settingsBoard"></h3>
+            <div class="setting-row"><span data-common="sound"></span><span class="sample-value" data-common="sampleOn"></span></div>
+            <div class="setting-row"><span data-common="music"></span><span class="sample-value" data-common="sampleOn"></span></div>
+            <div class="setting-row"><span data-common="calm"></span><span class="sample-value" data-common="sampleOff"></span></div>
+          </section>
+        </div></div>
+      </section>
+      <aside class="reviewer-notes"><details open><summary data-common="notes"></summary><p class="reviewer-note-label" data-common="noteLabel"></p><p data-note></p><p data-common="noRuntime"></p><p>Source: settings_sheet.dart, locale_preference.dart, settings service and locale 014–016. These sample values are illustrative; no device permission or preference is changed.</p></details></aside>
+      <footer class="page-foot"><a href="../README.md" data-common="sources"></a></footer>
+    </main>
+  </div>
+</body>
+</html>

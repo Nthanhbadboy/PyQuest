@@ -1,0 +1,557 @@
+{
+  "package": "PyQuest art-refresh-r34",
+  "date": "2026-10-18",
+  "timezone": "Asia/Saigon",
+  "base_design_sha": "ae7289f376d70ab9f73b37346d25edaf727abc12",
+  "reviewed_code_sha": "a331ac110f19de63e9be6884d08db8c436054f50",
+  "code_review_status": "PQC-011 CHANGES_REQUESTED; analyze failed on exact SHA; Flutter suites skipped",
+  "style_contract": "../ART_DIRECTION_2_5D.md",
+  "product_contract": "../WORLD_EXPANSION_REDESIGN.md",
+  "level": "Concept scenes + HTML screen/state studies, not runtime art pack",
+  "runtime_ready": false,
+  "runtime_changed": false,
+  "production_approved": false,
+  "rights_note": "AI-generated with existing project-generated reference. No claim of CC0, exclusivity or third-party stock rights; service terms/project release policy still need review. Fonts use existing app font files and their bundled licenses.",
+  "assets": [
+    {
+      "id": "w07-interior",
+      "path": "concepts/w07-interior.jpg",
+      "title": {
+        "vi": "Góc sáng tạo",
+        "en": "Creative corner"
+      },
+      "dimensions": [
+        896,
+        1200
+      ],
+      "format": "JPEG",
+      "bytes": 148972,
+      "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad",
+      "alpha": false,
+      "origin": "Arena image generation, one standalone scene; large batch, no user selection requested",
+      "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "prompt_brief": "Cutaway coastal cottage, workbench, movable chair, cyan footprint, clear exit, ivory/walnut/teal, warm upper-left light; no UI text.",
+      "prompt_note": "Brief captures design intent, not seed-perfect reproducibility or an exact full prompt transcript. Image tool output is AI-generated.",
+      "reviewed_fullsize": true,
+      "review_notes": {
+        "vi": "Ghế và dấu chọn đang dính trong JPEG. Cửa nhìn xuống mái nhà khác; cần sửa nối sàn/ngưỡng cửa trước asset production. Chưa có footprint hay occluder đo được.",
+        "en": "Chair and selection mark are baked into the JPEG. The doorway looks toward a lower roof; floor/threshold connection needs correction before production. No measured footprint or occluder."
+      },
+      "state_ids": [
+        "draft",
+        "blocked",
+        "unsaved",
+        "saved"
+      ],
+      "data_owner": "W02/W07 · housing layout / occupancy — proposed, not shipped",
+      "runtime_ready": false,
+      "production_approved": false
+    },
+    {
+      "id": "w03-project",
+      "path": "concepts/w03-project.jpg",
+      "title": {
+        "vi": "Mở góc sáng tạo",
+        "en": "Expand your creative corner"
+      },
+      "dimensions": [
+        896,
+        1200
+      ],
+      "format": "JPEG",
+      "bytes": 123379,
+      "sha256": "c24f72a647a9cab08249e22e385c57af2d3c0b49ba6d1249fa7db6b9936752c7",
+      "alpha": false,
+      "origin": "Arena image generation, one standalone scene; large batch, no user selection requested",
+      "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "prompt_brief": "One-room cottage extension preview, solid ground, permanent medal separate from wood/cloth cost props, no baked price or quantity.",
+      "prompt_note": "Brief captures design intent, not seed-perfect reproducibility or an exact full prompt transcript. Image tool output is AI-generated.",
+      "reviewed_fullsize": true,
+      "review_notes": {
+        "vi": "Hình biểu đạt điều kiện khác chi phí, không định nghĩa recipe. Nền trong preview còn là cỏ và nối cửa chưa rõ; phải sửa geometry trước dựng phòng thật.",
+        "en": "Art separates eligibility from costs, not a recipe definition. The preview still has a grassy floor and unclear connecting doorway; geometry must be corrected before building a real room."
+      },
+      "state_ids": [
+        "missing",
+        "source",
+        "ready",
+        "pending",
+        "built"
+      ],
+      "data_owner": "W03 · recipe + inventory + durable build receipt — proposed; numbers from P06C fixture only",
+      "runtime_ready": false,
+      "production_approved": false
+    },
+    {
+      "id": "w09-visit",
+      "path": "concepts/w09-visit.jpg",
+      "title": {
+        "vi": "Ghé khu vườn",
+        "en": "Visit the garden"
+      },
+      "dimensions": [
+        896,
+        1200
+      ],
+      "format": "JPEG",
+      "bytes": 263746,
+      "sha256": "a32b1fe065bb020df46f8fe6b3445300abd55c7bad69991473a80f3601713638",
+      "alpha": false,
+      "origin": "Arena image generation, one standalone scene; large batch, no user selection requested",
+      "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "prompt_brief": "Shared coastal courtyard, guest gate and planting table, one visitor only, closed opaque private door, no online indicators.",
+      "prompt_note": "Brief captures design intent, not seed-perfect reproducibility or an exact full prompt transcript. Image tool output is AI-generated.",
+      "reviewed_fullsize": true,
+      "review_notes": {
+        "vi": "Chỉ có một khách, không có chủ để tránh giả presence. Cần tách actor/props và không gửi phòng riêng xuống client khách. Invite/reconnect/moderation chưa đủ state.",
+        "en": "One visitor, no host to imply presence. Separate actor/props and never send private rooms to unauthorized guest clients. Invite/reconnect/moderation states remain incomplete."
+      },
+      "state_ids": [
+        "absent",
+        "permissions",
+        "revoked",
+        "offline"
+      ],
+      "data_owner": "W09 · host permissions + snapshot/session authority — proposed, no live backend",
+      "runtime_ready": false,
+      "production_approved": false
+    },
+    {
+      "id": "w10-pet",
+      "path": "concepts/w10-pet.jpg",
+      "title": {
+        "vi": "Sân chơi của Miu",
+        "en": "Miu’s play garden"
+      },
+      "dimensions": [
+        896,
+        1200
+      ],
+      "format": "JPEG",
+      "bytes": 238674,
+      "sha256": "52b623e516cbb1afd64c13c557d39018a9faaef6639a248b236f4e6d95f752d8",
+      "alpha": false,
+      "origin": "Arena image generation, one standalone scene; large batch, no user selection requested",
+      "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "prompt_brief": "Orange tabby playing with coral ball, grounded garden, ramp and shaded resting cushion, healthy baseline pet, no AI or purchase pressure.",
+      "prompt_note": "Brief captures design intent, not seed-perfect reproducibility or an exact full prompt transcript. Image tool output is AI-generated.",
+      "reviewed_fullsize": true,
+      "review_notes": {
+        "vi": "Pose chơi đang bake vào ảnh; trạng thái nghỉ chưa có art riêng. Mèo shop khác style mắt/giải phẫu, cần character sheet chung. Không có inference hoặc animation.",
+        "en": "Playing pose is baked in; no separate resting art. Shop kitten differs in eyes/anatomy and needs a shared character sheet. No inference or animation."
+      },
+      "state_ids": [
+        "play",
+        "rest",
+        "unsupported",
+        "memory"
+      ],
+      "data_owner": "W10 · baseline pet state + optional device/model manager — proposed",
+      "runtime_ready": false,
+      "production_approved": false
+    },
+    {
+      "id": "w10b-pet-shop",
+      "path": "concepts/w10b-pet-shop.jpg",
+      "title": {
+        "vi": "Làm quen bạn mới",
+        "en": "Meet a new companion"
+      },
+      "dimensions": [
+        896,
+        1200
+      ],
+      "format": "JPEG",
+      "bytes": 155976,
+      "sha256": "0106104a69095e63fe54124abaeb4276c8bc0e5c98330ed16db27122f6176a89",
+      "alpha": false,
+      "origin": "Arena image generation, one standalone scene; large batch, no user selection requested",
+      "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "prompt_brief": "Humane companion showroom, grey kitten, play arch and woven bed, no cages or sale pressure; blank lower floor for separate capability UI.",
+      "prompt_note": "Brief captures design intent, not seed-perfect reproducibility or an exact full prompt transcript. Image tool output is AI-generated.",
+      "reviewed_fullsize": true,
+      "review_notes": {
+        "vi": "Không bake giá hoặc sale; trạng thái mua cần authority thật. Phụ huynh, restore/refund/pending chưa có tích hợp. Art mèo cần đồng bộ với W10.",
+        "en": "No baked price or sale labels; purchases require real authority. Parent consent, restore/refund/pending are not integrated. Kitten art needs alignment with W10."
+      },
+      "state_ids": [
+        "preview",
+        "parent",
+        "pending",
+        "restore"
+      ],
+      "data_owner": "W10b · catalog / device capability / parental consent / entitlement — proposed",
+      "runtime_ready": false,
+      "production_approved": false
+    },
+    {
+      "id": "w12-creator",
+      "path": "concepts/w12-creator.jpg",
+      "title": {
+        "vi": "Xưởng của mình",
+        "en": "My workshop"
+      },
+      "dimensions": [
+        896,
+        1200
+      ],
+      "format": "JPEG",
+      "bytes": 158897,
+      "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f",
+      "alpha": false,
+      "origin": "Arena image generation, one standalone scene; large batch, no user selection requested",
+      "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "prompt_brief": "Useful workshop with central marble-run workbench, distinct test tray, stored older prototype and folio; not achievement museum.",
+      "prompt_note": "Brief captures design intent, not seed-perfect reproducibility or an exact full prompt transcript. Image tool output is AI-generated.",
+      "reviewed_fullsize": true,
+      "review_notes": {
+        "vi": "Cơ cấu đường bi là prop khái niệm, chưa được test vật lý. Không thay code game hay đáp án theo hình; UI editor/timeline riêng còn thiếu.",
+        "en": "Marble mechanism is a concept prop, not physics-tested. Do not change game code or answers to match art; dedicated editor/timeline UI remains missing."
+      },
+      "state_ids": [
+        "draft",
+        "tested",
+        "saved",
+        "moderation",
+        "error"
+      ],
+      "data_owner": "W12 · creator draft/version/test result + sharing permissions — mixed existing module/proposed expansion",
+      "runtime_ready": false,
+      "production_approved": false
+    },
+    {
+      "id": "w12b-friends-gifts",
+      "path": "concepts/w12b-friends-gifts.jpg",
+      "title": {
+        "vi": "Góc gửi quà",
+        "en": "Gift corner"
+      },
+      "dimensions": [
+        896,
+        1200
+      ],
+      "format": "JPEG",
+      "bytes": 198729,
+      "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0",
+      "alpha": false,
+      "origin": "Arena image generation, one standalone scene; large batch, no user selection requested",
+      "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "prompt_brief": "Coastal community packing pavilion, one parcel, blank tag, separate incoming/outgoing cubbies; no fake online crowd or badges.",
+      "prompt_note": "Brief captures design intent, not seed-perfect reproducibility or an exact full prompt transcript. Image tool output is AI-generated.",
+      "reviewed_fullsize": true,
+      "review_notes": {
+        "vi": "Một gói quà không thay friend list/invite UI. Cần làm tiếp danh sách bạn, chặn/báo cáo và chọn người nhận. Không suy online từ ảnh.",
+        "en": "One parcel does not replace friend-list/invite UI. Friend list, block/report and recipient selection remain. No presence inferred from imagery."
+      },
+      "state_ids": [
+        "draft",
+        "confirm",
+        "pending",
+        "declined"
+      ],
+      "data_owner": "W12/W09 · allowed gift catalog + recipient consent + durable send receipt — proposed",
+      "runtime_ready": false,
+      "production_approved": false
+    },
+    {
+      "id": "w05-maze",
+      "path": "concepts/w05-maze.jpg",
+      "title": {
+        "vi": "Robot Maze",
+        "en": "Robot Maze"
+      },
+      "dimensions": [
+        896,
+        1200
+      ],
+      "format": "JPEG",
+      "bytes": 229968,
+      "sha256": "93762339e4be8c38ddc6516749fdf52d77179bcd0c7104827a412f6831c3bcc0",
+      "alpha": false,
+      "origin": "Arena image generation, one standalone scene; large batch, no user selection requested",
+      "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "prompt_brief": "Readable raised stone maze, robot start and coral goal, teal obstacles, coastal garden, no baked answers; illustrative level only.",
+      "prompt_note": "Brief captures design intent, not seed-perfect reproducibility or an exact full prompt transcript. Image tool output is AI-generated.",
+      "reviewed_fullsize": true,
+      "review_notes": {
+        "vi": "Lưới AI không khớp dữ liệu màn và có bảng trống bake phía dưới. Phải dựng tile/actor/obstacle theo engine, không lấy pixel ảnh làm collision. Robot khác W06, cần đồng bộ.",
+        "en": "AI grid does not match level data and has a baked blank board below. Rebuild tiles/actors/obstacles from engine data, not image pixels. Robot differs from W06 and needs alignment."
+      },
+      "state_ids": [
+        "ready",
+        "paused",
+        "retry",
+        "complete"
+      ],
+      "data_owner": "W05 · Maze engine / level data owns tiles, collisions and outcome; picture is not a playable level",
+      "runtime_ready": false,
+      "production_approved": false
+    },
+    {
+      "id": "w05-dragon",
+      "path": "concepts/w05-dragon.jpg",
+      "title": {
+        "vi": "Dragon Jump",
+        "en": "Dragon Jump"
+      },
+      "dimensions": [
+        896,
+        1200
+      ],
+      "format": "JPEG",
+      "bytes": 99037,
+      "sha256": "6ea6221bb6e662671fa28664048e858a50c4a415c9cad7e84563eefdb63530bf",
+      "alpha": false,
+      "origin": "Arena image generation, one standalone scene; large batch, no user selection requested",
+      "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "prompt_brief": "Side-view friendly coral dragon, thick basalt jump platforms, warm amber lava, layered turquoise horizon; same material family, no pixel art.",
+      "prompt_note": "Brief captures design intent, not seed-perfect reproducibility or an exact full prompt transcript. Image tool output is AI-generated.",
+      "reviewed_fullsize": true,
+      "review_notes": {
+        "vi": "Bục đá và rồng bake cùng ảnh, không có animation. Side-view là có chủ đích; tỷ lệ bước nhảy phải do engine quyết định. Phong cách rồng mềm hơn cảnh khác, cần calibrate.",
+        "en": "Platforms and dragon are baked together, with no animation. Side view is intentional; jump distance belongs to the engine. Dragon rendering is softer than other scenes and needs calibration."
+      },
+      "state_ids": [
+        "ready",
+        "paused",
+        "retry",
+        "complete"
+      ],
+      "data_owner": "W05 · Dragon engine / platform geometry / attempt result; artwork not a collision map",
+      "runtime_ready": false,
+      "production_approved": false
+    },
+    {
+      "id": "w06-result",
+      "path": "concepts/w06-result.jpg",
+      "title": {
+        "vi": "Sau một lượt chơi",
+        "en": "After a play session"
+      },
+      "dimensions": [
+        896,
+        1200
+      ],
+      "format": "JPEG",
+      "bytes": 194140,
+      "sha256": "36ef11d66cc5270ab52b8e8421c7796374a7d382b0132301775248147a220cd2",
+      "alpha": false,
+      "origin": "Arena image generation, one standalone scene; large batch, no user selection requested",
+      "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "reference_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "prompt_brief": "Calm rest terrace with robot and empty plinth, no trophy, coins, stars or victory baked in; support honest result overlays.",
+      "prompt_note": "Brief captures design intent, not seed-perfect reproducibility or an exact full prompt transcript. Image tool output is AI-generated.",
+      "reviewed_fullsize": true,
+      "review_notes": {
+        "vi": "Bục trống dùng được cho thắng/thử lại, không ép mọi người nhận cúp. Robot chưa cùng character sheet với Maze. Không có receipt/grant thật.",
+        "en": "Empty plinth supports success/retry without giving everyone a trophy. Robot is not yet on the same character sheet as Maze. No real receipt/grant."
+      },
+      "state_ids": [
+        "verified",
+        "pending",
+        "retry",
+        "error"
+      ],
+      "data_owner": "W06 · activity outcome + existing event reward notices; new grant/claim authority not implemented",
+      "runtime_ready": false,
+      "production_approved": false
+    }
+  ],
+  "evidence": [
+    {
+      "path": "evidence/gallery-overview.png",
+      "dimensions": [
+        1441,
+        1263
+      ],
+      "bytes": 712366,
+      "sha256": "6db1f2a082838ca1a8bf3461cd579f355d8cf5f71260d03f15c41810dadce29c",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w03-project-360x640-en-text2-scrolled.png",
+      "dimensions": [
+        360,
+        640
+      ],
+      "bytes": 78373,
+      "sha256": "7f9523ecf7c310a7db8a3cd9bdc203b4bdd6797b1f4558458932062d09fde4a7",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w03-project-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 226884,
+      "sha256": "d782638fd9afd5874cbb54d08e757a0d8abac6527f7cd57388bdeaaeb3166ad7",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w03-project-pending-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 214038,
+      "sha256": "4b17bdc3d50398545b2cefa5d92e7f7e82c1c1aff8fc36d3153afff78efdc1b1",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w05-dragon-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 223570,
+      "sha256": "357b9128fbcea6302e69d0acdec40801cc78804dd405adeb04d66fc78dc1bb28",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w05-maze-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 299938,
+      "sha256": "01765833ccc67507b1408b713cb8fa5dfb4e99f3b1ee73f23e2088856a920f3e",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w06-result-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 283207,
+      "sha256": "3dc641d5db8c89867fc2912382b5edb4bb42c06b1dceec6aa145800ec576b5dc",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w07-interior-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 230561,
+      "sha256": "b7d4b53834355ff6dbfa3c4910355905d67855d654e564ff557028957fa7a6a4",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w09-visit-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 322747,
+      "sha256": "5dda500888f7e7d178cdca698f38ea1710cf243bc845700deb8e801eadcf172d",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w09-visit-revoked-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 52886,
+      "sha256": "796b118e1cf755c149d0b9f5399df676e6c56301301bf19a6e78edc56c5593f6",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w10-pet-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 309744,
+      "sha256": "1e9f3c70e5b9753fcdb22a7d94e83c379ea56a38845e7a519aae9858526e6edb",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w10-pet-unsupported-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 312940,
+      "sha256": "7ad757875ce277211fc0ae7ab2a604d03975e2093b8f9707f1c57fbc5d8df8be",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w10b-pet-shop-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 253560,
+      "sha256": "9043aa53a85d9d929bc838c1b391cea39b43c42db3e0a678329d0abe0dc134c5",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w12-creator-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 253318,
+      "sha256": "8cfa8763382197b6d7377e491ccd59f3b6b4b06ed7b22fb1d7fd288253f8f449",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w12-creator-error-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 254885,
+      "sha256": "91d58e3a89f672bb61891cba0c8fb3c69c61cc081b0ffeee51786056376844a5",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    },
+    {
+      "path": "evidence/w12b-friends-gifts-390x844-vi.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "bytes": 296150,
+      "sha256": "ca30ff62d0de186808d9bdfe8a4d9e9f2b9afcd059f3848b338454eb7cacc5c1",
+      "kind": "Chromium screenshot of HTML design fixture, NOT Flutter"
+    }
+  ],
+  "browser_checks": "evidence/checks.json",
+  "art_tool_limit": {
+    "successful_new_scenes": 10,
+    "failed_due_to_limit": [
+      "w04-journal",
+      "shared-settings",
+      "shared-welcome"
+    ],
+    "retried_after_limit": false
+  },
+  "not_delivered": [
+    "Dedicated new journal/settings/welcome art",
+    "Catch Stars and Bug Hunter scene refresh",
+    "PQC-017 W13/W14/W11 (owned by CODE, not received in this package)",
+    "Full friends list/invite/report/block UI",
+    "Dedicated Creator code editor/timeline",
+    "All loading/error/permission/refund/reconnect states",
+    "Completed extension and resting cat pose artwork",
+    "Animation/sprites/alpha/pivot/footprint/occluders/navigation mesh",
+    "Flutter/device/keyboard or gameplay validation",
+    "Real social/commerce/housing/AI runtime"
+  ],
+  "preexisting_workspace_drift_excluded": [
+    "docs/design/art-refresh-r33/concepts/w02-home-expansion.jpg",
+    "docs/design/art-refresh-r33/concepts/w08-archipelago.jpg"
+  ]
+}

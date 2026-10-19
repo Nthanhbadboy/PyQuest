@@ -1,0 +1,310 @@
+{
+  "source_pin": "5c97577c32c27d36f33c09bf3af2fa01ad0111f5",
+  "en_provenance": "DESIGN translations; lesson EN reused from r43. No substring translation of ActivityStatus strings.",
+  "activities": [
+    {
+      "id": "main_quest",
+      "name": {
+        "vi": "Tháp Python",
+        "en": "Python Tower"
+      },
+      "tagline": {
+        "vi": "Main Quest · Học lập trình Python",
+        "en": "Learn real Python"
+      },
+      "description": {
+        "vi": "Lên Tháp Python học viết code thật cùng thầy Py: từng bài ngắn, có ví dụ chạy được và bài tập vui.",
+        "en": "Write real code with Teacher Py, one short lesson at a time, with runnable examples and playful exercises."
+      },
+      "host": "py",
+      "needsPython": true,
+      "hasCreatorMode": false,
+      "source_thumbnail": "assets/images/thumb_tower.webp",
+      "study_scene": "assets/main_quest.webp"
+    },
+    {
+      "id": "robot_maze",
+      "name": {
+        "vi": "Mê Cung Robo",
+        "en": "Robo Maze"
+      },
+      "tagline": {
+        "vi": "Mini-game · Xếp lệnh dẫn đường",
+        "en": "Arrange commands to find the way"
+      },
+      "description": {
+        "vi": "Robo bị lạc giữa khu vườn bụi cây! Xếp các mũi tên thành chương trình để đưa Robo tới rương báu.",
+        "en": "Robo is lost in the hedge garden! Arrange arrows into a program that guides Robo to the treasure chest."
+      },
+      "host": "robo",
+      "needsPython": false,
+      "hasCreatorMode": true,
+      "source_thumbnail": "assets/images/thumb_maze.webp",
+      "study_scene": "assets/robot_maze.webp"
+    },
+    {
+      "id": "dragon_jump",
+      "name": {
+        "vi": "Núi Lửa Pip",
+        "en": "Pip’s Volcano"
+      },
+      "tagline": {
+        "vi": "Mini-game · Rồng Nhảy",
+        "en": "Jump with a little dragon"
+      },
+      "description": {
+        "vi": "Pip mê sưu tầm xu vàng! Chạm để nhảy qua đá và bụi gai, chạm thêm lần nữa để bay cao hơn.",
+        "en": "Pip loves collecting coins! Tap to leap over rocks and thorny bushes, then tap again to fly higher."
+      },
+      "host": "pip",
+      "needsPython": false,
+      "hasCreatorMode": false,
+      "source_thumbnail": "assets/images/thumb_volcano.webp",
+      "study_scene": "assets/dragon_jump.webp"
+    },
+    {
+      "id": "catch_stars",
+      "name": {
+        "vi": "Đài Thiên Văn",
+        "en": "Observatory"
+      },
+      "tagline": {
+        "vi": "Mini-game · Hái Sao",
+        "en": "Catch falling stars"
+      },
+      "description": {
+        "vi": "Đêm nay sao rơi đầy trời! Kéo chiếc bình sao để hứng thật nhiều sao, nhưng nhớ né thiên thạch nhé.",
+        "en": "Stars are falling tonight! Move the jar to catch them, and remember to dodge the meteors."
+      },
+      "host": "robo",
+      "needsPython": false,
+      "hasCreatorMode": false,
+      "source_thumbnail": "assets/images/thumb_observatory.webp",
+      "study_scene": "assets/catch_stars.webp"
+    },
+    {
+      "id": "bug_hunter",
+      "name": {
+        "vi": "Xưởng Bitsy",
+        "en": "Bitsy’s Workshop"
+      },
+      "tagline": {
+        "vi": "Mini-game · Săn bọ lỗi",
+        "en": "Find and fix code bugs"
+      },
+      "description": {
+        "vi": "Bitsy là thám tử săn bọ lỗi trong code. Đọc chương trình, chạy thử, tìm dòng có bọ rồi chọn cách sửa đúng!",
+        "en": "Bitsy is a code detective. Read a program, try it, find the buggy line and choose the right fix."
+      },
+      "host": "bitsy",
+      "needsPython": true,
+      "hasCreatorMode": false,
+      "source_thumbnail": "assets/images/thumb_workshop.webp",
+      "study_scene": "assets/bug_hunter.webp"
+    },
+    {
+      "id": "achievement_house",
+      "name": {
+        "vi": "Nhà Thành Tích",
+        "en": "Achievement House"
+      },
+      "tagline": {
+        "vi": "Nơi cất giữ huy hiệu và kỷ niệm",
+        "en": "Keep your badges and memories"
+      },
+      "description": {
+        "vi": "Ngôi nhà ghi lại hành trình của bạn: tủ huy hiệu, tường chiến tích, bộ sưu tập và góc sáng tạo.",
+        "en": "A place to look back on your journey: badges, milestones, collections and creations."
+      },
+      "host": "robo",
+      "needsPython": false,
+      "hasCreatorMode": false,
+      "source_thumbnail": "assets/images/thumb_house.webp",
+      "study_scene": "assets/achievement_house.webp"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "mq1_01",
+      "number": 1,
+      "title": {
+        "vi": "Xin chào, Python!",
+        "en": "Hello, Python!"
+      }
+    },
+    {
+      "id": "mq1_02",
+      "number": 2,
+      "title": {
+        "vi": "Nhiều dòng print",
+        "en": "More print lines"
+      }
+    },
+    {
+      "id": "mq1_03",
+      "number": 3,
+      "title": {
+        "vi": "Con số biết tính",
+        "en": "Numbers that calculate"
+      }
+    },
+    {
+      "id": "mq1_04",
+      "number": 4,
+      "title": {
+        "vi": "Biến — chiếc hộp có tên",
+        "en": "Variables — named boxes"
+      }
+    },
+    {
+      "id": "mq1_05",
+      "number": 5,
+      "title": {
+        "vi": "Biến thay đổi",
+        "en": "Variables can change"
+      }
+    },
+    {
+      "id": "mq1_06",
+      "number": 6,
+      "title": {
+        "vi": "Ghép chữ",
+        "en": "Joining text"
+      }
+    },
+    {
+      "id": "mq1_07",
+      "number": 7,
+      "title": {
+        "vi": "Đúng hay Sai?",
+        "en": "True or False?"
+      }
+    },
+    {
+      "id": "mq1_08",
+      "number": 8,
+      "title": {
+        "vi": "Nếu... thì",
+        "en": "If… then"
+      }
+    },
+    {
+      "id": "mq1_09",
+      "number": 9,
+      "title": {
+        "vi": "Nếu không thì",
+        "en": "Otherwise"
+      }
+    },
+    {
+      "id": "mq1_10",
+      "number": 10,
+      "title": {
+        "vi": "Nhiều lựa chọn",
+        "en": "More choices"
+      }
+    },
+    {
+      "id": "mq1_11",
+      "number": 11,
+      "title": {
+        "vi": "Điều khiển Robo bằng Python",
+        "en": "Guide Robo with Python"
+      }
+    },
+    {
+      "id": "mq1_12",
+      "number": 12,
+      "title": {
+        "vi": "Thử thách Code Apprentice",
+        "en": "Code Apprentice challenge"
+      }
+    }
+  ],
+  "chapter": {
+    "id": "code_apprentice",
+    "number": 1,
+    "title": "Code Apprentice",
+    "subtitle": "Học Việc Lập Trình",
+    "description": "12 bài học đầu tiên: print, biến, chuỗi chữ, so sánh và câu lệnh điều kiện."
+  },
+  "totals": {
+    "lessons": 12,
+    "maze": 10,
+    "puzzles": 12,
+    "bugs": 20,
+    "badges": 15,
+    "secretBadges": 3
+  },
+  "unlockLessonId": "mq1_03",
+  "constellations": [
+    {
+      "id": "robo",
+      "threshold": 30
+    },
+    {
+      "id": "pip",
+      "threshold": 80
+    },
+    {
+      "id": "bitsy",
+      "threshold": 150
+    },
+    {
+      "id": "py",
+      "threshold": 250
+    },
+    {
+      "id": "chest",
+      "threshold": 400
+    },
+    {
+      "id": "rocket",
+      "threshold": 600
+    },
+    {
+      "id": "whale",
+      "threshold": 850
+    },
+    {
+      "id": "snail",
+      "threshold": 1200
+    }
+  ],
+  "config": {
+    "energy": {
+      "max_initial": 20,
+      "max_cap": 40,
+      "regen_minutes_per_unit": 10,
+      "milestone_bonus": {
+        "chapter:code_apprentice": 5
+      }
+    },
+    "costs": {
+      "mini_game_new_level": 2,
+      "mini_game_replay_completed": 0,
+      "arcade_run": 2,
+      "creator_mode": 0,
+      "main_quest_lesson_first": 1,
+      "main_quest_review": 0,
+      "chapter_challenge_first": 3
+    }
+  },
+  "welcome_source": [
+    {
+      "host": "robo",
+      "title": "Chào mừng tới Đảo Khởi Đầu!",
+      "body": "Mình là Robo. Mỗi địa điểm trên đảo là một trò chơi hoặc một chặng phiêu lưu riêng. Chạm vào một nơi để khám phá nhé!"
+    },
+    {
+      "host": "py",
+      "title": "Học Python ở Tháp Python",
+      "body": "Tớ là thầy Py. Ở Tháp Python bạn sẽ học viết code thật từng bước. Nhiều trò chơi khác trên đảo không cần biết Python đâu!"
+    },
+    {
+      "host": "pip",
+      "title": "Năng lượng và nghỉ ngơi",
+      "body": "Chơi màn mới và học bài mới dùng một chút năng lượng. Năng lượng tự hồi theo thời gian. Không có quảng cáo, không có mua bán!"
+    }
+  ]
+}

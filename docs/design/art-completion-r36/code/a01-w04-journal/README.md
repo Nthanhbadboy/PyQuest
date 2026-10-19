@@ -1,12 +1,11 @@
-# A01 · W04 Journey Journal
+# a01-w04-journal · Journey Journal
 
-**Batch A · concept retained; screen correction implemented, awaiting DESIGN re-review.**
+**Batch A · concept + screen study only.**
 
-- [Open localized layout](layout.html) · [Original full-size concept](concept.png) · [Exact prompt](prompt.txt)
-- States: `following`, `not_following`, `pending_results`, `load_error`.
-- R36 correction: front-facing paper spread within reading nook; reviewer controls and notes are outside the product viewport; load-error copy explains the selector is reviewer-only and the primary CTA stays disabled.
-- Original concept PNG unchanged; source/original hashes and corrected layout hashes are in [`manifest.json`](manifest.json) and [`../evidence/r36a-originals/originals.json`](../evidence/r36a-originals/originals.json).
-- References and rationale: see the manifest and [`../reviewed-inputs.json`](../reviewed-inputs.json).
-- Static/browser evidence: [`../evidence/r36a-static-checks.json`](../evidence/r36a-static-checks.json) and [`../evidence/r36a-browser-checks.json`](../evidence/r36a-browser-checks.json).
+- [Open localized layout](layout.html) · [Full-size art](concept.png) · [Exact generation prompt](prompt.txt)
+- States: `following, not_following, pending_results, load_error`. The page offers VI/EN and 1×/1.3×/2× text fixture controls; its primary CTA is disabled.
+- Reference choice: see [`manifest.json`](manifest.json) for exact active paths and SHA-256; scene-specific rationale is included there and in [`../reviewed-inputs.json`](../reviewed-inputs.json).
+- Sources: docs/design/WORLD_EXPANSION_REDESIGN.md §3 W04–W07, docs/design/experience-blueprint/P06C_LINKED_JOURNEYS.md.
+- Runtime/production readiness: **false**. No live data, gameplay, persistence, account, network, grant, purchase or inference is implemented.
 
-No journal persistence, receipt, grant, reward, or production/runtime behavior is implemented.
+The PNG is one opaque concept scene, not a layered/sprite pack. It must not be treated as calibrated geometry or proof of a shipped feature.

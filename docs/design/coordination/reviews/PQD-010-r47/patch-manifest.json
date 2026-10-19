@@ -1,0 +1,74 @@
+{
+  "code_base": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+  "status": "PREPARED_NOT_APPLIED_TO_REMOTE_CODE",
+  "files": [
+    {
+      "path": "README.md",
+      "before_sha256": "cb229926ef35649c42be5d847907f675566466cea070e7de43a19df554cab523",
+      "after_sha256": "f2ba2c775231b76057fa393391d2df25ba74f95d0aa73b5c25035bb28c796984"
+    },
+    {
+      "path": "docs/PRODUCT_VISION.md",
+      "before_sha256": "14c7178f52e71b4259092a4c9947dd189c97fc2fc251ce90f4dbebf5c7842061",
+      "after_sha256": "d38293cdcad83283bd21f2501406fac9f469198b75c71d2bea7b8f389d1a07f0"
+    },
+    {
+      "path": "docs/GAME_DESIGN.md",
+      "before_sha256": "f6d53a2aae381de0748a53e99b0ea763158c971fff6ec67e5eda01f91f36783f",
+      "after_sha256": "e01a9c3cc86c673c221458cd11c2829609b5ee390b8c0f7b6f39c0ca0f9d010a"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "before_sha256": "492ca70ff3b12ebcfc9bc458e29cc43fce583248d5acf3630824b8e87758b75b",
+      "after_sha256": "67c59e4c742091e56ac20b50ca17b2dcd032b0bb22ae60428cfa02da4e540c1f"
+    },
+    {
+      "path": "docs/TECHNICAL_ARCHITECTURE.md",
+      "before_sha256": "190a6d3390046a51d5ae6791b48383eedccdb2fd97f11c5ed486cd3b1cf6f2a4",
+      "after_sha256": "8c3f62cc3547bc050b3d1a2fc8c48cd71b6e78417f973b6c641788cf3d388a4d"
+    },
+    {
+      "path": "docs/experimental/GEMINI_LIVE_VOICE_TEST.md",
+      "before_sha256": "9f845e55eeb31e0534827ba5ad6548447951866f99e4a71a12086e59b8a67216",
+      "after_sha256": "90aa9580df6ee3c7573153829961d53006a2be7f7cb9daaf4f84918cf0328555"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "before_sha256": "753279fb1deb904807eaa2f1388da4d86a640851f0e6bfa8b4ff1d030ff6f313",
+      "after_sha256": "d68be4aabd0ae9ab120fd00b342b2f5d2612253b9cb1a408fe1f6aca7088622c"
+    },
+    {
+      "path": ".github/workflows/build-debug-apk.yml",
+      "before_sha256": "168976a87ffc719a4e349e8a6ad203865737750063eaf20d7d19ba6e82fa98c9",
+      "after_sha256": "1aa8681f69e471a2e1ca28540cad5f13694ac2e9834d742ede7614b36b165b28"
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-018.md",
+      "before_sha256": "984c14b7fb2815e88d7ed1d81ddfe4c5db1832783ea49d9f2eb7d498cfd91cc8",
+      "after_sha256": "4c964a40feafe9f5ecf2e08cb3fb7f53e8516722c816f41e2ca1c4cbce9a363a"
+    },
+    {
+      "path": "docs/PROJECT_STATUS.md",
+      "before_sha256": null,
+      "after_sha256": "98e1eaaf06bb47c8a61e94d43928f3cee1ce8efcc18c243bfab992a6441f5d56"
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-019.md",
+      "before_sha256": null,
+      "after_sha256": "dfd7ace51ab6c74bb00b8b85ed1505ceb6d13d0c064d14bd64a0321e5cba4e9a"
+    },
+    {
+      "path": "tools/maintenance/check_release_policy.py",
+      "before_sha256": null,
+      "after_sha256": "586f3a0e9cd35c05b2bc7859b23a7e8ea2538343f2ff577d3fa5cb624d603ad8"
+    },
+    {
+      "path": "tools/maintenance/test_release_policy.py",
+      "before_sha256": null,
+      "after_sha256": "bf46f0527158b28a17cf8f9e46f01f8bea2ff4aa4378bd7f842dceeaa594d15d"
+    }
+  ],
+  "patch_sha256": "1192b3ff220cfd2fc78089aebd90837514de5157169860e2ddf8bf8c3d1ff97d",
+  "runtime_files_changed": false,
+  "workflow_gate_changes_authorized": false
+}

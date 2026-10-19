@@ -1,0 +1,570 @@
+{
+  "source": "6dc8ca8feeed54cc0fa6a82109e3a59d24a16153",
+  "en": "Design translation; Vietnamese names, stories, geometry and thresholds extracted verbatim from source. Fictional character atlas, not astronomy.",
+  "constellations": [
+    {
+      "id": "robo",
+      "name": {
+        "vi": "Chòm Robo",
+        "en": "Robo"
+      },
+      "threshold": 30,
+      "points": [
+        [
+          0.3,
+          0.3
+        ],
+        [
+          0.7,
+          0.3
+        ],
+        [
+          0.7,
+          0.65
+        ],
+        [
+          0.3,
+          0.65
+        ],
+        [
+          0.5,
+          0.12
+        ],
+        [
+          0.42,
+          0.45
+        ],
+        [
+          0.58,
+          0.45
+        ]
+      ],
+      "lines": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "story": {
+        "vi": "Người ta kể rằng Robo đầu tiên được chế tạo dưới chòm sao này.",
+        "en": "The first Robo is said to have been built beneath this constellation."
+      }
+    },
+    {
+      "id": "pip",
+      "name": {
+        "vi": "Chòm Rồng Pip",
+        "en": "Pip the Dragon"
+      },
+      "threshold": 80,
+      "points": [
+        [
+          0.15,
+          0.6
+        ],
+        [
+          0.35,
+          0.45
+        ],
+        [
+          0.55,
+          0.5
+        ],
+        [
+          0.7,
+          0.3
+        ],
+        [
+          0.85,
+          0.35
+        ],
+        [
+          0.45,
+          0.25
+        ],
+        [
+          0.6,
+          0.7
+        ]
+      ],
+      "lines": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          6
+        ]
+      ],
+      "story": {
+        "vi": "Một chú rồng con đang dang cánh bay về phía mặt trăng.",
+        "en": "A little dragon spreads its wings and flies toward the moon."
+      }
+    },
+    {
+      "id": "bitsy",
+      "name": {
+        "vi": "Chòm Mèo Bitsy",
+        "en": "Bitsy the Cat"
+      },
+      "threshold": 150,
+      "points": [
+        [
+          0.3,
+          0.2
+        ],
+        [
+          0.4,
+          0.35
+        ],
+        [
+          0.6,
+          0.35
+        ],
+        [
+          0.7,
+          0.2
+        ],
+        [
+          0.65,
+          0.6
+        ],
+        [
+          0.35,
+          0.6
+        ],
+        [
+          0.85,
+          0.75
+        ]
+      ],
+      "lines": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "story": {
+        "vi": "Đôi tai nhọn và chiếc đuôi dài — Bitsy luôn canh chừng những con bọ lỗi.",
+        "en": "Pointed ears and a long tail — Bitsy keeps watch for bugs."
+      }
+    },
+    {
+      "id": "py",
+      "name": {
+        "vi": "Chòm Rắn Py",
+        "en": "Py the Snake"
+      },
+      "threshold": 250,
+      "points": [
+        [
+          0.15,
+          0.75
+        ],
+        [
+          0.3,
+          0.6
+        ],
+        [
+          0.5,
+          0.65
+        ],
+        [
+          0.65,
+          0.5
+        ],
+        [
+          0.55,
+          0.3
+        ],
+        [
+          0.7,
+          0.18
+        ],
+        [
+          0.85,
+          0.22
+        ]
+      ],
+      "lines": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "story": {
+        "vi": "Uốn lượn như một dòng code dài, chòm sao của người thầy thông thái.",
+        "en": "Winding like a long line of code, this constellation belongs to the wise teacher."
+      }
+    },
+    {
+      "id": "chest",
+      "name": {
+        "vi": "Chòm Rương Báu",
+        "en": "Treasure Chest"
+      },
+      "threshold": 400,
+      "points": [
+        [
+          0.25,
+          0.45
+        ],
+        [
+          0.75,
+          0.45
+        ],
+        [
+          0.75,
+          0.75
+        ],
+        [
+          0.25,
+          0.75
+        ],
+        [
+          0.3,
+          0.3
+        ],
+        [
+          0.7,
+          0.3
+        ],
+        [
+          0.5,
+          0.55
+        ]
+      ],
+      "lines": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "story": {
+        "vi": "Ai tìm thấy chòm sao này sẽ gặp may mắn khi mở rương.",
+        "en": "Those who find this constellation are said to have good luck opening chests."
+      }
+    },
+    {
+      "id": "rocket",
+      "name": {
+        "vi": "Chòm Tên Lửa",
+        "en": "Rocket"
+      },
+      "threshold": 600,
+      "points": [
+        [
+          0.5,
+          0.1
+        ],
+        [
+          0.62,
+          0.3
+        ],
+        [
+          0.62,
+          0.65
+        ],
+        [
+          0.38,
+          0.65
+        ],
+        [
+          0.38,
+          0.3
+        ],
+        [
+          0.75,
+          0.8
+        ],
+        [
+          0.25,
+          0.8
+        ]
+      ],
+      "lines": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "story": {
+        "vi": "Chỉ đường cho những nhà phát minh muốn bay tới các vì sao.",
+        "en": "A guide for inventors who want to fly to the stars."
+      }
+    },
+    {
+      "id": "whale",
+      "name": {
+        "vi": "Chòm Cá Voi",
+        "en": "Whale"
+      },
+      "threshold": 850,
+      "points": [
+        [
+          0.1,
+          0.55
+        ],
+        [
+          0.3,
+          0.4
+        ],
+        [
+          0.6,
+          0.38
+        ],
+        [
+          0.85,
+          0.5
+        ],
+        [
+          0.6,
+          0.65
+        ],
+        [
+          0.3,
+          0.65
+        ],
+        [
+          0.9,
+          0.3
+        ]
+      ],
+      "lines": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "story": {
+        "vi": "Một chú cá voi hiền lành bơi giữa biển sao, phun ra những vì sao nhỏ.",
+        "en": "A gentle whale swims in the sea of stars, sending little stars into the sky."
+      }
+    },
+    {
+      "id": "snail",
+      "name": {
+        "vi": "Chòm Ốc Sên",
+        "en": "Snail"
+      },
+      "threshold": 1200,
+      "points": [
+        [
+          0.2,
+          0.7
+        ],
+        [
+          0.8,
+          0.7
+        ],
+        [
+          0.55,
+          0.35
+        ],
+        [
+          0.4,
+          0.45
+        ],
+        [
+          0.48,
+          0.55
+        ],
+        [
+          0.85,
+          0.5
+        ],
+        [
+          0.9,
+          0.4
+        ]
+      ],
+      "lines": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "story": {
+        "vi": "Chậm mà chắc — chòm sao dành cho người kiên nhẫn nhất đảo.",
+        "en": "Slow and steady — a constellation for the island’s most patient explorers."
+      }
+    }
+  ]
+}

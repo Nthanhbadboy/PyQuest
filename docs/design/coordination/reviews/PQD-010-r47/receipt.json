@@ -1,0 +1,164 @@
+{
+  "date": "2026-10-18",
+  "result": "PASS_LOCAL_DOCS_AND_PACKAGING_POLICY_ONLY",
+  "design_base": "c68bdcd73b400c4d449216023a54499b202bda1d",
+  "code_pin": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+  "code_remote_patch_applied": false,
+  "design_policy": {
+    "result": "PASS_STATIC_POLICY_ONLY",
+    "workflows": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "apk_commands": 2
+      },
+      {
+        "path": ".github/workflows/build-debug-apk.yml",
+        "apk_commands": 1
+      }
+    ],
+    "historical_criteria": 64,
+    "errors": [],
+    "flutter": "NOT_RUN",
+    "ci_triggered": false,
+    "apk_inspection": "NOT_RUN"
+  },
+  "code_patch_policy": {
+    "result": "PASS_STATIC_POLICY_ONLY",
+    "workflows": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "apk_commands": 2
+      },
+      {
+        "path": ".github/workflows/build-debug-apk.yml",
+        "apk_commands": 1
+      }
+    ],
+    "historical_criteria": 64,
+    "errors": [],
+    "flutter": "NOT_RUN",
+    "ci_triggered": false,
+    "apk_inspection": "NOT_RUN"
+  },
+  "unit_tests_per_tree": 12,
+  "fake_flutter_shell_cases_per_tree": 6,
+  "yaml_parser": "PyYAML 6.0.3 (cache only, not app/CI dependency)",
+  "workflow_comparisons": [
+    {
+      "tree": "DESIGN",
+      "path": ".github/workflows/ci.yml",
+      "yaml": "PASS",
+      "unrelated_structure": "UNCHANGED"
+    },
+    {
+      "tree": "DESIGN",
+      "path": ".github/workflows/build-debug-apk.yml",
+      "yaml": "PASS",
+      "unrelated_structure": "UNCHANGED"
+    },
+    {
+      "tree": "CODE patch trial",
+      "path": ".github/workflows/ci.yml",
+      "yaml": "PASS",
+      "unrelated_structure": "UNCHANGED"
+    },
+    {
+      "tree": "CODE patch trial",
+      "path": ".github/workflows/build-debug-apk.yml",
+      "yaml": "PASS",
+      "unrelated_structure": "UNCHANGED"
+    }
+  ],
+  "criteria_preserved_per_tree": 64,
+  "patch_apply_check": "PASS",
+  "patch_apply_in_temporary_tree": "PASS",
+  "patch_files_hash_verified": 13,
+  "new_code_document_links_checked": 10,
+  "pinned_status_links": [
+    {
+      "sha": "8f754a16c829264747b6517c7f7bacb3c8769283",
+      "path": "docs/design/coordination/reviews/PQD-003-r44.md"
+    },
+    {
+      "sha": "30394b7bb23ad1fcf371c8dee644fd6caaf3793d",
+      "path": "docs/implementation/coordination/tasks/PQC-018.md"
+    },
+    {
+      "sha": "c68bdcd73b400c4d449216023a54499b202bda1d",
+      "path": "docs/design/VISUAL_DESIGN_STATUS.md"
+    }
+  ],
+  "app_and_pqc011_unchanged": true,
+  "preexisting_jpegs_not_staged": true,
+  "flutter_execution": "NOT_RUN",
+  "ci_triggered": false,
+  "apk_build_or_inspection": "NOT_RUN",
+  "real_credentials_read": false,
+  "old_artifacts_or_keys_revoked": false,
+  "delivery_hashes": [
+    {
+      "path": ".github/workflows/build-debug-apk.yml",
+      "sha256": "6ccfc1849061e476e7a59de8cf53303ec14754c6d0747ba4e3a3ab347451b665"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "bcd251a60212b60c5c283d51a112fe1beb2f0de92da7f54908629cacfbc9c1d9"
+    },
+    {
+      "path": "README.md",
+      "sha256": "224b7f7199a72601ccb4b136e1392d632183a37e1a36c35839286cdf5f0871ef"
+    },
+    {
+      "path": "docs/GAME_DESIGN.md",
+      "sha256": "77c02dcd5b14010c506e3ca038b1ca2a96f82aa16f5d3c086e5a38b91b79abe5"
+    },
+    {
+      "path": "docs/PRODUCT_VISION.md",
+      "sha256": "6aded36a0cd3fc5abbe994626a17f6de5cf133bac0b2fffac394b8fca9092bc2"
+    },
+    {
+      "path": "docs/PROJECT_STATUS.md",
+      "sha256": "98e1eaaf06bb47c8a61e94d43928f3cee1ce8efcc18c243bfab992a6441f5d56"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "sha256": "c24ab20682d7580a7a547119ccbab658cd902ca61d85d05a53afb18ade1f7e0b"
+    },
+    {
+      "path": "docs/TECHNICAL_ARCHITECTURE.md",
+      "sha256": "c86649146de52255d4db17eb1acc4dae19d19fdef16cdf208eca5f2599c99d5b"
+    },
+    {
+      "path": "docs/design/CROSS_BRANCH_COLLABORATION.md",
+      "sha256": "5ce2b8a1952c8e5b873f83ae407732ed6cdb2a78d5c14a4232d44ba5cfb55548"
+    },
+    {
+      "path": "docs/design/coordination/tasks/PQD-010.md",
+      "sha256": "8bfbdda7c8a6547762c1df0ee81a7eae34c45c42588ca094aecd966e710fe9fa"
+    },
+    {
+      "path": "docs/experimental/GEMINI_LIVE_VOICE_TEST.md",
+      "sha256": "90aa9580df6ee3c7573153829961d53006a2be7f7cb9daaf4f84918cf0328555"
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-018.md",
+      "sha256": "0f69b7ed76d7fa517df4334a652bd6dcf42627638197a91bb17ce350ca23b833"
+    },
+    {
+      "path": "docs/implementation/coordination/tasks/PQC-019.md",
+      "sha256": "dfd7ace51ab6c74bb00b8b85ed1505ceb6d13d0c064d14bd64a0321e5cba4e9a"
+    },
+    {
+      "path": "tools/maintenance/check_release_policy.py",
+      "sha256": "586f3a0e9cd35c05b2bc7859b23a7e8ea2538343f2ff577d3fa5cb624d603ad8"
+    },
+    {
+      "path": "tools/maintenance/test_release_policy.py",
+      "sha256": "bf46f0527158b28a17cf8f9e46f01f8bea2ff4aa4378bd7f842dceeaa594d15d"
+    },
+    {
+      "path": "tools/maintenance/validate_r47_delivery.py",
+      "sha256": "96c6d2e950e23fca88de74da31533375ac108d3f3eed2a5995ce5488b8c645b0"
+    }
+  ]
+}

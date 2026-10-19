@@ -1,0 +1,117 @@
+{
+  "observed_on": "2026-10-18",
+  "design_base": "f26396d29358f2c98b91533e69255f78ac7768e5",
+  "source_pin": "6dc8ca8feeed54cc0fa6a82109e3a59d24a16153",
+  "code_tip_at_start": "6dc8ca8feeed54cc0fa6a82109e3a59d24a16153",
+  "code_tip_later": "e440239fa334c8dae0538ed4460139d1f9416ad0",
+  "pqc020_disposition": "Implementation source pushed; NOT_ACCEPTED. Existing revision1/R1-A unchanged.",
+  "unchanged_source_files": [
+    "app/lib/modules/catch_stars/stars_game.dart",
+    "app/lib/modules/catch_stars/catch_stars_module.dart",
+    "app/assets/config/game_config.json",
+    "app/lib/core/config/game_config.dart",
+    "app/lib/modules/energy/energy_widgets.dart",
+    "app/lib/data/repositories/progress_repository.dart",
+    "app/lib/core/events.dart",
+    "app/lib/shared/widgets/result_screen.dart"
+  ],
+  "runs": [
+    {
+      "id": 39120290079,
+      "sha": "e440239fa334c8dae0538ed4460139d1f9416ad0",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39120290079",
+      "jobs": [
+        {
+          "name": "focused",
+          "status": "completed",
+          "conclusion": "failure",
+          "failed_steps": [
+            "Check formatting on changed PQC-020 Dart files",
+            "Publish PQC-020 gate evidence and generated-source snapshot"
+          ]
+        },
+        {
+          "name": "PyQuest check",
+          "status": "completed",
+          "conclusion": "failure",
+          "failed_steps": []
+        },
+        {
+          "name": "PyQuest localization generation evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "failed_steps": []
+        },
+        {
+          "name": "PQC-011 r49 exact gate counts",
+          "status": "completed",
+          "conclusion": "failure",
+          "failed_steps": []
+        }
+      ]
+    },
+    {
+      "id": 39120290086,
+      "sha": "e440239fa334c8dae0538ed4460139d1f9416ad0",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39120290086",
+      "jobs": [
+        {
+          "name": "bootstrap",
+          "status": "completed",
+          "conclusion": "success",
+          "failed_steps": []
+        },
+        {
+          "name": "check",
+          "status": "completed",
+          "conclusion": "failure",
+          "failed_steps": [
+            "Analyze Flutter app",
+            "Fail if any recorded phase failed"
+          ]
+        },
+        {
+          "name": "Validate PQC-011 diagnostic-only routing",
+          "status": "completed",
+          "conclusion": "skipped",
+          "failed_steps": []
+        },
+        {
+          "name": "apk",
+          "status": "completed",
+          "conclusion": "skipped",
+          "failed_steps": []
+        },
+        {
+          "name": "android",
+          "status": "completed",
+          "conclusion": "skipped",
+          "failed_steps": []
+        }
+      ]
+    },
+    {
+      "id": 39120290106,
+      "sha": "e440239fa334c8dae0538ed4460139d1f9416ad0",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39120290106",
+      "jobs": [
+        {
+          "name": "maintenance",
+          "status": "completed",
+          "conclusion": "failure",
+          "failed_steps": [
+            "Summarize verification result"
+          ]
+        }
+      ]
+    }
+  ],
+  "log_limit": "gh run view --log-failed could not fetch signed log host (EOF); step metadata available. No root-cause claim beyond failed steps.",
+  "actions": "Read-only fetch/status/step metadata. No CI dispatch/rerun, CODE edits, merges or new runtime authorization. r54 relay explicitly NOT_SENT by user."
+}

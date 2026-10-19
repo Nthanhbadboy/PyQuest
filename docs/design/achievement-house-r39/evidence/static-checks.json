@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-18",
+  "scope": "As-of-r39 design delivery, against pinned base; not a future whole-repo invariant",
+  "reference_hashes": 7,
+  "artifact_hashes": 9,
+  "evidence_hashes": 11,
+  "source_blobs": 3,
+  "source_definitions": 15,
+  "local_links": 38,
+  "passed": [
+    "Reference/artifact/evidence hashes; two pre-existing dirty JPEGs unchanged",
+    "Three exact CODE source blobs and SHA256 pins",
+    "All 15 VI source literal records independently re-extracted",
+    "Canonical W14 image exactly unchanged from DESIGN base",
+    "Unique HTML IDs and local links resolve",
+    "Four JS files parse; source spoiler JSON not loaded by phone",
+    "Final browser/model receipts match declared 168 / 2688 / 12 / 20",
+    "Delivery allowlist: no app/CI/CODE package/task/prompt/W08/r38 changes; server only adds w14"
+  ]
+}

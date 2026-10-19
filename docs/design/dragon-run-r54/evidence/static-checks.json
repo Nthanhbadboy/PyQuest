@@ -1,0 +1,10 @@
+{
+  "scope": "DESIGN-only source/art/receipt integrity; no runtime acceptance",
+  "source_pins": 10,
+  "art_files": 8,
+  "reference_hashes": 3,
+  "captures": 16,
+  "local_links": 17,
+  "runtime_or_CI_changes": 0,
+  "failures": 0
+}

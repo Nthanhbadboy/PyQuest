@@ -1,0 +1,137 @@
+{
+  "date": "2026-10-18",
+  "activeImages": 16,
+  "exactCodeFiles": 20,
+  "originalManifests": 4,
+  "originalSourcePinsVerified": 16,
+  "localLinks": 74,
+  "javascriptSyntax": "passed",
+  "runtimeDiffFromA331ToE3": "none",
+  "runtimeTestsRun": false,
+  "screenshots": [
+    {
+      "path": "evidence/atlas-mobile.png",
+      "dimensions": [
+        360,
+        2474
+      ],
+      "sha256": "970508ff0183d2040e54efc26315b25961f27fae06d62294511dbfd112fbb337"
+    },
+    {
+      "path": "evidence/atlas-overview.png",
+      "dimensions": [
+        1440,
+        1925
+      ],
+      "sha256": "a9c74fea443ae71b84b266dd1379b2c01025bb1baaff674959e616833b476888"
+    },
+    {
+      "path": "evidence/original-w11-arena-360x640-en-text2.png",
+      "dimensions": [
+        360,
+        641
+      ],
+      "sha256": "57f96e321f4e66e28560b5f07024b894328c337d7ec93ca52be3e34546177a13"
+    },
+    {
+      "path": "evidence/original-w11-arena-390x844-vi-text1.png",
+      "dimensions": [
+        390,
+        845
+      ],
+      "sha256": "5e35664ca6d3dc0eef045061ea97cd674d8b895907d99971e9e79173539f1ba9"
+    },
+    {
+      "path": "evidence/original-w13-tutor-360x640-en-text2.png",
+      "dimensions": [
+        360,
+        641
+      ],
+      "sha256": "876d03af42d3bd650121814ffd2a03d81ae5ffdf1e08ec9ce1d8902af189aeb2"
+    },
+    {
+      "path": "evidence/original-w13-tutor-390x844-vi-text1.png",
+      "dimensions": [
+        390,
+        845
+      ],
+      "sha256": "6f48b7d9b61ca8a0ffee9e6e90a92edf73855aa334bf8a191d5d1fbcabde2961"
+    },
+    {
+      "path": "evidence/original-w14-achievements-360x640-en-text2.png",
+      "dimensions": [
+        360,
+        641
+      ],
+      "sha256": "a743619d1eb43b9bee7702abf0fb6d1824c3aaacd7eb1bc3a4ce45aa29ee651f"
+    },
+    {
+      "path": "evidence/original-w14-achievements-390x844-vi-text1.png",
+      "dimensions": [
+        390,
+        845
+      ],
+      "sha256": "e45b82c6f78028b888c68a2a7f10444ad64f4afa063f38fe5a6fd4ef0ea43151"
+    },
+    {
+      "path": "evidence/synced-w11-arena-360x640-en-text2.png",
+      "dimensions": [
+        360,
+        641
+      ],
+      "sha256": "d9a60e51934961e8614c4a85778cd099d9e73bf711c89c805297e7460d09f56f"
+    },
+    {
+      "path": "evidence/synced-w11-arena-390x844-vi-text1.png",
+      "dimensions": [
+        390,
+        845
+      ],
+      "sha256": "de555c83a0d7790bfded8df708cb9be6e78280617c0dfbe70e43aaf589db4c73"
+    },
+    {
+      "path": "evidence/synced-w13-tutor-360x640-en-text2.png",
+      "dimensions": [
+        360,
+        641
+      ],
+      "sha256": "5d27509ba88b8fad413f67c1cd9afccbcada2651ac67c4202383c80d977ec285"
+    },
+    {
+      "path": "evidence/synced-w13-tutor-390x844-vi-text1.png",
+      "dimensions": [
+        390,
+        845
+      ],
+      "sha256": "677db3db23f6bde2e5db1ad85604dc94a16bad9d7d8473b9d09a77ed1abdcd71"
+    },
+    {
+      "path": "evidence/synced-w14-achievements-360x640-en-text2.png",
+      "dimensions": [
+        360,
+        641
+      ],
+      "sha256": "ec99ae598052e54950ca82b30c51691fe8f3018ac9743267f21d7b7dd3d43ff9"
+    },
+    {
+      "path": "evidence/synced-w14-achievements-390x844-vi-text1.png",
+      "dimensions": [
+        390,
+        845
+      ],
+      "sha256": "ec779163a246b1127946bb536e9a9bc27b6703780551b32e133b79d1deee99ac"
+    },
+    {
+      "path": "evidence/synced-w14-empty-390x844-vi.png",
+      "dimensions": [
+        390,
+        845
+      ],
+      "sha256": "ee865bcc63de57ee47914e1c0b4fb2ef49878098fce3617745f6d76b0e836177"
+    }
+  ],
+  "preservedDirtyPaths": [
+    "docs/design/art-refresh-r33/concepts/w02-home-expansion.jpg",
+    "docs/design/art-refresh-r33/concepts/w08-archipelago.jpg"
+  ]
+}

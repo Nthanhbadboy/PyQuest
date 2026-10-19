@@ -1,0 +1,25 @@
+{
+  "result": "PASS",
+  "scope": "JS screen-study model only, not Dart/Maze engine/repository tests",
+  "checks": 18,
+  "results": [
+    "Ten source levels, ordered IDs and loop flags",
+    "Every diagram is rectangular, with one start and one chest",
+    "No authored solution or tip enters the design catalog",
+    "New learner can enter only the first level",
+    "A one-star completion on optional-gem level3 unlocks level4",
+    "No-gem completed level1 cannot be a one-star sample",
+    "Unlock follows predecessor ID, not count or page",
+    "Entry2, completed replay0, workshop0",
+    "Zero and unknown energy both keep completed replays available",
+    "Second page is browse-only and changes no records/energy/selection",
+    "Locked deep link selects exact requested level, without entry",
+    "Unknown ID never silently becomes level1",
+    "Unknown progress is not0/10 or0stars",
+    "All ten can be complete with20stars; perfect30 is distinct",
+    "Destination preview never spends or rewards, including repeated entry",
+    "Workshop stays free even with unavailable progress",
+    "Retry restores loading, not fictional successful records",
+    "Close and rules do not mutate progress; fixtures are isolated"
+  ]
+}

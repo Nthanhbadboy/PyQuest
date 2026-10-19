@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-18",
+  "timezone": "Asia/Saigon",
+  "kind": "Design-only static image/provenance/link checks",
+  "assets_and_screenshots_verified": 26,
+  "local_markdown_links_verified": 26,
+  "source_ci_failure_verified": 117462432865,
+  "javascript_syntax": "3 files passed",
+  "git_diff_check": "passed",
+  "runtime_tests_run": false,
+  "checked_files": [
+    "docs/design/art-refresh-r34/concepts/w07-interior.jpg",
+    "docs/design/art-refresh-r34/concepts/w03-project.jpg",
+    "docs/design/art-refresh-r34/concepts/w09-visit.jpg",
+    "docs/design/art-refresh-r34/concepts/w10-pet.jpg",
+    "docs/design/art-refresh-r34/concepts/w10b-pet-shop.jpg",
+    "docs/design/art-refresh-r34/concepts/w12-creator.jpg",
+    "docs/design/art-refresh-r34/concepts/w12b-friends-gifts.jpg",
+    "docs/design/art-refresh-r34/concepts/w05-maze.jpg",
+    "docs/design/art-refresh-r34/concepts/w05-dragon.jpg",
+    "docs/design/art-refresh-r34/concepts/w06-result.jpg",
+    "docs/design/art-refresh-r34/evidence/gallery-overview.png",
+    "docs/design/art-refresh-r34/evidence/w03-project-360x640-en-text2-scrolled.png",
+    "docs/design/art-refresh-r34/evidence/w03-project-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w03-project-pending-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w05-dragon-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w05-maze-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w06-result-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w07-interior-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w09-visit-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w09-visit-revoked-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w10-pet-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w10-pet-unsupported-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w10b-pet-shop-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w12-creator-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w12-creator-error-390x844-vi.png",
+    "docs/design/art-refresh-r34/evidence/w12b-friends-gifts-390x844-vi.png"
+  ],
+  "known_preexisting_r33_image_drift": [
+    "docs/design/art-refresh-r33/concepts/w02-home-expansion.jpg",
+    "docs/design/art-refresh-r33/concepts/w08-archipelago.jpg"
+  ]
+}

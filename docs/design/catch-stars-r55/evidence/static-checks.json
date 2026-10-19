@@ -1,0 +1,12 @@
+{
+  "scope": "DESIGN-only integrity; no runtime acceptance",
+  "source_pins": 8,
+  "source_unchanged_at_observed_CODE_tip": 8,
+  "art_files": 8,
+  "reference_hashes": 4,
+  "catalog_entries": 8,
+  "captures": 19,
+  "local_links": 28,
+  "runtime_or_CI_changes": 0,
+  "failures": 0
+}

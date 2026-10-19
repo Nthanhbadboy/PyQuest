@@ -1,0 +1,42 @@
+{
+  "result": "PASS",
+  "checks": 29,
+  "names": [
+    "Initial draft is a custom-maze sample, not an official-level unlock",
+    "Insertion replaces selection and sets caretBack",
+    "Unicode and emoji survive edit/undo exactly",
+    "Colon newline indents four spaces",
+    "Existing indentation is preserved on newline",
+    "Collapsed Tab and ShiftTab edit leading spaces predictably",
+    "Selection indent/outdent keeps all selected lines",
+    "Selection ending at next line start excludes that next line",
+    "Indent at caret zero before newline starts at zero",
+    "Undo and redo restore code and selection",
+    "Fresh edit discards redo",
+    "History is bounded40 and authoring bounds do not truncate the old code",
+    "Cursor-only changes do not invalidate responses",
+    "Changing code makes diagnostic stale and removes current-line authority",
+    "Known examples only replay exact authored transcripts",
+    "Unknown code is not interpreted, parsed, or declared wrong",
+    "Empty draft and blocks mode cannot request a response",
+    "Repeated Run does not create a second in-flight request",
+    "Editing during pending rejects the old response",
+    "Cancellation keeps draft and suppresses late success",
+    "Scope replacement rejects even same-revision response",
+    "Duplicate acknowledgement has no effect",
+    "Output success is distinct from reaching chest",
+    "HostHalt win is not a syntax failure or a proof record",
+    "Null error line never becomes line1",
+    "Line navigation returns exact source line and handles invalid indices",
+    "Mode roundtrip keeps Python draft without reverse parsing",
+    "Explicit block replacement is undoable",
+    "Non-comment-line count is not a step count"
+  ],
+  "random_edit_operations": 1000,
+  "python_executed": false,
+  "runtime_verified": false,
+  "inputs": {
+    "docs/design/maze-python-r51/model.js": "5d6897ce6a8415e9526493eece1c2c48285403bf7121627326dd7f1d8b64c727",
+    "tools/design/test_maze_python_r51.cjs": "9a73cc3d5d1b01357fad1d84bb8196f43660b2bdc1ea93d7f64572861d90f495"
+  }
+}

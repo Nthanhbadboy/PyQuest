@@ -1,0 +1,1 @@
+../../../../art-review-r38/code-snapshot/evidence/r36a-originals/a02-shared-settings__README.md

@@ -1,0 +1,56 @@
+{
+  "review": "PQD-003-r18",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "5bf44fa7d8848368ba512205955d2a9427165a9e",
+  "run_id": 38964109149,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38964109149",
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "custom_report_check_id": 117188237347,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 10.8,
+  "ordinary": {
+    "passed": 349,
+    "failed": 3
+  },
+  "render_passed": 10,
+  "confirmed_failure_names": [
+    "R10-D1-sem: semantic output ở beat 2 mang nhãn VI đã author",
+    "R10-D2-sem: sau setLocale(en), semantic output cập nhật sang EN",
+    "R10-D3-sem: sau advance và EN→VI, semantic output trở lại VI"
+  ],
+  "missing_failure_names": 0,
+  "full_failure_stack_traces_retrieved": false,
+  "visible_roundtrip_ink_scenario_passed": true,
+  "semantics_enabled_by_testWidgets_default": true,
+  "manual_handle_disposal_issue_found_in_source": true,
+  "sole_ci_failure_cause_confirmed": false,
+  "flutter_source_revision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+  "flutter_source_evidence": {
+    "widget_tester": {
+      "url": "https://github.com/flutter/flutter/blob/abaf9c523780a608bd46686fd5e53740a07077f8/packages/flutter_test/lib/src/widget_tester.dart",
+      "sha256": "3ec4821f7ebec1974295dc35e554db9c6f95d27613db6b57aeef69ff5d38107e"
+    },
+    "binding": {
+      "url": "https://github.com/flutter/flutter/blob/abaf9c523780a608bd46686fd5e53740a07077f8/packages/flutter_test/lib/src/binding.dart",
+      "sha256": "7fc560454d2dd0d209b7911ead99b2038e0f8e2dcf3f21c2669d79e868452011"
+    }
+  },
+  "runtime_and_preview_identical_to": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+  "changed_paths": [
+    "app/test/board/board_view_test.dart"
+  ],
+  "source_sha256": {
+    "app/test/board/board_view_test.dart": "bf11aaba211effa9f8f164f3bc9511dee45f8f4ec5373212edb8f3fbc8a3b92d"
+  },
+  "new_images_inspected": 0,
+  "preview_report_warning": "unexpected end of JSON input",
+  "local_flutter_tests_run": false
+}

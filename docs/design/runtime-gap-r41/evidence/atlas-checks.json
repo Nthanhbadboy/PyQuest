@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-18",
+  "browser": "153.0.8010.0",
+  "baselineImages": 38,
+  "supplementalImages": 2,
+  "newDesignImages": 1,
+  "imagesDecoded": 41,
+  "groups": 18,
+  "filters": [
+    18,
+    4,
+    2,
+    18
+  ],
+  "localLinksHTTP200": 56,
+  "mobile": [
+    {
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Audit gallery smoke, not new Flutter capture",
+    "38 source images are historical baselines, not after-redesign evidence"
+  ]
+}

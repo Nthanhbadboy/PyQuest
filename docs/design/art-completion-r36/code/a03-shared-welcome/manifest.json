@@ -51,7 +51,7 @@
   },
   "layout": {
     "path": "layout.html",
-    "sha256": "6fe5471213224e7e1bc5f899d3f34514f7e864105c0549cb82f43f46e3500891",
+    "sha256": "3fa126e22a0f7828184b2e5fa21065da3bf1536edcf76e1679f108a9a4a63c87",
     "shared_css": "../shared.css",
     "shared_js": "../shared.js",
     "states": [
@@ -74,8 +74,8 @@
       "360x640"
     ],
     "controls": "Local state/language/scale preview only; primary CTA disabled.",
-    "shared_css_sha256": "63df474b632a97c26d6ef02e52e6f5bf3da0e5d98de5b3955713162a64cf01d3",
-    "shared_js_sha256": "e2d80ee83952358c52ebcf20f41c21834cc610f99aa6e97028d0fb548b1d2bc7"
+    "shared_css_sha256": "aaa90cba523a311934ba0ed23f8a3bbed33e9c476afe36c1ae483670299893b1",
+    "shared_js_sha256": "19657dc24c33b9fbe21b7b678688fefa693ee1c1b2aa008739c46dbec73b458e"
   },
   "runtime_ready": false,
   "production_approved": false,
@@ -83,23 +83,10 @@
   "game_or_transaction_executed": false,
   "checks": {
     "static": "PASS",
-    "static_report": "../evidence/r38-static-checks.json",
     "browser": "PASS",
-    "browser_report": "../evidence/r38a-browser-checks.json",
+    "browser_report": "../evidence/browser-checks.json",
     "browser_cases": 240,
     "horizontal_overflow_cases": 0,
-    "computed_font_assertions": 1499,
-    "header_overlap_cases": 0,
-    "all_primary_ctas_disabled": true,
-    "controls_minimum_px": 48,
-    "product_bar_title_checks": 240,
-    "product_bar_pill_bounds_checks": 240,
-    "interactive_target_checks": 2160,
-    "static_check_count": 129,
-    "static_passed": 129
-  },
-  "design_review_pin": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2",
-  "screen_review_status": "R38-A/B correction implemented by CODE; DESIGN review pending; not self-accepted",
-  "correction_of": "1053973da1ad11378f7263d7b13a4d61667133af",
-  "original_layout_sha256": "3fa126e22a0f7828184b2e5fa21065da3bf1536edcf76e1679f108a9a4a63c87"
+    "all_primary_ctas_disabled": true
+  }
 }

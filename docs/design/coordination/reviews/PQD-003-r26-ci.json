@@ -1,0 +1,75 @@
+{
+  "review": "PQD-003-r26",
+  "date": "2026-10-17",
+  "reviewed_work_order": "PQC-015",
+  "verdict": "CHANGES_REQUESTED",
+  "other_work_orders": {
+    "PQC-010": "ACCEPTED @3f26603 (unchanged)",
+    "PQC-014": "ACCEPTED @4751f11 for service scope (retained)"
+  },
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "8c8466ee358f42023ed921165c9eb41e5e11334a",
+  "run_id": 39003348774,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39003348774",
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "custom_report_check_id": 117315191965,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 11.5,
+  "analyze_clean": true,
+  "ordinary": {
+    "passed": 384,
+    "failed": 4,
+    "total": 388,
+    "log_final_elapsed": "21:06"
+  },
+  "render_passed": 10,
+  "confirmed_failure_names": [
+    "app root locale wiring localized framework control semantics update on a live modal route",
+    "app root locale wiring persisted override survives app and service recreation against the real database",
+    "app root locale wiring resetAllProgress reload keeps the synchronized system locale without persisting it",
+    "temporary gen-l10n output transfer"
+  ],
+  "missing_failure_names": 0,
+  "full_failure_traces_retrieved": false,
+  "timeout_cause_confirmed": false,
+  "generation_dump_payload_retrieved": false,
+  "source_findings": [
+    "Late manual semantics-handle disposal reintroduced in modal widget test",
+    "Real native I/O in fake-async widget body requires host correction; no first-exception trace",
+    "Generation transfer probe unconditionally fails; generated artifacts still unchanged"
+  ],
+  "resume_widget_case_passed": true,
+  "service_reload_and_explicit_empty_input_case_passed": true,
+  "reset_integration_case_passed": false,
+  "recreate_case_passed": false,
+  "modal_semantics_case_passed": false,
+  "synthetic_package_warning_removed": true,
+  "generated_output_unchanged_from": "0220f2b62b1d03943b7ff2968e7654326dab33ab",
+  "changed_paths": [
+    "app/l10n.yaml",
+    "app/lib/app/pyquest_app.dart",
+    "app/lib/core/settings_service.dart",
+    "app/pubspec.yaml",
+    "app/test/l10n/app_locale_test.dart",
+    "app/test/l10n/generation_probe_test.dart",
+    "app/test/l10n/settings_locale_test.dart"
+  ],
+  "source_sha256": {
+    "app/l10n.yaml": "419a61f509626243516d4181680990c885685dcd34d7cd078794015c835e0c70",
+    "app/lib/app/pyquest_app.dart": "18d15adf7e6bee160c71ac5c947855486fdd1739af7a0c396b248a747ba463d1",
+    "app/lib/core/settings_service.dart": "e2cd2b0720966c48db59327ce5989ceabe7a07b74d62e0bb16ed50e9cdd1fbe7",
+    "app/pubspec.yaml": "d57c7ae75df1e886e30a49fed68100bd1025f618fee396a474992d4d14260bcb",
+    "app/test/l10n/app_locale_test.dart": "fd9f905575dfc2b777583b815c2360516d089df0073bc77b46ad7c797731455f",
+    "app/test/l10n/generation_probe_test.dart": "0b1f07f30226e0f20809210af195138ad7c76e3998bdc2f459ab5d06bfa4b2e8",
+    "app/test/l10n/settings_locale_test.dart": "7a307293ceacef4e0dc9f6d060759eff018abff558f51197c06e4bde8d50a82c"
+  },
+  "new_images_inspected": 0,
+  "local_flutter_tests_run": false,
+  "local_gen_l10n_run": false
+}

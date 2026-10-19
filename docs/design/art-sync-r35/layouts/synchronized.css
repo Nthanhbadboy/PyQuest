@@ -1,0 +1,18 @@
+@font-face{font-family:Nunito;src:url('../../../../app/assets/fonts/Nunito-Medium.ttf');font-weight:400 600;font-display:swap}
+@font-face{font-family:Nunito;src:url('../../../../app/assets/fonts/Nunito-ExtraBold.ttf');font-weight:700 900;font-display:swap}
+body{font-family:Nunito,system-ui,sans-serif;background:#f8f5ed}
+.phone{background:#c6ded0!important;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+.ui{padding:0;gap:0;min-width:0}
+.top{border:0;border-bottom:4px solid #ac8051;border-radius:0;padding:12px 14px;flex-wrap:wrap;gap:8px;background:#faf4e5}
+.top-title{flex:1;min-width:0;overflow-wrap:anywhere}.flag{white-space:normal;overflow-wrap:anywhere;max-width:100%;margin-left:0}
+.scene-media{margin:0;height:calc(var(--h) * .43);min-height:240px;background:#b8d4ca;display:flex;justify-content:center;flex:none;overflow:hidden}
+.scene-media img{height:100%;width:100%;object-fit:contain;display:block}
+.panel{border:0;border-top:6px solid #ac8051;border-radius:0;background:#faf0db;padding:14px;box-shadow:none;min-width:0;overflow-wrap:anywhere}
+.row,.actions,.tabs{flex-wrap:wrap}.row>*{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.fixture-grid{grid-template-columns:1fr!important}.specimen{min-width:0}.specimen>*{min-width:0}.item-label,.item-state{display:block}
+.code{min-width:0;max-width:100%;overflow-wrap:anywhere;white-space:pre-wrap}
+.mock,.button{min-height:48px;min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;opacity:1;color:#183c46;background:#e7ad45}
+.actions>*{flex:1 1 135px}.button{width:100%}
+.controls select{min-height:48px}.controls{border-color:#ccd8cf}
+.phone *{box-sizing:border-box}.phone p,.phone h1,.phone span{overflow-wrap:anywhere}
+@media(max-width:420px){.phone{max-width:100vw}.viewer{overflow-wrap:anywhere}.controls{margin:6px}}

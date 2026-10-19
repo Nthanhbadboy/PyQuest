@@ -1,0 +1,22 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const M=require('../../docs/design/chapter-journey-r43/model.js'),C=require('../../docs/design/chapter-journey-r43/catalog.js');
+const results=[];function check(name,f){f();results.push(name)}
+check('Twelve exact numbered lessons, one chapter and metadata-only next chapter',()=>{assert.equal(C.lessons.length,12);assert.deepEqual(C.lessons.map(l=>l.number),Array.from({length:12},(_,i)=>i+1));assert.equal(C.nextChapter.number,2)});
+check('Only first lesson open for a new learner',()=>{const s=M.fixture('new');assert.deepEqual(C.lessons.map((_,i)=>M.unlocked(s,i)),[true,...Array(11).fill(false)])});
+check('Unlock requires immediately preceding completed lesson, not completion count',()=>{const s=M.fixture('new');s.done=['mq1_03'];assert.equal(M.unlocked(s,1),false);assert.equal(M.unlocked(s,3),true);assert.equal(M.unlocked(s,4),false)});
+check('Return targets lesson 2; midpoint targets lesson 7',()=>{assert.equal(M.current(M.fixture('returning')),1);assert.equal(M.current(M.fixture('midway')),6)});
+check('Challenge cost3; first entry cost1; completed review cost0',()=>{assert.equal(M.cost(M.fixture('challenge'),11),3);assert.equal(M.cost(M.fixture('new'),0),1);assert.equal(M.cost(M.fixture('review_free'),0),0)});
+check('At 0 energy, review is available but new entry is not',()=>{assert.equal(M.gate(M.fixture('review_free'),0),'ready');assert.equal(M.gate(M.fixture('energy_empty'),1),'energy_empty')});
+check('Unknown energy is not zero and does not block zero-cost review',()=>{const s=M.fixture('energy_unknown');assert.equal(M.gate(s,1),'energy_unknown');assert.equal(M.gate(s,0),'ready')});
+check('Unknown progress is not a fabricated 0/12',()=>{const s=M.fixture('loading');assert.equal(s.done,null);assert.equal(s.energy,null);assert.equal(s.capacity,null);assert.equal(M.current(s),null);assert.equal(M.gate(s,0),'unknown')});
+check('Locked deep link never bypasses predecessor',()=>{const s=M.fixture('deep_link');assert.equal(M.gate(s,8),'locked');assert.deepEqual(M.dispatch(s,{type:'enter'}),s)});
+check('Group selection is browsing only; all three groups inspectable',()=>{const s=M.fixture('new');for(let group=0;group<3;group++){const n=M.dispatch(s,{type:'group',group});assert.equal(n.modal,'lessons');assert.deepEqual(n.done,s.done);assert.equal(n.energy,s.energy)}assert.equal(M.dispatch(M.fixture('returning'),{type:'group',group:0}).selected,1)});
+check('All completed supports free review and recap, not a second playable chapter',()=>{let s=M.fixture('chapter_done');assert.equal(M.current(s),-1);assert.equal(M.dispatch(s,{type:'continue'}).selected,0);assert.equal(M.dispatch(s,{type:'recap'}).route,'recap');assert.equal(M.dispatch(s,{type:'next_chapter'}).route,null);assert.equal(s.capacity,25)});
+check('Opening destination preview never spends energy or completes a lesson',()=>{const s=M.fixture('returning'),n=M.dispatch(s,{type:'enter'});assert.equal(n.route,'lesson');assert.equal(n.energy,s.energy);assert.deepEqual(n.done,s.done);assert.deepEqual(M.dispatch(n,{type:'enter'}),n)});
+check('Free playground accessible even while progress loads',()=>{assert.equal(M.dispatch(M.fixture('loading'),{type:'practice'}).route,'practice')});
+check('Retry returns to unknown loading, not synthetic success',()=>{const n=M.dispatch(M.fixture('load_error'),{type:'retry'});assert.equal(n.status,'loading');assert.equal(n.done,null)});
+check('Invalid indices/actions cannot invent a playable destination',()=>{const s=M.fixture();for(const e of [{type:'select',index:-1},{type:'select',index:12},{type:'select',index:1.5},{type:'group',group:3},{type:'purchase'}])assert.deepEqual(M.dispatch(s,e),s)});
+check('Close preserves selection and all progress',()=>{const s=M.fixture('locked'),n=M.dispatch(s,{type:'close'});assert.equal(n.selected,s.selected);assert.deepEqual(n.done,s.done);assert.equal(n.energy,s.energy);assert.equal(n.modal,null)});
+check('Every fixture has known catalog selection and no mutable cross-fixture state',()=>{for(const id of M.fixtures){const s=M.fixture(id);assert(C.lessons[s.selected]);assert(s.group>=0&&s.group<=2);if(s.done){s.done.push('fake');assert(!M.fixture(id).done.includes('fake'))}}});
+const receipt={result:'PASS',scope:'JavaScript design model only; not Flutter, engine or repository tests',checks:results.length,results};fs.writeFileSync('docs/design/chapter-journey-r43/evidence/model-checks.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify(receipt,null,2));

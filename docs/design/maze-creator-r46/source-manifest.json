@@ -1,0 +1,79 @@
+{
+  "code_sha": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+  "design_base": "30a562f56faf85bbf7b3c7811b24eb56c007f7bc",
+  "date": "2026-10-18",
+  "sources": [
+    {
+      "path": "app/lib/modules/robot_maze/maze_workshop_screen.dart",
+      "blob": "1f243b84ac14059c9b3197699cc183fa926dab1c",
+      "sha256": "aa22b98f4466ca9227dc18031c6f12eb29789dd3dbe5278a79709246620ed145",
+      "lines": 598
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_models.dart",
+      "blob": "6272057019b57088a9f220b238df566f3dc85430",
+      "sha256": "238cc06597a0010a3f8335e7b219f85deda0a53aa23c2e96b5c88a05315d9092",
+      "lines": 393
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_board.dart",
+      "blob": "e32512d65dc81b36cfceb7e6f81e40f199695750",
+      "sha256": "60755aecece1fd5ca5d588031d44e90bc7319dccbbac4a63e0ed892c6aa737eb",
+      "lines": 292
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_play_screen.dart",
+      "blob": "fcbe2b48a7ae8474920365ba88812b846f3aa05d",
+      "sha256": "0a4b44d8d0bc7ff03e36742253a68222cedba33df94e508ec84ffda8592666c4",
+      "lines": 1137
+    },
+    {
+      "path": "app/lib/modules/robot_maze/robot_maze_module.dart",
+      "blob": "621c6b25c3e53e929c6d0e67b194f3b29dd05100",
+      "sha256": "18ef0c39aa2cf6c91d8bf6b5b869a03394810e5d06c48e97013f30f5e49a71f5",
+      "lines": 371
+    },
+    {
+      "path": "app/lib/data/repositories/state_repositories.dart",
+      "blob": "f39abeb59569a7b1e2bac435c5c6521c735eb691",
+      "sha256": "cecea6a6bb7bb2726004e58b85ddf2be20f4952f0fcde89f64eaa798bc1f6eea",
+      "lines": 240
+    },
+    {
+      "path": "app/assets/config/game_config.json",
+      "blob": "1fbb4fbd75f3afb3a59456c01c6d547730b3b81d",
+      "sha256": "f7b9d1a80be65a49ad2bf7c68de46bbf33243b0a27cd5eb5e80d77467b5f15c5",
+      "lines": 36
+    },
+    {
+      "path": "app/lib/modules/energy/energy_widgets.dart",
+      "blob": "867fb6aa792c2d1d796e9147cc524a7b34e1dcb8",
+      "sha256": "969cd3298f778ecf63bca02cffbf8d9f683d26df42c4e2f24fc3ab7100e9b840",
+      "lines": 454
+    }
+  ],
+  "source_template": [
+    "S.....",
+    ".##.#.",
+    "......",
+    ".#.##.",
+    "...*..",
+    ".....C"
+  ],
+  "source_sizes": [
+    4,
+    5,
+    6
+  ],
+  "source_limit_bounds": [
+    3,
+    20
+  ],
+  "source_defaults": {
+    "limit": 10,
+    "loops": true,
+    "name": "Mê cung của tôi"
+  },
+  "runtime_execution": false,
+  "source_equivalence_claim": false
+}

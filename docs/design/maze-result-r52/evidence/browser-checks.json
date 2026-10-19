@@ -1,0 +1,96 @@
+{
+  "result": "PASS",
+  "browser": "153.0.8010.0",
+  "matrix_cases": 342,
+  "font_assertions": 3420,
+  "fixtures": [
+    "first",
+    "better",
+    "tie",
+    "lower",
+    "no-gems",
+    "final",
+    "pending",
+    "waiting",
+    "save-error",
+    "partial",
+    "rewards",
+    "empty",
+    "custom-pending",
+    "custom-save-error",
+    "custom-saved",
+    "custom-repeat",
+    "custom-partial",
+    "custom-edited",
+    "not-won"
+  ],
+  "viewports": [
+    [
+      360,
+      640
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      844,
+      390
+    ]
+  ],
+  "languages": [
+    "vi",
+    "en"
+  ],
+  "scales": [
+    1,
+    1.3,
+    2
+  ],
+  "flows": [
+    "First completion has no new-best label",
+    "Lower score displays 40 now and preserves recorded100 /3stars",
+    "Failure retains known previous best and disables next",
+    "Delayed receipt uses one pending request and becomes actionable only after complete",
+    "Cancellation does not permit a late response to create a record",
+    "Partial reconciliation leaves the saved record and play count intact",
+    "Notice next/view-all/postpone are view state only, not grants",
+    "Locale and text scale preserve receipt, unread IDs and expanded goals",
+    "Custom reached-chest report is not yet a saved verification",
+    "Editing custom draft rejects its pending old-version receipt",
+    "A saved custom proof remains saved if only notices are unresolved",
+    "Repeat custom verification does not invent an award notice",
+    "Unsuccessful custom report has no victory art, save control, or verified mark",
+    "Final-level primary is list rather than another invented level",
+    "Automatic authored response and reviewer controls work without a backend",
+    "Fixture change rejects an old request token even after many retries",
+    "Dialog traps keyboard focus and Escape returns to opener",
+    "Large text allows scrolling to receipt and notice actions"
+  ],
+  "captures": [
+    "desktop-overview.jpg",
+    "phone-first.png",
+    "phone-lower.png",
+    "phone-partial.png",
+    "phone-custom-pending.png",
+    "phone-custom-saved.png",
+    "phone-custom-edited.png",
+    "phone-rewards-en.png",
+    "phone-large-vi.png",
+    "phone-large-en.png",
+    "landscape-result.png",
+    "phone-not-won.png"
+  ],
+  "errors": [],
+  "external_requests": [],
+  "engine_executed": false,
+  "database_written": false,
+  "flutter_tested": false,
+  "inputs": {
+    "docs/design/maze-result-r52/index.html": "aea2691cd7d01419483fb8696a525deb966dd7777cd4b8d792baf7d37f51e9c5",
+    "docs/design/maze-result-r52/model.js": "0223679599fbb059a6f70be00666bbb5ea03aadfd4c60a0380dd0d2c6ee4d05d",
+    "docs/design/maze-result-r52/study.js": "639d13924fe7c74653fbe5e65b540f34a981a81bd5d0114ccea7926960b71181",
+    "docs/design/maze-result-r52/style.css": "355dcc0ebb9f1446832661cbdcc0c2bb794a019792b58b362b0409aa4600ffac",
+    "tools/design/check_maze_result_r52.cjs": "cd5cbfe8aeda80d923208faf7d379a4b8979b4904758fc36fd8f1bc9c44b25f7"
+  }
+}

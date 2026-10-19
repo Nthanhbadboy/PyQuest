@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PyQuest — Thế giới để chơi, học và sáng tạo · r34</title>
+  <link rel="stylesheet" href="gallery.css">
+  <script defer src="scenes.js"></script>
+  <script defer src="screen-copy.js"></script>
+  <script defer src="gallery.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="#w07-interior"><span class="brand-mark">P<span>Q</span></span><span>PyQuest<small>WORLD DESIGN / R34</small></span></a>
+    <div class="masthead-note"><span class="dot"></span><span id="shellBadge">Bản thiết kế · Không phải APK</span></div>
+    <a class="text-link" href="README.md">README ↗</a>
+  </header>
+  <div class="workspace">
+    <aside class="catalog" aria-label="Screen catalog">
+      <p class="eyebrow" id="catalogEyebrow">10 CẢNH MỚI</p>
+      <h1 id="catalogTitle">Một thế giới.<br>Nhiều cách lớn lên.</h1>
+      <p class="intro" id="catalogIntro">Nhà để sáng tạo. Bạn để sẻ chia. Những cuộc chơi thuộc về bạn.</p>
+      <nav id="screenNav" aria-label="Chọn màn thiết kế"></nav>
+      <div class="scope-note" id="scopeNote"></div>
+    </aside>
+    <main class="stage">
+      <div class="stage-tools">
+        <div class="switcher" role="group" aria-label="Language"><button id="langVi" type="button">VI</button><button id="langEn" type="button">EN</button></div>
+        <label><span id="sizeLabel">Khung</span><select id="size"><option value="390">390 × 844</option><option value="360">360 × 640</option></select></label>
+        <label><span id="scaleLabel">Chữ</span><select id="scale"><option value="1">100%</option><option value="1.3">130%</option><option value="2">200%</option></select></label>
+      </div>
+      <div class="phone-frame">
+        <section id="phone" class="phone" aria-label="Phone design study">
+          <header class="phone-header"><div class="fixture-strip" id="fixtureStrip"></div><div class="phone-heading"><span class="place-icon" aria-hidden="true">⌂</span><div><p id="phoneSubtitle"></p><h2 id="phoneTitle"></h2></div></div></header>
+          <div class="phone-scroll" id="phoneScroll" tabindex="0" aria-label="Scrollable screen content">
+            <figure class="scene" id="scene"></figure>
+            <section class="context-panel" aria-labelledby="stateTitle"><div class="panel-grip" aria-hidden="true"></div><p class="state-pill" id="stateName"></p><h3 id="stateTitle"></h3><p class="state-body" id="stateBody"></p><dl id="stateRows"></dl><p id="artStateNotice" class="art-state-notice"></p></section>
+          </div>
+          <footer class="phone-footer"><button type="button" class="primary-action" id="primaryAction"></button></footer>
+        </section>
+      </div>
+      <p class="stage-caption" id="stageCaption"></p>
+      <p id="transitionNotice" class="transition-notice" role="status" aria-live="polite"></p>
+    </main>
+    <aside class="review-rail" aria-label="Design review">
+      <p class="eyebrow" id="reviewEyebrow">BẢNG KIỂM THIẾT KẾ</p>
+      <h2 id="reviewTitle">Không chỉ một ảnh đẹp.</h2>
+      <label class="state-label" for="stateSelect" id="stateLabel">Trạng thái đang xem</label>
+      <select id="stateSelect"></select>
+      <div class="review-block"><h3 id="intentLabel">Hành vi & ranh giới</h3><p id="stateReview"></p></div>
+      <div class="review-block"><h3 id="sourceLabel">Nguồn dữ liệu</h3><p id="dataSource"></p></div>
+      <div class="review-block"><h3 id="gapLabel">Chưa đủ để production</h3><p id="artNote"></p></div>
+      <a id="fullArt" class="outline-link" target="_blank" rel="noopener" href="concepts/w07-interior.jpg">Xem ảnh gốc ↗</a>
+      <div class="receipt"><span class="dot"></span><div id="receiptText"></div></div>
+    </aside>
+  </div>
+</body>
+</html>

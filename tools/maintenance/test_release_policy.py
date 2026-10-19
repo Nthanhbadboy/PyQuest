@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 import unittest
 
-from check_release_policy import EMPTY_DEFINE, WORKFLOWS, build_commands, check_tree, check_workflow
+from check_release_policy import EMPTY_DEFINE, WORKFLOWS, build_commands, check_tree, check_workflow, check_internal_workflow
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -18,6 +18,19 @@ class ReleasePolicyTests(unittest.TestCase):
     def test_release_and_debug_explicit_empty(self):
         for mode in ['release', 'debug', '"$BUILD_MODE"']:
             self.assertEqual(check_workflow(f'run: flutter build apk --{mode} {EMPTY_DEFINE}'), [])
+
+    def test_internal_exception_is_explicit(self):
+        text = (ROOT / WORKFLOWS[1]).read_text()
+        self.assertEqual(check_internal_workflow(text), [])
+        self.assertTrue(check_workflow(text))  # still forbidden for ordinary CI
+
+    def test_internal_exception_requires_source_gate(self):
+        text = (ROOT / WORKFLOWS[1]).read_text()
+        self.assertTrue(check_internal_workflow(text.replace('needs: verify-source', 'needs: other')))
+
+    def test_internal_secret_cannot_enter_checks(self):
+        text = (ROOT / WORKFLOWS[1]).read_text()
+        self.assertTrue(check_internal_workflow(text.replace('  verify-source:', '  verify-source:\n    env:\n      GEMINI_API_KEY: dummy')))
 
     def test_env_secret_rejected(self):
         text = f'GEMINI_API_KEY: ${{{{ secrets.GEMINI_API_KEY }}}}\nrun: flutter build apk --release {EMPTY_DEFINE}'
@@ -62,6 +75,8 @@ class ReleasePolicyTests(unittest.TestCase):
             fake.chmod(0o700)
             cases = 0
             for path in WORKFLOWS:
+                if path.endswith('build-debug-apk.yml'):
+                    continue  # explicit r49 internal-only exception, tested separately
                 text = (ROOT / path).read_text()
                 for match in re.finditer(r'\bflutter\s+build\s+apk\b[^\n]*', text):
                     command = match.group().split(' >>', 1)[0]
@@ -76,7 +91,7 @@ class ReleasePolicyTests(unittest.TestCase):
                         self.assertNotIn('SYNTHETIC_SENTINEL_NOT_A_KEY', result.stdout)
                         self.assertEqual([x for x in args if 'GEMINI_API_KEY' in x], [EMPTY_DEFINE])
                         cases += 1
-            self.assertEqual(cases, 6)
+            self.assertEqual(cases, 4)
 
 
 if __name__ == '__main__':

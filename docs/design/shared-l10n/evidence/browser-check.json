@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "scope": "HTML P03/P04 only; not Flutter or live AI/voice localization",
+  "checks": [
+    "fresh system en-GB and vi-VN",
+    "unsupported ja-JP falls back to English",
+    "default does not persist resolved locale",
+    "manual selection persists after reload",
+    "return to system",
+    "live languagechange",
+    "cross-tab storage sync",
+    "parent/embedded board language sync",
+    "code/note/ink/beat retained",
+    "code literal/output not translated",
+    "corrupt preference falls back to system",
+    "manual override ignores system changes",
+    "voyage preserved during language switch",
+    "storage denial handled and propagated",
+    "English 390x844 and 360x640 layouts",
+    "settings Escape and focus return",
+    "no JS/HTTP errors"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "kind": "HTML scripted world, not Flutter/AI/multiplayer evidence",
+  "viewports": [
+    "1440x1100",
+    "390x844",
+    "360x640"
+  ],
+  "checks": [
+    "two NPCs move and one enters a house",
+    "ambient pause freezes position",
+    "context greeting variation and collapse",
+    "honest unfinished house state",
+    "atlas selection and sea route",
+    "voyage cancellation and arrival",
+    "navigation cancels voyage",
+    "embedded teaching board keeps code/note",
+    "hidden board playback paused",
+    "OS reduced motion makes voyage immediate",
+    "selected village targets >=48 CSS px",
+    "no horizontal page overflow",
+    "keyboard island selection",
+    "no JS or HTTP errors"
+  ]
+}

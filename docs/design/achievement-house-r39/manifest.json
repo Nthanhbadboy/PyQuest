@@ -1,0 +1,173 @@
+{
+  "package": "W14 Achievement House cabinet DESIGN r39",
+  "date": "2026-10-18 Asia/Saigon",
+  "owner": "DESIGN",
+  "task": "PQD-005",
+  "base_design_pin": "3c29fc3ad5cd2f7691e22dc7a119ed5de3d147f2",
+  "runtime_changed": false,
+  "runtime_ready": false,
+  "production_approved": false,
+  "code_work_order": "none; R38-A/B and PQC-011 unchanged",
+  "image": {
+    "path": "docs/design/art-sync-r35/corrections/w14-achievements.jpg",
+    "reuse_unchanged": true,
+    "new_image_generated": false,
+    "origin": "Existing Arena-generated W14/r35 canonical opaque room",
+    "fullsize_viewed": true,
+    "layers_separated": false,
+    "runtime_calibrated": false
+  },
+  "references": [
+    {
+      "path": "docs/design/art-sync-r35/corrections/w14-achievements.jpg",
+      "sha256": "5663f576cd4cf273e516ea1eee500face165879ed9710b6455959b90c34db66d"
+    },
+    {
+      "path": "docs/design/WORLD_EXPANSION_REDESIGN.md",
+      "sha256": "8f994ca2fef07f1108a68afc813f2a59df0fb2007bb40878d560a6c68112c871"
+    },
+    {
+      "path": "docs/GAME_DESIGN.md",
+      "sha256": "c44e8d361637e23bb3c82ca8d16c547628a54fe4b8288691afd125c8e797da61"
+    },
+    {
+      "path": "docs/design/ART_DIRECTION_2_5D.md",
+      "sha256": "e4ef6ea82847c261e5a5b934249861813ec43efc30b335cf494dc5d44f4ae389"
+    },
+    {
+      "path": "app/assets/fonts/Nunito-Medium.ttf",
+      "sha256": "c5ac621e788f8acf1ae43518f45f5eb3b3dc1eede0cddbcabb67e468595bb687"
+    },
+    {
+      "path": "app/assets/fonts/Nunito-ExtraBold.ttf",
+      "sha256": "6aeac28bd008e77fe752c2c2c2ace44bf81c296534bfeb6bac582bb2d44b6347"
+    },
+    {
+      "path": "app/assets/fonts/Baloo2-Bold.ttf",
+      "sha256": "8ebcc1b1a153f7ef2b7e8e1b30e7d0063d6096d301bac3c1af9815987e59671e"
+    }
+  ],
+  "sources": [
+    {
+      "path": "app/lib/modules/achievements/achievement_catalog.dart",
+      "commit": "0990fbcbf6045bd64244239e36ccbca8c8dc394b",
+      "blob": "e6cf2f772f70aae7862b17c293a44a38569b8f0e",
+      "sha256": "07d52e12d2552ddff0fb7786146184df421c8ad2267e57fbb1cb7c9ef6c67200"
+    },
+    {
+      "path": "app/lib/modules/achievements/achievement_house_module.dart",
+      "commit": "0990fbcbf6045bd64244239e36ccbca8c8dc394b",
+      "blob": "145c9c4d2435e586c96a03277e01991d14ad4523",
+      "sha256": "49060c2d988d40047dbf7768fe5846071d8702053d4337c2589ef431cc0301b0"
+    },
+    {
+      "path": "app/lib/modules/achievements/achievement_engine.dart",
+      "commit": "0990fbcbf6045bd64244239e36ccbca8c8dc394b",
+      "blob": "a3e0f019cc94bfd883c6209bee8f32afbe866f15",
+      "sha256": "1ae30fecf516f3f3068e2b5187808f246e95249117242e5709b9b99272165161"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "index.html",
+      "sha256": "02ce1fc13f43b5f91c6833613359905603f7752cfdb74c03581c7d1a2ffa9e3d"
+    },
+    {
+      "path": "style.css",
+      "sha256": "04f60ead3acf36a265a3ab388fca8e9678dcf5ef9328173e68587424fc1e955d"
+    },
+    {
+      "path": "study.js",
+      "sha256": "1e29bf80e971c9e6e5a28e340ea403f23a5f598515d5df96c4d52f8f4c658adc"
+    },
+    {
+      "path": "model.js",
+      "sha256": "edf401976df77743334fe4f59b7d4669d9af5bb71af5d3b3a2a97130db821de0"
+    },
+    {
+      "path": "catalog.js",
+      "sha256": "a8332cdcac04e2529ffcfd7336d9d9a97ea1ac808987683ac2b1990c0fee3943"
+    },
+    {
+      "path": "copy.js",
+      "sha256": "4add1d9e490f3de77f3117073e3d4e38ba831f9143a1b0067f880803c1ea3999"
+    },
+    {
+      "path": "source-catalog.json",
+      "sha256": "4cc6184d7323cac390e2cd36d97af5f2ef013d4e9ff59afed5a5bf8acea9583f"
+    },
+    {
+      "path": "README.md",
+      "sha256": "232c7f5398af3eb24bd3b9c89872ae28720ead0ff2eaf393b37811106d23051a"
+    },
+    {
+      "path": "SPEC.md",
+      "sha256": "58b4be959c3ab047c34aad3fc531a0583e904f348719227804700f9f1215a2a0"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "evidence/browser-checks.json",
+      "sha256": "a93debae6e702ae1972c9f425ed67364baf909557d73cf9f8940897f060e4dac"
+    },
+    {
+      "path": "evidence/cabinet_all-360-en-2x.png",
+      "sha256": "82573627dbd21e81a6cb4a13b623f00dff733dd3c4534fa30552720090776fe7"
+    },
+    {
+      "path": "evidence/cabinet_all-390-vi-1x.png",
+      "sha256": "45231b569fc2df93c6def26e9401e87ed30f97e727629b453bdd0f2f5ddd117e"
+    },
+    {
+      "path": "evidence/desktop-overview.png",
+      "sha256": "3da9d71c1566bd5b8c327fb44ccc729e8bc02fd8d5521a00b9393f035572b485"
+    },
+    {
+      "path": "evidence/earned_detail-360-en-2x.png",
+      "sha256": "fb6e1bcbdd3e55e05fee3c339ad497d9c1c06fbca913ce2d85f4bfaacd0d4451"
+    },
+    {
+      "path": "evidence/load_error-360-en-2x.png",
+      "sha256": "3797d3da89ed8c689586e09cb18a3ada0ffe27a711d5db5474c3d3452a9263a7"
+    },
+    {
+      "path": "evidence/locked_detail-390-vi-1x.png",
+      "sha256": "77c36a0e6aecf26cfb879e2e023297f96096f033d23264ba27bfa1a45ab55aaf"
+    },
+    {
+      "path": "evidence/model-checks.json",
+      "sha256": "ae5f8122473cf27c9cda02a463e25cb25c9310a26280423618096b23c12e7b4f"
+    },
+    {
+      "path": "evidence/room_populated-390-vi-1x.png",
+      "sha256": "f4e0a51bb32b10c305e0678c329fbfd57bb9dfcfa202c107fa494e288094e9a8"
+    },
+    {
+      "path": "evidence/secret_earned-390-vi-1x.png",
+      "sha256": "1aae15ebad7a62574ce8e0af5b18e676b727a9ccfd6659dc1128365641d4229c"
+    },
+    {
+      "path": "evidence/secret_locked-390-vi-1x.png",
+      "sha256": "dbe3f66a992e8809a6da571b6b335b96a69282593c78bbe1d4fcdda634d78514"
+    }
+  ],
+  "dirty_files_preserved": [
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w02-home-expansion.jpg",
+      "sha256": "a240f610bc73571e13b00d20614082efe25d89ceb6b8fd043323e27baf625ae0"
+    },
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w08-archipelago.jpg",
+      "sha256": "9522e318b057b3e00f67a839e1bf89cb216c727ce4d32b634d2c3da765f412d2"
+    }
+  ],
+  "known_limits": [
+    "Cabinet slice only, not all four house rooms",
+    "Glyph/CSS medals are prototype UI, not final badge artwork",
+    "VI source literals; EN DESIGN translations, not ARB imports",
+    "Fixture progress/ownership, no award/claim/seen/persistence",
+    "Secret DOM/search redaction, not secure client-side secrets",
+    "No Flutter/device/screen-reader/contrast certification or runtime engine checks",
+    "No canonical art or CODE package changes"
+  ]
+}

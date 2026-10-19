@@ -1,0 +1,44 @@
+{
+  "review": "PQD-003-r16",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "11d585a79aa7d9019c932eec21fd02736b17aa0c",
+  "run_id": 38956071760,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38956071760",
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "custom_report_check_id": 117161474045,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 11.1,
+  "ordinary": {
+    "passed": 342,
+    "failed": 7
+  },
+  "render_passed": 10,
+  "confirmed_failure_names": [
+    "R10-D1-sem: semantic output ở beat 2 mang nhãn VI đã author",
+    "R10-D1: output VI ban đầu có prose, thứ tự và semantics thật",
+    "R10-D2-sem: sau setLocale(en), semantic output cập nhật sang EN",
+    "R10-D2: đổi locale VI→EN cập nhật chữ và semantics trên cùng controller"
+  ],
+  "missing_failure_names": 3,
+  "new_diagnostic_test": "R10-diag: beat 2 materializes output widget and localized semantics key",
+  "new_diagnostic_named_result_verified": false,
+  "full_failure_stack_traces_retrieved": false,
+  "custom_report_annotations_count": 0,
+  "runtime_and_preview_identical_to": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+  "changed_paths": [
+    "app/test/board/board_view_test.dart"
+  ],
+  "source_sha256": {
+    "app/test/board/board_view_test.dart": "9d623900c65f08242cd5cdd17febade351a1a5275ec7de30c58b3cfd7a83d47e"
+  },
+  "new_images_inspected": 0,
+  "local_flutter_tests_run": false
+}

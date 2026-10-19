@@ -1,0 +1,81 @@
+{
+  "disposition": "CHANGES_REQUESTED / PINNED_SDK_EXECUTED_FAILURE",
+  "source_sha": "de01a490743982356ad5240d77ea99e9dbf8c7f5",
+  "workflow_sha": "ca29dd17a5ca0160a8565d6312ec2e7506f2ff4b",
+  "run_id": 39078131829,
+  "source_check_id": 117529542022,
+  "verification_job_id": 117529428071,
+  "build_job_id": 117529872654,
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 10:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter"
+  },
+  "observed_terminal_counts": {
+    "settings": {
+      "pass": 12,
+      "fail": 0
+    },
+    "integration": {
+      "pass": 0,
+      "fail": 7
+    },
+    "ordinary": {
+      "pass": 415,
+      "fail": 7
+    },
+    "render": {
+      "pass": 10,
+      "fail": 0
+    }
+  },
+  "format_files_requiring_changes": 13,
+  "analyze": "No issues found",
+  "source_drift": "FAIL: pubspec.lock changes observed; full diff not downloaded",
+  "apk": "NOT_BUILT: job skipped, no steps",
+  "artifact_download": "Run39077780697 artifact12117856981: EOF at Azure redirect; final artifact12118340071 not downloaded. Final evidence read through source Check API.",
+  "local_post_review_tests": {
+    "policy": 15,
+    "fake_sdk_harness": 5,
+    "crypto": "synthetic roundtrip only"
+  },
+  "historical_runs": [
+    {
+      "id": 39077780697,
+      "conclusion": "cancelled",
+      "build_steps": 0
+    },
+    {
+      "id": 39077867619,
+      "conclusion": "failure",
+      "build": "skipped"
+    }
+  ],
+  "artifacts": [
+    {
+      "digest": "sha256:25662c850e4454a44e27110ddbfe38e90face8c7ede36c3049b0b0303e4280e2",
+      "expired": false,
+      "id": 12118340071,
+      "name": "pqc011-verification-de01a490743982356ad5240d77ea99e9dbf8c7f5",
+      "size_in_bytes": 27163
+    }
+  ],
+  "sha256": {
+    "artifacts.json": "1984516b7dce2a1c6ac63c2448037917aaa25172d1d8b54485a1666ac87f4f27",
+    "jobs.json": "fa500d6bed2ddd28db6bac8dedff4cfd5d346f9eb76a6be836682c20c12851e6",
+    "local-harness-tests.log": "a63f3e0d2beff8f3b59768fd4cf741acf73aa5f0698374d819f125460e1894ac",
+    "local-policy-tests.log": "a312d2acd0e12756cd1bf5b3bae368d071759bbef756232034ca2e09680237fd",
+    "run.json": "86b538b7c8460cbb52a443de6320e9e8b2df1d91ebe7baaa9e0485d6f44c2cda",
+    "source-check.json": "8962f42ab0c4323d286744d664d20365fe82f65affbf6311b0b38c253f1ea12c"
+  }
+}

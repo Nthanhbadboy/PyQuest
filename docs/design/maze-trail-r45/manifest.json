@@ -1,0 +1,173 @@
+{
+  "date": "2026-10-18",
+  "design_base": "8f754a16c829264747b6517c7f7bacb3c8769283",
+  "code_pin": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+  "status": "DESIGN_STUDY_DELIVERED",
+  "runtime_authorized": false,
+  "art": {
+    "file": "assets/hedge-trail.png",
+    "width": 848,
+    "height": 1264,
+    "mode": "opaque AI-generated concept; not layers/rig/navigation/calibrated camera",
+    "reference": "docs/design/art-refresh-r33/concepts/w01-village.jpg"
+  },
+  "references": [
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+    },
+    {
+      "path": "docs/screenshots/05_maze_levels.jpg",
+      "sha256": "0d2349bd995b4658b1b8a6bca4e910387fb7671c2449bcf608a87cec767a20e0"
+    },
+    {
+      "path": "docs/screenshots/41_relaunch_maze_levels.jpg",
+      "sha256": "327c7e87802f79ea6fa60fcb6cdddde31f8b14451413813f2cec297b3ba815f7"
+    },
+    {
+      "path": "docs/design/chapter-journey-r43/style.css",
+      "sha256": "852b36552e85d4bb118f9c6dd4ab615a3bbd358f4b6dd7b3b91369973714ff71"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "index.html",
+      "sha256": "20113ae4de207ba9b26e24fbc29484b97e8755a1db24ea7515d94c31091c6523",
+      "bytes": 2964
+    },
+    {
+      "path": "style.css",
+      "sha256": "ba2efc30d36045de885a69d40b255cec250dc013867c8554042d3967478cd3fb",
+      "bytes": 16372
+    },
+    {
+      "path": "catalog.js",
+      "sha256": "a19ae69cd39446c302f664f2e7b1698f9ff83e71957c17c64c4cab0bab695c02",
+      "bytes": 5520
+    },
+    {
+      "path": "model.js",
+      "sha256": "fc3010808e2cf43baf98b2c81ed939a0555a1ba285510ed11c7760219cead8c2",
+      "bytes": 3237
+    },
+    {
+      "path": "study.js",
+      "sha256": "f4955dfeb5b8897abdbccdbda17814fc5ba62c8dbfebae97e2a8802e87ff093f",
+      "bytes": 14894
+    },
+    {
+      "path": "README.md",
+      "sha256": "3fe17195d5c6283b4bb8b303dc2fd1f3b3c7fb55d641e689af010c1f66bc4ac2",
+      "bytes": 5790
+    },
+    {
+      "path": "SPEC.md",
+      "sha256": "a98fe7ede8c018e29b2047fb66dc7ceca8a53e524aca52ef84375e938a13ed84",
+      "bytes": 6346
+    },
+    {
+      "path": "ASSET_PLAN.md",
+      "sha256": "5887f4b940a1c89447f07d8a1ffc639ac1f85a2213f091cfaee02890597f82c9",
+      "bytes": 2703
+    },
+    {
+      "path": "source-manifest.json",
+      "sha256": "fd4d82d1409ba50f948ef9400b3b53ca17bc0db83d621a8a787fff6933a5fdec",
+      "bytes": 1750
+    },
+    {
+      "path": "assets/hedge-trail.png",
+      "sha256": "acd5576de4063b656e23b40d9f71822bba4da20639d4634ec8bc3a972e2b7756",
+      "bytes": 2862241
+    },
+    {
+      "path": "assets/prompt.txt",
+      "sha256": "c0aab02c8ddecf41347318fcbcfa691acf14a78af7397972e50e824dcfb9c48e",
+      "bytes": 2463
+    }
+  ],
+  "evidence": [
+    {
+      "path": "evidence/all_partial-390-vi-1x.png",
+      "sha256": "78619429dc16b3c25e150e5705ed30d56150ab45245cb346f81fdd574b1c8656",
+      "bytes": 393531
+    },
+    {
+      "path": "evidence/browser-checks.json",
+      "sha256": "ff8be72a3bba376fffb897203b1f76a8e320fcb40d738524bcec2e7b88298687",
+      "bytes": 126935
+    },
+    {
+      "path": "evidence/desktop-overview.jpg",
+      "sha256": "5fda0d2a8ccdfbe77f8e885b64050857059b1dc67a5967f773c90f04e6bdf9cc",
+      "bytes": 243135
+    },
+    {
+      "path": "evidence/detail-390-vi-1x.png",
+      "sha256": "300a8624bcaddd45f1a79b129b42699886edf06c79f4d982874ce2e897f8b6d7",
+      "bytes": 79090
+    },
+    {
+      "path": "evidence/energy_empty-360-en-2x.png",
+      "sha256": "5bfa4d79c79779ff0a81d53f74bcf81ef31578bb24b64d47dfd3621962a76abf",
+      "bytes": 58679
+    },
+    {
+      "path": "evidence/load_error-360-en-2x.png",
+      "sha256": "0dbd32f2500546dbf5a86ad9ca7ccbac4cfc1813b1f9a5c6ac73686d3feb1f44",
+      "bytes": 45892
+    },
+    {
+      "path": "evidence/locked-390-vi-1x.png",
+      "sha256": "8ed7b4c459e72fe0eb2839b959d1863f1d03dff7002ef6705af5d8a376c3a948",
+      "bytes": 74133
+    },
+    {
+      "path": "evidence/loop_ready-390-vi-1x.png",
+      "sha256": "4d5829fbc72a162f5e0425915b22147e2d0829988ba7a881daa2af69929281e8",
+      "bytes": 395304
+    },
+    {
+      "path": "evidence/model-checks.json",
+      "sha256": "635d3252b1d0ba5c8d5a9ccfc35b53f0b7404d95d94fc3d72aed7cda774d3b38",
+      "bytes": 1232
+    },
+    {
+      "path": "evidence/perfect-360-en-2x.png",
+      "sha256": "b2700e09e0d67a7c8e90336a1b8c064b974828efd91010fc55498dbaa2f11a66",
+      "bytes": 315257
+    },
+    {
+      "path": "evidence/replay-390-vi-1x.png",
+      "sha256": "d9fec7372763a96b2de58ca0dcfd2fc8195f2261151efb597eef5c33bc2157ad",
+      "bytes": 82070
+    },
+    {
+      "path": "evidence/returning-390-vi-1x.png",
+      "sha256": "a728de5f27c4b5e4d0a74fc1c63c1b6a2d2a6022d8796c46c4141fee8eb249f1",
+      "bytes": 393822
+    },
+    {
+      "path": "evidence/unknown_link-390-vi-1x.png",
+      "sha256": "032b5d452cea552aa088a3e22ccce132a977b58500d35d8c73062185ac359c98",
+      "bytes": 155426
+    }
+  ],
+  "visual_review": [
+    "assets/hedge-trail.png",
+    "evidence/desktop-overview.jpg",
+    "evidence/loop_ready-390-vi-1x.png",
+    "evidence/detail-390-vi-1x.png",
+    "evidence/locked-390-vi-1x.png",
+    "evidence/unknown_link-390-vi-1x.png",
+    "evidence/energy_empty-360-en-2x.png",
+    "evidence/perfect-360-en-2x.png"
+  ],
+  "limits": [
+    "HTML/JS fixture study only, not Flutter after-captures",
+    "Read-only diagrams are not a game engine or Maze Creator editor",
+    "English is design translation, not released app localization",
+    "No route execution or energy/stars/progress writes",
+    "No new CODE work order;011r44 and018 unchanged"
+  ]
+}

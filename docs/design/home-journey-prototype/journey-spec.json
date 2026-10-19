@@ -1,0 +1,19 @@
+{
+  "schema": "pyquest.design.journey.v1",
+  "status": "design-proposal-only",
+  "project": "sample.imagination_loft",
+  "nodes": [
+    {"id": "play.maze", "kind": "activity", "availableFromStart": true},
+    {"id": "play.bridge", "kind": "activity", "availableFromStart": true},
+    {"id": "claim.maze", "kind": "project-reward", "dependsOn": ["play.maze"], "condition": "verified sample win, explicit claim", "oncePerProject": true, "materials": {"wood": 2, "cloth": 0}},
+    {"id": "claim.bridge", "kind": "project-reward", "dependsOn": ["play.bridge"], "condition": "verified sample win, explicit claim", "oncePerProject": true, "materials": {"wood": 1, "cloth": 2}},
+    {"id": "build.loft", "kind": "expansion", "dependsOn": ["claim.maze", "claim.bridge"], "requirements": {"all": [{"hasBadge": "first_steps", "consume": false}, {"material": "wood", "amount": 3, "consume": true}, {"material": "cloth", "amount": 2, "consume": true}]}, "commit": "revalidate all requirements and atomically debit materials plus grant room entitlement on sample acknowledgement"},
+    {"id": "enter.loft", "kind": "destination", "dependsOn": ["build.loft"]}
+  ],
+  "firstWinMedal": {"id": "first_steps", "sources": ["claim.maze", "claim.bridge"], "once": true, "consumable": false},
+  "proposedRewards": {"maze": {"wood": 2, "cloth": 0}, "bridge": {"wood": 1, "cloth": 2}},
+  "proposedRoomCost": {"wood": 3, "cloth": 2},
+  "unconditionalAccess": ["play.maze", "play.bridge", "separate-tutor-board-prototype", "separate-friends-prototype"],
+  "futureNotPlayable": ["garden", "dock", "personal-island", "shared-visit", "intelligent-pet-shop"],
+  "rules": ["No room expansion prerequisite for earning that room's materials", "Replay does not duplicate the same project's reward", "Pending win survives unrelated play and locale changes", "New projects require separately reviewed recipes and reachable material sources", "No global XP, real currency, production energy or backend changes"]
+}

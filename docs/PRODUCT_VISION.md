@@ -3,6 +3,11 @@
 > **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
 > Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
 
+> **Đồng bộ mở rộng · 2026-10-18:** nhà → đất → đảo, nhiệm vụ liên kết,
+> thăm nhà có hoạt động, thú thông minh, bạn bè/Arena đều thuộc thiết kế sản phẩm.
+> [Thiết kế thế giới thống nhất](design/WORLD_EXPANSION_REDESIGN.md) nối các màn và
+> phân biệt rõ luật đề xuất với source đã chạy. Không coi prototype là tính năng APK.
+
 > Tài liệu này xác định **PyQuest là trò chơi gì**, dành cho ai, bán giấc mơ gì,
 > và thế giới bên trong nó vận hành theo triết lý nào.
 > Tài liệu **không** đi vào thông số cân bằng (xem `GAME_DESIGN.md`),
@@ -35,6 +40,15 @@ Trẻ mở PyQuest vì thích chơi → ở lại vì tò mò → tự hỏi
 
 ---
 
+## Ngôn ngữ trải nghiệm
+
+PyQuest phải **đa ngôn ngữ**, mặc định theo ngôn ngữ hệ thống. Người dùng có thể chọn
+ngôn ngữ và lưu lựa chọn ở **Cài đặt**, hoặc trở về **Theo hệ thống**. Giao diện,
+nội dung bài, lời Tutor và bảng giảng phải nhất quán; không chỉ dịch các nút bấm.
+Không dịch âm thầm code/dữ liệu trẻ nhập hoặc đổi đáp án. VI/EN là gói ban đầu trong
+mẫu thiết kế; thêm ngôn ngữ qua gói nội dung được review. Chi tiết và giới hạn triển
+khai hiện tại: [Language contract](design/LANGUAGE_AND_LOCALIZATION.md).
+
 ## Thuật ngữ cốt lõi (dùng thống nhất toàn bộ tài liệu)
 
 Các khái niệm dưới đây **không** được dùng thay thế cho nhau. Khi một tài liệu
@@ -48,6 +62,8 @@ khác dùng thuật ngữ này, nghĩa phải đúng như bảng sau.
 | **Mini-game Play Mode** | Chế độ chơi mini-game ngay, **không** bắt buộc đọc bài hay viết code trước. |
 | **Mini-game Creator Mode** | Chế độ xem/đổi luật chơi và dần học lập trình qua chính mini-game đó — **chỉ ở những game phù hợp**, không phải mọi game (xem mục 7.1). |
 | **Side Maps** | Bản đồ mở rộng **trả phí tùy chọn**, bổ sung chiều sâu — **không** bán quyền truy cập kiến thức Python cơ bản. |
+| **Nhà riêng / khu đất / đảo cá nhân** | Không gian sở hữu và sáng tạo có thể mở rộng, trang trí, nuôi thú và đón khách theo quyền. Là một nhánh hoạt động, không thay thế Main Map công cộng hoặc khóa Main Quest. |
+| **Thú cưng thông minh** | Cư dân đồng hành có hành vi và hoạt động chơi, có lựa chọn mua theo nội dung/quyền lợi công bố rõ; có thể tận dụng AI on-device khi thiết bị hỗ trợ, không chỉ là avatar hoặc khung chat. |
 | **Nhà Thành Tích** (Achievement House) | **Một địa điểm vật lý trong thế giới PyQuest** trưng bày huy hiệu, chiến tích, bộ sưu tập và game do trẻ tạo. |
 | **Adventure Recap** | Bản tổng kết **dựa trên dữ liệu thật** về các hoạt động đã hoàn thành và kỹ năng mới học được (không viết cố định). |
 | **Arena** | Trung tâm nhiều bộ môn thi đấu/thử thách của PyQuest: đối kháng trực tiếp, tích lũy sản phẩm/bộ sưu tập sáng tạo, giải đồng đội và các giải sáng tạo chuyên nghiệp. Không phải một trò chọn đáp án cú pháp. |
@@ -64,7 +80,7 @@ khác dùng thuật ngữ này, nghĩa phải đúng như bảng sau.
 
 ## 2. Triết lý thiết kế
 
-Chín nguyên tắc dưới đây chi phối **mọi quyết định** về sản phẩm, từ nội dung
+Các nguyên tắc dưới đây chi phối **mọi quyết định** về sản phẩm, từ nội dung
 đến mô hình kinh doanh, từ giao diện đến cách viết thoại.
 
 ### 2.1. Main Map là hub điều hướng; hoạt động cốt lõi miễn phí
@@ -182,6 +198,20 @@ thường có cấp độ.
 
 ---
 
+### 2.13. Mỹ thuật 2,5D là chuẩn toàn sản phẩm
+
+Mọi màn PyQuest phải cùng một ngôn ngữ2,5D: cảnh, nhân vật, công trình, nội thất,
+đồ vật và phản hồi có khối/chiều sâu/ánh sáng nhất quán. Không chỉ đặt một hình2,5D
+vào trang thẻ phẳng rồi coi đã redesign. Áp dụng cả nhà–đất–đảo, visit/pet, Tutor,
+mini-games, Arena, thành tích và hệ thống phụ. Text/code/control giữ front-facing
+cho dễ đọc nhưng không tách khỏi bộ mỹ thuật chung.
+
+Chuẩn bắt buộc: [ART_DIRECTION_2_5D](design/ART_DIRECTION_2_5D.md). Các ảnh tham khảo
+nhiều phong cách không phải quyền trộn pixel-art/flat-vector vào thế giới. Thiết kế
+đích không đồng nghĩa artwork/runtime đã có; dùng đủ gate concept → screen → asset.
+
+---
+
 ## 3. Mô hình kinh doanh — hai vòng kiếm tiền
 
 ### 3.1. Vòng 1 — Quảng cáo thưởng để chơi tiếp
@@ -208,6 +238,14 @@ thường có cấp độ.
 > (a) người dùng Pro vẫn được **tự nguyện** xem quảng cáo thưởng để lấy năng
 > lượng, hoặc (b) Pro có **cách công bố rõ** khác để nhận phần năng lượng tương
 > đương. Chưa chốt thì **không** được mặc định Pro mất nguồn năng lượng này.
+
+---
+
+### 3.4. Sở hữu, mở rộng không gian và mua thú cưng
+
+- Nhà riêng, đất/đảo cá nhân và thú cưng là một nhánh sở hữu/sáng tạo dài hạn. Có chức năng mua thú cưng thông minh; quà, ngoại trang và nội dung mở rộng là lựa chọn bổ sung, không chỉ vật trang trí giả lập trong hồ sơ.
+- Cách kiếm/mua phần mở rộng, giá, loại tiền và quyền lợi cụ thể cần được thiết kế riêng; chưa mặc định mọi phòng/mảnh đất/đảo đều trả phí. Không bán quyền vào Main Map, kiến thức Python cơ bản hoặc khả năng thắng trong thi đấu.
+- Mua thú phải công bố nội dung và khả năng AI trên thiết bị trước giao dịch, có xác nhận/kiểm soát phù hợp với trẻ, receipt và chính sách khôi phục/hỗ trợ. Không dùng gacha, lời nài nỉ của thú hoặc nỗi sợ mất thú để thúc ép mua.
 
 ---
 
@@ -281,6 +319,41 @@ Tutor là các nhân vật có tính cách, lĩnh vực và vai trò riêng. H�
 - Tính năng chưa triển khai vẫn thuộc tầm nhìn sản phẩm, không tự động bị coi là đã loại bỏ.
 - Các nhà độc lập về gameplay nhưng dùng chung lớp dịch vụ nền cần thiết: hồ sơ người chơi, điểm, danh hiệu, bạn bè/quyền riêng tư và các quy tắc mở khóa kiến thức có liên quan.
 - Không buộc người chơi phải đi qua mọi nhà. Người thích sáng tạo có thể tập trung sáng tạo; người thích thi đấu, khám phá, sưu tập hoặc giao lưu có thể theo đuổi nhánh mình yêu thích.
+
+### 4.5. Nhà riêng, đất và đảo có thể lớn lên cùng người chơi
+
+- Người chơi có không gian riêng để sắp xếp nội thất, trưng bày sản phẩm, nuôi thú và đón bạn. Có thể mở rộng nhà (hiên/phòng/gác), đất (vườn/hồ/sân/bến) và đảo (khu mới, cầu/thuyền, chủ đề và hoạt động mới).
+- Các nhiệm vụ và dự án mở rộng phải liên kết thành hành trình rõ: xem điều kiện → đi đúng hoạt động để kiếm huy chương/vật liệu → nhận kết quả → quay về dự án → xác nhận mở. Ví dụ một phòng cần huy chương cụ thể và vật liệu có nguồn; không phải mọi nội dung mở chỉ bằng tiền hoặc một nút bấm.
+- Huy chương dùng làm điều kiện thành tích được giữ lại, khác với vật liệu bị tiêu khi xây. Mỗi món còn thiếu cần chỉ nguồn kiếm và đường quay lại; nhiệm vụ/điều kiện không được tạo vòng khóa lẫn nhau. Giá trị, số lượng và luật thưởng phải được duyệt riêng, chống nhận/trừ lặp và không khóa kiến thức cốt lõi sau mở nhà.
+- Mở rộng phải tạo thêm khả năng chơi và sáng tạo, không chỉ tăng ô chứa đồ hoặc thay hình nền. Không yêu cầu chạy theo nhà lớn nhất; một căn nhà nhỏ vẫn là trải nghiệm đầy đủ và có giá trị.
+- Đây là một nhánh hoạt động độc lập; không biến Main Map miễn phí thành đất tư, không đồng nhất đảo cá nhân với Side Maps trả phí, không tạo XP/cấp độ toàn cục.
+- Thăm nhà phải cho khách đi quanh, khám phá và tương tác với các đồ vật/tác phẩm/thú được phép; khi chủ và khách cùng hiện diện phải dựa trên phiên đồng bộ thật. Trang hồ sơ chỉ là một lối vào, không thay cho trải nghiệm thăm nhà.
+- Phạm vi cho xem, cùng chơi và cùng sửa là các quyền khác nhau. Phòng riêng không tự mở vì đã kết bạn; chủ có thể thu hồi quyền và khách luôn có đường rời đi an toàn.
+
+
+---
+
+### 4.6. Một hệ thống thế giới, không bốn ứng dụng rời nhau
+
+Làng công cộng → hoạt động → kết quả → dự án nhà → đất/bến/đảo tạo đường khám phá
+liên kết. Đây là **lựa chọn dài hạn**, không thay mọi nhánh thành bài học hay buộc
+mọi trẻ xây nhà. Kết quả có thể quay lại hoạt động, trưng bày hoặc dự án đang theo.
+Tutor đi cùng ngữ cảnh; bạn bè/Arena là trụ cột chơi lâu dài, không chỉ phụ kiện chat.
+
+- Màn đầu ưu tiên cảnh có điểm đến và một việc đang dở; không biến thành danh sách
+  card dài hoặc một nhà riêng chặn Main Map. Có đường vào mini-game ngay.
+- Hành trình mở rộng có nhiều quy mô: phòng mở thêm bàn sáng tạo; sân/vườn mở thêm
+  chơi với thú; bến/đảo mở thêm nội dung và đường khám phá. Không chỉ đổi wallpaper.
+- Dự án được lưu lâu dài, không reset theo nhiệm vụ ngày. Huy chương là bằng chứng
+  giữ lại; vật liệu là tài nguyên có thể tiêu; không dùng điểm xếp hạng làm tiền xây.
+- Nhà riêng, Nhà Thành Tích, đảo cá nhân và Side Map có identity/quyền khác nhau.
+  Cụm “mỗi nhà là một module” ở §4.4 chỉ nói công trình chức năng công cộng, không
+  có nghĩa mỗi phòng do trẻ xây cần một module game riêng.
+- Giữ miễn phí phần cốt lõi, không cần kết bạn/mua thú để kiếm nguyên liệu bắt buộc;
+  không mở vòng khóa: phòng cần gỗ nhưng chỉ phòng đó mới có gỗ.
+- Xem **Game Design §17** cho luật, **Technical Architecture §3.8/4.8/9.4** cho
+  ownership/authority và **Roadmap §17** cho thứ tự triển khai. Thiết kế màn W01–W14
+  nằm trong [WORLD_EXPANSION_REDESIGN](design/WORLD_EXPANSION_REDESIGN.md).
 
 ---
 
@@ -710,9 +783,11 @@ PyQuest cần có hệ thống vinh danh nhiều tầng. Không ép mọi thành
 
 ---
 
-## 14. AI Tutor — cảnh mở đầu, nhân vật đồng hành và hội thoại có thiết kế
+## 14. AI Tutor — dẫn đường, bảng giảng và nhân vật đồng hành
 
 ### 14.1. Mục tiêu trải nghiệm
+
+- **Tutor-first, không chat-first:** Tutor dẫn dắt từ đầu hành trình. Khi vào bài học, giao diện chính là bảng giảng tương tác để Tutor viết code/chữ, vẽ minh họa, tô sáng và giải thích từng bước; người chơi có thể đánh dấu chỗ vướng rồi tự thử. Khung chat/lịch sử là phần phụ, không thay thế phương tiện giảng giải.
 
 - AI Tutor là một trong những trải nghiệm đầu tiên người chơi thực sự gặp, không phải một nút chat phụ được thêm vào sau. Cảnh mở đầu phải sống động, giàu biểu cảm và có chất lượng hình ảnh như game thương mại; tránh phong cách sách giáo khoa, màn hình biểu mẫu khô cứng hoặc nhân vật chỉ đứng cạnh một bong bóng thoại tĩnh.
 - Cảnh mở đầu giới thiệu Tutor qua một khoảnh khắc tương tác ngắn trong thế giới PyQuest: nhân vật xuất hiện, chào người chơi, phản ứng bằng biểu cảm/hoạt ảnh và mời người chơi cùng bắt đầu hành trình. Phải có tương tác thật (chạm, chọn hoặc trả lời), không chỉ là đoạn phim dài không thể bỏ qua.
@@ -750,7 +825,7 @@ PyQuest cần có hệ thống vinh danh nhiều tầng. Không ép mọi thành
 ### 14.5. Kiến trúc AI, chi phí và quyền riêng tư
 
 - Trước khi chọn nhà cung cấp/model, xác định yêu cầu chất lượng tiếng Việt, độ trễ, khả năng gợi ý theo từng bước, chi phí mỗi phiên và phương án khi dịch vụ lỗi. Có thể đánh giá các nhà cung cấp như Gemini hoặc lựa chọn khác, nhưng không khóa kiến trúc vào một nhà cung cấp trước khi có thử nghiệm và quyết định được ghi nhận.
-- Khóa API và thông tin bí mật phải nằm ở backend/service an toàn; không nhúng khóa bí mật của nhà cung cấp vào ứng dụng client, file cấu hình phát hành hoặc repository.
+- Với phát hành công khai/production, khóa API phải nằm ở backend/service an toàn, không nhúng vào client. Không commit secret vào repository. [Owner-test r49](OWNER_TEST_BUILDS.md) có ngoại lệ được người dùng cho phép: nhúng key vào APK thử nội bộ, hoãn token/backend/quota cho lần thử này.
 - Dùng giới hạn token/thời lượng, rate limit, quota và theo dõi chi phí; không để một tài khoản có thể tạo chi phí không giới hạn. Cần thiết kế thông báo lỗi và phương án trợ giúp không dùng AI khi mạng yếu, quota hết hoặc nhà cung cấp không khả dụng.
 - Chỉ gửi dữ liệu tối thiểu cần thiết cho nhiệm vụ. Không yêu cầu tên thật, địa chỉ, trường học, số điện thoại, ảnh, vị trí hoặc thông tin nhạy cảm để dùng Tutor. Quy định lưu trữ, thời hạn xóa, quyền phụ huynh và sự đồng ý cần được xác định trước phát hành.
 - Xác định rõ phần nào chạy cục bộ, phần nào gửi đến dịch vụ bên ngoài; thông báo dễ hiểu cho phụ huynh về việc dùng AI/giọng nói và dữ liệu được xử lý. Không tuyên bố hội thoại hoàn toàn riêng tư hoặc không được lưu nếu kiến trúc nhà cung cấp chưa chứng minh điều đó.
@@ -765,6 +840,24 @@ PyQuest cần có hệ thống vinh danh nhiều tầng. Không ép mọi thành
 - Tutor sử dụng đúng ngữ cảnh bài hiện tại, đưa gợi ý theo nấc và không tự ghi đè đáp án chuẩn.
 - Có giới hạn an toàn, xử lý lỗi dịch vụ, kiểm soát chi phí và quy tắc dữ liệu trước khi đưa AI thật tới người dùng.
 - Thiết kế hình ảnh và hội thoại phải được duyệt bằng một mẫu chơi thực tế trước khi mở rộng toàn game. Đây là thứ tự triển khai ưu tiên, không phải lý do loại bỏ tầm nhìn Tutor đồng hành dài hạn.
+
+### 14.7. Bảng giảng chung của Tutor và người học
+
+- Tutor có công cụ có cấu trúc để viết/vẽ/đánh dấu/nối ý, liên hệ code với kết quả và
+  đổi ví dụ khi trẻ chưa hiểu; không chỉ gửi một đoạn văn hoặc ảnh minh họa tĩnh.
+- Bảng chia lớp nội dung bài, nét của Tutor và nét/ghi chú của người học. Tutor không
+  được xóa hoặc ghi đè việc trẻ đang làm; giữ state qua mở/đóng trợ giúp và retry.
+- Có dừng, xem lại, đi từng bước và cách thao tác không cần vẽ/không cần bật mic.
+  Voice nếu bật phải gắn đúng bước trình bày; barge-in/background hủy cue cũ an toàn.
+- AI đề xuất kế hoạch bảng qua schema/allowlist được kiểm tra; không render mã/URL
+  tùy ý, không tự chạy code hay quyết định điểm. Engine bài học là nguồn đáp án.
+- Làng có mèo và vài NPC trẻ hư cấu đi chơi, ghé vào/ra nhà để tạo sự sống nhưng không
+  cạnh tranh với Tutor, không chặn tương tác, tôn trọng reduced motion và lifecycle.
+  Tutor có lời chào/gợi ý biến thể theo context, không lặp một câu hoặc nói liên tục.
+  Hướng mở rộng là nhiều làng/đảo với bến thuyền và hải đồ, mỗi nơi có bản sắc riêng;
+  không giả NPC là người chơi online hoặc chặn Tutor sau một chuyến đi bắt buộc.
+- Thiết kế và mẫu tương tác: `docs/design/TUTOR_TEACHING_BOARD.md`, P03. Prototype
+  scripted không đồng nghĩa đã tích hợp AI/voice hoặc qua kiểm nghiệm trẻ em.
 
 ---
 
@@ -823,6 +916,26 @@ PyQuest học hỏi nguyên tắc sản phẩm từ các ứng dụng học tậ
 
 ---
 
+### 16.6. Đến nhà nhau là tương tác thực chất
+
+- Nhà/đất/đảo cá nhân là không gian chơi có vị trí, đồ vật và hoạt động; không chỉ hồ sơ có ảnh, lượt thích hoặc nút gửi quà.
+- Có thể thiết kế tham quan khi chủ vắng và ghé chơi cùng chủ. Chế độ chủ vắng phải nói rõ không có chủ online; chế độ cùng chơi cần hiện diện và hành động đồng bộ thật, không giả người thật bằng NPC/timer.
+- Những hoạt động chung có thể gồm thử mê cung tự tạo, làm thiệp, chơi với thú, khám phá một khu mới hoặc cùng trang trí vùng được cấp quyền. Không bắt buộc chat mở hay voice để tương tác có ý nghĩa.
+- Quyền khách/chủ/cùng sửa, phiên vào-ra, mất mạng, xung đột chỉnh sửa, chặn giữa phiên và kiểm duyệt mọi nội dung chia sẻ phải đi cùng thiết kế thăm nhà. Lời mời tới chơi không tự biến toàn bộ nhà thành công khai.
+
+### 16.7. Thú cưng thông minh và cơ hội dùng AI local
+
+- Thú cưng có thể được mua, có tính cách, hành vi, hoạt động và vai trò trong nhà/đảo: chơi, khám phá, chào khách, phản ứng với đồ vật hoặc tham gia sản phẩm người chơi tạo. Giữ nhánh thú cơ bản và nội dung cốt lõi miễn phí; không giảm thú thông minh thành món trang trí hoặc chỉ một chatbot.
+- Nghiên cứu AI chạy trên thiết bị để hiểu ý định, chọn phản ứng hoặc diễn đạt lời ngắn phù hợp tính cách; không mặc định mọi máy chạy được model sinh. Hành vi nền, di chuyển và hoạt ảnh vẫn hoạt động khi model chưa có, đang lỗi hoặc không được hỗ trợ.
+- AI chỉ đề xuất trong hành động cho phép; engine/dịch vụ có thẩm quyền quyết định quyền vào nhà, thay đổi thế giới, giao dịch và kết quả thi đấu. Thú không tự mua đồ, mở đất, cấp quyền cho khách hoặc đọc dữ liệu riêng của khách.
+- Ký ức chỉ dùng dữ liệu game cần thiết, có giới hạn và có thể xem/xóa/reset; không mặc định thu thập đời tư/hội thoại trẻ. Không gửi dữ liệu lên cloud âm thầm khi local lỗi; on-device AI không đồng nghĩa multiplayer và mọi dịch vụ đều offline.
+- Không khiến thú chết/mất tình cảm vì trẻ nghỉ chơi, không dùng thú gây áp lực mua hay tạo quan hệ lệ thuộc. Khả năng ngôn ngữ, độ trễ, RAM, pin/nhiệt, license và an toàn phải được kiểm trên thiết bị mục tiêu trước khi hứa với người dùng.
+
+Thiết kế chi tiết bổ sung: [P06B — nhà, đất, đảo và thú cưng](design/experience-blueprint/P06B_LIVING_HOMES_ISLANDS_PETS.md).
+Đây là tầm nhìn sản phẩm được giữ lại, **chưa chứng minh đã triển khai multiplayer, mua thú hoặc local AI**.
+
+---
+
 ## 17. Nguyên tắc tổng hợp không được làm mất khi cập nhật tài liệu
 
 1. **Mỗi nhà là một tính năng độc lập; điểm và danh hiệu là cầu nối thành tích chung.**
@@ -831,7 +944,8 @@ PyQuest học hỏi nguyên tắc sản phẩm từ các ứng dụng học tậ
 4. **Tặng quà là tự nguyện; tự vẽ tranh/thiệp và tự tạo quà phải được giữ như một phần của tầm nhìn sáng tạo.**
 5. **Vòng lặp dài hạn phải kết hợp mục tiêu ngắn, tiến trình lâu dài, nội dung mới và sự tôn trọng thời gian nghỉ.**
 6. **Tầm nhìn sản phẩm không đồng nghĩa roadmap phiên bản đầu.** Có thể triển khai từng phần, nhưng phải ghi rõ phần nào được giữ cho giai đoạn sau thay vì làm biến mất khỏi tài liệu.
-7. Khi rà soát hoặc viết lại tài liệu PyQuest, phải đối chiếu cả các mục mới 9–12 của brief, không chỉ Arena/Creator League. Không tự ý loại bỏ các tính năng xã hội, sáng tạo, quà tặng hoặc vòng lặp dài hạn vì lý do thu gọn phạm vi kỹ thuật.
+7. **Nhà/đất/đảo có thể mở rộng, thăm nhà có hoạt động thật và thú cưng thông minh (có lựa chọn mua, nghiên cứu AI local) là những nhánh phải bảo toàn.** Không thay bằng trang hồ sơ, hình nền hoặc thoại scripted rồi coi đã hoàn thành.
+8. Khi rà soát hoặc viết lại tài liệu PyQuest, phải đối chiếu cả các mục mới 9–12 của brief, không chỉ Arena/Creator League. Không tự ý loại bỏ các tính năng xã hội, sáng tạo, quà tặng hoặc vòng lặp dài hạn vì lý do thu gọn phạm vi kỹ thuật.
 
 ---
 
@@ -891,9 +1005,10 @@ và một nhánh sáng tạo đủ thật để trẻ tin mình có thể tự l
 
 ## 21. Trạng thái triển khai hiện tại và định hướng UI Direction V2
 
-### 21.1. Trạng thái source app hiện tại
+### 21.1. Snapshot source và giới hạn bằng chứng — a9bcdcf
 
-Source app hiện tại đã có:
+Các mục dưới mô tả snapshot `a9bcdcf`, không tự cập nhật theo tip của nhánh CODE.
+Có trong source:
 - Main Map dạng bản đồ đảo với các địa điểm hoạt động: Main Quest, Robot Maze, Dragon Jump, Catch the Stars, Bug Hunter và Nhà Thành Tích.
 - Main Quest là hoạt động học Python có lộ trình, mở khóa theo tiến trình (chặng 1 *Code Apprentice*: 12 bài, 64 bước).
 - Energy hồi theo thời gian, daily quests, achievements (15 huy hiệu, 3 bí mật), màn tổng kết và Adventure Recap theo dữ liệu đã lưu.
@@ -904,14 +1019,30 @@ Chưa triển khai hoặc chưa có bằng chứng trong source hiện tại:
 - Arena nhiều bộ môn, Creator Pro League, giải đồng đội.
 - Side Maps trả phí, Pro đầy đủ, cộng đồng/quà tặng đầy đủ.
 - Quảng cáo thưởng: năng lượng đã có, rewarded ads chưa có trong source.
-- Giọng nói còn đường thử nghiệm cục bộ có key nằm trong APK; từ r47 workflow CI không đưa Gemini key vào bản dựng. Chưa có token ngắn hạn/server mediation production hoặc device voice PASS mới.
+- Giọng nói còn đường thử nghiệm có key nằm trong APK; r49 cho phép GitHub Actions build owner-test có key theo quyết định người dùng, CI thường vẫn keyless. Token/backend/quota hoãn cho lần thử nội bộ; chưa có production mediation hoặc device voice PASS mới. Xem [request r49](OWNER_TEST_BUILDS.md).
+
+**Mốc nghiệm thu riêng:**010 board độc lập,014 locale service,015 root localization,
+016 Settings đã được nhận trong phạm vi riêng. Run39051006962:406ordinary+10render;
+APK sourcea9b đã build ở39052978443. Build thành công không thay device/user test.
+011 mới được giao để nối hai authored examples vào lesson; không có cơ sở ghi bảng
+AI/voice hoặc freehand đã triển khai toàn bài học. Nhà/đất/đảo, vật liệu/dự án xây,
+visit thật, mua thú/local AI và UI thế giới mới chưa có trong APK này.
+
 
 ### 21.2. UI Direction V2
 
-`docs/PyQuest_Reffrence_Images/PYQUEST_UI_DIRECTION_V2.svg` là tài liệu định hướng thiết kế, **không phải** giao diện đang chạy. 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/` và `docs/design/kai-lumi-character-reference.svg` đã có trong checkout và là bằng chứng thiết kế chuẩn.
+`docs/PyQuest_Reffrence_Images/PYQUEST_UI_DIRECTION_V2.svg` là tài liệu định hướng thiết kế, **không phải** giao diện đang chạy. 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/` và `docs/design/kai-lumi-character-reference.svg` đã có trong checkout làm nguồn nghiên cứu; không thay chuẩn2,5D r33 hoặc gate duyệt art.
 
 Nguyên tắc áp dụng:
-- **Ảnh tham khảo gốc là chuẩn thị giác.** UI Direction V2 chỉ là hướng tinh chỉnh trên nền đó: giao diện hiện tại bị đánh giá là quá "kindergarten", cần chín hơn về phân cấp, khoảng cách, chữ và khả năng dùng, nhưng vẫn giữ bản sắc giáo dục thân thiện với trẻ em. Không tự sinh một hướng nhìn thứ hai trái với ảnh gốc.
+- **Ảnh gốc là nguồn tham khảo, không phải21 phong cách cùng được duyệt.** Theo chỉ đạo r33, ART_DIRECTION_2_5D là chuẩn mới xuyên mọi màn; chọn độ sâu, chất liệu và khả năng đọc phù hợp từ nguồn, không trộn pixel/flat/nhân vật thương mại. V2 là lịch sử nghiên cứu; hình mới phải thuộc cùng họ2,5D, chín hơn về phân cấp nhưng vẫn dành cho trẻ dưới12.
 - UI V2 chưa được triển khai vào source; không mô tả mockup V2 như tính năng đã hoàn thành.
 - Các asset ảnh tham khảo là tài liệu thiết kế, không phải asset runtime của app.
 - Khi áp dụng V2 vào source, phải đánh giá từng màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime.
+
+### 21.3. Hướng thiết kế sau khi đồng bộ mở rộng
+
+V2 và P03–P06C là nguồn nghiên cứu, không phải các app riêng cần ghép nguyên iframe.
+[Thiết kế thống nhất](design/WORLD_EXPANSION_REDESIGN.md) thay cách xem làng như sáu
+thumbnail: world hub, nhà/sân, dự án, sổ hành trình, hải đồ, visit/pets/Arena dùng cùng
+điều hướng và ngôn ngữ hình ảnh. Không chờ AI/voice hoàn thiện mới đưa UI làng vào
+app. Những gate bảo mật voice vẫn bắt buộc trước khi phát hành voice production.

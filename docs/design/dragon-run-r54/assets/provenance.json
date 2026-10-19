@@ -1,0 +1,142 @@
+{
+  "revision": 54,
+  "runtime_ready": false,
+  "origin": "Four separate Arena AI-generated illustrations guided by project references; no stock/exclusivity claim. Derivatives are study-only cutouts, not animation atlases.",
+  "references": [
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+    },
+    {
+      "path": "docs/design/art-refresh-r34/concepts/w05-dragon.jpg",
+      "sha256": "6ea6221bb6e662671fa28664048e858a50c4a415c9cad7e84563eefdb63530bf"
+    },
+    {
+      "path": "docs/design/maze-play-r50/assets/hedge-token.png",
+      "sha256": "a4698cb00e4d326b4f8b6696ddd7acd897e8dc363d33731ad57a11f75117010a"
+    }
+  ],
+  "cutouts": {
+    "pip": {
+      "crop": [
+        67,
+        287,
+        783,
+        915
+      ],
+      "size": [
+        512,
+        449
+      ],
+      "method": "edge-connected white flood fill, minRGB232/chroma26; 1px erode +0.35 blur; study matte, not native alpha"
+    },
+    "basalt": {
+      "crop": [
+        158,
+        344,
+        738,
+        855
+      ],
+      "size": [
+        512,
+        451
+      ],
+      "method": "edge-connected white flood fill, minRGB232/chroma26; 1px erode +0.35 blur; study matte, not native alpha"
+    },
+    "beetle": {
+      "crop": [
+        115,
+        564,
+        618,
+        907
+      ],
+      "size": [
+        503,
+        343
+      ],
+      "method": "edge-connected white flood fill, minRGB232/chroma26; 1px erode +0.35 blur; study matte, not native alpha"
+    }
+  },
+  "background_alignment": {
+    "authored_track_y_fraction": 0.75,
+    "logical_ground_y_fraction": 0.8,
+    "logical_width": 400,
+    "logical_height": "responsive scene height / width * 400",
+    "camera_lift": "max(0, pipY+80 - logicalHeight*0.8)",
+    "note": "Aspect-preserved backdrop cover, track aligned at75percent source to80percent viewport; top-row sky extension if needed; camera tracks high jumps, collision stays in world coordinates"
+  },
+  "files": [
+    {
+      "path": "assets/basalt-source.png",
+      "size": [
+        896,
+        1200
+      ],
+      "bytes": 667082,
+      "sha256": "bea2b7598f68aafe98baae35a0783b84ab2b6dd592761e82697eac744e586b80"
+    },
+    {
+      "path": "assets/basalt-token.png",
+      "size": [
+        512,
+        451
+      ],
+      "bytes": 277859,
+      "sha256": "473a886120fe521640c8457315746285d527b8937ed35273bf820fea2800e9bc"
+    },
+    {
+      "path": "assets/beetle-source.png",
+      "size": [
+        704,
+        1522
+      ],
+      "bytes": 844319,
+      "sha256": "205aea3abf9c7e7496cfea62846100967ad627708d04e2e00fd7f4b971165507"
+    },
+    {
+      "path": "assets/beetle-token.png",
+      "size": [
+        503,
+        343
+      ],
+      "bytes": 278403,
+      "sha256": "89ef6dd9b07089252cd2c88811c49b097d7468d45a2af437d17b858d102c37d9"
+    },
+    {
+      "path": "assets/pip-source.png",
+      "size": [
+        896,
+        1200
+      ],
+      "bytes": 800732,
+      "sha256": "a3a751849a4b1591b66b960fc2f016a9db11db73e4b9eef22aa258044dc55a55"
+    },
+    {
+      "path": "assets/pip-token.png",
+      "size": [
+        512,
+        449
+      ],
+      "bytes": 212803,
+      "sha256": "615b21e1f7a10900d60b89c2ce81ee2ef0d21630a037c4c31ede0d7b9b293ef6"
+    },
+    {
+      "path": "assets/volcano-trail.png",
+      "size": [
+        944,
+        1136
+      ],
+      "bytes": 1774515,
+      "sha256": "63499174eebf7247935e574e5585e8e7a19f598dd83255b4c4932897eac81199"
+    },
+    {
+      "path": "assets/volcano-trail.webp",
+      "size": [
+        944,
+        1136
+      ],
+      "bytes": 42426,
+      "sha256": "1c3c9aa5c2ba011d1cd66db770ab33801086cc76079d1c9c92a34d524f9ced75"
+    }
+  ]
+}

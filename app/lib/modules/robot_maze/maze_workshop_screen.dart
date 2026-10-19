@@ -294,6 +294,17 @@ class _MazeWorkshopScreenState extends State<MazeWorkshopScreen> with SingleTick
                 padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
                 child: Row(
                   children: [
+                    ClipRRect(
+                      key: const ValueKey('workshop_25d_badge'),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        'assets/images/robo_token_r50.png',
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Container(
                         height: 44,
@@ -309,7 +320,9 @@ class _MazeWorkshopScreenState extends State<MazeWorkshopScreen> with SingleTick
                           controller: _name,
                           maxLength: 28,
                           style: PQText.bodyStrong,
-                          decoration: const InputDecoration.collapsed(hintText: 'Tên mê cung').copyWith(counterText: ''),
+                          decoration: const InputDecoration.collapsed(
+                            hintText: 'Tên mê cung',
+                          ).copyWith(counterText: ''),
                           onChanged: (_) => setState(() => _dirty = true),
                         ),
                       ),
@@ -363,25 +376,36 @@ class _MazeWorkshopScreenState extends State<MazeWorkshopScreen> with SingleTick
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 2, 14, 4),
-                child: Row(
+                child: Wrap(
+                  spacing: 12,
+                  runSpacing: 6,
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Text('Giới hạn 3 sao:', style: PQText.small),
-                    const SizedBox(width: 6),
-                    _Stepper(
-                      value: _limit,
-                      onChanged: (v) => setState(() {
-                        _limit = v.clamp(3, 20);
-                        _dirty = true;
-                        _verified = false;
-                      }),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text('Giới hạn 3 sao:', style: PQText.small),
+                        ),
+                        const SizedBox(width: 6),
+                        _Stepper(
+                          value: _limit,
+                          onChanged: (v) => setState(() {
+                            _limit = v.clamp(3, 20);
+                            _dirty = true;
+                            _verified = false;
+                          }),
+                        ),
+                      ],
                     ),
-                    const Spacer(),
                     GestureDetector(
                       onTap: () => setState(() {
                         _loops = !_loops;
                         _dirty = true;
                       }),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text('Khối Lặp', style: PQText.small),
                           const SizedBox(width: 6),
@@ -458,18 +482,25 @@ class _ToolChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        width: 66,
+        constraints: const BoxConstraints(minWidth: 66),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
           color: selected ? PQColors.sun : PQColors.cream,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: PQColors.ink, width: selected ? 3 : 2),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            icon,
-            Text(tool.label, style: PQText.small.copyWith(fontSize: 12, height: 1.1)),
-          ],
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              icon,
+              Text(
+                tool.label,
+                style: PQText.small.copyWith(fontSize: 12, height: 1.1),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -486,9 +517,27 @@ class _Stepper extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        RoundIconButton(icon: Icons.remove_rounded, size: 34, onPressed: () => onChanged(value - 1)),
-        SizedBox(width: 34, child: Text('$value', textAlign: TextAlign.center, style: PQText.number)),
-        RoundIconButton(icon: Icons.add_rounded, size: 34, onPressed: () => onChanged(value + 1)),
+        RoundIconButton(
+          icon: Icons.remove_rounded,
+          size: 34,
+          onPressed: () => onChanged(value - 1),
+        ),
+        ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 34),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Text(
+              '$value',
+              textAlign: TextAlign.center,
+              style: PQText.number,
+            ),
+          ),
+        ),
+        RoundIconButton(
+          icon: Icons.add_rounded,
+          size: 34,
+          onPressed: () => onChanged(value + 1),
+        ),
       ],
     );
   }

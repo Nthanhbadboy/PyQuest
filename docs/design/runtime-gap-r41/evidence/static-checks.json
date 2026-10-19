@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-18",
+  "historical_baseline_hashes": 38,
+  "groups": 18,
+  "supplemental_capture_hashes": 2,
+  "source_pins": 7,
+  "source_quest_definitions": 8,
+  "source_energy_config_and_costs": "exact",
+  "reference_hashes": 7,
+  "artifact_hashes": 9,
+  "evidence_hashes": 11,
+  "local_document_links": 50,
+  "browser": "192 cases / 3624 fonts / 11 flows PASS",
+  "model": "17 checks PASS",
+  "gallery": "41 decoded / 56 links HTTP200 / filters18,4,2,18 PASS",
+  "scope": "PASS as of r41 against30394b7; no app/CI/CODE/011/018/W08/W14/historical evidence changes",
+  "runtime_after_claim": "none; baseline storage commit not labeled as capture SHA",
+  "limits": [
+    "Static/source/HTML checks only",
+    "No new Flutter capture, engine, repository or device validation"
+  ]
+}

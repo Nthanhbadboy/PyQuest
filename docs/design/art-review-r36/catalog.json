@@ -1,0 +1,220 @@
+{
+  "package": "r36 review inventory, not production approval",
+  "count": 21,
+  "code_pin": "1053973da1ad11378f7263d7b13a4d61667133af",
+  "r35_catalog_unchanged": true,
+  "runtime_ready": false,
+  "production_approved": false,
+  "assets": [
+    {
+      "id": "w01-village",
+      "title": "W01 · Làng công cộng",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "review_note": "Neo chính vật liệu/ánh sáng. Camera vẫn minh họa; NPC và bóng bake. Không dùng mọi ảnh khác làm neo ngang quyền.",
+      "path": "../art-refresh-r33/concepts/w01-village.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w02-home-expansion",
+      "title": "W02 · Nhà và sân",
+      "sha256": "a070f05804141ff6031e3a80d805c6ef6bbd0c0507701938f74cb7c7973e8243",
+      "review_note": "Bản corrected đã publish r33, không dùng working-tree selected-original đang lệch manifest. Cutaway interior and preview communicate new activities rather than storage slots Preview is a visual proposal, not verified construction geometry; floor/support/door connection need production layout review Character rendering remains more illustrative than atlas; silhouette and material calibration still needed before production Do not derive footprint/collision or cost from this image",
+      "path": "../art-sync-r35/published-r33/w02-home-expansion.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w08-archipelago",
+      "title": "W08 · Hải đồ",
+      "sha256": "83652b3f6479c1e4595a8dab7ad2987a720d409d8ec1d0c3218bfbe8760de52d",
+      "review_note": "Bản corrected đã publish r33, không dùng working-tree selected-original đang lệch manifest. Tower landmark brought into same silhouette family Atlas simplifies activity buildings; not a literal geographic snapshot of shipped map Perspective/detail still illustrative, native ratio not phone viewport proof Boat/routes are art, not a travel system",
+      "path": "../art-sync-r35/published-r33/w08-archipelago.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w07-interior",
+      "title": "Góc sáng tạo",
+      "sha256": "0dd4d1a625b45237eadf11373dfe45e9234d12ce282b7b2b60674a2c6b693fad",
+      "review_note": "Ghế và dấu chọn đang dính trong JPEG. Cửa nhìn xuống mái nhà khác; cần sửa nối sàn/ngưỡng cửa trước asset production. Chưa có footprint hay occluder đo được.",
+      "path": "../art-refresh-r34/concepts/w07-interior.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w03-project",
+      "title": "Mở góc sáng tạo",
+      "sha256": "c24f72a647a9cab08249e22e385c57af2d3c0b49ba6d1249fa7db6b9936752c7",
+      "review_note": "Hình biểu đạt điều kiện khác chi phí, không định nghĩa recipe. Nền trong preview còn là cỏ và nối cửa chưa rõ; phải sửa geometry trước dựng phòng thật.",
+      "path": "../art-refresh-r34/concepts/w03-project.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w09-visit",
+      "title": "Ghé khu vườn",
+      "sha256": "a32b1fe065bb020df46f8fe6b3445300abd55c7bad69991473a80f3601713638",
+      "review_note": "Chỉ có một khách, không có chủ để tránh giả presence. Cần tách actor/props và không gửi phòng riêng xuống client khách. Invite/reconnect/moderation chưa đủ state.",
+      "path": "../art-refresh-r34/concepts/w09-visit.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w10-pet",
+      "title": "Sân chơi của Miu",
+      "sha256": "52b623e516cbb1afd64c13c557d39018a9faaef6639a248b236f4e6d95f752d8",
+      "review_note": "Pose chơi đang bake vào ảnh; trạng thái nghỉ chưa có art riêng. Mèo shop khác style mắt/giải phẫu, cần character sheet chung. Không có inference hoặc animation.",
+      "path": "../art-refresh-r34/concepts/w10-pet.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w10b-pet-shop",
+      "title": "Làm quen bạn mới",
+      "sha256": "0106104a69095e63fe54124abaeb4276c8bc0e5c98330ed16db27122f6176a89",
+      "review_note": "Không bake giá hoặc sale; trạng thái mua cần authority thật. Phụ huynh, restore/refund/pending chưa có tích hợp. Art mèo cần đồng bộ với W10.",
+      "path": "../art-refresh-r34/concepts/w10b-pet-shop.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w12-creator",
+      "title": "Xưởng của mình",
+      "sha256": "93b1dc2c2fbd452007dcb29119e3ff5398af7a3cf6541529e170bc452a65720f",
+      "review_note": "Cơ cấu đường bi là prop khái niệm, chưa được test vật lý. Không thay code game hay đáp án theo hình; UI editor/timeline riêng còn thiếu.",
+      "path": "../art-refresh-r34/concepts/w12-creator.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w12b-friends-gifts",
+      "title": "Góc gửi quà",
+      "sha256": "95eb42667f79254c53ab61a67721269da9100d24763171368a4eca102b9b68a0",
+      "review_note": "Một gói quà không thay friend list/invite UI. Cần làm tiếp danh sách bạn, chặn/báo cáo và chọn người nhận. Không suy online từ ảnh.",
+      "path": "../art-refresh-r34/concepts/w12b-friends-gifts.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w05-maze",
+      "title": "Robot Maze",
+      "sha256": "93762339e4be8c38ddc6516749fdf52d77179bcd0c7104827a412f6831c3bcc0",
+      "review_note": "Lưới AI không khớp dữ liệu màn và có bảng trống bake phía dưới. Phải dựng tile/actor/obstacle theo engine, không lấy pixel ảnh làm collision. Robot khác W06, cần đồng bộ.",
+      "path": "../art-refresh-r34/concepts/w05-maze.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w05-dragon",
+      "title": "Dragon Jump",
+      "sha256": "6ea6221bb6e662671fa28664048e858a50c4a415c9cad7e84563eefdb63530bf",
+      "review_note": "Bục đá và rồng bake cùng ảnh, không có animation. Side-view là có chủ đích; tỷ lệ bước nhảy phải do engine quyết định. Phong cách rồng mềm hơn cảnh khác, cần calibrate.",
+      "path": "../art-refresh-r34/concepts/w05-dragon.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w06-result",
+      "title": "Sau một lượt chơi",
+      "sha256": "36ef11d66cc5270ab52b8e8421c7796374a7d382b0132301775248147a220cd2",
+      "review_note": "Bục trống dùng được cho thắng/thử lại, không ép mọi người nhận cúp. Robot chưa cùng character sheet với Maze. Không có receipt/grant thật.",
+      "path": "../art-refresh-r34/concepts/w06-result.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w13-tutor",
+      "title": "W13 · Phòng học Tutor",
+      "sha256": "611acdf2acd18110c30984f797da6a091bcac57adc99a119c28a06adcdd75d84",
+      "review_note": "Giữ concept Nova/ivory/walnut. Sửa layout r35: bỏ debug step ID, chữ2 không tràn, scene nằm trong luồng cuộn. Bảng/code chưa gắn vào runtime; output là mẫu chưa thực thi.",
+      "path": "../art-refresh-r33/code/w13-tutor/concept.png",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w14-achievements",
+      "title": "W14 · Nhà Thành Tích",
+      "sha256": "5663f576cd4cf273e516ea1eee500face165879ed9710b6455959b90c34db66d",
+      "review_note": "Bản r35 thay góc frontal bằng cutaway3/4, tủ/bục trống cho empty state. Chất liệu còn linework hơn W01; chưa measured camera/layers. Original không bị ghi đè.",
+      "path": "../art-sync-r35/corrections/w14-achievements.jpg",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "w11-arena",
+      "title": "W11 · Arena luyện tập",
+      "sha256": "2b9932f9d6f69c9bb8bd9f3591099fc77d06e1338f41f0a75be0fc4a8bd15d72",
+      "review_note": "Giữ concept; Robo teal/brass là identity nguồn, không recolor theo robotMaze generic. Grid/actor scale chỉ minh họa; không Arena module/rules ởsource. Layout chữ2 đã sửa.",
+      "path": "../art-refresh-r33/code/w11-arena/concept.png",
+      "group": "r35",
+      "status": "Canonical r35 · concept",
+      "layout": null
+    },
+    {
+      "id": "a01-w04-journal",
+      "title": "Sổ hành trình",
+      "path": "../art-completion-r36/code/a01-w04-journal/concept.png",
+      "sha256": "2a42f45b54e1121c68c0119bfda0400c28a2a340284a57fff6d94281e523f9b6",
+      "review_note": "Giữ môi trường bàn/sổ; phần đọc cần front-facing, tách dự án và kết quả chờ.",
+      "group": "batch-a",
+      "status": "Giữ concept · sửa screen",
+      "layout": "../art-completion-r36/code/a01-w04-journal/layout.html"
+    },
+    {
+      "id": "a02-shared-settings",
+      "title": "Cài đặt chung",
+      "path": "../art-completion-r36/code/a02-shared-settings/concept.png",
+      "sha256": "99033a84778a4f9cd8a9a2c2b247ae4ab5a81f515864ed3f22051f8033de0219",
+      "review_note": "Giữ góc gỗ/đá; sửa composition thành bảng điều khiển, không hero rồi form web.",
+      "group": "batch-a",
+      "status": "Giữ concept · sửa screen",
+      "layout": "../art-completion-r36/code/a02-shared-settings/layout.html"
+    },
+    {
+      "id": "a03-shared-welcome",
+      "title": "Chào mừng đến PyQuest",
+      "path": "../art-completion-r36/code/a03-shared-welcome/concept.png",
+      "sha256": "35618eb4ff59ba2d90c2d97b96657af256b5fede0e22de3c8dbc531efd5535bb",
+      "review_note": "Giữ bến/cổng mở; scene chính với HUD vào làng, không gate mua hàng.",
+      "group": "batch-a",
+      "status": "Giữ concept · sửa screen",
+      "layout": "../art-completion-r36/code/a03-shared-welcome/layout.html"
+    },
+    {
+      "id": "a04-w05-catch-stars",
+      "title": "Hái Sao",
+      "path": "../art-completion-r36/code/a04-w05-catch-stars/concept.png",
+      "sha256": "1b8b5e62f451ece461b0d208f372bef6cc5c1617a9664d06f23083138a733718",
+      "review_note": "Giữ Robo, bình và vùng rơi; HUD không che lane. Chưa có điều khiển hay game loop.",
+      "group": "batch-a",
+      "status": "Giữ concept · sửa screen",
+      "layout": "../art-completion-r36/code/a04-w05-catch-stars/layout.html"
+    },
+    {
+      "id": "a05-w05-bug-hunter",
+      "title": "Xưởng Bitsy",
+      "path": "../art-completion-r36/code/a05-w05-bug-hunter/concept.png",
+      "sha256": "65f47b19a294e45ffd4cc7477476cd925c5e8d2f867db8da80d26d72787c2073",
+      "review_note": "Giữ Bitsy tím và xưởng; board/code front-facing. IDs chuyển ra review notes.",
+      "group": "batch-a",
+      "status": "Giữ concept · sửa screen",
+      "layout": "../art-completion-r36/code/a05-w05-bug-hunter/layout.html"
+    }
+  ]
+}

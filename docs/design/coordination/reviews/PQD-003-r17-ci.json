@@ -1,0 +1,44 @@
+{
+  "review": "PQD-003-r17",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "7cbabb2573530e63a8c3456ec43dceb48d223a19",
+  "run_id": 38962609867,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38962609867",
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "custom_report_check_id": 117183209570,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 11.6,
+  "ordinary": {
+    "passed": 342,
+    "failed": 8
+  },
+  "render_passed": 10,
+  "confirmed_failure_names": [
+    "R00-D1-scroll: target geometry and offset before/after ensureVisible",
+    "R00-D1-setup: VI plan applies and beat 2 output keys exist before scrolling",
+    "R10-D1-sem: semantic output ở beat 2 mang nhãn VI đã author",
+    "R10-D1: output VI ban đầu có prose, thứ tự và semantics thật"
+  ],
+  "missing_failure_names": 4,
+  "setup_and_scroll_named_failures_verified": true,
+  "full_failure_stack_traces_retrieved": false,
+  "roundtrip_ink_assertions_added_in_source": true,
+  "roundtrip_ink_runtime_pass_verified": false,
+  "runtime_and_preview_identical_to": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+  "changed_paths": [
+    "app/test/board/board_view_test.dart"
+  ],
+  "source_sha256": {
+    "app/test/board/board_view_test.dart": "2159e5f45c6364dbd252fcfe024b63c75fed903b8d813f7984268b4a2f8dbdda"
+  },
+  "new_images_inspected": 0,
+  "local_flutter_tests_run": false
+}

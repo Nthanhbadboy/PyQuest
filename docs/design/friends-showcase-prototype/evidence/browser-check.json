@@ -1,0 +1,183 @@
+{
+  "status": "PASS",
+  "date": "2026-10-16",
+  "browser": "153.0.8010.0",
+  "scope": "P06 HTML/CSS/JavaScript design prototype; no Flutter, real-device or production social evidence",
+  "fixtures": 12,
+  "fixtureLayouts": 216,
+  "routeLayouts": 126,
+  "dialogLayouts": 72,
+  "layoutChecks": 414,
+  "viewports": [
+    "1440x1080",
+    "390x844",
+    "360x640"
+  ],
+  "languages": [
+    "vi",
+    "en"
+  ],
+  "textScales": [
+    1,
+    1.3,
+    2
+  ],
+  "axe": {
+    "version": "4.10.3",
+    "tags": [
+      "wcag2a",
+      "wcag2aa",
+      "wcag21a",
+      "wcag21aa"
+    ],
+    "audits": [
+      {
+        "label": "home VI desktop",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "visit VI desktop",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "compliment dialog VI",
+        "violations": 0,
+        "incomplete": []
+      },
+      {
+        "label": "work VI desktop",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "craft VI desktop",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "gift review VI desktop",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "mail failed VI desktop",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "own shelf VI desktop",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "friend request dialog VI",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "safety dialog VI",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "private EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "home EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "visit EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "work EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "mine EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "craft EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "review EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      {
+        "label": "mail EN phone",
+        "violations": 0,
+        "incomplete": [
+          "color-contrast"
+        ]
+      }
+    ]
+  },
+  "checks": [
+    "visit → controlled compliment → sample play invitation",
+    "handmade card paper/sticker/slot/wish → recipient preview → pending → failure/retry/received",
+    "repeated submit does not duplicate gift; snapshot cloning is additionally covered by model tests",
+    "private default; selected-item filtering removes hidden images and titles from rendered DOM",
+    "invite preview invalidation; incoming accept/decline; no friendship before explicit resolution",
+    "blocked mail cancellation; no automatic recipient change; report remains available after block",
+    "private and moderation-held work hidden on home/profile/detail, not merely covered by CSS",
+    "offline and limited retain private studio but prevent send",
+    "native Tab/Shift+Tab/Enter/Space/Escape and focus return, including live system locale changes",
+    "VI/EN preserve artwork and mailbox; system default/fallback/ordered candidates; invalid preference/storage failure",
+    "reload loses social/draft state but retains language only",
+    "reduced motion: system and local; no animations",
+    "all visible buttons/selects >=48 CSS px; no measured page/text overflow",
+    "no JS/HTTP errors, external requests or non-GET requests"
+  ],
+  "limitations": [
+    "axe incomplete checks require human review; zero violations is not WCAG certification",
+    "not tested with real children, TalkBack, VoiceOver, Safari, Firefox or a real phone",
+    "CSS font-size scaling is not Flutter textScaler or browser zoom evidence",
+    "identity/consent/moderation/permissions/persistence/delivery are simulated; no server",
+    "no real UGC execution, paid gifts, team participation or matchmaking"
+  ]
+}

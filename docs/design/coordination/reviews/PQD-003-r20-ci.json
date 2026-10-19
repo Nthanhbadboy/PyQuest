@@ -1,0 +1,59 @@
+{
+  "review": "PQD-003-r20",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "3c2fe4b1edae63142b10804b3b45c1b0d4e7aeb5",
+  "run_id": 38969235815,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38969235815",
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "custom_report_check_id": 117205013864,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 7.7,
+  "analyze_clean": false,
+  "analyze_info_count": 2,
+  "analyze_info_codes": [
+    "file_names",
+    "unnecessary_import"
+  ],
+  "ordinary": {
+    "passed": 349,
+    "failed": 4
+  },
+  "render_passed": 10,
+  "confirmed_failure_names": [
+    "00-D1-sem-diagnostic: dump actual semantics labels at output beat",
+    "R10-D1-sem-VI: output node contains the authored Vietnamese label",
+    "R10-D2-sem: sau setLocale(en), semantic output cập nhật sang EN",
+    "R10-D3-sem: sau advance và EN→VI, semantic output trở lại VI"
+  ],
+  "missing_failure_names": 0,
+  "full_failure_stack_traces_retrieved": false,
+  "diagnostic_exception_verified": "A SemanticsHandle was active at the end of the test.",
+  "diagnostic_partial_stack_retrieved": true,
+  "diagnostic_VI_output_label_present": true,
+  "three_semantic_case_first_exceptions_retrieved": false,
+  "fixture_index_out_of_range_verified_from_source": true,
+  "manual_handle_affected_cases": 4,
+  "initial_VI_negative_EN_guard_still_missing": true,
+  "runtime_and_preview_identical_to": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+  "intermediate_runtime_change_reverted": true,
+  "changed_paths": [
+    "app/test/board/board_view_test.dart",
+    "app/test/00_board_semantics_dump_test.dart"
+  ],
+  "source_sha256": {
+    "app/test/board/board_view_test.dart": "2ecda9f64aa744a786a7b9d9acdfc69df07813ee18d0c1f163f8ebc25fcafa33",
+    "app/test/00_board_semantics_dump_test.dart": "03104898357947ba1e98c20a558dbe8c3b29ca6e89e250237f76569e4f5c1661",
+    "app/test/board/fixtures/board_plans.v1.json": "8a39e5ad21766cbff90bdc96dd83549505b8c777f51f317c634697954ea5d784",
+    "app/test/board/board_test_support.dart": "179f18a39b354c768e67a470a8e99877998dab65b1a5defce06ab187b65ea435"
+  },
+  "new_images_inspected": 0,
+  "local_flutter_tests_run": false
+}

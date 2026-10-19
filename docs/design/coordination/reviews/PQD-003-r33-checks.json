@@ -1,0 +1,35 @@
+{
+  "review": "PQD-003-r33",
+  "type": "documentation/art verification only",
+  "date": "2026-10-18",
+  "image_count": 3,
+  "image_bytes": 828194,
+  "image_decode_hash_reference_checks": true,
+  "local_links_checked": 53,
+  "four_core_docs_reference_same_art_contract": true,
+  "no_runtime_ci_dependency_changes": true,
+  "pqc017_runtime": false,
+  "pqc011_status": "SUBMITTED_UNVERIFIED @a331ac1",
+  "visual_review": "three selected concepts inspected; home and atlas corrected, production gaps recorded",
+  "not_tested": [
+    "Flutter/analyze/tests",
+    "live UI",
+    "phone layout/text scaling/keyboard",
+    "device performance",
+    "layered runtime asset quality"
+  ],
+  "files": [
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+    },
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w02-home-expansion.jpg",
+      "sha256": "a070f05804141ff6031e3a80d805c6ef6bbd0c0507701938f74cb7c7973e8243"
+    },
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w08-archipelago.jpg",
+      "sha256": "83652b3f6479c1e4595a8dab7ad2987a720d409d8ec1d0c3218bfbe8760de52d"
+    }
+  ]
+}

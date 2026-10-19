@@ -1,0 +1,1 @@
+../../../art-review-r38/code-snapshot/a02-shared-settings/README.md

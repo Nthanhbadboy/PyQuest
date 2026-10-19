@@ -1,0 +1,43 @@
+{
+  "code_sha": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+  "sources": [
+    {
+      "path": "app/assets/data/robot_maze_levels.json",
+      "blob": "2932db24db2c3424b9d9ff6116c0e5391db0b762",
+      "sha256": "0c0d728a067b99d47fe85c18ed5c80cecd36c026284b3a3d15a246a6f5747f39"
+    },
+    {
+      "path": "app/assets/config/game_config.json",
+      "blob": "1fbb4fbd75f3afb3a59456c01c6d547730b3b81d",
+      "sha256": "f7b9d1a80be65a49ad2bf7c68de46bbf33243b0a27cd5eb5e80d77467b5f15c5"
+    },
+    {
+      "path": "app/lib/modules/robot_maze/robot_maze_module.dart",
+      "blob": "621c6b25c3e53e929c6d0e67b194f3b29dd05100",
+      "sha256": "18ef0c39aa2cf6c91d8bf6b5b869a03394810e5d06c48e97013f30f5e49a71f5"
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_models.dart",
+      "blob": "6272057019b57088a9f220b238df566f3dc85430",
+      "sha256": "238cc06597a0010a3f8335e7b219f85deda0a53aa23c2e96b5c88a05315d9092"
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_play_screen.dart",
+      "blob": "fcbe2b48a7ae8474920365ba88812b846f3aa05d",
+      "sha256": "0a4b44d8d0bc7ff03e36742253a68222cedba33df94e508ec84ffda8592666c4"
+    },
+    {
+      "path": "app/lib/modules/energy/energy_widgets.dart",
+      "blob": "867fb6aa792c2d1d796e9147cc524a7b34e1dcb8",
+      "sha256": "969cd3298f778ecf63bca02cffbf8d9f683d26df42c4e2f24fc3ab7100e9b840"
+    },
+    {
+      "path": "app/lib/data/repositories/progress_repository.dart",
+      "blob": "a59ea0938dec6efcd48598d567fe97d6d4e566de",
+      "sha256": "cb7960c854f7270f4e61e6082a47cb1e1ab90c88980cba5f178a952f4cf2765b"
+    }
+  ],
+  "levels": 10,
+  "translations": "VI source titles/stories; EN is design translation only. No solution or tip copied to catalog.",
+  "runtime_execution": false
+}

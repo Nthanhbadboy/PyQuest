@@ -1,0 +1,16 @@
+{
+  "result": "PASS_SOURCE_ARCHIVE_ONLY",
+  "code_pin": "2ea5e5004e98df4aec8c1132a56b8d60bf4ddf5e",
+  "parent": "4fe3b7d0a1bf5f6dface1b04cbc4e2d7ee9d451f",
+  "source_files_byte_and_git_blob_verified": 5,
+  "exact_patch_verified": true,
+  "local_doc_links_checked": 16,
+  "github_metadata": {
+    "checks": 0,
+    "workflow_runs": 0,
+    "status_entries": 0
+  },
+  "runtime_format_analyze_flutter_tests": "NOT_RUN",
+  "ci_triggered": false,
+  "scope": "Archive/pin/metadata/link integrity only; not correctness or test execution."
+}

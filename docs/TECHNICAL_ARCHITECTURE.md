@@ -3,6 +3,11 @@
 > **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
 > Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
 
+> **Đồng bộ mở rộng · 2026-10-18:** nhà → đất → đảo, nhiệm vụ liên kết,
+> thăm nhà có hoạt động, thú thông minh, bạn bè/Arena đều thuộc thiết kế sản phẩm.
+> [Thiết kế thế giới thống nhất](design/WORLD_EXPANSION_REDESIGN.md) nối các màn và
+> phân biệt rõ luật đề xuất với source đã chạy. Không coi prototype là tính năng APK.
+
 > Tài liệu này xác định **xây PyQuest bằng cách nào**:
 > framework, cách chạy Python, cấu trúc module, lưu dữ liệu,
 > quảng cáo, thanh toán và các quyết định kỹ thuật quan trọng.
@@ -29,7 +34,7 @@
 | **Trạng thái dùng chung** | Một nguồn sự thật duy nhất cho tiến trình hoạt động, năng lượng, thành tích và quyền mở khóa |
 | **XP/cấp độ toàn cục** | **Không dùng**; không có bảng XP/level hay công thức tăng cấp. Main Map chỉ điều hướng/mở hoạt động theo điều kiện trực tiếp |
 | **Arena** | Các bộ môn là module độc lập; điểm/danh hiệu là lớp liên kết chung |
-| **AI Tutor** | Dịch vụ AI qua backend/service an toàn; không nhúng khóa bí mật vào client |
+| **AI Tutor** | Production qua backend/service an toàn; owner-test có ngoại lệ r49, không commit secret |
 | **Cộng đồng/quà tặng** | Module xã hội tách biệt, triển khai theo giai đoạn |
 
 **Nguyên tắc chốt:** làm một **lát cắt dọc hoàn chỉnh** trước khi mở rộng.
@@ -267,6 +272,34 @@ abstract class AchievementService {
 
 ---
 
+### 3.8. Các domain mở rộng và ranh giới ownership
+
+**Thiết kế đích, chưa phải các service đã tồn tại trong source a9b.** Không dựng
+backend trước nhu cầu cụ thể, nhưng visit thật/quyền chia sẻ không thể giả bằng
+SQLite local. Không tạo module mới cho từng căn nhà hoặc instance pet.
+
+| Domain đề xuất | Sở hữu / trách nhiệm | Không được quyết định |
+|---|---|---|
+| World catalog/session | Region kind, portal graph, availability, bounds, navigation/occlusion, nguồn/đích travel, return context | Grade, reward, ownership hoặc rank |
+| Housing | Space/room/parcel, bố cục phiên bản, object instance, footprint/lối ra, draft/commit | Tự cấp đồ, quyền Side Map hay quyền khách |
+| Projects/inventory | Recipe version, grants, vật liệu, build commands/receipts; phối hợp debit+grant atomic | UI tự grant từ text “thắng”; tiêu badge như tiền |
+| Visit/social | Invite/session, vai trò/quyền vùng, revocation, presence, moderation | Friend=true đồng nghĩa edit toàn nhà; private payload gửi rồi che UI |
+| Pet behavior | State machine, safe actions, pathfinding; adapter capability/model tùy chọn | Mua hàng, cấp quyền, ghi điểm/đáp án từ model text |
+| Entitlements | Quyền nội dung/đồ/pet/mua đã xác minh và restore/revoke | Boolean local tự chứng minh giao dịch trả phí |
+| Arena/Creator | Artifact versions, submission/result authority, title/rank contribution | Cảnh nhà đẹp hoặc pet đắt tự cấp thành tích |
+
+Data IDs phải tách `regionId`, `spaceId`, `ownerId`, `activityId`, `projectId`,
+`recipeVersion`, `objectInstanceId`, `petId`, `sessionId`, `commandId`. Locale chỉ
+chọn copy, không đổi IDs hoặc business keys. Personal island khác paid content pack.
+Đây là vocabulary/schema contract đề xuất, chưa là lệnh tạo migration/API.
+
+`ActivityRegistry` hiện có vẫn là nơi mở các hoạt động thật. UI world gọi adapter
+availability/router; không hardcode một lớp grading/economy mới vào màn làng.
+Travel mang nguồn/đích + cancel/generation token; chỉ commit arrival sau load và
+quyền hợp lệ. Lỗi giữ nguồn, resume không tự grant phần thưởng hoặc replay travel.
+
+---
+
 ## 4. Lưu dữ liệu
 
 ### 4.1. Quyết định: một database SQLite cục bộ
@@ -407,6 +440,40 @@ Mục tiêu: các sự kiện hoàn thành lặp lại hoặc việc **thoát/m�
 - **Không cần backend ở giai đoạn Foundation.** Có thể dùng truy vấn Google Play
   Billing ngay trên thiết bị; chỉ cân nhắc server khi yêu cầu thực tế đòi hỏi
   xác minh tập trung (xem mục 12).
+
+---
+
+### 4.8. Dữ liệu không gian, dự án và authority mở rộng
+
+Giữ một SQLite cho phần local. Các nhóm sau là **dự kiến theo domain**, không thêm
+bảng chỉ vì có mockup. Migration cụ thể chỉ mở trong work order triển khai.
+
+| Dữ liệu | Local solo | Shared / trả phí / thi đấu |
+|---|---|---|
+| Layout/draft của chủ | Repository housing, revision, validation footprint | Published revision + quyền chỉnh do dịch vụ xác minh; client không overwrite snapshot cũ |
+| Vật liệu/project/build receipt | Transaction local bền vững, dedup và recovery | Service ledger là authority; cache/outbox không tự coi là đã commit |
+| Badge/tiến trình đã có | Đọc từ owner hiện hành, không duplicate bảng trong housing | Không suy ra entitlement từ đồ trưng bày |
+| Visit presence/quyền | Không giả online; cached shared snapshot chỉ khi policy còn cho phép | Session server authoritative, revoke/expiry, payload tối thiểu theo quyền |
+| Pet và model | Config/memory game hữu hạn; capabilities/model files riêng | Ownership trả phí từ receipt; shared actions do một session authority validate |
+| UGC/Arena | Draft/artifact local và trạng thái gửi | Moderation/result authority, private/approved/held, không tính rank từ fake leaderboard |
+
+**Command xử lý mở rộng:** load receipt theo key bền vững → kiểm principal/owner,
+project+recipe version, state và requirements → atomic debit vật liệu + grant space
++ ghi receipt → phát domain event sau commit. Retry cùng key trả cùng kết quả;
+request body khác cùng key bị từ chối. Hai lệnh khác nhau xây cùng mục tiêu phải có
+ràng buộc uniqueness/revision, không chỉ khóa nút UI. Module giữ ownership bảng,
+phối hợp qua transaction coordinator/unit-of-work, không cho UI tự ghi nhiều bảng.
+
+App đóng giữa pending: reopen tra receipt/đồng bộ lại, không đoán thành công/thất bại
+bằng animation. Server đã commit nhưng response mất không được debit lần hai.
+Cancel trước gửi không thay dữ liệu; sau gửi là **chưa biết kết quả**, không tự rollback
+server. Recipe đổi/balance đổi phải kiểm ở commit, không tin preview cũ. Không dùng
+last-write-wins cho tài nguyên/ownership; merge layout phải có policy xung đột.
+
+Offline không phải một boolean cho mọi thứ: hoạt động solo và dữ liệu local đã được
+phép vẫn dùng được; quyền shared/paid/rank cần authoritative receipt hoặc chính sách
+cache đã duyệt. Khi chuyển local solo sang account không tự biến ledger local thành
+quyền mua/thi đấu đã xác minh. Phải có migration/reconciliation rõ, không xóa save.
 
 ---
 
@@ -633,7 +700,7 @@ app/
 - **Không** gọi database trực tiếp từ UI — qua repository.
 - **Không** gọi module khác trực tiếp — qua interface.
 - **Không** tạo tầng trung gian chỉ để trông "chuẩn kiến trúc".
-- **Không** nhúng khóa bí mật của nhà cung cấp AI vào ứng dụng client, file cấu hình phát hành hoặc repository.
+- **Không** commit secret vào repository. Với production/public release, không nhúng provider key vào client; [owner-test r49](OWNER_TEST_BUILDS.md) được người dùng cho phép nhúng key để thử nội bộ, hoãn token/backend/quota.
 - **Không** tạo bảng XP/level toàn cục.
 
 ---
@@ -661,6 +728,32 @@ Kiểm thử bằng bộ tình huống dành riêng cho trẻ: câu trả lời 
 - Mua nhân vật chỉ thay đổi phần mỹ thuật/đã công bố; Tutor miễn phí vẫn có đủ năng lực hỗ trợ học tập cốt lõi.
 - Tutor sử dụng đúng ngữ cảnh bài hiện tại, đưa gợi ý theo nấc và không tự ghi đè đáp án chuẩn.
 - Có giới hạn an toàn, xử lý lỗi dịch vụ, kiểm soát chi phí và quy tắc dữ liệu trước khi đưa AI thật tới người dùng.
+
+---
+
+### 9.4. Pet thông minh và local AI: tách capability khỏi ownership
+
+Hành vi nền (di chuyển, chơi, nghỉ, phản hồi đồ vật) chạy deterministic/state machine,
+không chờ LLM mỗi frame. Intent classifier/rules và model ngôn ngữ là adapter tùy
+chọn; một runtime có thể dùng chung, không nạp một model cho mỗi pet. Engine validate
+safe action schema trước khi thực thi; text không thành code/URL/quyền/giao dịch.
+
+Capability states: unsupported, absent, downloading, ready, failed/disabled. Các
+trạng thái không đồng nghĩa mất pet. Trước giao dịch phải công bố khả năng trên máy,
+phần cần model/tải thêm và fallback. Tải có cancel/integrity/license/version checks;
+xóa model không xóa ownership. Không gửi lên cloud âm thầm khi local lỗi.
+
+Scheduler theo sự kiện có timeout/cancel, pause/background và giới hạn công việc.
+Shared pet chỉ có một nguồn quyết định theo session; các client không tự sinh
+hành vi rồi ghi đè nhau. Không truyền dữ liệu private của khách vào model; tên nhà,
+thiệp/UGC là dữ liệu không tin cậy, không phải system instructions. Memory chỉ là
+sở thích game hữu hạn, xem/xóa/reset được; không lưu mọi hội thoại mặc định.
+
+Trước chọn model/runtime phải benchmark Android mục tiêu **cùng scene game đang
+render**: peak RAM, download/install, cold start, latency phân vị, pin/nhiệt,
+background/cancel, an toàn và chất lượng VI/EN. Chưa chốt model, dung lượng hay hứa
+AI sinh trên mọi máy. Fallback không bị ghi nhãn giả là AI. Tutor core và UI world
+không phụ thuộc benchmark này; key/token production của voice vẫn là gate riêng.
 
 ---
 
@@ -733,6 +826,43 @@ dựng ngay framework test nặng nề.
 
 ---
 
+### 11.3. Scene pipeline cho làng, nhà và đảo
+
+Background/terrain, landmark, prop, actor, foreground occluder và HUD tách lớp.
+Scene definition chứa camera bounds, foot pivots, footprints, walkable paths,
+portal anchors và semantic targets; ảnh nền không phải navigation mesh. Bản đồ
+zoom/pan có danh sách điểm đến thay thế, text không bake vào art.
+
+Culling/pooling/atlas và một scheduler giới hạn actor; pause offscreen/background,
+không replay hàng phút animation khi resume. Travel skip/cancel được; không timer
+riêng vô hạn cho từng NPC. Model/assets có tải/hủy/retry/fallback và manifest nguồn.
+Flutter assets directory không recursive với JSON con: đăng ký chính xác hoặc đặt
+file trực tiếp dưới thư mục đã khai báo, kiểm bằng AssetManifest/rootBundle thật.
+
+Các số §11.1 là mục tiêu base app, không bằng chứng đã đo và không tự cấp thêm RAM
+cho inference. Pet model cần profile ngân sách thiết bị riêng được review; scene
+phải vẫn hoạt động khi thiếu model. Chưa có quyền thay engine/render stack/deps chỉ
+vì tài liệu này đề xuất chia lớp.
+
+---
+
+### 11.4. Art pipeline2,5D bắt buộc, không bắt đổi engine
+
+Theo [ART_DIRECTION_2_5D](design/ART_DIRECTION_2_5D.md), mọi màn dùng chung camera
+family/material/light/actor scale. Có thể dùng pre-rendered2D layers để biểu đạt2,5D;
+không tự thêm engine3D/package. HUD/text/semantics tách scene transform.
+
+Phân biệt concept image, screen composition và production art pack. Trước runtime
+phải có layer/alpha/dimensions/pivot/footprint/occluder/hit-target/source-license;
+ảnh isometric opaque không tự có geometry hoặc animation. Asset resolution/crop
+không được làm lệch collider/touch target. Font/scale/calm/keyboard dùng UI thật,
+không chứng minh bằng chữ bake vào ảnh. VI/EN strings/code/giá không bake vào asset.
+
+Kiểm camera/shadow/contact point và độ rõ trên phone trước khi import; quality
+review concept không thay device performance hoặc runtime integration tests.
+
+---
+
 ## 12. Bảo mật & quyền riêng tư
 
 ### 12.1. Dữ liệu trẻ em
@@ -771,15 +901,19 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 | Quyết định | Khi nào chốt |
 |---|---|
 | Python thật hay mô phỏng sau này | Sau khi mô phỏng chứng minh giá trị sư phạm |
-| Có cần server backend không | Khi cần cloud sync, AI Tutor an toàn hoặc xác minh purchase tập trung |
+| Hạ tầng backend cụ thể | Chọn theo nhu cầu: relay AI an toàn, visit session/quyền thật, shared ledger/rank/purchase; không giả các chức năng đó bằng local state |
 | Có dùng Firebase không | Khi cần analytics, crash reporting, remote config |
 | Có hỗ trợ iOS ngay không | Sau khi Android ổn định |
-| Localization sang ngôn ngữ nào | Trước giai đoạn hoàn thiện |
+| Localization | VI/EN + system/manual đã chốt;014–016 chỉ nghiệm thu foundation/Settings. Lesson/world copy packs và voice locale còn cần gate riêng |
 | Người dùng Pro có được xem quảng cáo thưởng không | Quyết định sản phẩm (xem 6.4) |
 | Giá trị cụ thể của ngân sách bước, trần collection, mục tiêu bộ nhớ | Sau khi đo thực tế interpreter (xem 2.3) |
 | Hệ thống bạn bè/cộng đồng và đồng bộ thi đấu | Chỉ khi một game cụ thể cần; không dựng trước (xem 3.4) |
 | Nhà cung cấp/model AI Tutor | Sau thử nghiệm chất lượng tiếng Việt, độ trễ, chi phí |
 | Cơ chế kiểm duyệt nội dung do người chơi tạo | Trước khi bật tính năng cộng đồng |
+| Recipe, supply/material ledger và migration người chơi cũ | Trước slice xây nhà, không copy fixture P06C vào economy |
+| Visit capacity/reconnect/co-edit conflict/revocation | Trước visit thật; quyền/authority phải chốt trước UI “cùng chơi” |
+| Model/runtime/license, capability/pet memory policy | Sau benchmark VI/EN và máy mục tiêu, trước lời hứa mua AI |
+| Giá/tiền tệ/entitlement mở rộng và pet | Trước commerce slice, parental/refund/restore cần policy riêng |
 
 ---
 
@@ -814,7 +948,7 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 
 ## 15. Trạng thái triển khai hiện tại và UI Direction V2
 
-### 15.1. Module đã có trong source
+### 15.1. Snapshot source a9bcdcf — không phải danh sách domain tương lai đã triển khai
 
 - `activity_registry` và `MainMapScreen` cho bản đồ đảo và các địa điểm hoạt động.
 - Main Quest, mini-game, achievements, energy, daily quests và progress tracker.
@@ -836,7 +970,8 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 - Ảnh tham khảo và SVG V2 là tài liệu thiết kế, không phải asset runtime của app.
 - 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/`, `PYQUEST_UI_DIRECTION_V2.svg`,
   `PYQUEST_VILLAGE_2_5D_CONCEPT.svg` và `docs/design/kai-lumi-character-reference.svg`
-  đã có trong checkout; đó là bằng chứng thị giác chuẩn khi đánh giá màn hình.
+  đã có trong checkout làm nguồn tham khảo. Chuẩn hiện hành là ART_DIRECTION_2_5D;
+  không dùng sự pha trộn trong ảnh gốc để hợp thức hóa nhiều style trong một app.
 - Không đưa API key, token hoặc thông tin bí mật vào tài liệu, log hay commit.
   Đường chuẩn cho trợ giảng văn bản là **relay giữ key ở server**
   (`tools/ai_relay/relay.py`, `RELAY_API_KEY`), app chỉ cấu hình endpoint
@@ -844,15 +979,26 @@ Các quyết định sau **chưa chốt**, cần đánh giá thêm:
 - Source Gemini Live còn đường thử nghiệm cục bộ bằng dart-define; key nằm trong
   APK và có thể bị trích xuất. `GeminiLiveWire.redactSecrets` chỉ giảm lộ trong
   log, không bảo vệ key trong client. Cần token ngắn hạn/server mediation trước
-  khi cho phép phân phối voice; việc sửa tài liệu không triển khai cơ chế đó.
-- **Từ r47, hai workflow build APK không đọc Gemini repository secret và luôn
-  truyền `--dart-define=GEMINI_API_KEY=`.** Direct voice không xác thực được trong
-  các artifact mới của đường build này. Không thêm lại key để bật voice trên CI.
-- Release-mode và quyền phát hành là hai việc khác nhau. Workflow preview không
-  phải gate store/public release. Keyless chưa có nghĩa đã đạt mọi gate bảo mật.
-  Không có APK/device evidence mới trong đợt sửa này; artifact/key cũ chưa được
-  thu hồi/xoay tự động. Xem [chính sách hiện hành](PROJECT_STATUS.md#4-apk-và-bí-mật-chính-sách-từ-r47).
+  khi cho phép phân phối voice công khai; owner-test r49 được miễn gate này theo
+  quyết định người dùng. Việc sửa tài liệu không triển khai cơ chế token.
+- **r49: người dùng cho phép nhúng Gemini key từ repository secret vào APK
+  owner-test**, sau pinned-SDK checks trên exact source SHA. CI thông thường vẫn
+  keyless. Token/backend/quota hoãn cho lần thử nội bộ; không public/store release.
+- Xem [request/gates/evidence](OWNER_TEST_BUILDS.md). Key trong APK trích xuất được;
+  không ghi key vào source/log/chat. Build success không thay device/voice tests.
+  Các receipt r47/r48 giữ nguyên là lịch sử; artifact/key cũ không tự thu hồi/xoay.
 
 ### 15.3. UI Direction V2
 
 UI V2 chưa được triển khai vào source. Việc áp dụng phải đi qua đánh giá màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime.
+
+
+### 15.4. Trạng thái đồng bộ mở rộng2026-10-18
+
+World/housing/inventory/projects/visit/pet domains ở §3.8/4.8/9.4 là kiến trúc đích,
+chưa có nghĩa migration/backend/model đã được viết.010/014/015/016 accepted riêng;
+011 được giao r31 cho hai authored examples, không mở domain mở rộng hoặc deps.
+APK a9b build run39052978443; CI source run39051006962 có406ordinary+10render.
+UI/housing sẽ có order riêng theo Roadmap §17 và
+[thiết kế W01–W14](design/WORLD_EXPANSION_REDESIGN.md). Không cần chờ voice/local AI
+production mới triển khai UI làng; không vì vậy bỏ gate bảo mật khi phát hành voice.

@@ -1,0 +1,23 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const M=require('../../docs/design/maze-trail-r45/model.js'),C=require('../../docs/design/maze-trail-r45/catalog.js');
+const results=[];function check(name,f){f();results.push(name)}
+check('Ten source levels, ordered IDs and loop flags',()=>{assert.equal(C.levels.length,10);assert.deepEqual(C.levels.map(l=>l.id),Array.from({length:10},(_,i)=>'rm_'+String(i+1).padStart(2,'0')));assert.deepEqual(C.levels.map(l=>l.allowLoops),[...Array(5).fill(false),...Array(5).fill(true)])});
+check('Every diagram is rectangular, with one start and one chest',()=>{for(const l of C.levels){assert(l.rows.every(r=>r.length===l.rows[0].length));const cells=l.rows.join('');assert.equal([...cells].filter(c=>c==='S').length,1);assert.equal([...cells].filter(c=>c==='C').length,1);assert.equal([...cells].filter(c=>c==='*').length,l.gems)}});
+check('No authored solution or tip enters the design catalog',()=>{for(const l of C.levels){assert(!Object.hasOwn(l,'solution'));assert(!Object.hasOwn(l,'tip'))}});
+check('New learner can enter only the first level',()=>{const s=M.fixture('new');assert.deepEqual(C.levels.map((_,i)=>M.unlocked(s,i)),[true,...Array(9).fill(false)])});
+check('A one-star completion on optional-gem level3 unlocks level4',()=>{const s=M.fixture('one_star_unlock');assert.equal(s.records.rm_03.stars,1);assert.equal(M.unlocked(s,3),true);assert.equal(M.totalStars(s),5)});
+check('No-gem completed level1 cannot be a one-star sample',()=>{for(const f of M.fixtures){const s=M.fixture(f);if(s.records?.rm_01)assert(s.records.rm_01.stars>=2)}});
+check('Unlock follows predecessor ID, not count or page',()=>{const s=M.fixture('new');s.records={rm_03:{stars:1}};assert.equal(M.unlocked(s,1),false);assert.equal(M.unlocked(s,3),true);assert.equal(M.unlocked(s,5),false)});
+check('Entry2, completed replay0, workshop0',()=>{assert.equal(M.cost(M.fixture('new'),0),2);assert.equal(M.cost(M.fixture('replay'),0),0);assert.equal(C.costs.creator,0)});
+check('Zero and unknown energy both keep completed replays available',()=>{for(const f of ['energy_empty','energy_unknown']){const s=M.fixture(f);assert.equal(M.gate(s,0),'ready');assert.equal(M.gate(s,2),f)}});
+check('Second page is browse-only and changes no records/energy/selection',()=>{const s=M.fixture();const n=M.dispatch(s,{type:'page',page:1});assert.equal(n.page,1);assert.equal(n.selected,s.selected);assert.deepEqual(n.records,s.records);assert.equal(n.energy,s.energy)});
+check('Locked deep link selects exact requested level, without entry',()=>{const s=M.dispatch(M.fixture(),{type:'deep_link',id:'rm_09'});assert.equal(s.selected,8);assert.equal(s.page,1);assert.equal(M.gate(s,8),'locked');assert.deepEqual(M.dispatch(s,{type:'enter'}),s)});
+check('Unknown ID never silently becomes level1',()=>{const s=M.dispatch(M.fixture(),{type:'deep_link',id:'rm_99'});assert.equal(s.selected,null);assert.equal(s.modal,'not_found');assert.deepEqual(M.dispatch(s,{type:'enter'}),s)});
+check('Unknown progress is not0/10 or0stars',()=>{const s=M.fixture('loading');assert.equal(s.records,null);assert.equal(M.totalStars(s),null);assert.equal(M.current(s),null);assert.equal(M.gate(s,0),'unknown')});
+check('All ten can be complete with20stars; perfect30 is distinct',()=>{assert.equal(M.totalStars(M.fixture('all_partial')),20);assert.equal(M.current(M.fixture('all_partial')),-1);assert.equal(M.totalStars(M.fixture('perfect')),30)});
+check('Destination preview never spends or rewards, including repeated entry',()=>{const s=M.fixture(),n=M.dispatch(s,{type:'enter'});assert.equal(n.route,'level');assert.equal(n.energy,s.energy);assert.deepEqual(n.records,s.records);assert.deepEqual(M.dispatch(n,{type:'enter'}),n)});
+check('Workshop stays free even with unavailable progress',()=>{const n=M.dispatch(M.fixture('loading'),{type:'workshop'});assert.equal(n.route,'workshop');assert.equal(n.records,null)});
+check('Retry restores loading, not fictional successful records',()=>{const n=M.dispatch(M.fixture('load_error'),{type:'retry'});assert.equal(n.status,'loading');assert.equal(n.records,null)});
+check('Close and rules do not mutate progress; fixtures are isolated',()=>{const s=M.fixture('detail');assert.deepEqual(M.dispatch(s,{type:'rules'}).records,s.records);assert.deepEqual(M.dispatch(s,{type:'close'}).records,s.records);s.records.rm_01.stars=3;assert.equal(M.fixture().records.rm_01.stars,2)});
+const receipt={result:'PASS',scope:'JS screen-study model only, not Dart/Maze engine/repository tests',checks:results.length,results};fs.writeFileSync('docs/design/maze-trail-r45/evidence/model-checks.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify(receipt,null,2));

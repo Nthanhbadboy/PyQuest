@@ -1,0 +1,125 @@
+{
+  "status": "interactive HTML world prototype; not Flutter/game release",
+  "art_direction": "Warm illustrated archipelago overview + 2.5D village closeup, teal sea, amber wood, leaf village and lavender astronomy island",
+  "assets": [
+    {
+      "path": "art/archipelago.jpg",
+      "bytes": 173234,
+      "sha256": "5fb39e0ee33ea063804f7e495d5f474a30be04508bebd2608ac91b6d82f448c8",
+      "width": 1264,
+      "height": 848,
+      "provenance": "Original Arena AI-generated archipelago, referencing existing P02 village; WebP optimized from JPEG"
+    },
+    {
+      "path": "art/archipelago.webp",
+      "bytes": 127302,
+      "sha256": "852b902a6ce569f26eea82eeadfab2d45cb322e00c93926bfe8ad65b3ca3044a",
+      "width": 1264,
+      "height": 848,
+      "provenance": "Original Arena AI-generated archipelago, referencing existing P02 village; WebP optimized from JPEG"
+    },
+    {
+      "path": "art/boat.svg",
+      "bytes": 561,
+      "sha256": "255eb0f8c427e7e825f4b6a18342a0a0b2e45ac616eed1eefefe9d081cdfeec4",
+      "provenance": "Original SVG authored in code for prototype, not production walk cycle"
+    },
+    {
+      "path": "art/child-bo.svg",
+      "bytes": 1051,
+      "sha256": "759730f6de082c87b3f41231b0c86b41db8723701b4ed352da715d258f0b22e5",
+      "provenance": "Original SVG authored in code for prototype, not production walk cycle"
+    },
+    {
+      "path": "art/child-may.svg",
+      "bytes": 1105,
+      "sha256": "14e1e82098c5c62e08ae4c021f8547d8768219372f9f0d1feed67b1e393e1e23",
+      "provenance": "Original SVG authored in code for prototype, not production walk cycle"
+    }
+  ],
+  "shared_dependencies": [
+    {
+      "path": "../tutor-board-prototype/art/village.webp",
+      "source_design_commit": "4c23e06",
+      "bytes": 112018,
+      "sha256": "b152f7e22fbb8c940ad1429786cd8481d1f69f0a12c13111bb43d00f2f281617"
+    },
+    {
+      "path": "../tutor-board-prototype/art/robo.svg",
+      "source_design_commit": "4c23e06",
+      "bytes": 2448,
+      "sha256": "7fd314b1b354405592b1d3c024db06767b33908f8b936307a5523c2d584f3ab6"
+    },
+    {
+      "path": "../tutor-board-prototype/art/cat.svg",
+      "source_design_commit": "4c23e06",
+      "bytes": 1181,
+      "sha256": "d664d36113a5cc3eb7f9831ea1270d2be83ef57adbaedb360702b93ff5fd2262"
+    },
+    {
+      "path": "../tutor-board-prototype/fonts/Nunito-Medium.ttf",
+      "source_design_commit": "4c23e06",
+      "bytes": 80904,
+      "sha256": "c5ac621e788f8acf1ae43518f45f5eb3b3dc1eede0cddbcabb67e468595bb687"
+    },
+    {
+      "path": "../tutor-board-prototype/fonts/Nunito-ExtraBold.ttf",
+      "source_design_commit": "4c23e06",
+      "bytes": 80784,
+      "sha256": "6aeac28bd008e77fe752c2c2c2ace44bf81c296534bfeb6bac582bb2d44b6347"
+    },
+    {
+      "path": "../tutor-board-prototype/fonts/OFL-Nunito.txt",
+      "source_design_commit": "4c23e06",
+      "bytes": 4385,
+      "sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65"
+    },
+    {
+      "path": "../shared-l10n/locale-core.mjs",
+      "bytes": 1554,
+      "sha256": "05b2feb083aedb25980dce3366512ada11f30306070d3d1e06143e76ca27fea7",
+      "source": "Authored shared HTML prototype localization adapter; not Flutter implementation"
+    },
+    {
+      "path": "../shared-l10n/en.mjs",
+      "bytes": 24026,
+      "sha256": "a642a7ca33e1ce9185f13aeb5cb7998f9290a391a3d16935b369f776975e4243",
+      "source": "Authored shared HTML prototype localization adapter; not Flutter implementation"
+    },
+    {
+      "path": "../shared-l10n/locale.mjs",
+      "bytes": 5213,
+      "sha256": "d74394eeb337671b6ed3850710c37eb26dba6f9d8ba85cb7c0593a6121ea88c6",
+      "source": "Authored shared HTML prototype localization adapter; not Flutter implementation"
+    },
+    {
+      "path": "../shared-l10n/settings.css",
+      "bytes": 1523,
+      "sha256": "8390f6a1e499eb3b7f400ba07900a54c4ca5eeb2811e1a20f1bddd2461a1ed04",
+      "source": "Authored shared HTML prototype localization adapter; not Flutter implementation"
+    }
+  ],
+  "art_rights_note": "Generated scene subject to tool terms; SVG authored. No exclusive-rights or CC0 assertion. Nunito uses the existing OFL license at shared path. No third-party stock downloaded this turn.",
+  "scope": [
+    "two fictional NPCs",
+    "scripted context greetings",
+    "three-island atlas and simulated boat routes",
+    "embedded P03 board with state preservation"
+  ],
+  "not_implemented": [
+    "new island gameplay or interiors",
+    "production navmesh/occlusion/animation assets",
+    "AI/voice/multiplayer/learner-work persistence/rewards"
+  ],
+  "source_runtime_changed": false,
+  "localization": {
+    "languages": [
+      "vi",
+      "en"
+    ],
+    "default": "system",
+    "fallback": "en",
+    "persistence": "Only language preference in localStorage; learner work remains session-only",
+    "production_flutter_changed": false
+  }
+}

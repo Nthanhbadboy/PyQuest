@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-18",
+  "checks": 20,
+  "passed": [
+    "15 definitions: 12 normal, 3 redacted secrets",
+    "VI normal definitions exactly match pinned catalog",
+    "normal EN translation fields exist",
+    "14 independent fixtures; no shared earned/progress mutation",
+    "default ownership is sample two; empty truly zero",
+    "filter counts all 15 / earned 2 / not-yet-normal 10 / secret 3",
+    "search titles only and does not change earned count",
+    "locked secret has no title, condition, goal or progress leak",
+    "secret titles cannot be searched while locked",
+    "earned-secret reveals only supplied matching fixture",
+    "only maze progress supplied; unknown not zero; OR route no false sole progress",
+    "detail/back preserve filter, query, scroll and ownership",
+    "loading/error never produces false zero inventory list",
+    "loading blocks view/filter/open",
+    "error retry is explicit and pending responses token-checked",
+    "cancel rejects late success and duplicate responses",
+    "new retry differs from cancelled generation; failure keeps inventory",
+    "unsupported actions and IDs cannot award or navigate",
+    "user actions never change ownership/progress or mutate old state",
+    "review source not loaded and no runtime writes/network libraries"
+  ],
+  "scope": "Read-only design model; not achievement engine tests"
+}

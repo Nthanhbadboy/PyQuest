@@ -1,0 +1,107 @@
+{
+  "status": "interactive-design-prototype-not-flutter",
+  "created": "2026-10-16",
+  "scope": "First-play flow with two source-data fixtures; not full app redesign or a user-approved release",
+  "art_recipe": {
+    "camera": "Illustrative 3/4 isometric, not geometry calibrated for production",
+    "style": "Soft beveled low-poly forms, teal limestone landmarks, sage plants, warm sunlight",
+    "reference_inputs": [
+      "docs/design/village-kit/source/python_academy.png",
+      "docs/design/village-kit/source/bitsy_workshop.png"
+    ],
+    "subject": "A continuous village island with six connected landmarks, square, bridges, sea and clear paths. No baked labels/UI.",
+    "source_terms": "Arena image-generation terms; no CC0 or exclusive-rights assertion; inspect before release"
+  },
+  "assets": [
+    {
+      "path": "art/achievement_house_512.webp",
+      "bytes": 21712,
+      "sha256": "d7781c4dd46142e1480e6a5a956f23ee4a9c634f927baa0ba6739c689213b36c",
+      "width": 512,
+      "height": 512,
+      "alpha": false,
+      "provenance": "Byte-identical copy of Village Kit 01 export",
+      "source": "docs/design/village-kit/exports/achievement_house_512.webp"
+    },
+    {
+      "path": "art/bitsy_workshop_512.webp",
+      "bytes": 19198,
+      "sha256": "45aa475f5cd4afad0e9fc3762ad525584c5cc3c0d193fbfc991a7a13897d04c9",
+      "width": 512,
+      "height": 512,
+      "alpha": false,
+      "provenance": "Byte-identical copy of Village Kit 01 export",
+      "source": "docs/design/village-kit/exports/bitsy_workshop_512.webp"
+    },
+    {
+      "path": "art/pip_volcano_512.webp",
+      "bytes": 17410,
+      "sha256": "db1912e199b8b5d21890e8537f6b1d431966aa8ec3dea0d169d1be3fe50780b9",
+      "width": 512,
+      "height": 512,
+      "alpha": false,
+      "provenance": "Byte-identical copy of Village Kit 01 export",
+      "source": "docs/design/village-kit/exports/pip_volcano_512.webp"
+    },
+    {
+      "path": "art/python_academy_512.webp",
+      "bytes": 13802,
+      "sha256": "c33ce18f00cd5c808b17cf49dcabb17d8197e658a5a680f385efe36fa08d2c73",
+      "width": 512,
+      "height": 512,
+      "alpha": false,
+      "provenance": "Byte-identical copy of Village Kit 01 export",
+      "source": "docs/design/village-kit/exports/python_academy_512.webp"
+    },
+    {
+      "path": "art/robo.svg",
+      "bytes": 2448,
+      "sha256": "7fd314b1b354405592b1d3c024db06767b33908f8b936307a5523c2d584f3ab6",
+      "provenance": "Original code-authored SVG character concept for prototype, not a runtime walk-cycle"
+    },
+    {
+      "path": "art/robo_maze_512.webp",
+      "bytes": 23888,
+      "sha256": "b444be914ea22e7dd650fb9cc6004de40de45e9cfd31ef642ed8f2dbd4f27b5a",
+      "width": 512,
+      "height": 512,
+      "alpha": false,
+      "provenance": "Byte-identical copy of Village Kit 01 export",
+      "source": "docs/design/village-kit/exports/robo_maze_512.webp"
+    },
+    {
+      "path": "art/star_observatory_512.webp",
+      "bytes": 16928,
+      "sha256": "5204f72f3ba45adb87e8de2ed59a38163a4f4eb92a5d48ffdaefaa36f6deda93",
+      "width": 512,
+      "height": 512,
+      "alpha": false,
+      "provenance": "Byte-identical copy of Village Kit 01 export",
+      "source": "docs/design/village-kit/exports/star_observatory_512.webp"
+    },
+    {
+      "path": "art/village.jpg",
+      "bytes": 149401,
+      "sha256": "7aeb9a3708c94e87dd8e137d493bffe48e95e606466a4558dea42d29beb55338",
+      "width": 896,
+      "height": 1200,
+      "alpha": false,
+      "provenance": "AI-generated original scene for HTML prototype; village.webp optimized from village.jpg"
+    },
+    {
+      "path": "art/village.webp",
+      "bytes": 112018,
+      "sha256": "b152f7e22fbb8c940ad1429786cd8481d1f69f0a12c13111bb43d00f2f281617",
+      "width": 896,
+      "height": 1200,
+      "alpha": false,
+      "provenance": "AI-generated original scene for HTML prototype; village.webp optimized from village.jpg"
+    }
+  ],
+  "fonts": {
+    "source": "app/assets/fonts",
+    "license": "fonts/OFL-Nunito.txt"
+  },
+  "data": "levels.json",
+  "runtime_app_files_changed": false
+}

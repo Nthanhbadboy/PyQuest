@@ -151,7 +151,7 @@ Future<void> scrollHubTo(WidgetTester tester, String key) async {
 }
 
 Future<void> tap(WidgetTester tester, String key, {int ms = 1200}) async {
-  final f = find.byKey(ValueKey(key));
+  final f = find.byKey(ValueKey(key), skipOffstage: false);
   await tester.ensureVisible(f.first);
   await tester.pump();
   await tester.tap(f.first, warnIfMissed: false);

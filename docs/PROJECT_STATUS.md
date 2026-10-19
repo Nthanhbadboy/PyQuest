@@ -1,16 +1,98 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · r47 · không phải chứng nhận runtime mới.**
+**2026-10-19 · review PQC-020 ddf7db5a / design r56.**
+
+**Hiện hành:** PQC-011 **ACCEPTED** tại CODE
+`6dc8ca8feeed54cc0fa6a82109e3a59d24a16153`: Settings12, isolated1, ordered2,
+integration7, ordinary422/0failed, render10 và format/analyze/localization/lock/clean
+đềuPASS. [Independent review/evidence](design/coordination/reviews/PQC-011-r53/README.md).
+Không APK mới, không device/voice claim.
+
+**Bước triển khai mới:** [PQC-020 R1-A](implementation/coordination/tasks/PQC-020.md)
+IMPLEMENTATION_PUSHED / NOT_ACCEPTED: Main Map2,5D +sáu routes hiện có. [Package r53](design/r1-village-r53/README.md)
+có static W01 export, scene/directory, source geometry và browser study. Cho phép
+flattened static scene trong lát cắt này, không gọi là layered/animated world.
+CODE hiện ở `ddf7db5aab54603f9e9d4caca2eb15abce6c64f4`, nhánh
+`arena/4253d4f1-pyquest`. **Cả ba gate trên đúng tip đã PASS**: focused58/0,
+normal435/0+render10/0, maintenance12/1/2/7+435/0+10/0 và các gate hỗ trợ.
+[Independent review/source/API/ảnh](design/coordination/reviews/PQC-020-ddf7db5a/README.md).
+Nhận locale/label/keyboard/routing R2; không còn blocker workflow chưa chạy.
+
+**Order hiện hành [revision3](design/coordination/specs/PQC-020-R3.md):** ảnh Flutter
+CI xác nhận Núi Lửa đè Tháp Python; Align layout khác projection trong geometry test.
+Sửa placement và đo RenderBoxes thật. Cho phép bỏ blanket root cap1.2, bổ sung
+matrix12configs qua PyQuestApp/system scale thật, không route MediaQuery bypass.
+Semantics regression phải đo rendered tree thay vì widget properties. Chỉ runtime/
+tests trong allowlist R3; không gameplay/R1-B, SDK/deps hoặc thay maintenance policy.
+
+DESIGN đã decode/xem7ảnh R1-A, xác minh before6dc8ca8 byte-identical với Checks API
+và asset349864bytes/853×1844 (~6MiB RGBA lý thuyết). **PQC020 vẫn NOT_ACCEPTED**;
+ảnh2× hiện tại chỉ chứng minh isolated surface, không root production. Không APK,
+không device RAM/frame-time/TalkBack claim. Các reviewbed783cf/831f7cb4 là lịch sử.
+
+**Design mới r56 / R1-B:** [Welcome và bảng giới thiệu sáu địa điểm](design/arrival-entrance-r56/README.md).
+Hai character studies Py/Bitsy2,5D mới; ba bước Welcome, sáu entrance panels,
+progress/lock/prerequisite thật, zero-energy entry và pending/unknown intro states.
+36modelchecks +18zero-charge combinations;252browserconfigs/468fontchecks/278flows.
+Chọn bài dùng study r43, không làm lại lesson/Tutor. Status localization và intro
+receipt là đề xuất JS/RAM; không Flutter/SQLite/device hoặc runtime R1-B order.
+CODE tiếp020, DESIGN tiếp Bug Hunter gameplay/results độc lập.
+
+**Design mới r55:** [Catch Stars gameplay/results/atlas](design/catch-stars-r55/README.md)
+đã có bốn artwork mới và bản chơi JS: 45 giây, 3 tim, năm loại vật rơi, combo,
+0–3 sao, receipt states và tám chòm sao nguồn. 32 model checks, 1.000 record
+comparisons, 10.000 spawn samples; 240 browser configs / 372 font checks / 148 flows.
+Camera, input bổ sung và receipt authority được đánh dấu là đề xuất. Không Flutter,
+SQLite, thiết bị hoặc runtime Catch authorization. CODE giữ PQC-020; r54 relay chưa gửi.
+
+**Design mới r54:** [Dragon Jump gameplay/results](design/dragon-run-r54/README.md)
+đã có bốn artwork mới và interactive JS study.30modelchecks +1.000record comparisons,
+192browserconfigs/300fontassertions/99flows; không chạy Flutter/DB/thiết bị, không
+mở runtime Dragon. Tại đợt r54, CODE tip quan sát là6dc8ca8; work order020 không đổi.
+
+Các quan sát r49–r52 dưới đây là **lịch sử**, không disposition hiện hành.
 
 Tài liệu này phân biệt **có source**, **đã kiểm chứng tại một SHA**, **thiết kế** và
 **kế hoạch**. Product Vision/Game Design/Technical Architecture/Roadmap giữ vai trò
 riêng; không lấy checklist hoặc hình concept làm trạng thái triển khai.
 
+**Quyết định mới r49:** người dùng cho phép Actions và APK thử nội bộ có Gemini key.
+[Request/gates](OWNER_TEST_BUILDS.md) pin CODEde01a49.
+[Run39078131829/review r49](design/coordination/reviews/PQC-011-r49/README.md): SDK
+đúng pin; analyze,12Settings,10render đạt;7integration fail,415ordinary pass/7fail,
+13file format fail và lockfile drift. APK chưa build; không còn thiếu SDK. Token/backend/giới hạn token hoãn cho lần thử này.
+
+**Design mới r52:** [Kết quả/record/notices/custom proof](design/maze-result-r52/README.md)
+đã có study342browser cases và artwork mới. RAM fixtures, không save/award/runtime
+transaction. Không thay disposition011 bằng browser PASS.
+
+**Quan sát CODE trong r52:** tip `0d001f0de9186454eda7f3e71d409c68d4b10dbd`, thêm
+integration-test readiness và taskdoc sau bcf2bfc. Không query/dispatch CI trong
+đợt design này, chưa review/nhận correction. [Observation](design/maze-result-r52/partner-observation.json).
+
+**Design trước r51:** [Xưởng Python/editor/diagnostics](design/maze-python-r51/README.md)
+đã có study tương tác; chỉ custom mazes, authored response lookup, không chạy Python.
+Không portFlutter hoặc thay disposition011 bằng browser PASS.
+
+**Quan sát CODE sau r51:** tip `bcf2bfc5088ca80f1a6f0fd1d2211032f5ce416a` đã có
+correction commits; Actions39080793621/39080793623 tại tip có kết luận failure.
+Chỉ metadata/source-file hash observation, chưa review logs/correction để nghiệm thu.
+[Snapshot phạm vi quan sát](design/maze-python-r51/partner-observation.json).
+
+**Design trước r50:** [Maze block-play/kết quả](design/maze-play-r50/README.md) đã
+có study tương tác và browser evidence; chưa portFlutter, không thay disposition011.
+
 ## 1. Mốc đối chiếu
 
+- CODE docs/packaging mới nhất đã review: `de01a490743982356ad5240d77ea99e9dbf8c7f5`;
+  [PQC-019 r48](design/coordination/reviews/PQD-010-r48/README.md) đã nhận trong
+  phạm vi tài liệu/keyless policy. App và task011 không đổi so với71b0; không có
+  execution evidence SDK mới tại review r48. r49 đã chạy và **FAIL** như trên;
+  các mốc bên dưới là pin lịch sử, không PASS của tip.
+
 - CODE được đọc: `71b0fd3fd8fb07c73596ce089fa2e68f6fe87964` trên
-  `arena/0d4fcb38-pyquest`. Chưa có bằng chứng thực thi pinned-SDK được nhận cho011
-  tại SHA này. Không suy PASS từ việc source đã sửa.
+  `arena/0d4fcb38-pyquest`. r49 đã thực thi trên de01a49 với cùng app source,
+  nhưng chưa nghiệm thu011 vì failures. Không suy PASS từ source review.
 - DESIGN trước đợt sửa tài liệu này: `c68bdcd73b400c4d449216023a54499b202bda1d`
   trên `arena/00838eb9-pyquest`; đã giao study r46, chưa port toàn bộ vào Flutter.
 - Bằng chứng runtime lịch sử: source `a9bcdcf8e3203ee17b1a5de0b9ebff6a0e8dd32d`,
@@ -28,7 +110,7 @@ riêng; không lấy checklist hoặc hình concept làm trạng thái triển k
 | Energy / rewarded ads | Energy hồi theo thời gian và lưu SQLite; **rewarded-ad SDK chưa có** | Ads/quota/reward callback/policy trẻ em là kế hoạch, không phải feature đã hoạt động |
 | Interpreter mô phỏng | Có tập con Python viết bằng Dart và các bộ đếm/giới hạn | Không phải Python đầy đủ hoặc sandbox được chứng nhận; cần kiểm tra coverage, cấp phát và thời gian của từng operation |
 | Main Quest | Chặng1 có12 bài/64 bước; Tutor ngoại tuyến và relay văn bản có source | Không nói toàn bộ các chặng hoặc board AI/freehand/voice-sync đã hoàn tất |
-| Voice Gemini Live | Đường thử nghiệm direct API có trong source | Chưa có token ngắn hạn/server mediation production; CI mới không đưa key vào APK; không có device voice PASS mới |
+| Voice Gemini Live | Đường thử nghiệm direct API có trong source | Chưa có token ngắn hạn/server mediation production; r49 cho phép key trong APK owner-test, CI thường vẫn keyless; chưa có device voice PASS mới |
 | Side Maps, Pro, cộng đồng/Arena mở rộng | Thuộc kế hoạch sản phẩm, chưa đủ implementation | Không bán/claim quyền lợi chưa triển khai |
 | Nhà–đất–đảo, visit/pet và skin mới | Đã có thiết kế và các study có giới hạn | Không dùng HTML/JS/art PASS thay runtime, quyền chia sẻ hay commerce thật |
 
@@ -41,38 +123,38 @@ thu một tiêu chí cần ghi rõ scope, SHA, log/test/device evidence và gi�
 | Task | Disposition có thẩm quyền | Nguồn |
 |---|---|---|
 | PQC-010 /014 /015 /016 | Đã nhận trong phạm vi riêng; không có nghĩa whole-app complete | Snapshot/evidence lịch sử ở §1 |
-| PQC-011 | **CHANGES_REQUESTED / WAITING_FOR_PINNED_SDK_EVIDENCE**; R42-A/B **SOURCE_ADDRESSED / EXECUTION_UNVERIFIED** | [Review r44 tại DESIGN8f754a1](https://github.com/Nthanhbadboy/PyQuest/blob/8f754a16c829264747b6517c7f7bacb3c8769283/docs/design/coordination/reviews/PQD-003-r44.md) |
+| PQC-011 | **ACCEPTED tại6dc8ca8**; không APK/device claim | [Independent review r53](design/coordination/reviews/PQC-011-r53/README.md) |
 | PQC-018 | **REVIEWED_WITH_LIMITS — ART_SCOPE_COMPLETE**; không runtime/production approval | [Task revision4 tại DESIGN30394b7](https://github.com/Nthanhbadboy/PyQuest/blob/30394b7bb23ad1fcf371c8dee644fd6caaf3793d/docs/implementation/coordination/tasks/PQC-018.md) |
 | DESIGN r45 /r46 | Maze selection và Creator interaction study đã giao | [Visual status tại DESIGNc68bdcd](https://github.com/Nthanhbadboy/PyQuest/blob/c68bdcd73b400c4d449216023a54499b202bda1d/docs/design/VISUAL_DESIGN_STATUS.md) |
-| Runtime R1 /R4 | Chưa mở | Cần order/asset/allowlist/gates riêng; không suy quyền từ art study |
+| DESIGN r54 /PQD-015 | Dragon Jump gameplay/results study đã giao; chưa runtime order | [r54 spec/evidence](design/dragon-run-r54/README.md) |
+| DESIGN r52 /PQD-013 | Record/notices/custom proof study đã giao; không backend/runtime order | [r52 spec/evidence](design/maze-result-r52/README.md) |
+| DESIGN r51 /PQD-012 | Custom Python editor/diagnostics study đã giao; không runtime execution/order | [r51 spec/evidence](design/maze-python-r51/README.md) |
+| DESIGN r50 /PQD-011 | Block-play Maze và result study đã giao; không runtime order | [r50 spec/evidence](design/maze-play-r50/README.md) |
+| PQC-019 | **ACCEPTED_WITH_LIMITS — DOCS_AND_KEYLESS_POLICY_SCOPE_COMPLETE** tại CODEde01a49 | [Review độc lập r48](design/coordination/reviews/PQD-010-r48/README.md) |
+| Runtime R1-A /PQC-020 | **READY_FOR_CODE**, chỉ Main Map scene/navigation | [Bounded order020](implementation/coordination/tasks/PQC-020.md); chưa implementation/acceptance |
+| Runtime R1 còn lại /R4 | Chưa mở | Không suy quyền từ R1-A hoặc art study |
 
-**Độ lệch nhánh đã phát hiện:** CODE71b0 còn câu ads đã có, chỉ dẫn bắt đầu
-Foundation và header018 `IN_PROGRESS`; DESIGN đã sửa các mục đó từ trước r47.
-Bản cập nhật r47 và patch đồng bộ phải được CODE áp dụng trên nhánh của CODE;
-không coi việc DESIGN push hoặc đối tác fetch là đã đồng bộ working tree.
+**Độ lệch nhánh đã được sửa trong phạm vi r47:** CODE71b0 từng còn câu ads đã có,
+chỉ dẫn bắt đầu Foundation và header018 `IN_PROGRESS`. CODEde01a49 đã áp dụng patch
+13file và DESIGN đã review độc lập tại r48, không chỉ fetch/ACK. Gói r47/receipt và
+PROJECT_STATUS trong patch là snapshot lúc giao; disposition mới nằm tại review
+r48 và đầu task019, không bắt đối tác tạo commit ACK-only để chép lại từng review.
 PQC-011 và acceptance lịch sử không bị sửa/đóng lại trong việc đồng bộ này.
 
-## 4. APK và bí mật: chính sách từ r47
+## 4. APK và bí mật: chính sách hiện hành r49
 
-- Hai workflow `.github/workflows/ci.yml` và `build-debug-apk.yml` **không đọc
-  repository secret `GEMINI_API_KEY` để build**, và truyền define rỗng rõ ràng cho
-  mọi lệnh build APK. Không thêm tùy chọn opt-in đưa key dài hạn vào CI artifact.
-- Hệ quả: APK tạo bởi cấu hình workflow mới **không có Gemini key từ đường build
-  đó**; direct Gemini Live voice không xác thực được. Đây là thay đổi có chủ ý,
-  không phải lỗi cần khắc phục bằng cách thêm lại secret. Tutor ngoại tuyến/relay
-  văn bản không bị sửa; hành vi trên APK vẫn phải được kiểm chứng khi có build.
-- `--release` chỉ là build mode, **không phải cho phép phát hành công khai**.
-  Signing, quyền phân phối, token/backend, an toàn trẻ em và kiểm tra thiết bị vẫn
-  là các gate riêng. Keyless không đồng nghĩa đã đạt mọi yêu cầu bảo mật.
-- Source vẫn cho phép đường thử nghiệm cục bộ qua dart-define; sửa workflow không
-  vô hiệu hóa mọi cách tự build có key. Đường đó không được upload/phân phối như
-  artifact tiêu chuẩn. Xem [hướng dẫn voice](experimental/GEMINI_LIVE_VOICE_TEST.md).
-- Workflow cũ có thể đã đóng gói key nếu secret tồn tại. Sửa hôm nay **không xóa
-  key khỏi APK cũ, không thu hồi artifact và không tự xoay key**. Chưa đọc secret,
-  chưa phân tích APK cũ, chưa kết luận lộ key. Chủ tài khoản cần rà soát phạm vi
-  phân phối, thu hồi/xoay key nếu đã đưa vào bản chia sẻ; không gửi key qua chat.
+- Theo quyết định mới của người dùng, workflow owner-test được lấy Gemini key
+  từ repository secret để build APK nội bộ sau pinned-SDK checks. Xem
+  [phạm vi/gates/retention](OWNER_TEST_BUILDS.md). CI thông thường vẫn keyless.
+- Không đưa giá trị key vào source/log/chat. Key trong APK vẫn trích xuất được;
+  APK chỉ dành chủ tài khoản thử, không public/store release. Repo public nên
+  artifact vận chuyển được mã hóa cho private key ngoài Git, không upload APK dạng thường.
+- Token ngắn hạn/backend/quota hoãn cho lần thử nội bộ; production vẫn cần gate
+  riêng. Build success không phải chứng nhận cài/chạy hay voice trên thiết bị.
+- r47/r48 keyless-only là chính sách lịch sử, được thay thế trong scope owner-test;
+  không sửa receipt cũ, không tự thu hồi APK hoặc xoay key đã tồn tại.
 
-## 5. Giới hạn của đợt sửa
+## 5. Giới hạn lịch sử r47/r48 (không phải cấm Actions ở r49)
 
 Chỉ sửa tài liệu, cấu hình đóng gói và kiểm tra local của chính sách đó. Không sửa
 app/runtime/dependencies, không cài SDK, không dispatch/rerun CI, không tạo APK

@@ -1,0 +1,196 @@
+{
+  "date": "2026-10-18",
+  "status": "DESIGN_STUDY_DELIVERED",
+  "runtime_authorized": false,
+  "code_pin": "de01a490743982356ad5240d77ea99e9dbf8c7f5",
+  "design_base": "b911a1cd5bbc789d75e5aee4191680c7b43eba6b",
+  "scope": "Block-mode gameplay and result interaction study, not complete Maze/Python/runtime art pack",
+  "artifacts": [
+    {
+      "path": "ASSET_PLAN.md",
+      "bytes": 3332,
+      "sha256": "1964a71b3e4f4845f26791863018bb326ac80bf51ed98af83ae579c16a851665"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5762,
+      "sha256": "967b513f819260a9f525bb1ea11da52824a071d869a0a7bafb683276a681cc14"
+    },
+    {
+      "path": "SOURCE_EXCERPTS.md",
+      "bytes": 14669,
+      "sha256": "5cee46a7905a2d7fd2303ec11136efb7f32de25fba3f99e444991af5ae57aacd"
+    },
+    {
+      "path": "SPEC.md",
+      "bytes": 8308,
+      "sha256": "14847bab551fa4994fe1fc484818eaf5a3b79d43b9e6ade83ccc43f9f6de9bbd"
+    },
+    {
+      "path": "assets/garden-stage.png",
+      "bytes": 2394597,
+      "sha256": "8349615e0cdacb46faf827f31ba08805c96163d7eefd5fa8219e2b3009a0a3db"
+    },
+    {
+      "path": "assets/hedge-block.png",
+      "bytes": 1273747,
+      "sha256": "a40489d50e5e8cae1ac4dbc5eef210204670f42328a5dfd73339f0850fb8f0a4"
+    },
+    {
+      "path": "assets/hedge-token.png",
+      "bytes": 70572,
+      "sha256": "a4698cb00e4d326b4f8b6696ddd7acd897e8dc363d33731ad57a11f75117010a"
+    },
+    {
+      "path": "assets/provenance.json",
+      "bytes": 2953,
+      "sha256": "443264837342e8ab1a6aefe50732bb6653e017ae1e7e13cbbbd673b3740a2038"
+    },
+    {
+      "path": "assets/robo-portrait.png",
+      "bytes": 799336,
+      "sha256": "734a58d729a099531e6767a563e897cb8a857b1adcc7c0ac3b2cf93f55b03fd2"
+    },
+    {
+      "path": "assets/robo-token.png",
+      "bytes": 100039,
+      "sha256": "c2f58b4eda7303e252474694c73e05b48d85563effda1035e0dc4fad8d747f05"
+    },
+    {
+      "path": "evidence/assembled-360-en-2x-board.png",
+      "bytes": 141594,
+      "sha256": "83a171bcc4589320ae29be6606a755b9ceece262b4772d028f27931390bb2e53"
+    },
+    {
+      "path": "evidence/assembled-390-vi-1x-desk.png",
+      "bytes": 59570,
+      "sha256": "6c0f343db427910a5a2f7a5b2343554e9896881dedb704070c54d622a1fa8735"
+    },
+    {
+      "path": "evidence/browser-checks.json",
+      "bytes": 89485,
+      "sha256": "f1697ef5d3d843996ad9c634a92b1dede4d03c8b9b2e79eb29b2098f04fec5d8"
+    },
+    {
+      "path": "evidence/desktop-overview.jpg",
+      "bytes": 216976,
+      "sha256": "9a95f9e03bae690b43a550e85d0c0c075bfb31c817adaff200db678c81e142d2"
+    },
+    {
+      "path": "evidence/energy_unknown-360-en-2x-energy.png",
+      "bytes": 70317,
+      "sha256": "be3bd7c01e42eb9456445414eeef7509c3c5b6aac89f3c54d3dd67000d616988"
+    },
+    {
+      "path": "evidence/final_win-390-vi-1x-modal-bottom.png",
+      "bytes": 68341,
+      "sha256": "c7773425525a5b6ea76996f671d263777aaa99007f1fea16bcbb50645b8d6cfa"
+    },
+    {
+      "path": "evidence/model-checks.json",
+      "bytes": 1808,
+      "sha256": "6e59c2ded9b39441d751487f864ff41da557f70252c5e2dde6b39aaec8ffdc51"
+    },
+    {
+      "path": "evidence/open_loop-360-en-2x-desk.png",
+      "bytes": 48829,
+      "sha256": "1ce64d48e404954f53878e5961a5660cf39e5760673998172cc4b45f15115d9b"
+    },
+    {
+      "path": "evidence/paused-390-vi-1x-board.png",
+      "bytes": 175309,
+      "sha256": "96a91888cb04e43d1be2ab6c2e01f3b4b9792f99bcdab35783418ff8fc2d7ac2"
+    },
+    {
+      "path": "evidence/ready-390-vi-1x-top.png",
+      "bytes": 181177,
+      "sha256": "5e94a373a49e90373d338d57d1ea459d38771c78ad592432dd021d96b9566fa6"
+    },
+    {
+      "path": "evidence/save_error-390-vi-1x-modal-bottom.png",
+      "bytes": 67504,
+      "sha256": "d1d85ee410470860595be25d390079a666f0fc9c9ced96c4d8d2dd9e8b8a4092"
+    },
+    {
+      "path": "evidence/wall-390-vi-1x-modal.png",
+      "bytes": 98921,
+      "sha256": "f1688d264d59701080f64c1ef6fb0356143d70b15cdadc374bbf7a01f3d66a2f"
+    },
+    {
+      "path": "evidence/win_one-390-vi-1x-modal.png",
+      "bytes": 168168,
+      "sha256": "43fa47330e78dba95dbf5c0c49f0c748bff41131b0c24fd799e78b9f6a58396c"
+    },
+    {
+      "path": "evidence/win_three-390-vi-1x-modal.png",
+      "bytes": 167116,
+      "sha256": "3ad3e0df97c2af277c5efc8dd53d1d7432652d355ec77ba37c62c3529ddcca41"
+    },
+    {
+      "path": "evidence/win_two-360-en-2x-modal-bottom.png",
+      "bytes": 70166,
+      "sha256": "89c1bceaf34c45bb39765d692234ac5ee9b5445fbb2a1dbea9cb1b08d2d3e91f"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1143,
+      "sha256": "bda58163af9ff7ee805cda6d9d7f234bd1de99d1aae28c0201fb6eba70a620a3"
+    },
+    {
+      "path": "model.js",
+      "bytes": 8495,
+      "sha256": "91a000bfe0f24ae6d586c75f8aabb0346d57d5a6d4ee1b6fb14c6416bc5d67c0"
+    },
+    {
+      "path": "source-manifest.json",
+      "bytes": 2093,
+      "sha256": "9e8f0211a43bc26ad5e72403460a1b893e3cae3dd735d35944d73fb5520653c8"
+    },
+    {
+      "path": "study.js",
+      "bytes": 27889,
+      "sha256": "ce2c7ee4e703a5cbd82766737d13da4442f971f91bbf758467c6c75de61c4a35"
+    },
+    {
+      "path": "style.css",
+      "bytes": 16196,
+      "sha256": "e3b92fcbacd7127d7de0d1942ecaf67e79f94ac630113ad0725861d19b0e6158"
+    }
+  ],
+  "external_dependencies": [
+    {
+      "path": "docs/design/maze-trail-r45/catalog.js",
+      "sha256": "a19ae69cd39446c302f664f2e7b1698f9ff83e71957c17c64c4cab0bab695c02"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/Nunito-Medium.ttf",
+      "sha256": "c5ac621e788f8acf1ae43518f45f5eb3b3dc1eede0cddbcabb67e468595bb687"
+    },
+    {
+      "path": "docs/design/tutor-board-prototype/fonts/Nunito-ExtraBold.ttf",
+      "sha256": "6aeac28bd008e77fe752c2c2c2ace44bf81c296534bfeb6bac582bb2d44b6347"
+    }
+  ],
+  "tools": [
+    {
+      "path": "tools/design/check_maze_play_r50.cjs",
+      "sha256": "57d3236f4fb9769d53912072c33d04bdbce68b7f4c5484447309d22860d0cd9c"
+    },
+    {
+      "path": "tools/design/export_maze_play_r50.py",
+      "sha256": "43f1ffd5635a61a8aaa44f91069f60b2b637f12d3967a969f43fd5c773c03278"
+    },
+    {
+      "path": "tools/design/test_maze_play_r50.cjs",
+      "sha256": "b6170ed4044ddbe3ac1dff417616051c3c94d9ab6d39775d61542e888ce57c14"
+    },
+    {
+      "path": "tools/design/validate_maze_play_r50.py",
+      "sha256": "5dd24da7a35accc52045a59f9891decca426291c7535a4b5ba1bdd194469a1a4"
+    },
+    {
+      "path": "tools/design/serve_art_review.py",
+      "sha256": "2edcf9ec6bf841feadcae2a8cf6bd6793db85aaafe54bf1ad69db755478e123f"
+    }
+  ]
+}

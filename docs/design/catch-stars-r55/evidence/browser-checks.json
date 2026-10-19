@@ -1,0 +1,30 @@
+{
+  "scope": "HTML/JS study only; simulated visibility, not Android lifecycle; no Dart/DB/device proof",
+  "browser": "153.0.8010.0",
+  "cases": 240,
+  "targets": 1236,
+  "fontChecks": 372,
+  "flows": 148,
+  "captures": [
+    "docs/design/catch-stars-r55/evidence/ready-360-en-2x.png",
+    "docs/design/catch-stars-r55/evidence/running-360-en-2x.png",
+    "docs/design/catch-stars-r55/evidence/paused-360-en-2x.png",
+    "docs/design/catch-stars-r55/evidence/better-360-en-2x.png",
+    "docs/design/catch-stars-r55/evidence/better-360-en-2x-bottom.png",
+    "docs/design/catch-stars-r55/evidence/save_unknown-360-en-2x.png",
+    "docs/design/catch-stars-r55/evidence/save_unknown-360-en-2x-bottom.png",
+    "docs/design/catch-stars-r55/evidence/atlas_all-360-en-2x.png",
+    "docs/design/catch-stars-r55/evidence/atlas_all-360-en-2x-bottom.png",
+    "docs/design/catch-stars-r55/evidence/home-390-vi-1x.png",
+    "docs/design/catch-stars-r55/evidence/running-390-vi-1x.png",
+    "docs/design/catch-stars-r55/evidence/rainbow-390-vi-1x.png",
+    "docs/design/catch-stars-r55/evidence/hit-390-vi-1x.png",
+    "docs/design/catch-stars-r55/evidence/zero_star-390-vi-1x.png",
+    "docs/design/catch-stars-r55/evidence/zero-star-unlock-390-vi-1x.png",
+    "docs/design/catch-stars-r55/evidence/better-390-vi-1x.png",
+    "docs/design/catch-stars-r55/evidence/saving-390-vi-1x.png",
+    "docs/design/catch-stars-r55/evidence/atlas-390-vi-1x.png",
+    "docs/design/catch-stars-r55/evidence/desktop-overview.jpg"
+  ],
+  "errors": []
+}

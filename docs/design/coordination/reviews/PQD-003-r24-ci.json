@@ -1,0 +1,96 @@
+{
+  "review": "PQD-003-r24",
+  "date": "2026-10-17",
+  "reviewed_work_orders": [
+    "PQC-014",
+    "PQC-015"
+  ],
+  "verdicts": {
+    "PQC-014": "CHANGES_REQUESTED",
+    "PQC-015": "CHANGES_REQUESTED",
+    "PQC-010": "ACCEPTED @3f26603 (unchanged)"
+  },
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "0220f2b62b1d03943b7ff2968e7654326dab33ab",
+  "run_id": 38987355441,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38987355441",
+  "run_status": "completed",
+  "run_conclusion": "success",
+  "custom_report_check_id": 117262973964,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 0,
+    "render": 0
+  },
+  "analyze_seconds": 12.1,
+  "analyze_clean": true,
+  "ordinary": {
+    "passed": 380,
+    "failed": 0
+  },
+  "render_passed": 10,
+  "confirmed_failure_names": [],
+  "pub_get_warning": "synthetic-package no longer has any effect",
+  "existing_VI_EN_picker_verified": true,
+  "settings_sheet_unchanged": true,
+  "system_picker_implemented": false,
+  "R23_save_race_fix_present": false,
+  "R23_lint_closed": true,
+  "resume_handler_present": false,
+  "settings_reload_resets_OS_input": true,
+  "generated_layout_matches_pinned_SDK": false,
+  "SDK_generator_sources": {
+    "gen_l10n.dart": {
+      "url": "https://github.com/flutter/flutter/blob/abaf9c523780a608bd46686fd5e53740a07077f8/packages/flutter_tools/lib/src/localizations/gen_l10n.dart",
+      "sha256": "9340f867b2d7a255939e1fff9ef7555902257efa9a78707d3cb49cf4c2ea33fd"
+    },
+    "gen_l10n_templates.dart": {
+      "url": "https://github.com/flutter/flutter/blob/abaf9c523780a608bd46686fd5e53740a07077f8/packages/flutter_tools/lib/src/localizations/gen_l10n_templates.dart",
+      "sha256": "aef210b0c3cee061c1f5bc51c94f517ecc24033f4b46d53f87571820e003f25e"
+    }
+  },
+  "findings": [
+    "R24-1: existing014 overlapping-write state finding not addressed",
+    "R24-2: OS input lost on settings reload; missing resume sync",
+    "R24-3: committed generated layout inconsistent with pinned SDK generator; need reproducible output",
+    "R24-4: root recreate/persistence and framework semantics coverage incomplete"
+  ],
+  "changed_paths": [
+    "app/l10n.yaml",
+    "app/lib/app/locale_binding.dart",
+    "app/lib/app/pyquest_app.dart",
+    "app/lib/core/settings_service.dart",
+    "app/lib/l10n/app_en.arb",
+    "app/lib/l10n/app_vi.arb",
+    "app/lib/l10n/generated/app_localizations.dart",
+    "app/pubspec.lock",
+    "app/pubspec.yaml",
+    "app/test/l10n/app_locale_test.dart",
+    "app/test/l10n/settings_locale_test.dart",
+    "docs/implementation/coordination/tasks/PQC-014.md",
+    "docs/implementation/coordination/tasks/PQC-015.md"
+  ],
+  "source_sha256": {
+    "app/l10n.yaml": "7d225da3a284345fa9be51b77d736b61c430bdad3673b1380ede9f2a8783d701",
+    "app/lib/app/locale_binding.dart": "d273330ea5d2fe41f97725c04ff80ec157661a1d9fe5cd59f6f5610c8038c6ad",
+    "app/lib/app/pyquest_app.dart": "6f9ed0ac491680976fe36a612775786fe2c23afad5d2b14effd1e3e4a999352b",
+    "app/lib/core/settings_service.dart": "aa5e07dc5aad4e31dbc4ed97e39c809e06f7daf294e5eea930734976ddd97aad",
+    "app/lib/l10n/app_en.arb": "0fac6adcf6c10e4a8a26a34fe9f5f46c801b8278e734412c4d78e8094a9e2d8c",
+    "app/lib/l10n/app_vi.arb": "ac26f256525485885cba5fec046167e542e6ff2996c2f0285eb09e48d105380b",
+    "app/lib/l10n/generated/app_localizations.dart": "f0e048a3cfd90667d2ffb7d25477d779a8e76f89ab04bbc39705ac2f9872ceb8",
+    "app/pubspec.lock": "e76606d9d3da5ce58eae6719120ea617ff9a8a4818ce091d13d971eb924d17a1",
+    "app/pubspec.yaml": "3135b430f3bbeba4a0ebdb568d67439f2d0216be80cb8f6aab931cf28c1aff64",
+    "app/test/l10n/app_locale_test.dart": "31acfb85e9b1487c3aa29951d9b7db70671b138f5b07e7a9693726e8bb12b822",
+    "app/test/l10n/settings_locale_test.dart": "f184415e5b4a7f214dd28d3934aba053b49b853e024bb7c53cb594e8a5116bcc",
+    "docs/implementation/coordination/tasks/PQC-014.md": "88b306fc09b418758cedef85a150cb596f6fd7f82349740b4cd8e07a54a158dd",
+    "docs/implementation/coordination/tasks/PQC-015.md": "bd219ef49044163922e1730f1e2fdbb5e401a5d71ad1d5d8e0239376824d236a",
+    "app/lib/app/settings_sheet.dart": "aa35061a37693de72d96e5151f57c156cb5ed5cb0992c991312571442f919025",
+    "app/lib/app/app_services.dart": "00b75ec03c109a2f9a39d3608e4cf9a8876218c98dac4a60010ea2b9a08eac23"
+  },
+  "board_source_and_tests_identical_to": "3f26603ba6bee07c1ccab283fc80965acf570ed6",
+  "new_images_inspected": 0,
+  "local_flutter_tests_run": false,
+  "local_gen_l10n_run": false,
+  "local_race_or_resume_reproduction_run": false
+}

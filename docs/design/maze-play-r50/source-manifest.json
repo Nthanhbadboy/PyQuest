@@ -1,0 +1,56 @@
+{
+  "code_sha": "de01a490743982356ad5240d77ea99e9dbf8c7f5",
+  "design_base": "b911a1cd5bbc789d75e5aee4191680c7b43eba6b",
+  "sources": [
+    {
+      "path": "app/lib/modules/robot_maze/maze_models.dart",
+      "blob": "6272057019b57088a9f220b238df566f3dc85430",
+      "sha256": "238cc06597a0010a3f8335e7b219f85deda0a53aa23c2e96b5c88a05315d9092",
+      "lines": 393
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_play_screen.dart",
+      "blob": "fcbe2b48a7ae8474920365ba88812b846f3aa05d",
+      "sha256": "0a4b44d8d0bc7ff03e36742253a68222cedba33df94e508ec84ffda8592666c4",
+      "lines": 1137
+    },
+    {
+      "path": "app/lib/modules/robot_maze/maze_board.dart",
+      "blob": "e32512d65dc81b36cfceb7e6f81e40f199695750",
+      "sha256": "60755aecece1fd5ca5d588031d44e90bc7319dccbbac4a63e0ed892c6aa737eb",
+      "lines": 292
+    },
+    {
+      "path": "app/lib/modules/robot_maze/robot_maze_module.dart",
+      "blob": "621c6b25c3e53e929c6d0e67b194f3b29dd05100",
+      "sha256": "18ef0c39aa2cf6c91d8bf6b5b869a03394810e5d06c48e97013f30f5e49a71f5",
+      "lines": 371
+    },
+    {
+      "path": "app/assets/data/robot_maze_levels.json",
+      "blob": "2932db24db2c3424b9d9ff6116c0e5391db0b762",
+      "sha256": "0c0d728a067b99d47fe85c18ed5c80cecd36c026284b3a3d15a246a6f5747f39",
+      "lines": 115
+    },
+    {
+      "path": "app/assets/config/game_config.json",
+      "blob": "1fbb4fbd75f3afb3a59456c01c6d547730b3b81d",
+      "sha256": "f7b9d1a80be65a49ad2bf7c68de46bbf33243b0a27cd5eb5e80d77467b5f15c5",
+      "lines": 36
+    },
+    {
+      "path": "app/lib/shared/widgets/result_screen.dart",
+      "blob": "3e72b72a6de579d50d5978a2909235617ec3d1d0",
+      "sha256": "d84eb7ebdfa1b4761323e42fe5e3582d763ed7758762f463b18703cb4543bf21",
+      "lines": 404
+    },
+    {
+      "path": "app/lib/shared/characters/cast.dart",
+      "blob": "a9258bbea435464ea987a38a7584659c1d5d4b8b",
+      "sha256": "b8115b14be89858802199ff8b824e4ce72c92c7ffd2948a7abbd7bdd87e53c0c",
+      "lines": 302
+    }
+  ],
+  "catalog_dependency": "../maze-trail-r45/catalog.js",
+  "runtime_execution": false
+}

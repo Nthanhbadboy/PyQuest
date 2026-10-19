@@ -1,0 +1,75 @@
+{
+  "review": "PQD-003-r13",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+  "run_id": 38953510594,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38953510594",
+  "custom_report_check_id": 117152891204,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 11.0,
+  "ordinary": {
+    "passed": 342,
+    "failed": 1
+  },
+  "render_passed": 10,
+  "remaining_failure": "rev 8 §R8-D: đổi locale trên cùng controller — prose nhìn thấy, semantics thật, output theo thứ tự",
+  "missing_failure_names": 0,
+  "full_failure_stack_trace_retrieved": false,
+  "local_flutter_tests_run": false,
+  "board_images_retrieved": 40,
+  "images_inspected": [
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r7/board-mq1_03_s2-b3-whole-run-two-lines-360x640-font2.0-vi.jpg",
+      "check_ids": [
+        117152343931
+      ],
+      "sha256": "01b09c354d8e8f922ca158948e852cfd89186818425735fa65237be21fd35c87",
+      "bytes": 38648,
+      "head_sha": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r7/board-mq1_03_s2-b1-groups-3-4-line-highlight-390x844-font1.0-vi.jpg",
+      "check_ids": [
+        117152274094
+      ],
+      "sha256": "043358b61255d0ff2f095a8ca50acce998d27ceb2c96c5ea9b80f111f2ad1d2b",
+      "bytes": 29743,
+      "head_sha": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/design/coordination/reviews/PQC-010-r7/board-mq1_01_s2-b3-connector-single-output-360x640-font2.0-en.jpg",
+      "check_ids": [
+        117152157763,
+        117152161952
+      ],
+      "sha256": "fed1693d291817557c1203245070c488c4e367078c2c11f300ba016a53adb477",
+      "bytes": 48024,
+      "head_sha": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+      "visually_inspected": true
+    }
+  ],
+  "delta_baseline": "9b0a43c",
+  "changed_paths": [
+    "app/lib/modules/tutor/board/board_layout.dart",
+    "app/test/board/board_view_test.dart"
+  ],
+  "source_sha256": {
+    "app/lib/modules/tutor/board/board_layout.dart": "b19c8feaaafbdfd65ed20821ac05b1a81a4a09900046a6716a63218a70620a1a",
+    "app/test/board/board_view_test.dart": "317a4159f096d8920e84301d84c3a10d1f8ee06749d9016e73919e7a80190dd1"
+  },
+  "observed_later_commit": {
+    "sha": "0dfb01e6b9ebb6cef47db8ec8ebdd67219028ffe",
+    "run_id": 38954357993,
+    "status_when_observed": "in_progress",
+    "acceptance_reviewed": false
+  }
+}

@@ -3,6 +3,11 @@
 > **Trạng thái đối chiếu r47 · 2026-10-18:** xem [source / evidence / release policy](PROJECT_STATUS.md).
 > Tầm nhìn, tiêu chí kế hoạch và source đã có không đồng nghĩa tính năng đã được nghiệm thu.
 
+> **Đồng bộ mở rộng · 2026-10-18:** nhà → đất → đảo, nhiệm vụ liên kết,
+> thăm nhà có hoạt động, thú thông minh, bạn bè/Arena đều thuộc thiết kế sản phẩm.
+> [Thiết kế thế giới thống nhất](design/WORLD_EXPANSION_REDESIGN.md) nối các màn và
+> phân biệt rõ luật đề xuất với source đã chạy. Không coi prototype là tính năng APK.
+
 > Tài liệu này xác định **luật chơi và thông số định lượng** của PyQuest:
 > năng lượng, tiến trình hoạt động, phần thưởng, điều kiện mở khóa và cân bằng độ khó.
 > Tài liệu **không** định nghĩa lại triết lý sản phẩm (xem `PRODUCT_VISION.md`)
@@ -21,7 +26,7 @@ con số có thể đổi.
 
 ## 1. Triết lý thiết kế gameplay
 
-Bảy nguyên tắc chi phối mọi con số trong tài liệu này:
+Các nguyên tắc chi phối mọi con số trong tài liệu này:
 
 1. **Phiên chơi ngắn, không mệt.** Trẻ dưới 12 tuổi không nên ngồi quá lâu.
    Mỗi phiên lý tưởng 10–20 phút, có điểm dừng tự nhiên.
@@ -53,12 +58,28 @@ Bảy nguyên tắc chi phối mọi con số trong tài liệu này:
 
 ---
 
+### 1.1. Chuẩn trình bày gameplay2,5D
+
+Toàn bộ hoạt động thuộc cùng hệ hình ảnh2,5D theo
+[ART_DIRECTION_2_5D](design/ART_DIRECTION_2_5D.md): khối, mặt đất, bóng, vật liệu,
+nhân vật và feedback phải nhất quán. Maze giữ ô/lệnh rõ; Dragon giữ side-view để
+đọc khoảng nhảy nhưng scene/actor có depth, không chuyển thành game pixel-art khác
+họ. Camera mỹ thuật không được đổi collision, grading, output, reward hoặc luật.
+
+HUD/code/điều khiển front-facing; độ nổi chỉ phục vụ nhận biết, không che thông tin.
+Cần thể hiện đủ ready/playing/result/error/locked bằng cùng bộ art, không chỉ happy
+path. Màn xây/visit/pet phải cho thấy hoạt động thực chất theo §17, không chỉ ảnh nhà.
+
+---
+
 ## 2. Vòng lặp cốt lõi
 
 ```
-Chọn nhiệm vụ → Học/Chơi → Nhận thưởng → Năng lượng giảm
-      ↑                                          ↓
-      └──── Quay lại ← Nghỉ/hồi năng lượng ←─────┘
+Chọn hoạt động → Học/Chơi → Kết quả thật → Ghi nhận/nhận thưởng theo luật
+      ↑                                      ├→ Chơi tiếp / nghỉ
+      │                                      ├→ Trưng bày / so tài tùy chọn
+      └──── Nhà / dự án / nguồn còn thiếu ←───┘
+Năng lượng áp dụng tại điểm bắt đầu theo luật hoạt động, không trừ lại ở màn kết quả.
 ```
 
 **Thời lượng một vòng lặp:** 3–6 phút cho một hoạt động đơn lẻ.
@@ -187,6 +208,20 @@ callback hợp lệ của SDK. Xem [trạng thái](PROJECT_STATUS.md).
 - Danh hiệu vẫn giữ ý nghĩa sưu tầm và thể hiện thành tích; những danh hiệu được quy định có điểm thưởng có thể đóng góp vào tổng sắp. Không mặc định mọi danh hiệu đều cho điểm như nhau.
 - Không để một nhánh có thể cày lặp vô hạn rồi chiếm toàn bộ bảng tổng sắp. Điểm, hệ số và giới hạn đóng góp cần phù hợp với từng loại hoạt động.
 - Điểm tuần/tháng phải tách kỳ và quy tắc reset khỏi điểm thành tích lâu dài trong hồ sơ. Danh hiệu vĩnh viễn đã kiếm được không bị xóa chỉ vì kỳ xếp hạng kết thúc.
+
+---
+
+### 4.6. Điều kiện truy cập, điều kiện xây và chi phí là ba lớp riêng
+
+- Activity prerequisite chỉ kiểm kiến thức/quyền cần cho hoạt động đó.
+- Expansion requirement có thể kiểm huy chương, công trình trước hoặc nội dung
+  khả dụng; không tự khóa Main Quest, hub hay mini-game không liên quan.
+- Cost là vật liệu/vật phẩm tiêu hao được công bố. Badge, danh hiệu và quyền đã có
+  không bị tiêu như tiền. Preview/hủy không trừ tài nguyên.
+- Mỗi dự án phải có nguồn đạt được trước khi xây và đường từ kết quả quay về dự án;
+  kiểm dependency graph và supply, không chỉ kiểm “không cycle”. Recipe/giá/quota
+  mới cần review, không lấy số từ prototype thành config production.
+- §17 quy định vòng xây dựng và chơi cùng; nhiệm vụ ngày §9 không thay sổ dự án.
 
 ---
 
@@ -496,6 +531,9 @@ Xuất hiện khi hoàn thành một chặng.
 | Danh hiệu | Chặng lớn, Arena, Tutor, Side Maps | |
 | Vật phẩm trang trí Nhà Thành Tích | Nhiệm vụ đặc biệt | |
 | Quà tặng/vật phẩm xã hội | Mua hoặc bạn bè tặng | Không tự động cấp thành tích/thi đấu |
+| Vật liệu mở rộng (thiết kế mới) | Grant có rule từ công việc/dự án đã duyệt | Có thể tiêu khi xây; chưa có registry vật liệu trong APK a9b |
+| Quyền phòng/đất/đảo (thiết kế mới) | Transaction mở rộng hợp lệ | Quyền dùng không gian, không phải XP hoặc quyền Side Map mặc định |
+| Đồ nhà/pet (thiết kế mới) | Nội dung miễn phí, hoạt động hoặc mua tùy quyền lợi | Đặt trong scene không tự sinh ownership; mua không cấp rank |
 
 ### 12.2. Quy tắc phân phối
 
@@ -581,14 +619,94 @@ Kết quả thử nghiệm sẽ quyết định điều chỉnh cụ thể.
 
 ## 16. Trạng thái triển khai hiện tại và UI Direction V2
 
-### 16.1. Luồng chơi đã có trong source
+### 16.1. Luồng chơi trong snapshot a9bcdcf — không phải toàn bộ tầm nhìn
 
 - Main Map dẫn tới Main Quest, mini-game và Nhà Thành Tích.
 - Main Quest mở khóa theo tiến trình học; không dùng XP/cấp độ toàn cục.
-- Energy hồi theo thời gian và lưu trong database. Quảng cáo thưởng là kế hoạch; rewarded-ad SDK chưa có trong source tại CODE71b0, không báo đã chạy quảng cáo thật.
+- Energy hồi theo thời gian và lưu trong database. Luật quảng cáo ở §3 là thiết kế; rewarded-ad SDK chưa có trong snapshot a9b, không báo đã chạy quảng cáo thật.
 - Daily quests, achievements, màn tổng kết và Adventure Recap dùng dữ liệu đã lưu.
-- AI Tutor trong bài học: câu hỏi gõ hoặc câu nói đều vào cùng một transcript, mỗi dòng mang vai rõ ràng (Bé / nhân vật trả lời), câu chào thuộc về trợ giảng, trạng thái loading – đang nghe – đang nói – lỗi – bị ngắt lời hiển thị đúng như phiên thật, và câu trả lời luôn kèm nhãn cho biết nó do AI soạn hay do trợ giảng ngoại tuyến.
+- Tutor text/voice thử nghiệm và transcript có trong source. Bảng010 đã được nghiệm thu **độc lập**,011 mới được giao tích hợp hai example. “Bảng là vùng học chính, chat là phụ” là thiết kế đích, không phải mô tả toàn lesson đã chạy; freehand/note-entry/AI-generated board/voice sync chưa được nghiệm thu.
 
 ### 16.2. UI Direction V2
 
-UI Direction V2 là định hướng thiết kế, chưa phải giao diện đang chạy. 21 ảnh gốc trong `docs/PyQuest_Reffrence_Images/` đã có trong checkout và là chuẩn thị giác; V2 chỉ tinh chỉnh độ chín (phân cấp, khoảng cách, chữ, khả năng dùng) trên nền đó, không thay thế ảnh gốc. Khi áp dụng, phải đánh giá màn hình hiện có, thiết kế chi tiết, triển khai, kiểm thử và xác nhận runtime. Không mô tả mockup V2 như tính năng đã hoàn thành.
+UI Direction V2 là nghiên cứu lịch sử, chưa phải giao diện đang chạy. 21 ảnh gốc là nguồn tham khảo đa phong cách, không đồng nghĩa được dùng tất cả. Chuẩn hiện hành là ART_DIRECTION_2_5D và §1.1: mọi màn cùng họ2,5D, gameplay/đáp án không đổi để khớp art. Thiết kế/ảnh mới vẫn cần layout/state, asset và runtime evidence riêng trước khi gọi là hoàn thành.
+
+
+## 17. Nhà–đất–đảo và nhiệm vụ liên kết
+
+**Luật thiết kế được đồng bộ2026-10-18; chưa sửa economy/config/runtime.**
+Xem Product Vision §4.5–4.6,16.6–16.7 và màn W02–W12 trong
+[thiết kế thế giới](design/WORLD_EXPANSION_REDESIGN.md).
+
+### 17.1. Vòng chơi dài hạn và điều kiện nguồn
+
+Chọn dự án → xem kết quả mở được → xem còn thiếu → đi chơi công việc phù hợp →
+nhận grant hợp lệ → trở về → preview/xác nhận xây → dùng khu mới → chọn việc tiếp
+hoặc nghỉ. Solo là đường đầy đủ; không yêu cầu kết bạn, mua thú, quảng cáo hoặc
+thành tích bí mật để hoàn thành nhánh cốt lõi.
+
+Mỗi recipe phải nêu: ID/version, không gian đích, prerequisites, cost, nguồn grant,
+quota, quyền dùng mới và cách phục hồi pending. Kiểm khả năng kiếm đủ cho mọi thứ
+tự xây hợp lệ: tài nguyên dùng chung có thể bị tiêu vào dự án khác; phải có nguồn
+bổ sung hoặc cơ chế giữ tài nguyên đã công bố, không đẩy người chơi vào bế tắc.
+Nhiệm vụ dự án không reset theo ngày. Bỏ theo dõi không hủy quyền/thưởng đã đạt.
+
+Ví dụ P06C: huy chương First Steps +3gỗ+2vải → Gác sáng tạo; Maze/Bridge là hai nguồn
+minh họa, badge giữ lại. Đây là **fixture prototype**, chưa chốt số liệu/Bridge cho
+production. Không sửa reward hiện có hoặc cấp lại huy chương chỉ để khớp ví dụ.
+Người đã chơi trước cần quy tắc tham gia/backfill được duyệt, không bị ép xóa save.
+
+### 17.2. Nhận và xây: trạng thái có ý nghĩa
+
+| Trạng thái | Hành vi |
+|---|---|
+| Chưa đủ điều kiện | Cho xem còn thiếu, nguồn đạt được và quay lại dự án; không fake nút Xây |
+| Kết quả hợp lệ/chờ nhận | Lưu theo job/result riêng; thất bại lượt mới không ghi đè win cũ |
+| Nhận thưởng | Chỉ grant theo receipt/rule; retry không cộng trùng. Thành tích đã auto-grant thì chỉ hiển thị, không thêm claim thứ hai |
+| Preview/đủ để xây | Hiện riêng badge giữ lại và vật liệu sẽ tiêu; preview/cancel không debit |
+| Đang xử lý/kết quả chưa rõ | Một command ID bền vững; không tạo lệnh mới vì đóng màn/mất response |
+| Lỗi | Nêu lý do, giữ đúng balance/ownership; retry kiểm lại điều kiện và recipe version |
+| Đã xây | Debit+grant không gian atomic; nút Vào thay Xây, mở lại không trả lần hai |
+
+Mỗi cấp mở phải có ích: phòng có bàn/tác phẩm dùng được; sân có tuyến đi/chơi với thú;
+bến/đảo có điểm đến và hoạt động. Không chỉ thêm slot, wallpaper hoặc con số.
+
+### 17.3. Sắp đồ và quyền trong không gian
+
+Khám phá khác chế độ Sắp xếp. Chọn đồ đã sở hữu → preview/di chuyển/xoay → kiểm
+footprint, cửa và lối ra → lưu. Không cần drag chính xác: có nút tương đương.
+Bản nháp không được gọi “đã lưu”; back/cancel không mất đồ/bố cục đã commit.
+Cất/dời đồ trang trí đã sở hữu không cấp lại vật liệu. Chưa mở phá/bán phòng hay
+hoàn phí công trình; chính sách đó phải có order riêng trước khi xuất hiện CTA.
+Đi lại, xem nhà, sắp đồ và travel không tiêu năng lượng mới trong thiết kế này;
+mini-game bên trong vẫn theo luật năng lượng riêng, không trừ hai lần.
+
+### 17.4. Thăm nhà, chơi cùng và thú
+
+- Khách tham quan chỉ thấy khu/đồ được chia sẻ. Chủ vắng có nhãn snapshot; cùng
+  chơi cần vị trí/hành động thật trong cùng session. Không gán NPC thành bạn online.
+- Quyền xem, tương tác và cùng sửa khác nhau. Cùng sửa giới hạn vùng/thời hạn/vật;
+  không đụng kho riêng, mua hàng hoặc mở đất của chủ. Thu hồi thì dừng thao tác,
+  về bến an toàn; luôn có Rời/Chặn/Báo cáo. Không cần chat tự do/voice để cùng chơi.
+- Mỗi visit có một việc thực chất: thử tác phẩm, chơi bóng với pet, làm thiệp hoặc
+  trang trí được phép; không chỉ nút Like. Không tự thưởng điểm/rank vì số khách.
+- Pet có hành vi nền, tương tác/đồ chơi, tính cách; không chết/mất tình cảm khi trẻ
+  nghỉ. AI local chỉ bổ sung ý định/lời ngắn, không thay engine/quyền/giao dịch.
+- Shop thú phải mô tả khả năng trên máy trước mua, pending/restore/quyền thay đổi.
+  Model bị gỡ không xóa ownership pet hay hành vi nền. Không pay-to-win/gacha.
+
+### 17.5. Liên kết Arena/Creator mà không gộp mọi nhánh
+
+Tác phẩm lưu phiên bản có thể trưng bày, thử trong nhà hoặc dự thi nếu có quyền và
+đủ luật bộ môn. Kết quả thi mới cấp title/điểm theo rule; nhà lớn, quà mua và model
+đắt không chứng minh kỹ năng. Một thành tích có thể mở cơ hội/dự án nhưng không
+được đem tiêu như vật liệu. Luyện tập và người thật phải ghi nhãn khác nhau.
+
+### 17.6. Kiểm chứng gameplay cần có
+
+Hai thứ tự hoàn thành công việc; nhiều win chờ nhận; replay/thất bại không mất win;
+claim/build lặp; hết app giữa pending; thiếu vật liệu sau preview; recipe đổi;
+locale/relaunch không grant; badge không bị trừ; nguồn kiếm không bị chính công
+trình khóa; đồ không chặn lối; quyền khách thu hồi; solo vẫn chơi được; quyền pet
+vẫn còn khi inference lỗi. Test này thuộc order liên quan, không thêm framework
+hoặc đổi economy chỉ để đánh dấu tài liệu đã đồng bộ.

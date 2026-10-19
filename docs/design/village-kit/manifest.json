@@ -1,0 +1,256 @@
+{
+  "version": 1,
+  "title": "PyQuest · Village landmarks 2.5D",
+  "created": "2026-10-16",
+  "status": "design-review-not-runtime",
+  "source_branch": "arena/b813b575-pyquest",
+  "source_commit": "c8b2029",
+  "provenance": "Original AI-generated illustrations made for this project using Arena image generation. No downloaded stock artwork or third-party reference image was supplied to generation. The generated python_academy.png was used as the style reference for the other five images.",
+  "rights_note": "Not a CC0 stock pack. No third-party stock license is asserted. Review applicable image-generation service terms and project release policy before distribution.",
+  "format_note": "Opaque RGB illustrations with baked ivory background and ground shadow. Suitable for cards/thumbnails, NOT transparent compositing sprites, 3D models, animated NPCs or navigable map tiles.",
+  "recipe": {
+    "camera": "Fixed orthographic 3/4 isometric appearance; target 30-degree elevation. Generated images approximate this, not calibrated geometry.",
+    "light": "Warm upper-left key light, ambient occlusion, lower-right cast shadow.",
+    "materials": "Beveled low-poly limestone, teal roofs, walnut details, sage grass and amber accents; modest texture; no heavy outlines.",
+    "composition": "One complete isolated landmark on a compact diamond-shaped sandstone/grass base, square canvas, clear margins, pale ivory background.",
+    "exclude": "Text, labels, UI, watermarks, recognizable third-party characters, unrelated buildings, crowds, grids or collages.",
+    "palette": [
+      "#245866",
+      "#91A678",
+      "#E5D9B9",
+      "#EDB65B",
+      "#F4F1E8",
+      "#273F3B"
+    ]
+  },
+  "assets": [
+    {
+      "id": "python_academy",
+      "name": "Tháp Python",
+      "module": "main_quest",
+      "baseline": "thumb_tower.webp",
+      "tag": "HỌC & KHÁM PHÁ",
+      "motif": "Tháp đá sáng, mái teal nhọn, sách mở và cửa sổ hổ phách.",
+      "subject_prompt": "An elegant ivory limestone octagonal academy tower, teal faceted conical roof with gold finial, two levels of amber arched windows, walnut entrance, open-book emblem without letters, curved stone steps, cobble path, two low-poly trees and small blue crystal.",
+      "activity_id": "main_quest",
+      "source": "source/python_academy.png",
+      "source_sha256": "1a02352ba58bd4da680c31e9befcc0ae18e71fa72790888956cb9292aa15386a",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "alpha": false,
+      "baseline_source": "app/assets/images/thumb_tower.webp",
+      "baseline_path": "baseline/python_academy.webp",
+      "baseline_sha256": "c17e971f866f5cb28bf7f7d749273ae204ec49fc94c4692d773e485869e8365d",
+      "variants": [
+        {
+          "path": "exports/python_academy_256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 5354,
+          "sha256": "133b74ac1f85e548e5ff467e88d9f7ab6ab797a3bcfa370bcfa14155b1143bc0"
+        },
+        {
+          "path": "exports/python_academy_512.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 13802,
+          "sha256": "c33ce18f00cd5c808b17cf49dcabb17d8197e658a5a680f385efe36fa08d2c73"
+        }
+      ],
+      "anchor": null,
+      "review_notes": "Background and shadow baked in. Do not use as a walkable maze, hitbox or layered terrain tile."
+    },
+    {
+      "id": "robo_maze",
+      "name": "Mê Cung Robo",
+      "module": "robot_maze",
+      "baseline": "thumb_maze.webp",
+      "tag": "TƯ DUY & GIẢI ĐỐ",
+      "motif": "Hàng rào xanh, cổng robot và rương mục tiêu ở trung tâm.",
+      "subject_prompt": "A compact garden labyrinth of moss-green clipped hedges, visible tops and shaded sides, cream paving paths, golden chest with cyan crystal in the center, small teal metal entrance arch and two amber lamps, cypress-like trees at back corners. No tower or house.",
+      "activity_id": "robot_maze",
+      "source": "source/robo_maze.png",
+      "source_sha256": "35a2158fa6a78bb1d65cdcabbcdf3a2d939059de04ea7bab4d478322278175e2",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "alpha": false,
+      "baseline_source": "app/assets/images/thumb_maze.webp",
+      "baseline_path": "baseline/robo_maze.webp",
+      "baseline_sha256": "e963cd3aab8c6cf47f28a2265705d56ccdff0e669758eca97d7bdde81abaddef",
+      "variants": [
+        {
+          "path": "exports/robo_maze_256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 8746,
+          "sha256": "e267c255ee7d96e6e40baae3c6768da10aa012e9bfc73f2e2826f240011c8a18"
+        },
+        {
+          "path": "exports/robo_maze_512.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 23888,
+          "sha256": "b444be914ea22e7dd650fb9cc6004de40de45e9cfd31ef642ed8f2dbd4f27b5a"
+        }
+      ],
+      "anchor": null,
+      "review_notes": "Background and shadow baked in. Do not use as a walkable maze, hitbox or layered terrain tile."
+    },
+    {
+      "id": "pip_volcano",
+      "name": "Núi Lửa Pip",
+      "module": "dragon_jump",
+      "baseline": "thumb_volcano.webp",
+      "tag": "PHẢN XẠ & PHIÊU LƯU",
+      "motif": "Đá basalt, dung nham ấm và tổ trứng nhỏ; không đáng sợ.",
+      "subject_prompt": "A friendly small volcano of faceted charcoal basalt, shallow amber-orange crater, two thin lava streams, tiny stepped jumping platforms on the grassy approach, cream eggs in a sheltered nest and one hardy sage tree. No eruption, smoke cloud, flames or dragon.",
+      "activity_id": "dragon_jump",
+      "source": "source/pip_volcano.png",
+      "source_sha256": "cf5bad3b84e97b324191a842154725d7f67fbaff1eb4afca63150bd6a922c4fe",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "alpha": false,
+      "baseline_source": "app/assets/images/thumb_volcano.webp",
+      "baseline_path": "baseline/pip_volcano.webp",
+      "baseline_sha256": "4d2847d6d8a955da23f128e651e8412838076030b2f469ce27407a25496f4f52",
+      "variants": [
+        {
+          "path": "exports/pip_volcano_256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 6986,
+          "sha256": "48658e3fcc73d18ecd3d7746fc491d3f9bee4f838d4b9398cf8fd9215ccdf1dd"
+        },
+        {
+          "path": "exports/pip_volcano_512.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 17410,
+          "sha256": "db1912e199b8b5d21890e8537f6b1d431966aa8ec3dea0d169d1be3fe50780b9"
+        }
+      ],
+      "anchor": null,
+      "review_notes": "Background and shadow baked in. Do not use as a walkable maze, hitbox or layered terrain tile."
+    },
+    {
+      "id": "star_observatory",
+      "name": "Đài Thiên Văn",
+      "module": "catch_stars",
+      "baseline": "thumb_observatory.webp",
+      "tag": "SƯU TẦM & BẦU TRỜI",
+      "motif": "Mái vòm xanh, kính thiên văn bằng đồng và cầu thiên văn.",
+      "subject_prompt": "A compact round ivory limestone observatory, ribbed deep-teal hemispherical dome with slit and brass telescope pointing upward right, amber arched windows, walnut door, front staircase, bronze armillary sphere on side terrace, two trimmed trees and a small star entrance ornament. No conical roof.",
+      "activity_id": "catch_stars",
+      "source": "source/star_observatory.png",
+      "source_sha256": "80a39f049cd094fe5aefe537560c14abb3f21b3a3930e8937524c7bfa8d9fc47",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "alpha": false,
+      "baseline_source": "app/assets/images/thumb_observatory.webp",
+      "baseline_path": "baseline/star_observatory.webp",
+      "baseline_sha256": "620d6e9ea279582a347df1f9659923db6ad8eb6b1ae4446a11b0e9e04d444031",
+      "variants": [
+        {
+          "path": "exports/star_observatory_256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 6584,
+          "sha256": "c4fc4363050c750b4ef5368ebb4561188c3d3f241aaf8d49f1e91501c3dd40e5"
+        },
+        {
+          "path": "exports/star_observatory_512.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 16928,
+          "sha256": "5204f72f3ba45adb87e8de2ed59a38163a4f4eb92a5d48ffdaefaa36f6deda93"
+        }
+      ],
+      "anchor": null,
+      "review_notes": "Background and shadow baked in. Do not use as a walkable maze, hitbox or layered terrain tile."
+    },
+    {
+      "id": "bitsy_workshop",
+      "name": "Xưởng Bitsy",
+      "module": "bug_hunter",
+      "baseline": "thumb_workshop.webp",
+      "tag": "THỬ NGHIỆM & SỬA LỖI",
+      "motif": "Khung gỗ, bánh răng, bàn dụng cụ và ánh mạch điện cyan.",
+      "subject_prompt": "An asymmetrical ivory stone cottage workshop with teal tiled gable roof, walnut timber framing, round brass gear above open arched doorway, subtle cyan circuit geometry inside without text, side workbench and toolbox, brass chimney, organized wooden crates and rounded sage shrubs.",
+      "activity_id": "bug_hunter",
+      "source": "source/bitsy_workshop.png",
+      "source_sha256": "fdf6aa821bacf303761a741fe0c4748f779019f4415505b524adb6dc8a5333cd",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "alpha": false,
+      "baseline_source": "app/assets/images/thumb_workshop.webp",
+      "baseline_path": "baseline/bitsy_workshop.webp",
+      "baseline_sha256": "e3cf18513c7ba327106b437ecebcf88826258c1b9c91a0939d2dbdfe002faf14",
+      "variants": [
+        {
+          "path": "exports/bitsy_workshop_256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 7302,
+          "sha256": "cb7d5ac413282c90a5da6b4ab3c053ed842de8e68e7a13ce7b139b74b32572fe"
+        },
+        {
+          "path": "exports/bitsy_workshop_512.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 19198,
+          "sha256": "45aa475f5cd4afad0e9fc3762ad525584c5cc3c0d193fbfc991a7a13897d04c9"
+        }
+      ],
+      "anchor": null,
+      "review_notes": "Background and shadow baked in. Do not use as a walkable maze, hitbox or layered terrain tile."
+    },
+    {
+      "id": "achievement_house",
+      "name": "Nhà Thành Tích",
+      "module": "achievements",
+      "baseline": "thumb_house.webp",
+      "tag": "GHI NHẬN & BỘ SƯU TẬP",
+      "motif": "Mái dốc, cột đá và vòng nguyệt quế; không gắn XP toàn cục.",
+      "subject_prompt": "A modest ivory limestone museum pavilion, wide symmetrical facade with visible right side, teal hipped roof, two short columns around arched walnut double doors, gold laurel wreath and star medallion, amber windows with subtle trophies, three shallow steps, two round trees and small empty stone pedestal. Not a palace.",
+      "activity_id": "achievement_house",
+      "source": "source/achievement_house.png",
+      "source_sha256": "74143a6df9ce8f12241232693d490613a926dd6d75d0129a37a5d4a37c515540",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "alpha": false,
+      "baseline_source": "app/assets/images/thumb_house.webp",
+      "baseline_path": "baseline/achievement_house.webp",
+      "baseline_sha256": "e6ac23380ae4087ec536a87251998132ff0347c25e021755004899a7ce1ca93e",
+      "variants": [
+        {
+          "path": "exports/achievement_house_256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 8120,
+          "sha256": "84ff99ae4db6a7dca1b5fd808244e93f722c2af06f39390e42c6798e1d10330b"
+        },
+        {
+          "path": "exports/achievement_house_512.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 21712,
+          "sha256": "d7781c4dd46142e1480e6a5a956f23ee4a9c634f927baa0ba6739c689213b36c"
+        }
+      ],
+      "anchor": null,
+      "review_notes": "Background and shadow baked in. Do not use as a walkable maze, hitbox or layered terrain tile."
+    }
+  ]
+}

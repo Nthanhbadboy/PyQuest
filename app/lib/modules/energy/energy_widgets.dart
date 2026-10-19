@@ -122,6 +122,26 @@ class _EnergySheet extends StatelessWidget {
         builder: (context, _) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Container(
+              key: const ValueKey('energy_25d_scene'),
+              height: 104,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: PQColors.ink, width: 2.4),
+                boxShadow: [
+                  BoxShadow(
+                    color: PQTone.sea.depth,
+                    offset: const Offset(0, 3),
+                    blurRadius: 0,
+                  ),
+                ],
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/garden_kiosk_r41.webp'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
             Row(
               children: [
                 const GameIcon(GameIconKind.energy, size: 56),

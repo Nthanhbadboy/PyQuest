@@ -1,0 +1,21 @@
+{
+  "result": "PASS_STATIC_DESIGN_ONLY",
+  "source_pins": 8,
+  "local_links": 11,
+  "artifacts_hashed": 30,
+  "text_token_contrast": {
+    "ink-paper": 11.04,
+    "muted-paper": 5.86,
+    "primary-light-end": 4.82,
+    "error-cue": 6.68
+  },
+  "app_ci_maintenance_unchanged": true,
+  "model_checks": 28,
+  "browser_cases": 324,
+  "runtime_execution": false,
+  "limitations": [
+    "Static contrast tokens, not every pixel/alpha composite",
+    "No Flutter/Python/device/voice/DB/energy authority acceptance",
+    "Existing CODE correction order untouched"
+  ]
+}

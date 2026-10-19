@@ -1,0 +1,55 @@
+import {localize,t,applyExternalPreference} from '../shared-l10n/locale.mjs';
+import {boardAt,validatePlan,tryPrint} from './engine.mjs';
+const $ = s => document.querySelector(s);
+const embedded=new URLSearchParams(location.search).get('embedded')==='1';
+if(embedded)document.body.classList.add('embedded');
+const escape = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let plans=[],topic='print',screen='village',timer=null,playing=false,drawing=false,stroke=null;
+const books={print:{beat:0,code:'print("")',note:'',inks:[[],[],[],[]],output:null},numbers:{beat:0,code:'print(3 + 4)',note:'',inks:[[],[],[],[]],output:null}};
+const current=()=>books[topic],plan=()=>plans.find(p=>p.id===topic),ink=()=>current().inks[current().beat];
+const media=matchMedia('(prefers-reduced-motion: reduce)');
+function calm(){document.body.classList.toggle('calm',media.matches||$('#calm').checked);}
+media.addEventListener('change',()=>{calm();stop();});$('#calm').onchange=()=>{calm();stop();};calm();
+function stop(){clearTimeout(timer);timer=null;playing=false;$('#play').textContent='▶ Xem từng bước';$('#tutor-status').textContent='ĐANG CHỈ TRÊN BẢNG';}
+function setScreen(next){stop();screen=next;document.body.classList.remove('drawing');drawing=false;stroke=null;$('#pen').setAttribute('aria-pressed','false');$('#village').hidden=next!=='village';$('#classroom').hidden=next!=='lesson';for(const [id,on] of [['village-nav',next==='village'],['lesson-nav',next==='lesson']]){if(on)$('#'+id).setAttribute('aria-current','page');else $('#'+id).removeAttribute('aria-current');}if(next==='lesson'){render();$('#lesson-title').tabIndex=-1;$('#lesson-title').focus({preventScroll:true});}window.scrollTo(0,0);}
+function setTopic(next){if(!books[next])return;stop();topic=next;drawing=false;stroke=null;document.body.classList.remove('drawing');$('#pen').setAttribute('aria-pressed','false');render(true);}
+function paintCode(board){return board.code.split('\n').map((line,i)=>{let content=escape(line);const focus=board.focus;if(focus?.line===i&&focus.token){const at=line.indexOf(focus.token);if(at>=0)content=escape(line.slice(0,at))+'<mark>'+escape(focus.token)+'</mark>'+escape(line.slice(at+focus.token.length));}return `<div class="code-line"><span class="line-number" aria-hidden="true">${i+1}</span><code>${content}</code></div>`;}).join('');}
+function gemGroup(start,n,second=false){return `<span class="token-group">${Array.from({length:n},(_,i)=>`<span class="token ${second?'second':''}" aria-hidden="true">${i+start}</span>`).join('')}</span>`;}
+function render(loadInput=false){
+ if(!plan())return;
+ const book=current(),p=plan(),beat=p.beats[book.beat],board=boardAt(p,book.beat);
+ $('#lesson-title').textContent=p.title;$('#beat-number').textContent=`Bước ${book.beat+1} / ${p.beats.length}`;$('#beat-title').textContent=beat.title;$('#tutor-say').textContent=beat.say;
+ document.querySelectorAll('button[data-topic]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.topic===topic)));
+ const tokens=board.tokens?`<div class="tokens" role="img" aria-label="${board.tokens.left} viên đá cộng ${board.tokens.right} viên đá bằng ${board.tokens.left+board.tokens.right} viên đá">${board.tokens.merged?gemGroup(1,board.tokens.left+board.tokens.right):gemGroup(1,board.tokens.left)+'<strong>+</strong>'+gemGroup(1,board.tokens.right,true)}</div>`:'';
+ $('#board-content').innerHTML=`<div class="board-kicker"><span class="board-guide"><img src="art/robo.svg" alt=""> ${escape(p.skill)}</span><span>ROBO VIẾT & VẼ</span></div><h2 class="board-title">${escape(beat.title)}</h2><div class="code-block" aria-label="Code trên bảng">${paintCode(board)}</div>${tokens}${board.arrow?`<div class="output-connection"><svg viewBox="0 0 50 60" aria-hidden="true"><path d="M8 3q-3 32 30 39m-11-13 13 14-19 5" fill="none" stroke="#f4d577" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="board-output"><small>MÀN HÌNH IN RA</small><pre>${escape(board.output??'')}</pre></div></div>`:'<div class="pending-output">Chưa chạy lệnh · mình nhìn từng phần trước nhé.</div>'}<p class="board-caption">${escape(board.caption)}</p>`;
+ $('#previous').disabled=book.beat===0;$('#next').disabled=book.beat===p.beats.length-1;
+ $('#practice-title').textContent=topic==='print'?'Gửi một lời chào':'Thêm hoặc bỏ ngoặc kép';
+ $('#practice-goal').textContent=topic==='print'?'Thử in ra: Robo thông minh. Bạn cũng có thể đổi sang lời chào của mình.':'So sánh print(3 + 4) với print("3 + 4"). Đây là thao tác khám phá, không chấm điểm bài nguồn.';
+ if(loadInput||$('#student-code').dataset.bookId!==topic){$('#student-code').value=book.code;$('#student-code').dataset.bookId=topic;$('#board-note').value=book.note;}
+ $('#help-answer').hidden=true;$('#transcript-lines').innerHTML=p.beats.slice(0,book.beat+1).map(b=>`<li><strong>${escape(b.title)}</strong><br>${escape(b.say)}</li>`).join('');
+ renderInk();renderOutput();
+}
+function renderOutput(){const out=current().output;$('#student-output').textContent=out?(out.ok?(out.output||t('(dòng trống)')):t('Mình sửa một chút nhé')):t('Chưa chạy');$('#student-feedback').textContent=!out?'':!out.ok?out.message:topic==='print'?(out.output==='Robo thông minh'?'Đúng mục tiêu mẫu! Python in phần chữ, không in dấu ngoặc kép.':'Dòng mẫu đã in ra chữ. Để thử mục tiêu trong bài, đổi thành Robo thông minh.'):out.kind==='text'?'Có ngoặc kép → giữ nguyên phần chữ, không tính phép cộng.':'Không có ngoặc kép → cộng hai số rồi in kết quả.';$('.practice-output').classList.toggle('error',Boolean(out&&!out.ok));}
+function renderInk(){const svg=$('#student-ink');svg.replaceChildren();for(const points of ink()){const line=document.createElementNS('http://www.w3.org/2000/svg','polyline');line.setAttribute('points',points.map(p=>p.join(',')).join(' '));line.setAttribute('fill','none');line.setAttribute('stroke','#ffb69b');line.setAttribute('stroke-width','3');line.setAttribute('vector-effect','non-scaling-stroke');line.setAttribute('stroke-linecap','round');line.setAttribute('stroke-linejoin','round');svg.append(line);}$('#undo-ink').disabled=!ink().length;$('#clear-ink').disabled=!ink().length;}
+function advance(delta){stop();current().beat=Math.min(plan().beats.length-1,Math.max(0,current().beat+delta));render();}
+function tick(){if(!playing||document.hidden||screen!=='lesson'){stop();return;}if(current().beat>=plan().beats.length-1){stop();return;}current().beat++;render();timer=setTimeout(tick,3300);}
+const translated=fn=>(...args)=>{const result=fn(...args);localize();return result;};
+[render,renderOutput,stop]=[render,renderOutput,stop].map(translated);
+window.addEventListener('pyquest:languagechange',()=>{stop();if(plan())renderOutput();localize();});
+$('#play').onclick=()=>{if(playing){stop();return;}if(current().beat===plan().beats.length-1){current().beat=0;render();}playing=true;$('#play').textContent='Ⅱ Tạm dừng';$('#tutor-status').textContent='ĐANG TRÌNH BÀY · KHÔNG CÓ ÂM THANH';timer=setTimeout(tick,3300);};
+$('#previous').onclick=()=>advance(-1);$('#next').onclick=()=>advance(1);$('#replay').onclick=()=>{stop();current().beat=0;render();};
+$('#slower').onclick=()=>{stop();$('#help-answer').hidden=false;$('#help-answer').textContent='Mình dừng ở bước này nhé. Dùng mũi tên để đi từng bước; phần bạn viết và vẽ vẫn ở đây.';};
+$('#another').onclick=()=>{stop();$('#help-answer').hidden=false;$('#help-answer').textContent=topic==='print'?'Hãy nghĩ dấu ngoặc kép như hai mép của một tấm thiệp: chữ nằm ở giữa là lời chào. print đưa lời chào ra màn hình, không đưa hai mép thiệp ra.':'Bảy viên đá là kết quả khi gộp nhóm ba và nhóm bốn. Còn “3 + 4” trong ngoặc kép giống một tấm nhãn: mình đọc nguyên dòng chữ trên nhãn.';};
+$('#student-code').oninput=e=>{current().code=e.target.value;};$('#board-note').oninput=e=>{current().note=e.target.value;};
+$('#run').onclick=()=>{stop();current().code=$('#student-code').value;current().output=tryPrint(current().code);renderOutput();};
+$('#pen').onclick=()=>{stop();drawing=!drawing;stroke=null;document.body.classList.toggle('drawing',drawing);$('#pen').setAttribute('aria-pressed',String(drawing));};
+function point(e){const r=$('#student-ink').getBoundingClientRect();return [Math.max(0,Math.min(1000,(e.clientX-r.left)/r.width*1000)),Math.max(0,Math.min(650,(e.clientY-r.top)/r.height*650))].map(x=>Math.round(x*10)/10);}
+$('#student-ink').onpointerdown=e=>{if(!drawing||e.button!==0)return;if(ink().length>=60){$('#help-answer').hidden=false;$('#help-answer').textContent='Bảng mẫu đã có 60 nét. Bạn có thể hoàn tác hoặc xóa nét của mình để vẽ tiếp.';return;}e.preventDefault();$('#student-ink').setPointerCapture(e.pointerId);stroke=[point(e)];ink().push(stroke);renderInk();};
+$('#student-ink').onpointermove=e=>{if(!stroke||!drawing||stroke.length>=300)return;stroke.push(point(e));renderInk();};
+$('#student-ink').onpointerup=$('#student-ink').onpointercancel=()=>{stroke=null;};
+$('#undo-ink').onclick=()=>{stroke=null;ink().pop();renderInk();};$('#clear-ink').onclick=()=>{stroke=null;current().inks[current().beat]=[];renderInk();};
+for(const id of ['begin','skip','lesson-nav'])$('#'+id).onclick=()=>setScreen('lesson');$('#village-nav').onclick=()=>setScreen('village');$('.brand').onclick=e=>{e.preventDefault();setScreen('village');};
+for(const button of document.querySelectorAll('button[data-topic]'))button.onclick=()=>setTopic(button.dataset.topic);
+window.addEventListener('message',e=>{if(!embedded||e.origin!==location.origin||e.source!==window.parent)return;applyExternalPreference(e.data?.languagePreference);if(e.data?.type==='pyquest:pause'){stop();stroke=null;document.body.classList.add('sleeping');}else if(e.data?.type==='pyquest:resume'){document.body.classList.remove('sleeping');$('#calm').checked=Boolean(e.data.calm);calm();}});
+document.addEventListener('visibilitychange',()=>{document.body.classList.toggle('sleeping',document.hidden);if(document.hidden){stop();stroke=null;}});
+try{const response=await fetch('lessons.json');if(!response.ok)throw new Error('Không tải được bài mẫu');const data=await response.json();plans=data.plans.map(validatePlan);render(true);for(const id of ['begin','skip','lesson-nav'])$('#'+id).disabled=false;if(embedded){setScreen('lesson');parent.postMessage({type:'pyquest:ready'},location.origin);}}catch(e){$('#begin').disabled=true;$('#skip').disabled=true;$('#lesson-nav').disabled=true;$('.prototype-note').textContent='Không tải được bài mẫu. Mở qua HTTP theo README; chưa có AI kết nối.';console.error(e);}

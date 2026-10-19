@@ -1,0 +1,45 @@
+{
+  "review": "PQD-003-r21",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "verdict_reason": "CI blockers resolved; initial VI negative EN guard and target-node identity checks requested in r19/r20 remain incomplete.",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "1e77ac165dc95187b96acf799628cea228b44cf5",
+  "run_id": 38970570789,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38970570789",
+  "run_status": "completed",
+  "run_conclusion": "success",
+  "custom_report_check_id": 117209409056,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 0,
+    "render": 0
+  },
+  "analyze_seconds": 11.3,
+  "analyze_clean": true,
+  "ordinary": {
+    "passed": 352,
+    "failed": 0
+  },
+  "render_passed": 10,
+  "confirmed_failure_names": [],
+  "missing_failure_names": 0,
+  "fixture_index_corrected": true,
+  "manual_handle_disposed_on_success": true,
+  "manual_handle_cleanup_exception_safe": false,
+  "initial_VI_negative_EN_guard_still_missing": true,
+  "semantic_positive_checks_scope": "global tree; output node identity not asserted",
+  "temporary_dump_removed": true,
+  "runtime_and_preview_identical_to": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+  "changed_paths": [
+    "app/test/board/board_view_test.dart",
+    "app/test/00_board_semantics_dump_test.dart (deleted)"
+  ],
+  "source_sha256": {
+    "app/test/board/board_view_test.dart": "c6919bddebb0c1a73e25d01917ddeaded7784e5a5d6c949452be58f7d32c2c6c",
+    "app/test/board/fixtures/board_plans.v1.json": "8a39e5ad21766cbff90bdc96dd83549505b8c777f51f317c634697954ea5d784"
+  },
+  "new_images_inspected": 0,
+  "local_flutter_tests_run": false
+}

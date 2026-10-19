@@ -1,0 +1,19 @@
+{
+  "result": "PASS",
+  "scope": "Design source pins, catalog, artifacts, receipts, links and diff allowlist ONLY; not Flutter execution",
+  "source_pins": 7,
+  "source_lessons": 12,
+  "source_costs_and_energy_config": "MATCH",
+  "references": 3,
+  "hashed_artifacts": 11,
+  "hashed_evidence": 15,
+  "captures": 13,
+  "local_links": 60,
+  "browser_cases": 168,
+  "font_checks": 2340,
+  "flows": 15,
+  "model_checks": 17,
+  "runtime_changed": false,
+  "flutter_execution": "NOT_RUN",
+  "ci_triggered": false
+}

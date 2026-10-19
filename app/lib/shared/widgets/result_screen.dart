@@ -142,6 +142,28 @@ class _LevelResultScreenState extends State<LevelResultScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Container(
+                        key: const ValueKey('result_25d_scene'),
+                        height: 112,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: PQColors.ink, width: 2.4),
+                          boxShadow: [
+                            BoxShadow(
+                              color: d.tone.depth,
+                              offset: const Offset(0, 4),
+                              blurRadius: 0,
+                            ),
+                          ],
+                          image: const DecorationImage(
+                            image: AssetImage(
+                              'assets/images/robo_celebration_r52.webp',
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       Text(d.gameName.toUpperCase(),
                           textAlign: TextAlign.center,
                           style: PQText.small.copyWith(letterSpacing: 1.2, fontWeight: FontWeight.w900, color: d.tone.depth)),

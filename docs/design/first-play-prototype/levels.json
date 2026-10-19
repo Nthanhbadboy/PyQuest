@@ -1,0 +1,37 @@
+{
+  "source_path": "app/assets/data/robot_maze_levels.json",
+  "source_sha256": "0c0d728a067b99d47fe85c18ed5c80cecd36c026284b3a3d15a246a6f5747f39",
+  "source_commit": "c8b20296c7c6e0d9a5ff661dae2f10a816310944",
+  "prototype_only": true,
+  "levels": [
+    {
+      "id": "rm_01",
+      "title": "Bước đi đầu tiên",
+      "story": "Rương báu ở ngay phía trước! Hãy xếp các mũi tên để Robo đi tới rương.",
+      "tip": "Mỗi mũi tên là một bước. Đếm số ô từ Robo tới rương nhé.",
+      "skill": "Thứ tự lệnh: máy tính làm đúng từng bước bạn viết.",
+      "rows": [
+        "#####",
+        "S...C",
+        "#####"
+      ],
+      "command_limit": 4,
+      "allow_loops": false
+    },
+    {
+      "id": "rm_02",
+      "title": "Rẽ ở góc đường",
+      "story": "Đường đi có một khúc rẽ. Nhặt viên đá quý trên đường nữa nhé!",
+      "tip": "Đi sang phải trước, rồi mới đi xuống.",
+      "skill": "Lệnh chạy lần lượt từ trái sang phải.",
+      "rows": [
+        "S.*.",
+        "###.",
+        "###.",
+        "###C"
+      ],
+      "command_limit": 6,
+      "allow_loops": false
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "artifacts_hashed": 8,
+  "reference_and_contract_pins": 8,
+  "runtime_source_blob": "MATCH",
+  "local_links_checked": 32,
+  "js_syntax_files": 3,
+  "browser_cases": 456,
+  "browser_flows": 12,
+  "model_checks": 16,
+  "protected_scope_changed": false,
+  "runtime_or_production_approval": false
+}

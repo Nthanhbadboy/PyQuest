@@ -1,0 +1,208 @@
+{
+  "date": "2026-10-18",
+  "design_base": "30a562f56faf85bbf7b3c7811b24eb56c007f7bc",
+  "code_pin": "71b0fd3fd8fb07c73596ce089fa2e68f6fe87964",
+  "status": "DESIGN_STUDY_DELIVERED",
+  "runtime_authorized": false,
+  "art": [
+    {
+      "path": "assets/workbench.png",
+      "dimensions": [
+        928,
+        1152
+      ],
+      "opaque": true,
+      "production_ready": false
+    },
+    {
+      "path": "assets/hedge-tile.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "opaque": true,
+      "production_ready": false
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/design/maze-creator-r46/ASSET_PLAN.md",
+      "sha256": "16785158f06a69cfad89af815687e05993426a15d5266464b1c02dab4021e888"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/README.md",
+      "sha256": "cf161c4d47c64bf44eac6926d2fdf669d54fd6af7ca6aa82d47f8d50087acc62"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/SOURCE_EXCERPTS.md",
+      "sha256": "93d4f23ff6ae5b97cbc66cc7fa1dd8e91c708c4c43d054fd7af740986b700980"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/SPEC.md",
+      "sha256": "4b3d9015700ff41213766b3c88736a077f779ca8a0c7955034a9d75470ee4c32"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/assets/hedge-tile.png",
+      "sha256": "2459f085c9c7900882fa4fcded188a48e69872eb29ebb34e84980a2083340901"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/assets/provenance.json",
+      "sha256": "761ed5181bfa692eda6c7dad05a7b3cd07aadd23d97f1c091bd8b9cf1c6330ca"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/assets/workbench.png",
+      "sha256": "f57d698f03d849236cd1550611482a4e0057cf7b3947f6f3e5c243995eec0ae9"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/index.html",
+      "sha256": "8cd19b75bd6d6a1f0a6208ba75e28a1b072e9cd2220716467ec203ffec4061e1"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/model.js",
+      "sha256": "9f35b10ee56ea2035001442dd685772ef5337d92c5d844b1cc8b2dc29ad92ea8"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/source-manifest.json",
+      "sha256": "7b5bcbc2b54dc22d8ac67d8284ada5b89556ce263f33e72c7ee36a0ac4ce9ca2"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/study.js",
+      "sha256": "fe975c8e8718ea8d87e3120aef3bf6eab772ada9e05d657b08a5dafea205ba51"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/style.css",
+      "sha256": "d3d39b12b43f83be11995d9b5c045d7b9a4400bb3f2bcee037745da6cc609e1f"
+    },
+    {
+      "path": "tools/design/check_creator_r46.cjs",
+      "sha256": "d66a2a5a1400fc4d8bd6f48895257af1e22e72cdf715479bc8fc8d3d06b96645"
+    },
+    {
+      "path": "tools/design/test_creator_r46.cjs",
+      "sha256": "f887fce8fef2adc4a610332f4d394ebdf6cdb4235bf06472f166690c550c71b1"
+    },
+    {
+      "path": "tools/design/validate_creator_r46.py",
+      "sha256": "4cd73d15a8edfec0d60157fa2be95fc76e846ae0f04cfd9b3636b73f92eaff12"
+    }
+  ],
+  "references": [
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+    },
+    {
+      "path": "docs/design/maze-trail-r45/assets/hedge-trail.png",
+      "sha256": "acd5576de4063b656e23b40d9f71822bba4da20639d4634ec8bc3a972e2b7756"
+    },
+    {
+      "path": "docs/design/first-play-prototype/art/robo.svg",
+      "sha256": "7fd314b1b354405592b1d3c024db06767b33908f8b936307a5523c2d584f3ab6"
+    },
+    {
+      "path": "docs/screenshots/26_workshop.jpg",
+      "sha256": "9da635ee4023ecb917a684bae2e99c1935785d42b039f22fe9ed457bc5790272"
+    },
+    {
+      "path": "docs/screenshots/27_workshop_code.jpg",
+      "sha256": "7128346f9f2b6c7086b6bab538b9e517c3032f05be3469ba585656d19648055e"
+    },
+    {
+      "path": "docs/screenshots/28_workshop_verified.jpg",
+      "sha256": "38ff8174143fa3608d76b45fd3672999c189b0dc5116356525ea7493c969e39b"
+    },
+    {
+      "path": "app/assets/fonts/Nunito-Medium.ttf",
+      "sha256": "c5ac621e788f8acf1ae43518f45f5eb3b3dc1eede0cddbcabb67e468595bb687"
+    },
+    {
+      "path": "app/assets/fonts/Nunito-Bold.ttf",
+      "sha256": "ee86343b52fb020ed795d71d7fe37c7cc1a033d2487a66d3ed5eca53c6d53278"
+    },
+    {
+      "path": "docs/design/ART_DIRECTION_2_5D.md",
+      "sha256": "e4ef6ea82847c261e5a5b934249861813ec43efc30b335cf494dc5d44f4ae389"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/design/maze-creator-r46/evidence/blocked-390-vi-1x-rules.png",
+      "sha256": "d7aa47bb249717de76f272bd6ff59cd8ee4d70004578f20725d31e5848b98b7e"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/browser-checks.json",
+      "sha256": "44d8abf3700cc4bc8e1d57c362d74633416527235f059317354ef45d72c503b1"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/code-360-en-2x-modal.png",
+      "sha256": "b950564d12b4a5e9dbd5b0cf5c7545aedbd74bc34f0c82a134d662e9c4f8714c"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/desktop-overview.jpg",
+      "sha256": "a530a8e7cd93133ffc8e0bdb4e7a537e1a7e29e125e1ca4aab959046d3d09d04"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/dirty-390-vi-1x-board.png",
+      "sha256": "ea7572970c966553082fb1163b2a6f54dc2d615bad915e3b8767d0101de7d5d6"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/library-390-vi-1x-modal.png",
+      "sha256": "d05aa8915b187c9a6add9efc4ef52a9d5b33d21ef76ba99e50b435622a6297a0"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/model-checks.json",
+      "sha256": "7702ec2ec82adc31e39baabea51b705cde6853df89dfcb7507fd49cdece01d42"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/new-360-en-2x-board.png",
+      "sha256": "0d301a9b6ad40b0d8554f80c9bf57604d5fd7aaf79571b3d07d9c98a55079203"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/new-390-vi-1x-top.png",
+      "sha256": "107b156e31897c7be7a8199be4a5705e780c1ffb52deb3239380e31ba2b8e95b"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/resize-360-en-2x-modal.png",
+      "sha256": "8e86743e7afee1f69c6f63d19e0bf0966e46b6c314a8c6787b50a7de248c14f4"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/save_error-360-en-2x-rules.png",
+      "sha256": "05eed53d36a65dfac368ded003b0741c6cd614e72fae124bf4525398c3a64d4f"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/test-390-vi-1x-modal.png",
+      "sha256": "ec877dcaedcb5d2eddf8f50cd413e656863021db7436eb9d0028febf96811428"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/test_failed-390-vi-1x-result.png",
+      "sha256": "b967953dfe1d5dda560047ebcd3dd41a2e4f563f06dd9e784a1807786a7011ae"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/test_won-390-vi-1x-result.png",
+      "sha256": "c5a5b32decc5515e6f0b5f442eecf49f83d3a3a242c3e64cb858b8653ea80d4c"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/unsaved-390-vi-1x-modal.png",
+      "sha256": "3f201b220d2a986f1e41b9ef9f1c79e5a4943249ebe6a909a2b916b48d2c4b67"
+    },
+    {
+      "path": "docs/design/maze-creator-r46/evidence/verified-390-vi-1x-top.png",
+      "sha256": "c87116e9d12408bf5a91967bb16ed07b339e4cd89df84a177eb693162952c51a"
+    }
+  ],
+  "visual_review": [
+    "Generated workbench and hedge prop opened full-size",
+    "W01 and historical baseline26–28 opened",
+    "Desktop, unsaved, test, winning result, resizeEN2x, saveerrorEN2x, boardEN2x and codeEN2x captures inspected"
+  ],
+  "excluded_from_hash_cycle": [
+    "manifest.json",
+    "evidence/static-receipt.json"
+  ],
+  "limits": [
+    "Opaque scene and hedge texture are not layered production assets",
+    "Legacy Robo and symbolic CSS tiles require production replacement",
+    "Sample JS edits, storage and proof only; no Flutter, Python, DB or events",
+    "No CODE work order; PQC-011 and018 dispositions unchanged"
+  ]
+}

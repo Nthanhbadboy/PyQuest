@@ -1,0 +1,142 @@
+{
+  "package": "W08 world travel DESIGN r37",
+  "date": "2026-10-18 Asia/Saigon",
+  "owner": "DESIGN",
+  "task": "PQD-004",
+  "design_pin": "68f2590b5883ca8aa746ffde0814d60a32dacb3c",
+  "code_order_unchanged": "PQC-018 r2; PQC-011 remains CHANGES_REQUESTED",
+  "level": "New scene + interactive HTML composition/state study; not runtime implementation",
+  "runtime_changed": false,
+  "runtime_ready": false,
+  "production_approved": false,
+  "game_animation_present": false,
+  "ui_motion_present": true,
+  "image": {
+    "path": "assets/archipelago-study.png",
+    "dimensions": [
+      928,
+      1152
+    ],
+    "png_color_type": 2,
+    "alpha_layers_separated": false,
+    "origin": "Arena generate_image, one standalone asset within a larger interaction prototype",
+    "generation_options_off_reason": "Asset inside prototype, not a standalone image-selection request",
+    "prompt": "assets/prompt.txt",
+    "fullsize_viewed": true,
+    "review_notes": [
+      "Coherent volumetric islands and visible docks, continuous stylized water, separate UI routes and markers.",
+      "Stronger outlines and simplified tower-roof tiles compared with W01; not promoted to a canonical style anchor.",
+      "Personal-island architecture differs from the earlier study; no shared blueprint or private user payload.",
+      "Opaque AI concept; no geometry calibration, navmesh, collision, boat sprite or separated scene layers."
+    ]
+  },
+  "references": [
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "role": "primary style",
+      "viewed_fullsize": true
+    },
+    {
+      "path": "docs/design/art-sync-r35/published-r33/w08-archipelago.jpg",
+      "sha256": "83652b3f6479c1e4595a8dab7ad2987a720d409d8ec1d0c3218bfbe8760de52d",
+      "role": "three-island composition, not photorealism",
+      "viewed_fullsize": true
+    }
+  ],
+  "contracts": [
+    {
+      "path": "docs/PRODUCT_VISION.md",
+      "sha256": "553d0234810e57653abd016224f51171dac337ef93cf6f792b13541d306653c7"
+    },
+    {
+      "path": "docs/GAME_DESIGN.md",
+      "sha256": "c44e8d361637e23bb3c82ca8d16c547628a54fe4b8288691afd125c8e797da61"
+    },
+    {
+      "path": "docs/TECHNICAL_ARCHITECTURE.md",
+      "sha256": "1977f00d6ae532b96f4275a565474e4478facc3c4b92a51bc22d24f1c06c714c"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "sha256": "8755b2d45f60644d082ad87c530c465c13ba4633bf1ef8aca8e9703b248d573e"
+    },
+    {
+      "path": "docs/design/WORLD_EXPANSION_REDESIGN.md",
+      "sha256": "8f994ca2fef07f1108a68afc813f2a59df0fb2007bb40878d560a6c68112c871"
+    },
+    {
+      "path": "docs/design/ART_DIRECTION_2_5D.md",
+      "sha256": "e4ef6ea82847c261e5a5b934249861813ec43efc30b335cf494dc5d44f4ae389"
+    }
+  ],
+  "runtime_read_only_reference": {
+    "commit": "a331ac110f19de63e9be6884d08db8c436054f50",
+    "path": "app/lib/modules/main_map/main_map_screen.dart",
+    "blob": "d9d35bacf663e22b986ae20273f1fc8aed27e7b9"
+  },
+  "artifacts": [
+    {
+      "path": "assets/archipelago-study.png",
+      "sha256": "96d31634c0fe3b6ead990aa9eae1f8fb6db1b4e51710535b51e0b3f73c55ff78"
+    },
+    {
+      "path": "assets/prompt.txt",
+      "sha256": "8282b3e51de83c3f6ec85f0ab3bef6fbf4d91201cda928ea26e94f2553f33779"
+    },
+    {
+      "path": "anchors.json",
+      "sha256": "ae245df9067b545e2e068d750f1f7357208774c74ceba60ce0ded94438e032d4"
+    },
+    {
+      "path": "index.html",
+      "sha256": "1a814c28bb2083d2a69fe6ccbc77dc9a6f06fb06f58e0864d8551d02a693e1e9"
+    },
+    {
+      "path": "style.css",
+      "sha256": "35f888b1c2a6916b2a5386c548fe6552117318207c176da5ddde6ff8f8fbda29"
+    },
+    {
+      "path": "copy.js",
+      "sha256": "46424498c0099d01b7eed036d150857346b1fa85aaabf51e4fb39641c2e07505"
+    },
+    {
+      "path": "model.js",
+      "sha256": "30922dbc6fa8f08d393448c78b60bb1e0b332b5afe9415738d8aad3b0983157b"
+    },
+    {
+      "path": "study.js",
+      "sha256": "2722e7fe4abe4814131cdf22d2c97fd0c471512e123a935560e169d9801b0a2c"
+    }
+  ],
+  "fixtures": {
+    "states": 19,
+    "locales": [
+      "vi",
+      "en"
+    ],
+    "text_scales": [
+      1,
+      1.3,
+      2
+    ],
+    "viewports": [
+      [
+        390,
+        844
+      ],
+      [
+        360,
+        640
+      ]
+    ],
+    "views": [
+      "map",
+      "list"
+    ],
+    "names_are_illustrative": true,
+    "fake_auto_response_delay_ms": 1100,
+    "delay_is_performance_measurement": false
+  },
+  "rights_note": "AI-generated with project image references; no claim of CC0, exclusivity or stock licensing. Existing app font files with bundled licenses; release-rights review remains necessary."
+}

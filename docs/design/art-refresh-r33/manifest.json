@@ -1,0 +1,141 @@
+{
+  "package": "r33-2.5D-art-refresh",
+  "date": "2026-10-18",
+  "status": "concepts-generated-selected-and-reviewed; production approval pending",
+  "style_contract": "../ART_DIRECTION_2_5D.md",
+  "product_contract": "../WORLD_EXPANSION_REDESIGN.md",
+  "base_design_sha": "04b90bca6f28d35b6fd18135bbd2dc670dd6f758",
+  "source_context_sha": "a331ac110f19de63e9be6884d08db8c436054f50",
+  "source_context_status": "PQC-011 user handoff unverified; not accepted by this artwork package",
+  "runtime_changed": false,
+  "runtime_ready": false,
+  "rights_note": "AI-generated using project-owned generated references. No CC0, exclusivity or third-party stock-license claim; review service terms/project policy before release. No branded third-party reference characters used.",
+  "assets": [
+    {
+      "path": "concepts/w01-village.jpg",
+      "dimensions": [
+        853,
+        1844
+      ],
+      "format": "JPEG",
+      "bytes": 384112,
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "alpha": false,
+      "origin": "Arena image generation; original project-reference-guided AI-generated concept",
+      "selection": "User selected option 2 from two candidates for this distinct scene",
+      "selected_original_sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99",
+      "correction_after_selection": false,
+      "runtime_ready": false,
+      "artifact_level": "concept scene; not screen design or layered production pack",
+      "initial_references": [
+        {
+          "path": "docs/design/home-journey-prototype/art/home-island.webp",
+          "sha256": "8f11b3298cf4747f46de4fd4e32677869319832a86ecc4a815cd8392d0bd97e9"
+        },
+        {
+          "path": "docs/design/first-play-prototype/art/village.webp",
+          "sha256": "b152f7e22fbb8c940ad1429786cd8481d1f69f0a12c13111bb43d00f2f281617"
+        }
+      ],
+      "screen_ids": [
+        "W01"
+      ],
+      "prompt_brief": "Continuous public village island, six existing activity silhouettes, separate path toward private home and dock, warm upper-left light, teal/ivory/walnut, volumetric 2.5D, no UI/text; reference matching, portrait safe areas.",
+      "review_notes": [
+        "Selected family anchor for materials and landmarks",
+        "Illustrative camera, not measured orthographic geometry",
+        "NPCs and shadows baked in; not animation or separately composited sprites",
+        "Private cottage/path is a concept navigation cue, not a new live activity"
+      ]
+    },
+    {
+      "path": "concepts/w02-home-expansion.jpg",
+      "dimensions": [
+        768,
+        1376
+      ],
+      "format": "JPEG",
+      "bytes": 163210,
+      "sha256": "a070f05804141ff6031e3a80d805c6ef6bbd0c0507701938f74cb7c7973e8243",
+      "alpha": false,
+      "origin": "Arena image generation; original project-reference-guided AI-generated concept",
+      "selection": "User selected option 2 from two candidates for this distinct scene",
+      "selected_original_sha256": "a240f610bc73571e13b00d20614082efe25d89ceb6b8fd043323e27baf625ae0",
+      "correction_after_selection": true,
+      "runtime_ready": false,
+      "artifact_level": "concept scene; not screen design or layered production pack",
+      "initial_references": [
+        {
+          "path": "docs/design/home-journey-prototype/art/home-island.webp",
+          "sha256": "8f11b3298cf4747f46de4fd4e32677869319832a86ecc4a815cd8392d0bd97e9"
+        },
+        {
+          "path": "docs/design/first-play-prototype/art/village.webp",
+          "sha256": "b152f7e22fbb8c940ad1429786cd8481d1f69f0a12c13111bb43d00f2f281617"
+        }
+      ],
+      "screen_ids": [
+        "W02",
+        "W03",
+        "W07"
+      ],
+      "prompt_brief": "Single private homestead and garden, cutaway creative workbench, cat and ball, modest translucent room-expansion preview, navigable-looking paths and dock, same reference materials, no baked prices or controls.",
+      "correction_brief": "Use selected village as master; increase volume/material depth, replace studio margins with water, reduce oversized two-storey ghost volume to one room preview; remove ghost mascot.",
+      "correction_reference": "concepts/w01-village.jpg",
+      "review_notes": [
+        "Cutaway interior and preview communicate new activities rather than storage slots",
+        "Preview is a visual proposal, not verified construction geometry; floor/support/door connection need production layout review",
+        "Character rendering remains more illustrative than atlas; silhouette and material calibration still needed before production",
+        "Do not derive footprint/collision or cost from this image"
+      ]
+    },
+    {
+      "path": "concepts/w08-archipelago.jpg",
+      "dimensions": [
+        848,
+        1264
+      ],
+      "format": "JPEG",
+      "bytes": 280872,
+      "sha256": "83652b3f6479c1e4595a8dab7ad2987a720d409d8ec1d0c3218bfbe8760de52d",
+      "alpha": false,
+      "origin": "Arena image generation; original project-reference-guided AI-generated concept",
+      "selection": "User selected option 2 from two candidates for this distinct scene",
+      "selected_original_sha256": "9522e318b057b3e00f67a839e1bf89cb216c727ce4d32b634d2c3da765f412d2",
+      "correction_after_selection": true,
+      "runtime_ready": false,
+      "artifact_level": "concept scene; not screen design or layered production pack",
+      "initial_references": [
+        {
+          "path": "docs/design/home-journey-prototype/art/home-island.webp",
+          "sha256": "8f11b3298cf4747f46de4fd4e32677869319832a86ecc4a815cd8392d0bd97e9"
+        },
+        {
+          "path": "docs/design/first-play-prototype/art/village.webp",
+          "sha256": "b152f7e22fbb8c940ad1429786cd8481d1f69f0a12c13111bb43d00f2f281617"
+        }
+      ],
+      "screen_ids": [
+        "W08"
+      ],
+      "prompt_brief": "One continuous ocean with public starter island, private homestead island and wooded exploration island, docks/boat/routes, common 2.5D material family, no locks/prices/online claims.",
+      "correction_brief": "Replace inconsistent multi-spire tower with village anchor octagonal ivory tower and broad teal conical roof; preserve archipelago roles and continuous ocean.",
+      "correction_reference": "concepts/w01-village.jpg",
+      "review_notes": [
+        "Tower landmark brought into same silhouette family",
+        "Atlas simplifies activity buildings; not a literal geographic snapshot of shipped map",
+        "Perspective/detail still illustrative, native ratio not phone viewport proof",
+        "Boat/routes are art, not a travel system"
+      ]
+    }
+  ],
+  "not_delivered": [
+    "final art approval",
+    "360x640/390x844 screen layouts and font/keyboard states",
+    "layer/alpha/atlas/animation export",
+    "navigation mesh/collision calibration",
+    "visit/pet/shop/Creator/arcade/result final screens",
+    "Flutter/AI/voice/backend implementation"
+  ],
+  "delegated_work_order": "../../implementation/coordination/tasks/PQC-017.md"
+}

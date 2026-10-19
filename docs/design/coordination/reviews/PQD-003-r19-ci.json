@@ -1,0 +1,47 @@
+{
+  "review": "PQD-003-r19",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUESTED",
+  "code_branch": "arena/0d4fcb38-pyquest",
+  "tested_code_commit": "285179311405c2443ec51146d68d8e743f4abb88",
+  "run_id": 38965640169,
+  "run_url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/38965640169",
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "custom_report_check_id": 117193109204,
+  "phases": {
+    "pub_get": 0,
+    "analyze": 0,
+    "test": 1,
+    "render": 0
+  },
+  "analyze_seconds": 8.5,
+  "ordinary": {
+    "passed": 349,
+    "failed": 4
+  },
+  "render_passed": 10,
+  "confirmed_failure_names": [
+    "R10-D1-sem-VI: output node contains the authored Vietnamese label",
+    "R10-D1-sem-read: querying VI output semantics node does not throw",
+    "R10-D2-sem: sau setLocale(en), semantic output cập nhật sang EN",
+    "R10-D3-sem: sau advance và EN→VI, semantic output trở lại VI"
+  ],
+  "missing_failure_names": 0,
+  "full_failure_stack_traces_retrieved": false,
+  "manual_handle_disposal_issue_still_present": true,
+  "manual_handle_affected_cases": 4,
+  "initial_VI_negative_EN_guard_removed": true,
+  "sole_ci_failure_cause_confirmed": false,
+  "flutter_lifecycle_evidence": "PQC-010-r12/flutter-semantics-lifecycle.md",
+  "runtime_and_preview_identical_to": "d18b3d426982fcc078f2342ae020749aef9c1a0b",
+  "changed_paths": [
+    "app/test/board/board_view_test.dart"
+  ],
+  "source_sha256": {
+    "app/test/board/board_view_test.dart": "0ad2faa972fe814262e979199321bad20f7975de78b9290997c10d727c45fdc5"
+  },
+  "new_images_inspected": 0,
+  "preview_report_warning": "unexpected end of JSON input",
+  "local_flutter_tests_run": false
+}

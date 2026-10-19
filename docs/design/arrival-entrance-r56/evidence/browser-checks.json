@@ -1,0 +1,33 @@
+{
+  "scope": "HTML/JS phone-local dialog and RAM fixtures; not Flutter, DB, device or screen-reader certification",
+  "browser": "153.0.8010.0",
+  "cases": 252,
+  "targets": 768,
+  "fontChecks": 468,
+  "flows": 278,
+  "captures": [
+    "docs/design/arrival-entrance-r56/evidence/welcome_2-360-en-2x.png",
+    "docs/design/arrival-entrance-r56/evidence/welcome_2-360-en-2x-bottom.png",
+    "docs/design/arrival-entrance-r56/evidence/bitsy_locked-360-en-2x.png",
+    "docs/design/arrival-entrance-r56/evidence/bitsy-prerequisite-360-en-2x.png",
+    "docs/design/arrival-entrance-r56/evidence/bitsy_locked-360-en-2x-bottom.png",
+    "docs/design/arrival-entrance-r56/evidence/sheet_error-360-en-2x.png",
+    "docs/design/arrival-entrance-r56/evidence/sheet_error-360-en-2x-bottom.png",
+    "docs/design/arrival-entrance-r56/evidence/legacy_vi-360-en-2x.png",
+    "docs/design/arrival-entrance-r56/evidence/legacy-data-360-en-2x.png",
+    "docs/design/arrival-entrance-r56/evidence/legacy_vi-360-en-2x-bottom.png",
+    "docs/design/arrival-entrance-r56/evidence/route_preview-360-en-2x.png",
+    "docs/design/arrival-entrance-r56/evidence/route_preview-360-en-2x-bottom.png",
+    "docs/design/arrival-entrance-r56/evidence/welcome_1-390-vi-1x.png",
+    "docs/design/arrival-entrance-r56/evidence/welcome_2-390-vi-1x.png",
+    "docs/design/arrival-entrance-r56/evidence/welcome_3-390-vi-1x.png",
+    "docs/design/arrival-entrance-r56/evidence/intro_unknown-390-vi-1x.png",
+    "docs/design/arrival-entrance-r56/evidence/maze-390-vi-1x.png",
+    "docs/design/arrival-entrance-r56/evidence/stars-390-vi-1x.png",
+    "docs/design/arrival-entrance-r56/evidence/bitsy_locked-390-vi-1x.png",
+    "docs/design/arrival-entrance-r56/evidence/house-390-vi-1x.png",
+    "docs/design/arrival-entrance-r56/evidence/zero-energy-entry-390-vi-1x.png",
+    "docs/design/arrival-entrance-r56/evidence/desktop-overview.jpg"
+  ],
+  "errors": []
+}

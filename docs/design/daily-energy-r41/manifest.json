@@ -1,0 +1,149 @@
+{
+  "package": "Daily quests + Energy DESIGN r41",
+  "owner": "DESIGN",
+  "date": "2026-10-18 Asia/Saigon",
+  "task": "PQD-006",
+  "design_base": "30394b7bb23ad1fcf371c8dee644fd6caaf3793d",
+  "source_pin": "4fe3b7d0a1bf5f6dface1b04cbc4e2d7ee9d451f",
+  "runtime_changed": false,
+  "runtime_ready": false,
+  "production_approved": false,
+  "code_work_order": "none; existing PQC-011 unchanged",
+  "image": {
+    "path": "assets/garden-kiosk.png",
+    "sha256": "d9c79c8d8e26737279d350b06549a05334639d8cdc3a28c300a44cf468ff7f63",
+    "dimensions": [
+      1264,
+      848
+    ],
+    "origin": "Arena generate_image, one new backdrop inside larger interactive design prototype",
+    "prompt": "assets/prompt.txt",
+    "prompt_sha256": "9526d4621244d6a43384364620362bf6d9d6f892a77be03420d890efb592cf87",
+    "fullsize_viewed": true,
+    "new_canonical": false,
+    "layers_separated": false,
+    "runtime_calibrated": false,
+    "visual_note": "Thick empty board, counter and bench share ground plane; camera closer and leaf outlines stronger than W01. Study only."
+  },
+  "references": [
+    {
+      "path": "docs/design/art-refresh-r33/concepts/w01-village.jpg",
+      "sha256": "2b33ad2a3eb826e6068241dc801f94e1794139ebda9c44f55c4380169e5ebd99"
+    },
+    {
+      "path": "docs/design/WORLD_EXPANSION_REDESIGN.md",
+      "sha256": "8f994ca2fef07f1108a68afc813f2a59df0fb2007bb40878d560a6c68112c871"
+    },
+    {
+      "path": "docs/design/ART_DIRECTION_2_5D.md",
+      "sha256": "e4ef6ea82847c261e5a5b934249861813ec43efc30b335cf494dc5d44f4ae389"
+    },
+    {
+      "path": "docs/GAME_DESIGN.md",
+      "sha256": "c44e8d361637e23bb3c82ca8d16c547628a54fe4b8288691afd125c8e797da61"
+    },
+    {
+      "path": "app/assets/fonts/Nunito-Medium.ttf",
+      "sha256": "c5ac621e788f8acf1ae43518f45f5eb3b3dc1eede0cddbcabb67e468595bb687"
+    },
+    {
+      "path": "app/assets/fonts/Nunito-ExtraBold.ttf",
+      "sha256": "6aeac28bd008e77fe752c2c2c2ace44bf81c296534bfeb6bac582bb2d44b6347"
+    },
+    {
+      "path": "app/assets/fonts/Baloo2-Bold.ttf",
+      "sha256": "8ebcc1b1a153f7ef2b7e8e1b30e7d0063d6096d301bac3c1af9815987e59671e"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "index.html",
+      "sha256": "42f6c39c70a3afea00c6edfb4dc82f1677ff2a3ea1b6da36d8feb9788412158b"
+    },
+    {
+      "path": "style.css",
+      "sha256": "c3aad12115b716082d849791ab75996afc82f8ee5bcf9d4ba7d16459d2020572"
+    },
+    {
+      "path": "study.js",
+      "sha256": "224ccda333ff3fdd6d764218f0c595bcca7a93b1d3294301edbbb032ec70fe72"
+    },
+    {
+      "path": "model.js",
+      "sha256": "e23baf691e053d573ff6287866bbf70c475caafe34ef8bb281e1e2800b6eea9e"
+    },
+    {
+      "path": "catalog.js",
+      "sha256": "1fde7aa0a9a71d8e40cf2ed421764215dc67d631555e4df6ea8aa96bd24b118c"
+    },
+    {
+      "path": "copy.js",
+      "sha256": "627556b3abb822b27f0ccb0da97aa7ba617fedc91ba83fe07f972979446fa199"
+    },
+    {
+      "path": "source-manifest.json",
+      "sha256": "94219bfde8554e23eb59ece952acc1c628a6e2d41d653d46eae084712effbf40"
+    },
+    {
+      "path": "README.md",
+      "sha256": "9858837b5747ea05bdb305ec32eb2a73b96645975fa94c081c609dd7e129e3fb"
+    },
+    {
+      "path": "SPEC.md",
+      "sha256": "97d73c0daae98e536299dfd7280057c7c2cfb85680c2b1c7d8e49ad6aaf9cf4b"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "evidence/break_active-390-vi-1x.png",
+      "sha256": "ba079035268f521b34b168d2b6f798d93da3def89990a6ffaf995e6fcb5b553e"
+    },
+    {
+      "path": "evidence/browser-checks.json",
+      "sha256": "07221f6103857fc539bafe92c0edfb0d8eda1db5d9714f3d50d941472d5f3514"
+    },
+    {
+      "path": "evidence/daily_claim_pending-390-vi-1x.png",
+      "sha256": "662e1fac09e95ac429c2c817f69f7367107acf8a20ce6e8ae71ada7cefb87088"
+    },
+    {
+      "path": "evidence/daily_claimable-390-vi-1x.png",
+      "sha256": "b3b65b0a3574db7d8dbe698b75101df49c59f4093fdf327bc41b6c5befa87424"
+    },
+    {
+      "path": "evidence/daily_error-360-en-2x.png",
+      "sha256": "484a48f653bdc81ca750ae3aae5ac15778635e84ae0a0dc5a2d4653ba951f066"
+    },
+    {
+      "path": "evidence/daily_progress-360-en-2x.png",
+      "sha256": "08bd482882f15303b759169981cddb53a87ed3cf95598134222f868b2bf01353"
+    },
+    {
+      "path": "evidence/daily_progress-390-vi-1x.png",
+      "sha256": "790026f6579da2059cf13babe38e764673e39a2576a769750b34cd4d42331068"
+    },
+    {
+      "path": "evidence/desktop-overview.jpg",
+      "sha256": "55143d1da53f17e75fda8aab1c3ee0156873880c59b7fecd173efd53b1593fa2"
+    },
+    {
+      "path": "evidence/energy_empty-360-en-2x.png",
+      "sha256": "5620460330dd69fcfa33863b9b4f647d4bfb834766aaa3bfe8793aa07432886f"
+    },
+    {
+      "path": "evidence/energy_partial-390-vi-1x.png",
+      "sha256": "c00647ea7d01164e484d550bd221f4924e4422c37d2859b469771b83cc89ea11"
+    },
+    {
+      "path": "evidence/model-checks.json",
+      "sha256": "abdda2380f60f39765b58d754cf79e02e84362bb74de62e53ca6efb6f7349772"
+    }
+  ],
+  "limits": [
+    "New design, not a new Flutter after-set",
+    "Claim/progress/day rollover are samples, not service/transaction authority",
+    "Prose EN is DESIGN translation, not an app ARB import",
+    "One opaque image, no rig/camera/geometry calibration",
+    "Wellness timer has no rewards; regeneration is not simulated"
+  ]
+}
