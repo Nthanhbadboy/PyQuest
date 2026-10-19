@@ -227,3 +227,33 @@ evidence giữ lại khi đỏ). Không đổi routing/SDK/steps/timeouts/publis
   thiết bị (NOT_MEASURED), TalkBack/thiết bị, APK, toàn bộ claim 2× ngoài lát cắt hub +
   sheet + hai route smoke, R1-B/Bug Hunter.
 - CI xanh ≠ ACCEPTED020; Lead mở ảnh và review trên finalSHA.
+
+
+## 9. Đính chính attribution của mục 4b (2026-10-19, lượt PQC-022)
+
+Mục 4b ghi: "2× thật để lại MỘT `RenderFlex overflowed ... on the right` ở header
+hub, nguồn suy ra là `_IslandTitle` (`main_map_screen.dart:330`)". **Sai nguồn.**
+
+Bằng chứng mới:
+- `FlutterError.toString()` của layout overflow không chứa `file:line`, nên 4b chỉ là
+  mô hình số học (495−360=135, 495−390=105). Con số vẫn khớp, nhưng phép gán cho
+  `_IslandTitle` không có cơ sở trực tiếp — đúng như mục 6 đã cảnh báo.
+- Khi Lead/Co-Dev bọc `PyQuestLogo` và hàng `CharacterView` của **SplashScreen**
+  bằng `FittedBox(fit: BoxFit.scaleDown)` + `SingleChildScrollView`
+  (`app/lib/app/pyquest_app.dart`, commit `af09802` trên `arena/84456d39-pyquest`),
+  toàn bộ 12 config của matrix ở ROOT THẬT chuyển sang sạch:
+  `app/test/main_map_app_root_test.dart` hiện assert `expect(tester.takeException(),
+  isNull)` cho MỌI config (kể 2×) và maintenance in `00:50 +443: All tests passed!`
+  trên `8d79a59e7da91634ecdc111c6b2db663c7e86b46`. `main_map_screen.dart` không đổi
+  một byte giữa hai SHA ⇒ nếu header còn tràn thì `isNull` đã đỏ.
+- Hệ quả cho test: oracle `expectOnlyDocumentedRootOverflow` (cho-phép-đúng-một-lỗi)
+  của lượt này **không còn cần** và đã được thay bằng assert strict `isNull` khi import
+  `8d79a59`; không phải nới tolerance mà là hết điều kiện để nới. Receipt in
+  (`R3-ROOT ...`, `R3-ROOT scale-change ...`, `R3-GEOM`, `R3-SEM`) giữ nguyên.
+- Cũng chính pending-exception đó là nguyên nhân thật của đỏ `smoke 2×` ở `561d0f6`
+  (tap CTA sinh `warnIfMissed` → "Multiple exceptions" → route không mở), không phải
+  do rect như suy đoán trong §4c; bản `8d79a59` thêm `ensureVisible` trước các tap và
+  đỏ biến mất.
+
+Không thay đổi các kết luận khác của §4: 1×→16.0 và 1.3×→20.8 ở hub + sheet,
+scale-change khi sheet đang mở, và ràng buộc không khôi phục cap 1.2.

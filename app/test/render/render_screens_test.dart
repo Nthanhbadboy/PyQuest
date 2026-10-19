@@ -132,6 +132,12 @@ Future<void> precacheMap(WidgetTester tester) async {
       'assets/images/thumb_observatory.webp',
       'assets/images/thumb_workshop.webp',
       'assets/images/thumb_house.webp',
+      // PQC-022: scene 2,5D của sheet/welcome và Main Quest phải có trong cache
+      // trước khi capture, nếu không ảnh chụp chỉ thấy nền trống.
+      'assets/images/arrival_r56.webp',
+      'assets/images/main_quest_r56.webp',
+      'assets/images/py_token_r56.png',
+      'assets/images/bitsy_token_r56.png',
     ]) {
       await precacheImage(AssetImage(a), ctx);
     }
