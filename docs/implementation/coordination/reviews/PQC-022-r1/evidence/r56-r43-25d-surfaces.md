@@ -172,3 +172,42 @@ commit trên; số ca render vẫn **đúng 10** và ordinary chỉ tăng do fil
 
 * **Đã chứng minh bằng CI:** formatter `Formatted 13 files (0 changed)`; focused `success` ở `863d20a`/`354a338`; Settings 12, isolated 1, sequence 2, integration 7; ordinary 457 (khi 12 ca của tôi chạy) / 443 (khi file không compile); render 9/10 ở `f97c8df`, `863d20a`, `354a338`; `PyQuest localization generation evidence` success.
 * **Chỉ là suy luận từ source (chưa có bằng chứng CI):** nguyên nhân ca render đỏ. Đã loại được: golden (harness không so ảnh), overlay seal/CTA. Chưa loại được: tương tác của harness với `sheet_open`/`map_label_*` sau khi layout Main Quest đổi chiều cao, hoặc exception ở một màn không thuộc PQC-022 nhưng bị dịch chuyển cuộn.
+
+### `238bebb` — analyze sạch, ordinary còn 2 ca (lỗi thứ tự cuộn trong test của tôi)
+
+Bằng chứng đọc từ check-run của `238bebb3956717d2f1a5013f1a5abfd299f31f6c`:
+
+* `flutter analyze`: `13 issues found`, **không còn dòng nào thuộc file của tôi**
+  (13 info `curly_braces_in_flow_control_structures` có trước ở board/sheet tests)
+  ⇒ error `BoxBorder?` đã hết, `_ChapterHeader` đã được dùng lại.
+* `pqc011` ordinary: `459 passed, 2 failed (461 total)` ⇒ file của tôi compile và
+  chạy đủ 13 ca. `Failing tests:` nêu đích danh:
+  `chạm bệ chỉ đổi highlight dẫn bài…` và `openLessonId vẫn highlight + các key cũ còn nguyên`.
+  Ca `cảnh vườn tháp + ba bệ + quick continue ở 1× và 2×` và ca
+  `cấu hình render 390×844 dpr3 ở 1.0× và 2.0×` **xanh** ⇒ ba surface mới
+  (MainQuest home, sheet mở khóa, sheet khóa, welcome + 3 lần `welcome_next`)
+  không sinh exception ở đúng cấu hình harness render.
+* `pqc011` render: vẫn `9 passed, 1 failed / 10` (SHA thứ ba liên tiếp). CI không
+  công bố log render ⇒ không có tên ca, không có trace. Kết luận thành thật:
+  **PQC-022 chưa chứng minh được nguyên nhân ca render đỏ**; các giả thuyết đã
+  loại bằng dữ liệu: golden-compare (harness tự ghi "nothing is compared"),
+  overlay seal/CTA (bản Row/Expanded ở `354a338`+`238bebb` không đổi số liệu),
+  exception ở surface của tôi trong cấu hình render (ca mới, xanh).
+* Hạn chế kênh bằng chứng: receipt `PQC022-MQ …` / `PQC022-RENDER …` in ra bằng
+  `print` **không xuất hiện** trong `.output.text` của maintenance (chỉ là 18000
+  ký tự cuối của log, `grep -n "PQC022-"` trên dump trả về 0 dòng). Chúng chỉ có
+  giá trị khi ca đó trượt và khung hình failing nằm trong đoạn đuôi được công bố.
+  Không được coi là "bằng chứng đã in".
+
+Nguyên nhân hai ca đỏ còn lại — đều là **lỗi viết test**, sửa nguyên nhân:
+
+1. `scrollUntilVisible(finder, 160)` tiến từng bước 160px, nên sau khi canh
+   `lesson_card_mq1_09`, cái bệ ngay phía trên có thể bị tràn lên đỉnh khung
+   nhìn ⇒ `expect(band2, findsOneWidget)` và `tap(band2)` đo hụt. Sửa: cuộn tới
+   **chính widget sẽ chạm** (bệ), không cuộn tới thẻ ở dưới.
+2. `SliverList` **thải element** của child ra ngoài `cacheExtent`, nên
+   `skipOffstage: false` cũng không cứu được phép đọc sau khi đã cuộn đi chỗ
+   khác. Sửa: đọc màu viền ngay khi thẻ đang ở gần khung nhìn, và thứ tự
+   `lesson_card_mq1_01` (đỉnh) → deep link → `open_playground` (đáy) để mỗi key
+   được kiểm lúc còn được build. Không thêm `ensureVisible` giả, không
+   `pumpAndSettle` (hub có controller vô hạn), không nới timeout.

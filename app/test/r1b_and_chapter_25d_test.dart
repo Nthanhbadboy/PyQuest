@@ -745,16 +745,13 @@ void main() {
       final int energyBefore = services.energy.current;
       expect(find.byType(LessonScreen), findsNothing);
       final Finder band2 = keyOf('quest_pedestal_2');
-      final Finder leadCard = keyOf('lesson_card_mq1_09');
-      // Bệ nhóm ba đứng ngay TRÊN lessons[8], nên cuộn tới thẻ đó vẫn còn thấy
-      // bệ. `ensureVisible` + một `pump()` thì không đủ (chính cái bẫy đã làm đỏ
-      // smoke 2× của PQC-020 R3) -> scrollUntilVisible rồi bơm 250ms.
-      await scrollTo(tester, leadCard);
-      expect(
-        band2,
-        findsOneWidget,
-        reason: 'bệ 3 phải còn trong khung nhìn sau khi cuộn',
-      );
+      // Cuộn tới CHÍNH CÁI BỆ sẽ chạm (không cuộn tới thẻ phía dưới):
+      // `scrollUntilVisible` tiến theo từng bước 160px nên sau khi canh thẻ,
+      // bệ có thể bị tràn lên trên đỉnh khung nhìn và `tap` sẽ hụt.
+      // `SliverList` còn THẢI element ngoài cacheExtent, nên mọi phép đọc màu
+      // phải chạy lúc thẻ đang ở gần khung nhìn, không đọc lại sau khi đã cuộn
+      // đi chỗ khác (bài học đỏ 863d20a + 238bebb).
+      await scrollTo(tester, band2);
       expect(
         cardBorderColorFor(tester, 'mq1_09'),
         isNot(kBerryBorder),
@@ -800,38 +797,41 @@ void main() {
       );
       await pumpFor(tester, const Duration(milliseconds: 800));
 
-      for (final String key in <String>[
-        'lesson_card_mq1_01',
-        'lesson_card_mq1_03',
-        'open_playground',
-      ]) {
-        final Finder f = keyOf(key);
-        await scrollTo(tester, f);
-        expect(f, findsOneWidget, reason: 'mất key hợp đồng cũ $key');
-      }
+      // Thứ tự có ý nghĩa: thẻ ở đỉnh còn build thì mới kiểm được, rồi mới cuộn
+      // xuống dần; kiểm `open_playground` cuối cùng vì lúc đó thẻ trên đã bị thải.
+      expect(keyOf('lesson_card_mq1_01'), findsOneWidget, reason: 'mất key hợp đồng cũ lesson_card_mq1_01');
       final Finder deepLink = keyOf('lesson_card_mq1_03');
       await scrollTo(tester, deepLink);
+      expect(deepLink, findsOneWidget, reason: 'mất key hợp đồng cũ lesson_card_mq1_03');
       // Viền berry là bằng chứng `openLessonId` đã tới screen; thẻ bên cạnh phải
       // KHÔNG có viền đó, nếu không phép kiểm này chỉ là trang trí.
       final Color edge = cardBorderColorFor(tester, 'mq1_03');
       final Color neighbour = cardBorderColorFor(tester, 'mq1_02');
       // ignore: avoid_print
       print('PQC022-MQ deep-link edge=$edge neighbour=$neighbour');
-      expect(edge, kBerryBorder, reason: 'mq1_03 phải được highlight bằng viền berry');
+      expect(
+        edge,
+        kBerryBorder,
+        reason: 'mq1_03 phải được highlight bằng viền berry',
+      );
       expect(
         neighbour,
         isNot(kBerryBorder),
         reason: 'viền berry chỉ xuất hiện trên bài được deep-link',
       );
       expect(find.byType(LessonScreen), findsNothing);
+      final Finder playground = keyOf('open_playground');
+      await scrollTo(tester, playground);
+      expect(playground, findsOneWidget, reason: 'mất key hợp đồng cũ open_playground');
       expect(tester.takeException(), isNull);
     });
 
-    // Cấu hình GIỐNG harness render (`render_screens_test.dart`: 390x844,
-    // dpr 3.0, textScale 1.0 rồi 2.0) vì render là gate "đúng 10 ca" và log
-    // render KHÔNG được CI công bố (`.output.text` in `(missing: render.txt)`).
-    // Không có kênh bằng chứng nào khác cho ca render đỏ, nên mình tái hiện đúng
-    // số đo ở đây và in receipt để red kế tiếp tự giải thích trong ordinary log.
+    // Cấu hình GIỐNG harness render (`render_screens_test.dart`: 390x844, dpr
+    // 3.0, textScaleFactorTestValue 1.0 rồi 2.0). Render là gate "đúng 10 ca"
+    // nhưng CI KHÔNG công bố log render (`.output.text` in `(missing:
+    // render.txt)`), nên đây là kênh duy nhất để có bằng chứng; ca này đã chạy
+    // XANH ở `238bebb` (không nằm trong `Failing tests`) tức ba surface của
+    // PQC-022 không sinh exception ở cấu hình render.
     testWidgets('cấu hình render 390×844 dpr3 ở 1.0× và 2.0×: không exception', (
       WidgetTester tester,
     ) async {
@@ -847,8 +847,11 @@ void main() {
         final Object? mqPending = tester.takeException();
         // ignore: avoid_print
         print('PQC022-RENDER mq ${scale}x exc=$mqPending');
-        expect(mqPending, isNull, reason: 'Main QuestException ở $scale× (cấu hình render)');
-
+        expect(
+          mqPending,
+          isNull,
+          reason: 'Main Quest exception ở $scale× (cấu hình render)',
+        );
         await tester.pumpWidget(const SizedBox.shrink());
         await pumpFor(tester, const Duration(milliseconds: 200));
 
@@ -867,7 +870,6 @@ void main() {
           isNull,
           reason: 'ActivitySheet mở ở $scale× (cấu hình render) có exception',
         );
-
         await tester.pumpWidget(const SizedBox.shrink());
         await pumpFor(tester, const Duration(milliseconds: 200));
 
@@ -884,9 +886,8 @@ void main() {
         expect(
           lockedPending,
           isNull,
-          reason: 'ActivitySheet khóa (a02_sheet_locked) ở $scale× có exception',
+          reason: 'a02_sheet_locked ở $scale× có exception',
         );
-
         await tester.pumpWidget(const SizedBox.shrink());
         await pumpFor(tester, const Duration(milliseconds: 200));
 
@@ -894,11 +895,7 @@ void main() {
         final Object? welcomePending = tester.takeException();
         // ignore: avoid_print
         print('PQC022-RENDER welcome ${scale}x exc=$welcomePending');
-        expect(
-          welcomePending,
-          isNull,
-          reason: 'a00_welcome ở $scale× có exception',
-        );
+        expect(welcomePending, isNull, reason: 'a00_welcome ở $scale× có exception');
         for (var i = 0; i < 3; i++) {
           final Finder next = keyOf('welcome_next');
           expect(next, findsOneWidget, reason: 'mất welcome_next lần $i ở $scale×');
