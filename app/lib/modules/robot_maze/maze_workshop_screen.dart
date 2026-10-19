@@ -385,7 +385,9 @@ class _MazeWorkshopScreenState extends State<MazeWorkshopScreen> with SingleTick
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('Giới hạn 3 sao:', style: PQText.small),
+                        Flexible(
+                          child: Text('Giới hạn 3 sao:', style: PQText.small),
+                        ),
                         const SizedBox(width: 6),
                         _Stepper(
                           value: _limit,

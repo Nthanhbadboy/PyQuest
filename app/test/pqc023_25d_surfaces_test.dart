@@ -5,8 +5,12 @@ import 'package:pyquest/app/app_scope.dart';
 import 'package:pyquest/app/app_services.dart';
 import 'package:pyquest/modules/achievements/achievement_house_module.dart';
 import 'package:pyquest/modules/bug_hunter/bug_hunter_module.dart';
+import 'package:pyquest/modules/daily_quests/daily_quests_sheet.dart';
+import 'package:pyquest/modules/energy/energy_widgets.dart';
 import 'package:pyquest/modules/robot_maze/robot_maze_module.dart';
+import 'package:pyquest/shared/characters/characters.dart';
 import 'package:pyquest/shared/theme/app_theme.dart';
+import 'package:pyquest/shared/widgets/result_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'test_helpers.dart';
@@ -109,7 +113,10 @@ void main() {
     );
     expect(tester.takeException(), isNull);
 
-    await tester.tap(find.byKey(const ValueKey<String>('room_1')));
+    final Finder room1 = find.byKey(const ValueKey<String>('room_1'));
+    await tester.ensureVisible(room1);
+    await tester.pump();
+    await tester.tap(room1);
     await pumpFor(tester, const Duration(milliseconds: 300));
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
@@ -134,5 +141,60 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
     await pumpFor(tester, const Duration(milliseconds: 1100));
+  });
+
+  testWidgets('PQC-024 Daily Quests, Energy, and Result 2.5D work at 2x', (
+    WidgetTester tester,
+  ) async {
+    tester.view.devicePixelRatio = 2.0;
+    tester.view.physicalSize = const Size(720, 1280);
+    addTearDown(tester.view.reset);
+
+    final AppServices s = await _makeServices(tester);
+    await tester.pumpWidget(
+      _host(
+        s,
+        const LevelResultScreen(
+          data: LevelResultData(
+            gameName: 'Mê Cung Robo',
+            levelTitle: 'Màn 1',
+            success: true,
+            stars: 3,
+            host: CharacterId.robo,
+            hostLine: 'Tuyệt vời!',
+          ),
+        ),
+        scale: 2.0,
+      ),
+    );
+    await pumpFor(tester, const Duration(milliseconds: 500));
+
+    expect(
+      find.byKey(const ValueKey<String>('result_25d_scene')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+
+    final BuildContext ctx = tester.element(find.byType(LevelResultScreen));
+    showEnergySheet(ctx);
+    await pumpFor(tester, const Duration(milliseconds: 600));
+    expect(
+      find.byKey(const ValueKey<String>('energy_25d_scene')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+    Navigator.of(ctx).pop();
+    await pumpFor(tester, const Duration(milliseconds: 500));
+
+    await tester.runAsync(() => s.quests.ensureToday());
+    showDailyQuests(ctx);
+    await pumpFor(tester, const Duration(milliseconds: 600));
+    expect(
+      find.byKey(const ValueKey<String>('daily_quests_25d_scene')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await pumpFor(tester, const Duration(milliseconds: 2200));
   });
 }
