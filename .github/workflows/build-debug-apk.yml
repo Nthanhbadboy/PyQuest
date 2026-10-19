@@ -31,7 +31,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: owner-test-${{ github.ref }}
+  group: owner-test-${{ github.sha }}
   cancel-in-progress: false
 
 env:

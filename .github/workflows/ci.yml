@@ -12,9 +12,8 @@ permissions:
   checks: write
 
 concurrency:
-  # Emulator runs ([emulator] in the commit message) only cancel each other,
-  # so a quick follow-up push never kills a long device run.
-  group: pyquest-ci-${{ github.ref }}-${{ contains(github.event.head_commit.message, '[emulator]') }}
+  # Use github.sha so a stuck runner status on an earlier commit never blocks APK builds.
+  group: pyquest-ci-${{ github.sha }}
   cancel-in-progress: true
 
 env:
