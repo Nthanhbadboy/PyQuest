@@ -1345,62 +1345,81 @@ class _LessonScreenState extends State<LessonScreen> {
       animation: controller,
       builder: (BuildContext context, Widget? child) {
         final BoardLabels labels = BoardLabels.of(controller.locale);
+        final bool largeText =
+            MediaQuery.textScalerOf(context).scale(1) >= 1.5;
         return Container(
           key: ValueKey<String>('lesson_authored_board_${step.id}'),
           decoration: BoxDecoration(
             color: const Color(0xFF7C512B),
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: PQColors.ink, width: 2.6),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: PQColors.ink, width: 2.2),
             boxShadow: const <BoxShadow>[
               BoxShadow(
                 color: Color(0xFF4A2E14),
-                offset: Offset(0, 5),
+                offset: Offset(0, 4),
                 blurRadius: 0,
               ),
             ],
           ),
-          padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
+          padding: EdgeInsets.fromLTRB(
+            largeText ? 3 : 6,
+            6,
+            largeText ? 3 : 6,
+            8,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               // 2.5D Classroom Header Banner inside the oak chalkboard frame
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 8,
+                  horizontal: 8,
+                  vertical: 6,
                 ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF1A3C32),
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(15),
+                    top: Radius.circular(14),
                   ),
                   border: Border.all(
                     color: const Color(0xFFC49252),
-                    width: 1.8,
+                    width: 1.5,
                   ),
                 ),
-                child: Row(
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.spaceBetween,
                   children: <Widget>[
-                    CharacterView(id: tutor.id, size: 48),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '🖍️ BẢNG GIẢNG TƯƠNG TÁC 2.5D',
-                            style: PQText.small.copyWith(
-                              color: PQColors.pyYellow,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w900,
-                            ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        CharacterView(id: tutor.id, size: largeText ? 36 : 44),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              if (!largeText)
+                                Text(
+                                  '🖍️ BẢNG GIẢNG TƯƠNG TÁC 2.5D',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: PQText.small.copyWith(
+                                    color: PQColors.pyYellow,
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                              Text(
+                                tutor.name,
+                                style: PQText.h3.copyWith(color: Colors.white),
+                              ),
+                            ],
                           ),
-                          Text(
-                            tutor.name,
-                            style: PQText.h3.copyWith(color: Colors.white),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     Semantics(
                       label: labels.authoredBadge,
@@ -1410,7 +1429,7 @@ class _LessonScreenState extends State<LessonScreen> {
                         ),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
-                          vertical: 5,
+                          vertical: 4,
                         ),
                         decoration: BoxDecoration(
                           color: PQColors.pyYellow,
@@ -1433,11 +1452,11 @@ class _LessonScreenState extends State<LessonScreen> {
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFFBF0),
                   borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(15),
+                    bottom: Radius.circular(14),
                   ),
                   border: Border.all(
                     color: const Color(0xFFC49252),
-                    width: 2.0,
+                    width: 1.4,
                   ),
                 ),
                 child: _boardLoading
@@ -1455,31 +1474,33 @@ class _LessonScreenState extends State<LessonScreen> {
                         showScaffold: false,
                       ),
               ),
-              const SizedBox(height: 6),
-              // 3D wooden chalk tray with yellow & white chalk sticks
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                    width: 28,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFD86B),
-                      borderRadius: BorderRadius.circular(3),
+              if (!largeText) ...<Widget>[
+                const SizedBox(height: 5),
+                // 3D wooden chalk tray with yellow & white chalk sticks
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      width: 28,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFD86B),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 6),
-                  Container(
-                    width: 22,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF8FAFC),
-                      borderRadius: BorderRadius.circular(3),
+                    const SizedBox(width: 6),
+                    Container(
+                      width: 22,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                ],
-              ),
+                    const SizedBox(width: 12),
+                  ],
+                ),
+              ],
             ],
           ),
         );
@@ -2012,6 +2033,9 @@ class _Lesson25dClassroomStage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.textScalerOf(context).scale(1) >= 1.5) {
+      return SpeechBubble(character: speaker, text: text, mood: mood);
+    }
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -2057,7 +2081,11 @@ class _Lesson25dClassroomStage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -2078,7 +2106,6 @@ class _Lesson25dClassroomStage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
@@ -2160,6 +2187,9 @@ class _StudyDeskFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.textScalerOf(context).scale(1) >= 1.5) {
+      return child;
+    }
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF8B5E34),

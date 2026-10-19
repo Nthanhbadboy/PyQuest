@@ -262,7 +262,6 @@ class BoardControls extends StatelessWidget {
             foregroundColor: !enabled
                 ? const Color(0xFF8C8270)
                 : const Color(0xFF231F20),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
               side: BorderSide(
