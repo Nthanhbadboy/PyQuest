@@ -98,6 +98,31 @@ class _AdventureRecapScreenState extends State<AdventureRecapScreen> {
                     : ListView(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                         children: [
+                          Container(
+                            key: const ValueKey('recap_25d_scene'),
+                            height: 120,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: PQColors.ink,
+                                width: 2.4,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: PQTone.sun.depth,
+                                  offset: const Offset(0, 4),
+                                  blurRadius: 0,
+                                ),
+                              ],
+                              image: const DecorationImage(
+                                image: AssetImage(
+                                  'assets/images/journal_recap_r36.webp',
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
                           SpeechBubble(
                             character: CharacterId.py,
                             text: d.lessons == d.total
@@ -109,14 +134,22 @@ class _AdventureRecapScreenState extends State<AdventureRecapScreen> {
                             PQPanel(
                               child: Row(
                                 children: [
-                                  const Icon(Icons.event_rounded, color: PQColors.pyBlue, size: 30),
+                                  const Icon(
+                                    Icons.event_rounded,
+                                    color: PQColors.pyBlue,
+                                    size: 30,
+                                  ),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
-                                      d.lastDay != null && _date(d.firstDay!) != _date(d.lastDay!)
+                                      d.lastDay != null &&
+                                              _date(d.firstDay!) !=
+                                                  _date(d.lastDay!)
                                           ? 'Bắt đầu ngày ${_date(d.firstDay!)} · bài gần nhất ngày ${_date(d.lastDay!)}'
                                           : 'Học ngày ${_date(d.firstDay!)}',
-                                      style: PQText.bodyStrong.copyWith(fontSize: 15.5),
+                                      style: PQText.bodyStrong.copyWith(
+                                        fontSize: 15.5,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -124,17 +157,39 @@ class _AdventureRecapScreenState extends State<AdventureRecapScreen> {
                             ),
                           const SizedBox(height: 10),
                           GridView.count(
-                            crossAxisCount: 2,
+                            crossAxisCount:
+                                MediaQuery.textScalerOf(context).scale(1) >= 1.5
+                                ? 1
+                                : 2,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             mainAxisSpacing: 10,
                             crossAxisSpacing: 10,
-                            childAspectRatio: 1.6,
+                            childAspectRatio:
+                                MediaQuery.textScalerOf(context).scale(1) >= 1.5
+                                ? 2.4
+                                : 1.6,
                             children: [
-                              _Tile(value: '${d.lessons}/${d.total}', label: 'Bài học hoàn thành', color: PQColors.pyBlue),
-                              _Tile(value: '${d.exercises}', label: 'Bài tập đã giải', color: PQColors.grape),
-                              _Tile(value: '${d.codeLines}', label: 'Dòng code mẫu đã học', color: PQColors.teal),
-                              _Tile(value: '${d.mazeLevels}', label: 'Mê cung đã vượt', color: PQColors.grass),
+                              _Tile(
+                                value: '${d.lessons}/${d.total}',
+                                label: 'Bài học hoàn thành',
+                                color: PQColors.pyBlue,
+                              ),
+                              _Tile(
+                                value: '${d.exercises}',
+                                label: 'Bài tập đã giải',
+                                color: PQColors.grape,
+                              ),
+                              _Tile(
+                                value: '${d.codeLines}',
+                                label: 'Dòng code mẫu đã học',
+                                color: PQColors.teal,
+                              ),
+                              _Tile(
+                                value: '${d.mazeLevels}',
+                                label: 'Mê cung đã vượt',
+                                color: PQColors.grass,
+                              ),
                             ],
                           ),
                           const SizedBox(height: 12),
@@ -196,12 +251,22 @@ class _Tile extends StatelessWidget {
   Widget build(BuildContext context) {
     return PQPanel(
       padding: const EdgeInsets.all(10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(value, style: PQText.h1.copyWith(color: color, fontSize: 28)),
-          Text(label, textAlign: TextAlign.center, maxLines: 2, style: PQText.small.copyWith(fontSize: 13)),
-        ],
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(value, style: PQText.h1.copyWith(color: color, fontSize: 28)),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: PQText.small.copyWith(fontSize: 13),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

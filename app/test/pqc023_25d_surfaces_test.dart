@@ -7,6 +7,9 @@ import 'package:pyquest/modules/achievements/achievement_house_module.dart';
 import 'package:pyquest/modules/bug_hunter/bug_hunter_module.dart';
 import 'package:pyquest/modules/daily_quests/daily_quests_sheet.dart';
 import 'package:pyquest/modules/energy/energy_widgets.dart';
+import 'package:pyquest/modules/main_quest/adventure_recap_screen.dart';
+import 'package:pyquest/modules/main_quest/lesson_complete_screen.dart';
+import 'package:pyquest/modules/main_quest/playground_screen.dart';
 import 'package:pyquest/modules/robot_maze/robot_maze_module.dart';
 import 'package:pyquest/shared/characters/characters.dart';
 import 'package:pyquest/shared/theme/app_theme.dart';
@@ -196,5 +199,56 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
     await pumpFor(tester, const Duration(milliseconds: 2200));
+  });
+
+  testWidgets('PQC-025 Adventure Recap, Playground, Lesson Complete 2.5D 2x', (
+    WidgetTester tester,
+  ) async {
+    tester.view.devicePixelRatio = 2.0;
+    tester.view.physicalSize = const Size(720, 1280);
+    addTearDown(tester.view.reset);
+
+    final AppServices s = await _makeServices(tester);
+    await tester.pumpWidget(
+      _host(s, const AdventureRecapScreen(), scale: 2.0),
+    );
+    await pumpFor(tester, const Duration(milliseconds: 500));
+    expect(
+      find.byKey(const ValueKey<String>('recap_25d_scene')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(_host(s, const PlaygroundScreen(), scale: 2.0));
+    await pumpFor(tester, const Duration(milliseconds: 500));
+    expect(
+      find.byKey(const ValueKey<String>('playground_25d_scene')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(
+      _host(
+        s,
+        LessonCompleteScreen(
+          lesson: s.mainQuest.lessons.first,
+          firstTime: true,
+          exercises: 2,
+          mistakes: 0,
+          duration: const Duration(seconds: 42),
+          notices: const [],
+          chapterCompleted: false,
+        ),
+        scale: 2.0,
+      ),
+    );
+    await pumpFor(tester, const Duration(milliseconds: 500));
+    expect(
+      find.byKey(const ValueKey<String>('lesson_complete_25d_scene')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await pumpFor(tester, const Duration(milliseconds: 1500));
   });
 }

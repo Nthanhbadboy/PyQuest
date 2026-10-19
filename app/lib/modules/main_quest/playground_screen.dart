@@ -81,19 +81,50 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(14, 6, 14, 20),
                   children: [
-                    SizedBox(
-                      height: 44,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
+                    Container(
+                      key: const ValueKey('playground_25d_scene'),
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: PQColors.ink, width: 2.4),
+                        boxShadow: [
+                          BoxShadow(
+                            color: PQTone.success.depth,
+                            offset: const Offset(0, 3),
+                            blurRadius: 0,
+                          ),
+                        ],
+                        image: const DecorationImage(
+                          image: AssetImage(
+                            'assets/images/journal_recap_r36.webp',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
                         children: [
                           for (final e in examples)
                             Padding(
                               padding: const EdgeInsets.only(right: 8),
                               child: ActionChip(
                                 backgroundColor: PQColors.cream,
-                                side: const BorderSide(color: PQColors.ink, width: 2),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                                label: Text(e.title, style: PQText.small.copyWith(color: PQColors.ink)),
+                                side: const BorderSide(
+                                  color: PQColors.ink,
+                                  width: 2,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                label: Text(
+                                  e.title,
+                                  style: PQText.small.copyWith(
+                                    color: PQColors.ink,
+                                  ),
+                                ),
                                 onPressed: () => setState(() {
                                   _code.text = '${e.code}\n';
                                   _result = null;
