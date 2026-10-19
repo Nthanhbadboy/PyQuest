@@ -20,12 +20,12 @@ Pin SHA thật từ lệnh trên. Dùng `git show <SHA>:<path>` để đọc l�
 1. `docs/design/CROSS_BRANCH_COLLABORATION.md`
 2. `docs/design/coordination/tasks/PQD-003.md` (revision hiện hành; không lặp lịch sử)
 3. `docs/implementation/coordination/tasks/PQC-020.md`
-4. `docs/design/coordination/specs/PQC-020-R2.md` và
-   `docs/design/coordination/reviews/PQC-020-bed783cf/README.md`
+4. `docs/design/coordination/specs/PQC-020-R3.md` và
+   `docs/design/coordination/reviews/PQC-020-ddf7db5a/README.md`
 5. `docs/design/r1-village-r53/README.md`, `SPEC.md` và `manifest.json`
 
 Task020 trên DESIGN là baseline revision1; đọc append mới trên chính CODE, không
-restore taskdoc DESIGN đè lịch sử CODE. R2 là bổ sung authority hiện hành.
+restore taskdoc DESIGN đè lịch sử CODE. R3 là bổ sung authority hiện hành (R2 giữ phần không bị thay thế).
 
 Nếu commit/task chưa có trên remote: báo `WAITING_FOR_DESIGN_COMMIT`, không tự
 sáng tác spec, không dùng bản asset cũ rồi tuyên bố đã nhận bản mới. Nếu lỗi auth,
@@ -35,36 +35,32 @@ báo người dùng kết nối GitHub cần được xử lý; không xin token
 `dafde39` nhập từ code cũ, không phải bản cập nhật code dành cho bạn. Chỉ lấy đúng
 asset/spec/tooling cần dùng từ SHA đã pin, kiểm tra diff và file đích trước khi ghi.
 
-## 2. Work order hiện hành — r53 / PQC-020 revision2
+## 2. Work order hiện hành — r53 / PQC-020 revision3
 
 PQC-011 **ACCEPTED** tại `6dc8ca8feeed54cc0fa6a82109e3a59d24a16153`.
-Đọc `reviews/PQC-011-r53/README.md` vàevidence. Cập nhật task011 của CODE bằngrecord
-acceptance, không restore taskDESIGN cũ đè lịch sử. Không lặp diagnostics/guard.
+Không mở lại diagnostics/normalize. R2 trênddf7db5a đã có ba gate xanh cùng tip:
+focused58/0, normal435/0+render10/0, maintenance12/1/2/7+435/0+10/0/supportPASS.
+Review độc lập xác nhận routing/label/keyboard, nhưng **020 NOT_ACCEPTED**.
 
-Tiếp tục **PQC-020 / R1-A Main Map**, baseline revision1 + ngoại lệ revision2 theo:
-- `docs/implementation/coordination/tasks/PQC-020.md` — baseline authority/gates;
-- `docs/design/coordination/specs/PQC-020-R2.md` — allowlist bổ sung hiện hành;
-- `docs/design/r1-village-r53/{README.md,SPEC.md,manifest.json,source-manifest.json}`;
-- Mở exportW01 vàcaptures390VI/360EN2×, không chỉ đọc tên ảnh.
+Tiếp tục R1-A theo baseline task020 + **PQC-020-R3.md** (đọc đầy đủ):
+- Sửa Align/anchor mismatch làm nhãn Núi Lửa đè Tháp Python trong ảnh CI; đo
+  actual button rectangles/centers, không chỉ helper geometry.
+- Cho phép bỏ blanket cap1.2 ở app root, giữ scaler hệ thống; root12case matrix và
+  captures phải qua PyQuestApp thật, không route override MediaQuery.
+- Thay widget-properties oracle semantics bằng rendered semantics role/name/action/
+  uniqueness; giữ keyboard và các case route/energy/save.
+- Hoàn thiện captures/evidence/budget. Before6dc8ca8 và asset hash đã được DESIGN
+  kiểm độc lập trong reviewddf7; không cần rerun baseline.
 
-Runtime chỉ mainmap/geometry/status/copy trongallowlist; sáu module/routes/locks
-vàgameplay/save giữ nguyên. W01 được phép dùng **flattened static**, không phải
-layered world, khôngtựvẽlại018 hoặc mởR4/NPC/nhà. Một focused020workflow được phép;
-SDK/deps/keypolicy giữ nguyên. R2 chỉ cho routing verify trên exact branch mới
-trong hai workflow hiện có, cùng formatter/focused-list cho hai test được sửa;
-không normalize/diagnose/dispatch trên nhánh mới, không sửa regular ci.yml.
-Final verify cùng SHA **sau các sửa thật**, không `[skip ci]`.
-011/018/019 không mở lại. Không có ACK-only khi source task đã published.
+R3 liệt kê exact runtime/test/CI paths. Focused workflow chỉ thêm formatter/snapshot
+paths và focused root test; giữ routing R2. Maintenance/normalCI/SDK/deps không sửa.
+Chỉ push arena/4253d4f1-pyquest; không fast-forward/push nhánh CODE cũ. Final gates
+trên cùng SHA mới: ordinary435+N/0, focused58+N phù hợp, render10/0 và hỗ trợPASS.
+Không nhận toàn app/device2× chỉ từ hub matrix, không APK hoặc tự ACCEPTED020.
 
-Review bed783cf: locale injection đúng scope, ordinary433/2; focused/maintenance
-NOT_RUN do routing nhánh cũ. Đổi expected hub label sang `Núi Lửa`; thay keyboard/
-semantics characterization cũ bằng assertions R1-A thực, không skip/delete cases.
-Rerun focused/normal/maintenance trên finalSHA mới; ordinary ít nhất435/0, render10.
-Root clamp1.2 vẫn là gap riêng: chưa cho sửa app root hoặc claim app2×/ACCEPTED020.
-Không push/fast-forward nhánh CODE cũ. Đọc order đầy đủ trước khi sửa.
-
-DESIGN đã giao studies Dragon/Catch/R1-B; tiếp Bug Hunter gameplay/results độc lập.
-CODE không làm trùng study này.
+R1-A dùng W01 **flattened static**, không gọi layered/animated world; giữ6module,
+route/status/energy/save. Không mở R1-B hoặc gameplay. DESIGN tiếp Bug Hunter
+study độc lập; CODE không làm trùng study hoặc port artwork khác.
 
 ## 3. Commit, trả kết quả và chủ động theo dõi
 

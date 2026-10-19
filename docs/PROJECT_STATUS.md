@@ -1,6 +1,6 @@
 # PyQuest — trạng thái source, bằng chứng và phát hành
 
-**2026-10-18 · review PQC-020 bed783cf / design r56.**
+**2026-10-19 · review PQC-020 ddf7db5a / design r56.**
 
 **Hiện hành:** PQC-011 **ACCEPTED** tại CODE
 `6dc8ca8feeed54cc0fa6a82109e3a59d24a16153`: Settings12, isolated1, ordered2,
@@ -12,20 +12,23 @@ Không APK mới, không device/voice claim.
 IMPLEMENTATION_PUSHED / NOT_ACCEPTED: Main Map2,5D +sáu routes hiện có. [Package r53](design/r1-village-r53/README.md)
 có static W01 export, scene/directory, source geometry và browser study. Cho phép
 flattened static scene trong lát cắt này, không gọi là layered/animated world.
-CODE hiện ở `bed783cf9b7a327fe9766e96bd2e3020dc08ff82`, nhánh
-`arena/4253d4f1-pyquest`. Locale fixture đúng scope; normal CI39139439970
-**433 passed / 2 failed**, Settings12/analyze/localization/pub-get PASS, render
-SKIPPED. Focused020/maintenance011 NOT_RUN trên SHA này vì routing nhánh cũ.
-[Independent review + evidence](design/coordination/reviews/PQC-020-bed783cf/README.md).
+CODE hiện ở `ddf7db5aab54603f9e9d4caca2eb15abce6c64f4`, nhánh
+`arena/4253d4f1-pyquest`. **Cả ba gate trên đúng tip đã PASS**: focused58/0,
+normal435/0+render10/0, maintenance12/1/2/7+435/0+10/0 và các gate hỗ trợ.
+[Independent review/source/API/ảnh](design/coordination/reviews/PQC-020-ddf7db5a/README.md).
+Nhận locale/label/keyboard/routing R2; không còn blocker workflow chưa chạy.
 
-**Order bổ sung [revision2](design/coordination/specs/PQC-020-R2.md):** sửa expected
-hub label `Núi Lửa`, thay keyboard/semantics characterization cũ, và mở routing
-verify-only cho exact branch CODE mới trong hai workflow hiện có. Không đổi ARB,
-không skip/delete case, không normalize/diagnose/dispatch hoặc push nhánh cũ.
-Cho phép corrective commits; mọi gate chạy lại trên finalSHA mới (ordinary≥435/0,
-render10). **Root clamp1.2 vẫn chặn chứng minh app2×**; order này không mở quyền
-sửa global app root hoặc tự nghiệm thu020. Toàn R1/R4 và nhà/đất/đảo còn scope riêng.
-Quan sát831f7cb4 trong [r56](design/arrival-entrance-r56/partner-observation.json) là lịch sử.
+**Order hiện hành [revision3](design/coordination/specs/PQC-020-R3.md):** ảnh Flutter
+CI xác nhận Núi Lửa đè Tháp Python; Align layout khác projection trong geometry test.
+Sửa placement và đo RenderBoxes thật. Cho phép bỏ blanket root cap1.2, bổ sung
+matrix12configs qua PyQuestApp/system scale thật, không route MediaQuery bypass.
+Semantics regression phải đo rendered tree thay vì widget properties. Chỉ runtime/
+tests trong allowlist R3; không gameplay/R1-B, SDK/deps hoặc thay maintenance policy.
+
+DESIGN đã decode/xem7ảnh R1-A, xác minh before6dc8ca8 byte-identical với Checks API
+và asset349864bytes/853×1844 (~6MiB RGBA lý thuyết). **PQC020 vẫn NOT_ACCEPTED**;
+ảnh2× hiện tại chỉ chứng minh isolated surface, không root production. Không APK,
+không device RAM/frame-time/TalkBack claim. Các reviewbed783cf/831f7cb4 là lịch sử.
 
 **Design mới r56 / R1-B:** [Welcome và bảng giới thiệu sáu địa điểm](design/arrival-entrance-r56/README.md).
 Hai character studies Py/Bitsy2,5D mới; ba bước Welcome, sáu entrance panels,

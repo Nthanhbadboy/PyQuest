@@ -1,0 +1,260 @@
+{
+  "review_date": "2026-10-19",
+  "source_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+  "verdict": "R2 CI VERIFIED / partial changes accepted; PQC020 CHANGES_REQUIRED / NOT_ACCEPTED",
+  "runs": [
+    {
+      "id": 39248746968,
+      "name": "PQC-020 R1-A focused verification",
+      "head_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "conclusion": "success",
+      "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39248746968"
+    },
+    {
+      "id": 39248747052,
+      "name": "PQC-011 pinned SDK maintenance",
+      "head_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "conclusion": "success",
+      "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39248747052"
+    },
+    {
+      "id": 39248747036,
+      "name": "PyQuest CI",
+      "head_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "conclusion": "success",
+      "url": "https://github.com/Nthanhbadboy/PyQuest/actions/runs/39248747036"
+    }
+  ],
+  "check_runs_fetched": 195,
+  "gate_receipts": [
+    {
+      "id": 118048853111,
+      "name": "PyQuest check",
+      "head_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "conclusion": "success",
+      "html_url": "https://github.com/Nthanhbadboy/PyQuest/runs/118048853111",
+      "summary": "| phase key | exit |\n|---|---|\n| flutter_version | 0 |\n| pub_get | 0 |\n| l10n_evidence_tests | 0 |\n| l10n_evidence | 0 |\n| analyze | 0 |\n| settings_test | 0 |\n| ordinary_tests | 0 |\n| render_tests | 0 |\n| l10n_evidence_publish | 0 |\n\n| workflow step | outcome |\n|---|---|\n| Flutter version | success |\n| Dependencies | success |\n| Localization evidence tests | success |\n| Localization evidence collection | success |\n| Flutter analyze | success |\n| Focused Settings test | success |\n| Ordinary tests | success |\n| Render tests | success |\n| Evidence publication | success |\n| Preview publication | success |"
+    },
+    {
+      "id": 118048036656,
+      "name": "PQC-011 r49 exact gate counts",
+      "head_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "conclusion": "success",
+      "html_url": "https://github.com/Nthanhbadboy/PyQuest/runs/118048036656",
+      "summary": "| Gate | Result |\n|---|---|\n| Pinned SDK | Flutter 3.47.7 / Dart 3.13.5 / framework abaf9c523780a608bd46686fd5e53740a07077f8 |\n| Settings | success; PASS: 12 passed, 0 failed (12 total); required exactly 12 passed and zero failures |\n| Isolated tutor-state test | success; PASS: 1 passed, 0 failed (1 total); required exactly 1 passed and zero failures |\n| First-test then tutor-state sequence | success; PASS: 2 passed, 0 failed (2 total); required exactly 2 passed and zero failures |\n| Lesson-board integration | success; PASS: 7 passed, 0 failed (7 total); required exactly 7 passed and zero failures |\n| Ordinary suite | success; PASS: 435 passed, 0 failed (435 total); required at least 422 passed and zero failures |\n| Render suite | success; PASS: 10 passed, 0 failed (10 total); required exactly 10 passed and zero failures |\n| Localization helper tests | success |\n| Localization evidence collection | success |\n| Analyze | success |\n| Formatter | success |\n| pub get / lock reproducibility | success |\n| Source cleanliness | success |"
+    },
+    {
+      "id": 118047499829,
+      "name": "PQC-020 focused gate evidence",
+      "head_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "conclusion": "success",
+      "html_url": "https://github.com/Nthanhbadboy/PyQuest/runs/118047499829",
+      "summary": "| Gate | Outcome |\n|---|---|\n| Pinned branch and SDK | success |\n| pub get / unchanged lock | success |\n| Dart formatter | success |\n| Focused test files | success |\n| Source cleanliness / branch-tip check | success |\n| Focused tests | 58 passed, 0 failed (58 total) |\n| SDK | Flutter 3.47.7 / Dart 3.13.5 / framework abaf9c523780a608bd46686fd5e53740a07077f8 |"
+    }
+  ],
+  "normal_log_final_lines": [
+    "00:05 +12: All tests passed!",
+    "00:50 +435: All tests passed!",
+    "00:18 +10: All tests passed!"
+  ],
+  "static_audit": {
+    "source_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+    "base": "bed783cf",
+    "routing": {
+      "pqc020-focused": {
+        "truth_table_comparisons": 1536,
+        "legacy_clause_preserved_ignoring_whitespace": true,
+        "maintenance_env_and_steps_byte_identical": null
+      },
+      "pqc011-maintenance": {
+        "truth_table_comparisons": 1536,
+        "legacy_clause_preserved_ignoring_whitespace": true,
+        "maintenance_env_and_steps_byte_identical": true
+      }
+    },
+    "journey_lexical_comparison": "identical after one label replacement, comments/whitespace/trailing commas excluded",
+    "lesson_cases": 8,
+    "unchanged_case_token_sequences": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      8
+    ],
+    "changed_case_token_sequences": [
+      6,
+      7
+    ],
+    "app_lib_delta": [],
+    "docs_only_tip_delta": [
+      "docs/implementation/coordination/tasks/PQC-020.md"
+    ]
+  },
+  "images": [
+    {
+      "path": "captures/r1a_locked_activity_sheet.jpg",
+      "source_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "check_ids": [
+        118048764799,
+        118048769084
+      ],
+      "sha256": "1c0cbbd1b080ba3f3346fccce1dad558231bc217bf21971e17918863c0421370",
+      "transport": "JPEG preview decoded from complete base64 check chunks; not original PNG",
+      "visually_reviewed": true,
+      "root_2x_proof": false
+    },
+    {
+      "path": "captures/r1a_locked_prerequisite_route.jpg",
+      "source_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "check_ids": [
+        118048776078,
+        118048780830
+      ],
+      "sha256": "721208c7494310a105f35bbda4e8bdaf1cdcbcfc253e8ad2675f2bd3bada9b96",
+      "transport": "JPEG preview decoded from complete base64 check chunks; not original PNG",
+      "visually_reviewed": true,
+      "root_2x_proof": false
+    },
+    {
+      "path": "captures/r1a_map_360_en_1x.jpg",
+      "source_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "check_ids": [
+        118048786089,
+        118048791858
+      ],
+      "sha256": "a5980b326ea33bb4b4caf2a85956c604fbbf1ba7d43cb69614f55e3ab2837199",
+      "transport": "JPEG preview decoded from complete base64 check chunks; not original PNG",
+      "visually_reviewed": true,
+      "root_2x_proof": false
+    },
+    {
+      "path": "captures/r1a_map_360_en_2x.jpg",
+      "source_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "check_ids": [
+        118048797651,
+        118048802597
+      ],
+      "sha256": "a413c1410a4bbe01bfcaebcf6e244962523afd0b34a64df1bbd7f6ce16a316a6",
+      "transport": "JPEG preview decoded from complete base64 check chunks; not original PNG",
+      "visually_reviewed": true,
+      "root_2x_proof": false
+    },
+    {
+      "path": "captures/r1a_map_390_vi_1x.jpg",
+      "source_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "check_ids": [
+        118048808556,
+        118048813089,
+        118048817127
+      ],
+      "sha256": "b9dd1323112a430fc0e28086f51e4562040f56c817675f21ae96930ed58dd4e7",
+      "transport": "JPEG preview decoded from complete base64 check chunks; not original PNG",
+      "visually_reviewed": true,
+      "root_2x_proof": false
+    },
+    {
+      "path": "captures/r1a_map_390_vi_2x.jpg",
+      "source_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "check_ids": [
+        118048820796,
+        118048825446
+      ],
+      "sha256": "3d4ecb519ee46feb3ae38f56677c3b91d8193aa44561dadcd2e3dcd24684c019",
+      "transport": "JPEG preview decoded from complete base64 check chunks; not original PNG",
+      "visually_reviewed": true,
+      "root_2x_proof": false
+    },
+    {
+      "path": "captures/r1a_map_after_route_return.jpg",
+      "source_sha": "ddf7db5aab54603f9e9d4caca2eb15abce6c64f4",
+      "check_ids": [
+        118048830831,
+        118048838224,
+        118048846537
+      ],
+      "sha256": "de550055b3a2e583863e35b1ff6c084ea6d76de00743b9d8d10d9bdd6efcd62e",
+      "transport": "JPEG preview decoded from complete base64 check chunks; not original PNG",
+      "visually_reviewed": true,
+      "root_2x_proof": false
+    }
+  ],
+  "before_provenance": {
+    "source_sha": "6dc8ca8feeed54cc0fa6a82109e3a59d24a16153",
+    "name": "a01_map_new_player",
+    "check_ids": [
+      117641933245,
+      117641935326,
+      117641936999,
+      117641938536
+    ],
+    "sha256": "4bb7f2d981655abbbd09f02e7cfd87c30ddfd6dfe86d8bdb197a3ed70cbcbfe3",
+    "byte_identical_to_code_before": true
+  },
+  "asset": {
+    "path": "app/assets/images/village_r53.webp",
+    "bytes": 349864,
+    "dimensions": [
+      853,
+      1844
+    ],
+    "dimensions_source": "VP8 frame header",
+    "sha256": "d3130b407e08f146ae633b50fad9f1e05aa466dd5dc049cdc75c1b36f8804c0e",
+    "rgba_theoretical_mib": 6.0002593994140625,
+    "device_memory": "NOT_MEASURED",
+    "frame_time": "NOT_MEASURED"
+  },
+  "source_pins": [
+    {
+      "path": "app/lib/app/pyquest_app.dart",
+      "sha256": "18d15adf7e6bee160c71ac5c947855486fdd1739af7a0c396b248a747ba463d1"
+    },
+    {
+      "path": "app/lib/modules/main_map/main_map_scene.dart",
+      "sha256": "bd65e183e1e932991c9c661ce7f3fb226cdc72a1bc2cdc2f9609c4b905e4fb3d"
+    },
+    {
+      "path": "app/lib/modules/main_map/main_map_scene_geometry.dart",
+      "sha256": "a3ea7227da126102daf7fde7ce4b9438816baf3967e4c37d99e84d230d448aff"
+    },
+    {
+      "path": "app/test/lesson_route_regression_test.dart",
+      "sha256": "187d33d9f3a2efe05619619ee5790d96de16c61173f845ef5d8b870197e5e3a3"
+    },
+    {
+      "path": "app/test/journey_widget_test.dart",
+      "sha256": "b4e7aa882857ae2e91f033c21b4a7d5147e65c50305670df20452ce6692b43ff"
+    },
+    {
+      "path": "app/test/main_map_scene_test.dart",
+      "sha256": "d23bff105530865af523e0f40696f008e84d6f3f6c3fafbc2510ad7eced48be8"
+    },
+    {
+      "path": "app/test/main_map_scene_geometry_test.dart",
+      "sha256": "ce85859b3f617ddf4f338125fe2626e4a8b2634131d4ac3ba5db9da21d05d82f"
+    },
+    {
+      "path": "app/test/render/render_screens_test.dart",
+      "sha256": "e80ce26f98bb5a1a3e64f1ea7d08b549e5d744e2e399d5cecebffcd10a0db3fe"
+    },
+    {
+      "path": ".github/workflows/pqc020-focused.yml",
+      "sha256": "16b5d2bd007e7aaf0e19d70e49508a8543ccf745743f33e79e81a5159b290111"
+    },
+    {
+      "path": ".github/workflows/pqc011-maintenance.yml",
+      "sha256": "9c726505319840a672c8d2d8be72aa71e3c5b2508342df7aba31931950738b86"
+    }
+  ],
+  "remaining_findings": [
+    "Rendered village labels overlap: Align uses free-space positioning, geometry tests assume absolute image centers",
+    "Production root cap1.2; R1A 2x render helper overrides MediaQuery on a second map route",
+    "R2 semantics case still inspects widget properties; no rendered button uniqueness proof"
+  ],
+  "limits": [
+    "No local Flutter execution",
+    "No APK/device/TalkBack verification",
+    "Existing isolated 12-config test is present and in passing suite, not production-root matrix",
+    "Existing scene semantics test does read rendered name/tap actions; R2 regression still needs role/uniqueness measurement"
+  ]
+}
