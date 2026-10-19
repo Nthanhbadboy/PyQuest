@@ -165,10 +165,10 @@ class _DragonHomeScreenState extends State<DragonHomeScreen> {
                                 color: PQColors.ink,
                                 width: 2.6,
                               ),
-                              boxShadow: const [
+                              boxShadow: [
                                 BoxShadow(
-                                  color: PQColors.coralDark,
-                                  offset: Offset(0, 5),
+                                  color: PQTone.coral.depth,
+                                  offset: const Offset(0, 5),
                                   blurRadius: 0,
                                 ),
                               ],

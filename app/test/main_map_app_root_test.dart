@@ -38,24 +38,23 @@ Future<AppServices> createServices() async => AppServices.create(
 const List<double> kScales = <double>[1, 1.3, 2];
 const List<Size> kViewports = <Size>[Size(360, 640), Size(390, 844)];
 
-Map<String, String> placeNames(String languageCode) =>
-    languageCode == 'vi'
-        ? const <String, String>{
-            'main_quest': 'Tháp Python',
-            'robot_maze': 'Mê Cung Robo',
-            'dragon_jump': 'Núi Lửa',
-            'catch_stars': 'Đài Thiên Văn',
-            'bug_hunter': 'Xưởng Bitsy',
-            'achievement_house': 'Nhà Thành Tích',
-          }
-        : const <String, String>{
-            'main_quest': 'Python Tower',
-            'robot_maze': 'Robo Maze',
-            'dragon_jump': 'Volcano',
-            'catch_stars': 'Observatory',
-            'bug_hunter': "Bitsy's Workshop",
-            'achievement_house': 'Achievement House',
-          };
+Map<String, String> placeNames(String languageCode) => languageCode == 'vi'
+    ? const <String, String>{
+        'main_quest': 'Tháp Python',
+        'robot_maze': 'Mê Cung Robo',
+        'dragon_jump': 'Núi Lửa',
+        'catch_stars': 'Đài Thiên Văn',
+        'bug_hunter': 'Xưởng Bitsy',
+        'achievement_house': 'Nhà Thành Tích',
+      }
+    : const <String, String>{
+        'main_quest': 'Python Tower',
+        'robot_maze': 'Robo Maze',
+        'dragon_jump': 'Volcano',
+        'catch_stars': 'Observatory',
+        'bug_hunter': "Bitsy's Workshop",
+        'achievement_house': 'Achievement House',
+      };
 
 /// Pumps the real app at [scale]; pump lại cùng một cây widget giữ nguyên State của
 /// `MainMapScreen`, nên đây là cách hợp lệ để đổi system scale khi app đang mở.
@@ -126,9 +125,7 @@ void main() {
             expect(
               find.byKey(
                 ValueKey<String>(
-                  directory
-                      ? 'main_map_mode_places'
-                      : 'main_map_mode_village',
+                  directory ? 'main_map_mode_places' : 'main_map_mode_village',
                 ),
               ),
               findsOneWidget,
@@ -136,9 +133,7 @@ void main() {
             );
 
             // 3) Sáu tên + sáu target ở mode đang bật.
-            final Map<String, String> names = placeNames(
-              locale.languageCode,
-            );
+            final Map<String, String> names = placeNames(locale.languageCode);
             for (final ActivityModule module in activityRegistry) {
               final String id = module.def.id;
               expect(
@@ -149,9 +144,7 @@ void main() {
               expect(
                 find.byKey(
                   ValueKey<String>(
-                    directory
-                        ? 'directory_place_$id'
-                        : 'map_label_$id',
+                    directory ? 'directory_place_$id' : 'map_label_$id',
                   ),
                 ),
                 findsOneWidget,
@@ -305,7 +298,9 @@ void main() {
       );
       expect(tester.takeException(), isNull);
       // ignore: avoid_print
-      print('R3-ROOT scale-change energy=$energyBefore->${services.energy.current}');
+      print(
+        'R3-ROOT scale-change energy=$energyBefore->${services.energy.current}',
+      );
       await tester.pumpWidget(const SizedBox.shrink());
       await pumpFor(tester, const Duration(milliseconds: 1100));
     },
