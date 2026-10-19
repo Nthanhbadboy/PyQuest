@@ -13,6 +13,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pyquest/app/activity.dart';
 import 'package:pyquest/app/activity_registry.dart';
 import 'package:pyquest/app/app_services.dart';
 import 'package:pyquest/app/pyquest_app.dart';

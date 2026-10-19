@@ -650,7 +650,9 @@ void main() {
           try {
             for (final module in activityRegistry) {
               final String id = module.def.id;
-              final Finder place = find.byKey(ValueKey<String>('map_label_$id'));
+              final Finder place = find.byKey(
+                ValueKey<String>('map_label_$id'),
+              );
               expect(
                 place,
                 findsOneWidget,
@@ -674,7 +676,8 @@ void main() {
               expect(
                 data.hasAction(SemanticsAction.tap),
                 isTrue,
-                reason: 'tap action phải có trên node đã render, không chỉ trên widget',
+                reason:
+                    'tap action phải có trên node đã render, không chỉ trên widget',
               );
               expect(
                 data.label,
@@ -700,12 +703,14 @@ void main() {
               expect(
                 innerButtons,
                 0,
-                reason: 'node button nội bộ của $id phải bị loại khỏi cây render',
+                reason:
+                    'node button nội bộ của $id phải bị loại khỏi cây render',
               );
               expect(
                 named,
                 1,
-                reason: 'subtree của $id phải có ĐÚNG MỘT node button mang tên place',
+                reason:
+                    'subtree của $id phải có ĐÚNG MỘT node button mang tên place',
               );
               expect(
                 find.descendant(of: place, matching: find.text(name)),

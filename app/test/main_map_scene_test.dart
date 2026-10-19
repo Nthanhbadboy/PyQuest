@@ -180,14 +180,9 @@ void main() {
           const Locale('en'),
         ]) {
           for (final double scale in <double>[1, 1.3, 2]) {
-            final String cfg =
-                '$viewport/${locale.languageCode}/${scale}x';
+            final String cfg = '$viewport/${locale.languageCode}/${scale}x';
             await tester.pumpWidget(
-              mainMapHost(
-                services,
-                locale: locale,
-                textScale: scale,
-              ),
+              mainMapHost(services, locale: locale, textScale: scale),
             );
             await pumpFor(tester, const Duration(milliseconds: 300));
             // 2x mặc định là directory. Yêu cầu của R3: nếu người dùng TỰ CHỌN
@@ -217,10 +212,7 @@ void main() {
               final Rect sceneRect = tester.getRect(scene);
               final Rect box = tester.getRect(marker);
               boxes[id] = box;
-              final Offset projected = villageMarkerCenter(
-                id,
-                sceneRect.size,
-              );
+              final Offset projected = villageMarkerCenter(id, sceneRect.size);
               expect(
                 box.center.dx,
                 closeTo(sceneRect.left + projected.dx, 0.5),
@@ -266,7 +258,9 @@ void main() {
             // Giai doan 2: cuộn thật tới từng target rồi hit-test, để "đủ sáu"
             // không chỉ là sáu findsOneWidget nằm ngoài màn hình.
             for (final String id in ids) {
-              final Finder marker = find.byKey(ValueKey<String>('map_label_$id'));
+              final Finder marker = find.byKey(
+                ValueKey<String>('map_label_$id'),
+              );
               await tester.ensureVisible(marker);
               await tester.pump();
               final Rect box = tester.getRect(marker);
