@@ -1,10 +1,15 @@
+// PQC-020 R3: file này là MODEL test — nó kiểm công thức projection và các hình chữ
+// nhật mà helper tự sinh với chiều cao giả định (48/96). Nó KHÔNG chứng minh hộp thật
+// của nút trên màn hình: đúng vì đó là lỗ hổng mà finding A rơi qua, nơi `Align` đặt
+// nhãn theo khoảng trống còn lại nên "Núi Lửa" đè "Tháp Python" dù mọi phép tính model
+// đều xanh. Bằng chứng RenderBox thật nằm ở `main_map_scene_test.dart` (R3-GEOM).
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/app/activity_registry.dart';
 import 'package:pyquest/modules/main_map/main_map_scene_geometry.dart';
 
 void main() {
-  group('R1-A normalized W01 geometry', () {
+  group('R1-A W01 geometry model (helper rectangles, not RenderBox)', () {
     test('anchors cover exactly the six existing registry IDs', () {
       expect(
         kVillageMarkerAnchors.keys.toSet(),
@@ -25,7 +30,7 @@ void main() {
     );
 
     test(
-      'all six minimum-size marker targets remain inside the scrollable art',
+      'model: six helper target rectangles fit inside the scrollable art',
       () {
         for (final double width in <double>[360, 390]) {
           final Size scene = Size(width, villageSceneHeight(width));
@@ -60,7 +65,7 @@ void main() {
       },
     );
 
-    test('the marker labels do not overlap at 360 or 390 logical pixels', () {
+    test('model: helper rectangles do not overlap at 360 or 390 px', () {
       for (final double width in <double>[360, 390]) {
         final Size scene = Size(width, villageSceneHeight(width));
         final List<String> ids = kVillageMarkerAnchors.keys.toList(

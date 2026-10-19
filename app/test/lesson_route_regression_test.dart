@@ -23,6 +23,7 @@ library;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyquest/app/activity_registry.dart';
@@ -640,65 +641,88 @@ void main() {
             reason: 'sáu status phải về trước khi đo action',
           );
 
-          // Cây semantics THẬT của `map_label_*` (thay cho suy luận từ wrapper `map_hit_*`):
-          // đúng một node button, mang tên localized mà R1-A đang hiển thị, có tap action,
-          // và nhãn nhìn thấy trùng tên đó.
-          for (final module in activityRegistry) {
-            final String id = module.def.id;
-            final Finder place = find.byKey(ValueKey<String>('map_label_$id'));
-            expect(
-              place,
-              findsOneWidget,
-              reason: 'place $id phải còn key map_label_* trên hub',
-            );
-            final String name = placeName(l10n, id);
-            // `_PlaceButton` bọc nhãn nhìn thấy trong `ExcludeSemantics`
-            // (main_map_scene.dart:372-380), nên `TextButton` con vẫn để lại một
-            // node `button: true` không tên trong cây widget và node đó bị loại ở
-            // tầng render. Node hub thật là node mang tên place — đếm cơ học mọi
-            // node button sẽ đỏ vì wrapper, không phải vì semantics sai.
-            final List<dynamic> props = semanticsProps(tester, place);
-            final List<dynamic> named = <dynamic>[];
-            for (final dynamic p in props) {
-              final bool isButton = p.button == true;
-              final bool hasName = p.label != null && p.label.contains(name);
-              if (isButton && hasName) {
-                named.add(p);
+          // R3 finding C: đo cây semantics SAU RENDER của chính node hub. Widget-level
+          // `Semantics.properties` không chứng minh điều screen reader nhận: nó vẫn
+          // thấy node `button` nội bộ của `TextButton` dù node đó bị loại ở tầng render.
+          // Ở đây bật semantics tree thật, rồi kiểm role/name/action/enabled và chứng
+          // minh `ExcludeSemantics` thật sự không để lại node button con nào.
+          final SemanticsHandle semantics = tester.ensureSemantics();
+          try {
+            for (final module in activityRegistry) {
+              final String id = module.def.id;
+              final Finder place = find.byKey(ValueKey<String>('map_label_$id'));
+              expect(
+                place,
+                findsOneWidget,
+                reason: 'place $id phải còn key map_label_* trên hub',
+              );
+              await tester.ensureVisible(place);
+              await tester.pump();
+              final SemanticsNode marker = tester.getSemantics(place);
+              final SemanticsData data = marker.getSemanticsData();
+              final String name = placeName(l10n, id);
+              expect(
+                data.hasFlag(SemanticsFlag.isButton),
+                isTrue,
+                reason: '$id phải là button trong cây semantics đã render',
+              );
+              expect(
+                data.hasFlag(SemanticsFlag.isEnabled),
+                isTrue,
+                reason: 'hub đã nạp xong nên $id phải ở trạng thái enabled',
+              );
+              expect(
+                data.hasAction(SemanticsAction.tap),
+                isTrue,
+                reason: 'tap action phải có trên node đã render, không chỉ trên widget',
+              );
+              expect(
+                data.label,
+                startsWith('$name, '),
+                reason: 'node button của $id phải đọc "tên, status" của hub',
+              );
+
+              // Uniqueness trong chính subtree của node: node con nào còn mang role
+              // button là bằng chứng `ExcludeSemantics` không loại được gì.
+              int innerButtons = 0;
+              int named = 0;
+              marker.visitChildren((SemanticsNode child) {
+                final SemanticsData inner = child.getSemanticsData();
+                if (inner.hasFlag(SemanticsFlag.isButton)) {
+                  innerButtons++;
+                }
+                return true;
+              });
+              if (data.hasFlag(SemanticsFlag.isButton) &&
+                  data.label.contains(name)) {
+                named++;
               }
+              expect(
+                innerButtons,
+                0,
+                reason: 'node button nội bộ của $id phải bị loại khỏi cây render',
+              );
+              expect(
+                named,
+                1,
+                reason: 'subtree của $id phải có ĐÚNG MỘT node button mang tên place',
+              );
+              expect(
+                find.descendant(of: place, matching: find.text(name)),
+                findsWidgets,
+                reason:
+                    'nhãn nhìn thấy và nhãn đọc được của $id phải cùng một tên',
+              );
+              // ignore: avoid_print
+              print(
+                'R3-SEM $id button=true enabled=true tap=true '
+                'innerButtons=$innerButtons label="${data.label}"',
+              );
             }
-            expect(
-              named,
-              hasLength(1),
-              reason:
-                  'map_label_$id phải có đúng MỘT node button mang tên place',
-            );
-            final dynamic marker = named.single;
-            expect(
-              find.descendant(
-                of: place,
-                matching: find.byType(ExcludeSemantics),
-              ),
-              findsOneWidget,
-              reason: 'node button kia của $id phải nằm sau ExcludeSemantics',
-            );
-            expect(
-              marker.label,
-              startsWith('$name, '),
-              reason: 'node button của $id phải đọc "tên, status" của hub',
-            );
-            expect(
-              marker.onTap,
-              isNotNull,
-              reason:
-                  'tap action phải gắn trên node semantics, không chỉ trên GestureDetector',
-            );
-            expect(
-              find.descendant(of: place, matching: find.text(name)),
-              findsWidgets,
-              reason:
-                  'nhãn nhìn thấy và nhãn đọc được của $id phải cùng một tên',
-            );
+          } finally {
+            semantics.dispose();
           }
+
           expect(tester.takeException(), isNull);
 
           await finishTest(tester, s);

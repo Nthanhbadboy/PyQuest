@@ -3,7 +3,6 @@ library;
 
 // Renders key screens to PNG (build/previews/) with the real fonts so the UI
 // can be reviewed without a device. Not a golden test: nothing is compared.
-import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -139,6 +138,12 @@ Future<void> precacheMap(WidgetTester tester) async {
   });
 }
 
+/// Cuộn hub thật tới một target, thay vì đo một widget đang nằm ngoài màn hình.
+Future<void> scrollHubTo(WidgetTester tester, String key) async {
+  await tester.ensureVisible(find.byKey(ValueKey<String>(key)).first);
+  await pumpFor(tester, const Duration(milliseconds: 400));
+}
+
 Future<void> tap(WidgetTester tester, String key, {int ms = 1200}) async {
   final f = find.byKey(ValueKey(key));
   await tester.ensureVisible(f.first);
@@ -153,6 +158,11 @@ Future<void> home(WidgetTester tester) async {
       .popUntil((r) => r.isFirst);
   await pumpFor(tester, const Duration(seconds: 2));
 }
+
+/// Widget gốc đang được pump. Render A/F đổi cỡ chữ hệ thống rồi pump lại ĐÚNG cây
+/// này, nên State của MainMapScreen (mode, scroll, focus) còn nguyên — đó mới là
+/// bằng chứng "app đang mở mà scale đổi", không phải một app vừa khởi động lại.
+Widget? _rootHost;
 
 Future<AppServices> start(
   WidgetTester tester, {
@@ -170,45 +180,35 @@ Future<AppServices> start(
   addTearDown(tester.view.reset);
   final s = await seeded(tester, rich: rich, tutorAi: tutorAi);
   if (intro) await tester.runAsync(() => s.settings.setRaw('intro_seen', '0'));
-  await tester.pumpWidget(
-    RepaintBoundary(
-      key: _captureKey,
-      child: PyQuestApp(
-        servicesFactory: (_) async => s,
-        systemLocalesReader: systemLocales == null ? null : () => systemLocales,
-        minSplash: Duration.zero,
-      ),
+  _rootHost = RepaintBoundary(
+    key: _captureKey,
+    child: PyQuestApp(
+      servicesFactory: (_) async => s,
+      systemLocalesReader: systemLocales == null ? null : () => systemLocales,
+      minSplash: Duration.zero,
     ),
   );
+  await tester.pumpWidget(_rootHost!);
   await pumpFor(tester, const Duration(seconds: 2));
   await precacheMap(tester);
   await pumpFor(tester, const Duration(milliseconds: 400));
   return s;
 }
 
-void pushMapAtTextScale(
-  WidgetTester tester, {
-  required Locale locale,
-  required double scale,
-}) {
-  final BuildContext context = tester.element(find.byType(MainMapScreen).last);
-  unawaited(
-    Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (BuildContext routeContext) => Localizations.override(
-          context: routeContext,
-          locale: locale,
-          child: MediaQuery(
-            data: MediaQuery.of(
-              routeContext,
-            ).copyWith(textScaler: TextScaler.linear(scale)),
-            child: const MainMapScreen(),
-          ),
-        ),
-      ),
-    ),
-  );
+/// Cỡ chữ hệ thống thật: đặt giá trị trên platformDispatcher rồi pump lại cây app
+/// đang chạy. R3 finding B bỏ hẳn helper bypass — một `MediaQuery` override trong
+/// route MainMap thứ hai không phải bằng chứng cho app root.
+Future<void> setSystemTextScale(WidgetTester tester, double scale) async {
+  tester.platformDispatcher.textScaleFactorTestValue = scale;
+  addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+  await tester.pumpWidget(_rootHost!);
+  await pumpFor(tester, const Duration(milliseconds: 900));
 }
+
+/// Scaler mà hub THẬT đang nhận trên 16px — con số ghi vào receipt ảnh 2x.
+double hubTextScale(WidgetTester tester) => MediaQuery.textScalerOf(
+  tester.element(find.byType(MainMapScreen)),
+).scale(16);
 
 Future<void> finish(WidgetTester tester, AppServices s) async {
   s.dispose();
@@ -244,15 +244,32 @@ void main() {
     }
     await capture(tester, 'a01_map_new_player');
     await capture(tester, 'r1a_map_390_vi_1x');
-    pushMapAtTextScale(tester, locale: const Locale('vi'), scale: 2);
-    await pumpFor(tester, const Duration(milliseconds: 900));
+    // Một khung nhìn 390x844 không chứa đủ sáu nhãn, nên "đủ sáu" phải có cả pha
+    // cuối của scene thật (R3 E2: full scene / scroll-bottom).
+    await scrollHubTo(tester, 'map_label_achievement_house');
+    await capture(tester, 'r1a_map_390_vi_1x_bottom');
+    await scrollHubTo(tester, 'map_label_main_quest');
+    await setSystemTextScale(tester, 2);
     expect(
       find.byKey(const ValueKey<String>('directory_place_main_quest')),
       findsOneWidget,
+      reason: '2x hệ thống phải tự bật directory ở root thật',
+    );
+    expect(hubTextScale(tester), closeTo(32, 0.01));
+    // ignore: avoid_print
+    print(
+      'R3-RENDER r1a_map_390_vi_2x effectiveScale16=${hubTextScale(tester)}',
     );
     await capture(tester, 'r1a_map_390_vi_2x');
-    tester.state<NavigatorState>(find.byType(Navigator).last).pop();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('main_map_mode_village')),
+    );
     await pumpFor(tester, const Duration(milliseconds: 500));
+    await capture(tester, 'r1a_map_390_vi_2x_village');
+    await scrollHubTo(tester, 'map_label_achievement_house');
+    await capture(tester, 'r1a_map_390_vi_2x_village_bottom');
+    await setSystemTextScale(tester, 1);
+    expect(find.byType(MainMapScreen), findsOneWidget);
 
     await tap(tester, 'map_label_bug_hunter', ms: 900);
     await capture(tester, 'a02_sheet_locked');
@@ -440,15 +457,30 @@ void main() {
     );
     await capture(tester, 'f00_small_map');
     await capture(tester, 'r1a_map_360_en_1x');
-    pushMapAtTextScale(tester, locale: const Locale('en'), scale: 2);
-    await pumpFor(tester, const Duration(milliseconds: 900));
+    await scrollHubTo(tester, 'map_label_achievement_house');
+    await capture(tester, 'r1a_map_360_en_1x_bottom');
+    await scrollHubTo(tester, 'map_label_main_quest');
+    await setSystemTextScale(tester, 2);
     expect(
       find.byKey(const ValueKey<String>('directory_place_main_quest')),
       findsOneWidget,
+      reason: '2x hệ thống phải tự bật directory ở root 360',
+    );
+    expect(hubTextScale(tester), closeTo(32, 0.01));
+    // ignore: avoid_print
+    print(
+      'R3-RENDER r1a_map_360_en_2x effectiveScale16=${hubTextScale(tester)}',
     );
     await capture(tester, 'r1a_map_360_en_2x');
-    tester.state<NavigatorState>(find.byType(Navigator).last).pop();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('main_map_mode_village')),
+    );
     await pumpFor(tester, const Duration(milliseconds: 500));
+    await capture(tester, 'r1a_map_360_en_2x_village');
+    await scrollHubTo(tester, 'map_label_achievement_house');
+    await capture(tester, 'r1a_map_360_en_2x_village_bottom');
+    await setSystemTextScale(tester, 1);
+    expect(find.byType(MainMapScreen), findsOneWidget);
     await tap(tester, 'map_label_robot_maze', ms: 900);
     await tap(tester, 'sheet_open', ms: 1500);
     await tap(tester, 'maze_level_4', ms: 1500);

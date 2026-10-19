@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
@@ -9,6 +10,7 @@ import 'package:pyquest/app/activity_registry.dart';
 import 'package:pyquest/app/app_scope.dart';
 import 'package:pyquest/app/app_services.dart';
 import 'package:pyquest/l10n/generated/app_localizations.dart';
+import 'package:pyquest/modules/main_map/main_map_scene_geometry.dart';
 import 'package:pyquest/modules/main_map/main_map_scene_state.dart';
 import 'package:pyquest/modules/main_map/main_map_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -146,6 +148,162 @@ void main() {
               isNull,
               reason:
                   'no overflow at $viewport, ${locale.languageCode}, $scale×',
+            );
+          }
+        }
+      }
+    },
+  );
+
+  // PQC-020 R3 finding A: đo RenderBox THẬT của sáu nút, không đo hình chữ nhật mà
+  // helper tự giả. `Align` đặt child trong khoảng trống còn lại
+  // (`childSize/2 + anchor*(parentSize-childSize)`), nên công thức
+  // `Alignment(2*x-1, 2*y-1)` trong `_positionedMarker` không cho tâm nút nằm ở
+  // `anchor * sceneSize`; ở width 358 nó lệch dragon_jump ~37 px sang trái và đủ để
+  // nhãn "Núi Lửa" đè "Tháp Python" như ảnh CI. Test này phải đỏ trên source chưa sửa.
+  testWidgets(
+    'village: sáu RenderBox nút thật nằm đúng projection, không chồng nhau, cuộn được tới từng cái',
+    (WidgetTester tester) async {
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final AppServices services = (await tester.runAsync(createServices))!;
+      await tester.runAsync(() => services.settings.setIntroSeen());
+      addTearDown(services.dispose);
+
+      for (final Size viewport in <Size>[
+        const Size(360, 640),
+        const Size(390, 844),
+      ]) {
+        tester.view.physicalSize = viewport;
+        for (final Locale locale in <Locale>[
+          const Locale('vi'),
+          const Locale('en'),
+        ]) {
+          for (final double scale in <double>[1, 1.3, 2]) {
+            final String cfg =
+                '$viewport/${locale.languageCode}/${scale}x';
+            await tester.pumpWidget(
+              mainMapHost(
+                services,
+                locale: locale,
+                textScale: scale,
+              ),
+            );
+            await pumpFor(tester, const Duration(milliseconds: 300));
+            // 2x mặc định là directory. Yêu cầu của R3: nếu người dùng TỰ CHỌN
+            // village thì bố cục vẫn phải đúng, nên chuyển mode bằng control thật.
+            if (scale >= 1.5) {
+              await tester.tap(
+                find.byKey(const ValueKey<String>('main_map_mode_village')),
+              );
+              await pumpFor(tester, const Duration(milliseconds: 250));
+            }
+            final Finder scene = find.byKey(
+              const ValueKey<String>('main_map_village_scene'),
+            );
+            expect(scene, findsOneWidget, reason: 'scene thiếu ở $cfg');
+
+            // Giai đoan 1: đo cả sáu hộp ở CÙNG một offset cuộn. So sánh hình học
+            // chỉ hợp lệ khi các số đo nằm trong cùng một hệ tọa độ.
+            final Map<String, Rect> boxes = <String, Rect>{};
+            double worstDelta = 0;
+            for (final ActivityModule module in activityRegistry) {
+              final String id = module.def.id;
+              final Finder marker = find.byKey(
+                ValueKey<String>('map_label_$id'),
+              );
+              expect(marker, findsOneWidget, reason: 'thiếu $id ở $cfg');
+              // Đọc lại scene cho từng nút: một layout pass có thể đổi offset.
+              final Rect sceneRect = tester.getRect(scene);
+              final Rect box = tester.getRect(marker);
+              boxes[id] = box;
+              final Offset projected = villageMarkerCenter(
+                id,
+                sceneRect.size,
+              );
+              expect(
+                box.center.dx,
+                closeTo(sceneRect.left + projected.dx, 0.5),
+                reason: '$id tâm X phải khớp projection ở $cfg',
+              );
+              expect(
+                box.center.dy,
+                closeTo(sceneRect.top + projected.dy, 0.5),
+                reason: '$id tâm Y phải khớp projection ở $cfg',
+              );
+              worstDelta = math.max(
+                worstDelta,
+                (box.center - sceneRect.topLeft - projected).distance,
+              );
+              expect(
+                box.width,
+                greaterThanOrEqualTo(kVillageMinimumTargetSize),
+                reason: '$id rộng < 48 ở $cfg',
+              );
+              expect(
+                box.height,
+                greaterThanOrEqualTo(kVillageMinimumTargetSize),
+                reason: '$id cao < 48 ở $cfg (nội dung thật, không giả định)',
+              );
+              expect(
+                sceneRect.contains(box.topLeft) &&
+                    sceneRect.contains(box.bottomRight),
+                isTrue,
+                reason: '$id tràn ra ngoài scene ở $cfg',
+              );
+            }
+            final List<String> ids = boxes.keys.toList(growable: false);
+            for (int i = 0; i < ids.length; i++) {
+              for (int j = i + 1; j < ids.length; j++) {
+                expect(
+                  boxes[ids[i]]!.overlaps(boxes[ids[j]]!),
+                  isFalse,
+                  reason: '${ids[i]} chồng ${ids[j]} ở $cfg',
+                );
+              }
+            }
+
+            // Giai doan 2: cuộn thật tới từng target rồi hit-test, để "đủ sáu"
+            // không chỉ là sáu findsOneWidget nằm ngoài màn hình.
+            for (final String id in ids) {
+              final Finder marker = find.byKey(ValueKey<String>('map_label_$id'));
+              await tester.ensureVisible(marker);
+              await tester.pump();
+              final Rect box = tester.getRect(marker);
+              final Rect screen = Offset.zero & viewport;
+              expect(
+                screen.contains(box.center),
+                isTrue,
+                reason: 'cuộn rồi mà $id vẫn ngoài viewport ở $cfg',
+              );
+              expect(
+                marker.hitTestable(),
+                findsOneWidget,
+                reason: '$id không chạm được ở $cfg',
+              );
+            }
+            // Receipt trong log cho handoff: số lớn nhất của cùng pha đo, không phải
+            // mô tả định tính (delta được cộng dồn ở phase đo, trước khi cuộn).
+            double worstOverlap = 0;
+            for (int i = 0; i < ids.length; i++) {
+              for (int j = i + 1; j < ids.length; j++) {
+                final Rect inter = boxes[ids[i]]!.intersect(boxes[ids[j]]!);
+                if (!inter.isEmpty) {
+                  final double area = inter.width * inter.height;
+                  worstOverlap = math.max(worstOverlap, area);
+                }
+              }
+            }
+            // ignore: avoid_print
+            print(
+              'R3-GEOM $cfg maxCenterDelta=${worstDelta.toStringAsFixed(2)}px '
+              'maxOverlapArea=${worstOverlap.toStringAsFixed(1)}px2 '
+              'heights=${boxes.values.map((Rect r) => r.height.toStringAsFixed(1)).join(',')}',
+            );
+            expect(
+              tester.takeException(),
+              isNull,
+              reason: 'layout exception ở $cfg',
             );
           }
         }
